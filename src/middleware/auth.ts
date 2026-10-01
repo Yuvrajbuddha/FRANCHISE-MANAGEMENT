@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { verifyAuthToken, AuthUser } from "@/lib/auth";
+import { verifyAuthToken } from "@/lib/server-auth";
+import { AuthUser } from "@/lib/auth-constants";
 
 export interface AuthenticatedRequest extends Request {
   user?: AuthUser;

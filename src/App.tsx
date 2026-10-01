@@ -24,134 +24,127 @@ export default function App() {
         {/* Public Login Route */}
         <Route path="/login" element={<LoginPage />} />
 
-        {/* Protected Dashboard & Module Routes */}
-        <Route
-          path="/*"
-          element={
-            <AppLayout>
-              <Routes>
-                <Route
-                  path="/"
-                  element={
-                    <ProtectedRoute>
-                      <DashboardPlaceholder />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route path="/dashboard" element={<Navigate to="/" replace />} />
+        {/* Protected Dashboard & Module Routes wrapped in AppLayout */}
+        <Route element={<AppLayout />}>
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <DashboardPlaceholder />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="/dashboard" element={<Navigate to="/" replace />} />
 
-                {/* Outlet Directory: Admin, Owner, Officer */}
-                <Route
-                  path="/outlets"
-                  element={
-                    <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
-                      <OutletsPage />
-                    </ProtectedRoute>
-                  }
-                />
+          {/* Outlet Directory: Admin, Owner, Officer */}
+          <Route
+            path="/outlets"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+                <OutletsPage />
+              </ProtectedRoute>
+            }
+          />
 
-                {/* Single Outlet Dossier: Checks URL isolation (Requirement 6) */}
-                <Route
-                  path="/outlets/:outletId"
-                  element={
-                    <ProtectedRoute>
-                      <OutletDetailPage />
-                    </ProtectedRoute>
-                  }
-                />
+          {/* Single Outlet Dossier: Checks URL isolation (Requirement 6) */}
+          <Route
+            path="/outlets/:outletId"
+            element={
+              <ProtectedRoute>
+                <OutletDetailPage />
+              </ProtectedRoute>
+            }
+          />
 
-                {/* Operations */}
-                <Route
-                  path="/sales"
-                  element={
-                    <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "FRANCHISE"]}>
-                      <SalesPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/inventory"
-                  element={
-                    <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "FRANCHISE"]}>
-                      <InventoryPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/supply"
-                  element={
-                    <ProtectedRoute allowedRoles={["ADMIN", "OWNER"]}>
-                      <InventoryPage />
-                    </ProtectedRoute>
-                  }
-                />
+          {/* Operations */}
+          <Route
+            path="/sales"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "FRANCHISE"]}>
+                <SalesPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inventory"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "FRANCHISE"]}>
+                <InventoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/supply"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER"]}>
+                <InventoryPage />
+              </ProtectedRoute>
+            }
+          />
 
-                {/* Compliance & Risk */}
-                <Route
-                  path="/compliance"
-                  element={
-                    <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
-                      <CompliancePage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/evidence"
-                  element={
-                    <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
-                      <EvidencePage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/risk"
-                  element={
-                    <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
-                      <RiskPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/alerts"
-                  element={
-                    <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
-                      <AlertsPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/complaints"
-                  element={
-                    <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
-                      <ComplaintsPage />
-                    </ProtectedRoute>
-                  }
-                />
+          {/* Compliance & Risk */}
+          <Route
+            path="/compliance"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+                <CompliancePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/evidence"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+                <EvidencePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/risk"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+                <RiskPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/alerts"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+                <AlertsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/complaints"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+                <ComplaintsPage />
+              </ProtectedRoute>
+            }
+          />
 
-                {/* Resolution & Reports */}
-                <Route
-                  path="/corrective-actions"
-                  element={
-                    <ProtectedRoute allowedRoles={["ADMIN", "OFFICER", "FRANCHISE"]}>
-                      <CorrectiveActionsPage />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/reports"
-                  element={
-                    <ProtectedRoute allowedRoles={["ADMIN", "OWNER"]}>
-                      <ReportsPage />
-                    </ProtectedRoute>
-                  }
-                />
+          {/* Resolution & Reports */}
+          <Route
+            path="/corrective-actions"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER", "FRANCHISE"]}>
+                <CorrectiveActionsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/reports"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER"]}>
+                <ReportsPage />
+              </ProtectedRoute>
+            }
+          />
 
-                {/* Fallback */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </AppLayout>
-          }
-        />
+          {/* Fallback */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Route>
       </Routes>
     </AuthProvider>
   );

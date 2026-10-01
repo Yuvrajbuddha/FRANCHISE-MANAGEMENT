@@ -71,7 +71,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
       return { success: true };
     } catch {
-      return { success: false, error: "Network error. Please try again." };
+      // Graceful fallback for static/offline Vercel deployments
+      const matchedDemo = DEMO_USERS.find(
+        (u) =>
+          u.email.toLowerCase() === email.toLowerCase().trim() &&
+          u.passwordHash === password
+      );
+
+      if (matchedDemo) {
+        const fallbackUser: AuthUser = {
+          id: matchedDemo.id,
+          email: matchedDemo.email,
+          name: matchedDemo.name,
+          role: matchedDemo.role,
+          assignedOutletId: matchedDemo.assignedOutletId,
+          assignedOutletName: matchedDemo.assignedOutletName,
+          companyId: matchedDemo.companyId,
+        };
+        const mockToken = `demo-token-${matchedDemo.role.toLowerCase()}-${Date.now()}`;
+        setToken(mockToken);
+        setUser(fallbackUser);
+        localStorage.setItem("franchise_auth_token", mockToken);
+        localStorage.setItem("franchise_auth_user", JSON.stringify(fallbackUser));
+        return { success: true };
+      }
+
+      return { success: false, error: "Network error. Could not reach server." };
     }
   };
 

@@ -1,9 +1,10 @@
 import React, { useState } from "react";
+import { Outlet } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { TopNav } from "./TopNav";
 
 interface AppLayoutProps {
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 export function AppLayout({ children }: AppLayoutProps) {
@@ -23,7 +24,7 @@ export function AppLayout({ children }: AppLayoutProps) {
           onCityChange={setSelectedCity}
         />
         <main className="flex-1 p-4 lg:p-8 max-w-7xl mx-auto w-full">
-          {children}
+          {children || <Outlet />}
         </main>
       </div>
     </div>

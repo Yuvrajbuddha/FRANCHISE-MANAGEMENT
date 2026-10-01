@@ -3,7 +3,8 @@ import cors from "cors";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import { createServer as createViteServer } from "vite";
-import { DEMO_USERS, signAuthToken, verifyAuthToken, ROLE_PERMISSIONS } from "./src/lib/auth";
+import { DEMO_USERS, ROLE_PERMISSIONS } from "./src/lib/auth-constants";
+import { signAuthToken, verifyAuthToken } from "./src/lib/server-auth";
 import { requireAuth, requireRole, requireOutletAccess, AuthenticatedRequest } from "./src/middleware/auth";
 
 dotenv.config();
@@ -290,6 +291,11 @@ app.get("/api/health", (req, res) => {
 });
 
 async function startServer() {
+  // If running in Vercel serverless environment, do not start local HTTP listener
+  if (process.env.VERCEL === "1") {
+    return;
+  }
+
   const isDev = process.env.NODE_ENV !== "production";
 
   if (isDev) {
@@ -311,3 +317,6 @@ async function startServer() {
 }
 
 startServer();
+
+export default app;
+export { app };

@@ -1,0 +1,526 @@
+// Prisma Schema for Franchise Management & Compliance Monitoring SaaS
+// Supports the primary enterprise supply & operations flow:
+// COMPANY -> SUPPLY -> OUTLET -> INVENTORY -> SALES
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ==========================================
+// ENUMS
+// ==========================================
+
+enum Role {
+  ADMIN
+  OWNER
+  FRANCHISE
+  OFFICER
+}
+
+enum OperatingModel {
+  COCO // Company-Owned Company-Operated
+  FOCO // Franchisee-Owned Company-Operated
+}
+
+enum OutletStatus {
+  ACTIVE
+  INACTIVE
+  UNDER_REVIEW
+  PROBATION
+}
+
+enum SupplyStatus {
+  DISPATCHED
+  IN_TRANSIT
+  RECEIVED
+  RETURNED
+}
+
+enum InventoryReviewStatus {
+  PENDING
+  VERIFIED
+  DISCREPANCY_FLAGGED
+  RESOLVED
+}
+
+enum ComplianceStatus {
+  OPEN
+  UNDER_REVIEW
+  VERIFIED
+  REJECTED
+  RESOLVED
+}
+
+enum ViolationCategory {
+  HYGIENE
+  SERVICE_QUALITY
+  OPERATIONAL_STANDARDS
+  STAFF_COMPLIANCE
+  SAFETY_CHECKS
+  STORE_CLEANLINESS
+  PROCESS_ADHERENCE
+}
+
+enum SeverityLevel {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum OfficerVerificationStatus {
+  PENDING
+  CONFIRMED
+  REJECTED
+  MODIFIED
+}
+
+enum ComplaintCategory {
+  HYGIENE
+  FOOD_QUALITY
+  SERVICE
+  BILLING
+  STAFF_BEHAVIOR
+  DELAY
+  OTHER
+}
+
+enum ResolutionStatus {
+  OPEN
+  UNDER_INVESTIGATION
+  RESOLVED
+  DISMISSED
+}
+
+enum RiskLevel {
+  LOW        // 0-20
+  MODERATE   // 21-40
+  ELEVATED   // 41-60
+  HIGH       // 61-80
+  CRITICAL   // 81-100
+}
+
+enum CorrectiveActionStatus {
+  OPEN
+  IN_PROGRESS
+  PENDING_VERIFICATION
+  COMPLETED
+  CLOSED
+  OVERDUE
+}
+
+enum AlertType {
+  SALES_ANOMALY
+  INVENTORY_MISMATCH
+  COMPLIANCE_VIOLATION
+  CCTV_REVIEW_REQUIRED
+  UNRESOLVED_ACTION
+  PERFORMANCE_DROP
+  HIGH_COMPLAINT_VOLUME
+}
+
+enum AlertSeverity {
+  LOW
+  MODERATE
+  ELEVATED
+  HIGH
+  CRITICAL
+}
+
+enum AlertStatus {
+  ACTIVE
+  ACKNOWLEDGED
+  RESOLVED
+  DISMISSED
+}
+
+// ==========================================
+// MODELS
+// ==========================================
+
+// 1. User & Authentication
+model User {
+  id             String    @id @default(uuid())
+  email          String    @unique
+  name           String
+  passwordHash   String?
+  role           Role      @default(OFFICER)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  // Relationships
+  assignedOutlets     Outlet[]
+  inspections         ComplianceInspection[]
+  verifiedEvidence    Evidence[]
+  assignedActions     CorrectiveAction[]     @relation("AssignedToUser")
+  verifiedActions     CorrectiveAction[]     @relation("VerifiedByUser")
+  auditLogs           AuditLog[]
+
+  @@index([role])
+}
+
+// 2. Company (Franchisor Parent Entity)
+model Company {
+  id                 String    @id @default(uuid())
+  name               String
+  legalName          String?
+  registrationNumber String?
+  gstNumber          String?
+  email              String?
+  phone              String?
+  address            String?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  // Relationships
+  outlets            Outlet[]
+  products           Product[]
+  supplies           Supply[]
+}
+
+// 3. Outlet (Franchise Operating Unit)
+model Outlet {
+  id                 String         @id @default(uuid())
+  outletId           String         @unique // e.g. "OUT-042"
+  name               String
+  city               String
+  operatingModel     OperatingModel // COCO or FOCO
+  status             OutletStatus   @default(ACTIVE)
+  address            String?
+  phone              String?
+  latitude           Float?
+  longitude          Float?
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime       @updatedAt
+
+  // Foreign keys
+  companyId          String
+  company            Company        @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  assignedUserId     String?
+  assignedUser       User?          @relation(fields: [assignedUserId], references: [id], onDelete: SetNull)
+
+  // Relationships
+  supplies           Supply[]
+  inventory          Inventory[]
+  sales              Sale[]
+  inspections        ComplianceInspection[]
+  evidence           Evidence[]
+  complaints         Complaint[]
+  riskAssessments    RiskAssessment[]
+  correctiveActions  CorrectiveAction[]
+  alerts             Alert[]
+
+  @@index([city])
+  @@index([operatingModel])
+  @@index([status])
+  @@index([companyId])
+}
+
+// 4. Product (Inventory & Sales Catalog)
+model Product {
+  id                 String    @id @default(uuid())
+  productId          String    @unique // e.g. "PRD-101"
+  productName        String
+  category           String
+  unit               String    // "kg", "units", "litres", "cartons"
+  unitCost           Float     @default(0)
+  sellingPrice       Float     @default(0)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  // Foreign keys
+  companyId          String
+  company            Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+
+  // Relationships
+  supplies           Supply[]
+  inventory          Inventory[]
+  sales              Sale[]
+
+  @@index([category])
+  @@index([companyId])
+}
+
+// 5. Supply (Company -> Supply -> Outlet)
+model Supply {
+  id                 String       @id @default(uuid())
+  supplyNumber       String       @unique // e.g. "SUP-2026-001"
+  quantity           Float
+  batch              String
+  supplyDate         DateTime
+  value              Float        // Invoiced delivery value
+  status             SupplyStatus @default(RECEIVED)
+  notes              String?
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+
+  // Foreign keys
+  companyId          String
+  company            Company      @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  outletId           String
+  outlet             Outlet       @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  productId          String
+  product            Product      @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([outletId])
+  @@index([productId])
+  @@index([companyId])
+  @@index([supplyDate])
+}
+
+// 6. Inventory (Expected = Opening + Supply - Sales)
+model Inventory {
+  id                  String                @id @default(uuid())
+  periodDate          DateTime              // Reconciliation accounting period
+  openingStock        Float
+  receivedStock       Float                 // Directly derived from Supply batch receipts
+  soldQuantity        Float                 // Recorded aggregate sales in period
+  closingStock        Float                 // Expected: Opening + Received - Sold
+  actualPhysicalStock Float                 // Physical audit count
+  variance            Float                 // Expected Closing - Actual Physical
+  variancePercentage  Float                 @default(0)
+  reviewStatus        InventoryReviewStatus @default(PENDING)
+  notes               String?
+  createdAt           DateTime              @default(now())
+  updatedAt           DateTime              @updatedAt
+
+  // Foreign keys
+  outletId            String
+  outlet              Outlet                @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  productId           String
+  product             Product               @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([outletId])
+  @@index([productId])
+  @@index([periodDate])
+  @@index([reviewStatus])
+}
+
+// 7. Sale (Recorded Sales Transactions)
+model Sale {
+  id                 String    @id @default(uuid())
+  saleId             String    @unique // e.g. "SLS-2026-9041"
+  quantity           Float
+  unitPrice          Float
+  revenue            Float
+  date               DateTime
+  paymentMethod      String?   // "UPI", "CARD", "CASH"
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  // Foreign keys
+  outletId           String
+  outlet             Outlet    @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  productId          String
+  product            Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([outletId])
+  @@index([productId])
+  @@index([date])
+}
+
+// 8. Compliance Inspection
+model ComplianceInspection {
+  id                 String             @id @default(uuid())
+  inspectionNumber   String             @unique // e.g. "INS-2026-081"
+  inspectionDate     DateTime
+  overallScore       Float              @default(100) // 0-100 scale
+  status             ComplianceStatus   @default(OPEN)
+  notes              String?
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  // Foreign keys
+  outletId           String
+  outlet             Outlet             @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  reviewerId         String
+  reviewer           User               @relation(fields: [reviewerId], references: [id])
+
+  // Relationships
+  observations       ComplianceObservation[]
+
+  @@index([outletId])
+  @@index([reviewerId])
+  @@index([inspectionDate])
+  @@index([status])
+}
+
+// 9. Compliance Observation
+model ComplianceObservation {
+  id                 String            @id @default(uuid())
+  violationCategory  ViolationCategory
+  description        String
+  severity           SeverityLevel     @default(MEDIUM)
+  reviewerNotes      String?
+  status             ComplianceStatus  @default(UNDER_REVIEW)
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  // Foreign keys
+  inspectionId       String
+  inspection         ComplianceInspection @relation(fields: [inspectionId], references: [id], onDelete: Cascade)
+  evidenceId         String?
+  evidence           Evidence?            @relation(fields: [evidenceId], references: [id], onDelete: SetNull)
+
+  // Relationships
+  correctiveActions  CorrectiveAction[]
+
+  @@index([inspectionId])
+  @@index([violationCategory])
+  @@index([severity])
+  @@index([status])
+}
+
+// 10. Evidence (CCTV Video & Frame Extraction with AI-Assisted Verification)
+model Evidence {
+  id                       String                    @id @default(uuid())
+  evidenceId               String                    @unique // e.g. "EVD-CCTV-042"
+  videoReference           String?                   // URI / storage pointer
+  frameReference           String?                   // Representative extracted frame URI
+  timestamp                String                    // Extracted timestamp (e.g. "01:45")
+  aiObservation            String                    // AI observational hint (not a final verdict)
+  aiConfidence             Float?
+  officerVerificationStatus OfficerVerificationStatus @default(PENDING) // Human-in-the-Loop checkpoint
+  officerNotes             String?
+  verifiedAt               DateTime?
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
+
+  // Foreign keys
+  outletId                 String
+  outlet                   Outlet                    @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  verifiedById             String?
+  verifiedBy               User?                     @relation(fields: [verifiedById], references: [id], onDelete: SetNull)
+
+  // Relationships
+  complianceObservations   ComplianceObservation[]
+
+  @@index([outletId])
+  @@index([officerVerificationStatus])
+  @@index([createdAt])
+}
+
+// 11. Complaint (Customer Service Registry)
+model Complaint {
+  id                 String            @id @default(uuid())
+  complaintNumber    String            @unique // e.g. "CMP-2026-014"
+  category           ComplaintCategory
+  description        String
+  severity           SeverityLevel     @default(MEDIUM)
+  date               DateTime
+  customerContact    String?
+  resolutionStatus   ResolutionStatus  @default(OPEN)
+  resolutionNotes    String?
+  resolvedAt         DateTime?
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
+
+  // Foreign keys
+  outletId           String
+  outlet             Outlet            @relation(fields: [outletId], references: [id], onDelete: Cascade)
+
+  @@index([outletId])
+  @@index([category])
+  @@index([severity])
+  @@index([resolutionStatus])
+  @@index([date])
+}
+
+// 12. Risk Assessment (Explainable Risk Engine Outputs: 0-100)
+model RiskAssessment {
+  id                 String    @id @default(uuid())
+  riskScore          Float     // Calculated 0-100 using deterministic business logic
+  riskLevel          RiskLevel
+  componentScores    String    // JSON: { salesScore, complianceScore, complaintScore, evidenceScore, operationalScore, inventoryScore }
+  riskFactors        String    // JSON: Detailed factor breakdown
+  explanation        String    // Human-readable explainable rationale
+  date               DateTime
+  previousScore      Float?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  // Foreign keys
+  outletId           String
+  outlet             Outlet    @relation(fields: [outletId], references: [id], onDelete: Cascade)
+
+  @@index([outletId])
+  @@index([riskLevel])
+  @@index([date])
+}
+
+// 13. Corrective Action (Closed-Loop CAPA)
+model CorrectiveAction {
+  id                    String                 @id @default(uuid())
+  actionId              String                 @unique // e.g. "CAPA-2026-009"
+  issue                 String
+  requiredAction        String
+  assignedPerson        String
+  deadline              DateTime
+  status                CorrectiveActionStatus @default(OPEN)
+  verification          String?
+  verifiedAt            DateTime?
+  resolutionEvidenceUrl String?
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+
+  // Foreign keys
+  outletId              String
+  outlet                Outlet                 @relation(fields: [outletId], references: [id], onDelete: Cascade)
+  observationId         String?
+  observation           ComplianceObservation? @relation(fields: [observationId], references: [id], onDelete: SetNull)
+  assignedUserId        String?
+  assignedUser          User?                  @relation("AssignedToUser", fields: [assignedUserId], references: [id], onDelete: SetNull)
+  verifiedById          String?
+  verifiedBy            User?                  @relation("VerifiedByUser", fields: [verifiedById], references: [id], onDelete: SetNull)
+
+  @@index([outletId])
+  @@index([status])
+  @@index([deadline])
+}
+
+// 14. Alert (Multi-Tier Escalation Alerts)
+model Alert {
+  id                 String        @id @default(uuid())
+  alertId            String        @unique // e.g. "ALT-2026-031"
+  type               AlertType
+  severity           AlertSeverity @default(MODERATE)
+  message            String
+  status             AlertStatus   @default(ACTIVE)
+  createdAt          DateTime      @default(now())
+  resolvedAt         DateTime?
+
+  // Foreign keys
+  outletId           String
+  outlet             Outlet        @relation(fields: [outletId], references: [id], onDelete: Cascade)
+
+  @@index([outletId])
+  @@index([type])
+  @@index([severity])
+  @@index([status])
+  @@index([createdAt])
+}
+
+// 15. Audit Log (Traceability & Immutable Event Records)
+model AuditLog {
+  id                 String    @id @default(uuid())
+  action             String    // e.g. "CONFIRM_OBSERVATION", "RECONCILE_INVENTORY"
+  entity             String    // e.g. "Evidence", "ComplianceObservation", "Inventory"
+  entityId           String
+  details            String?   // JSON structured event metadata
+  ipAddress          String?
+  timestamp          DateTime  @default(now())
+
+  // Foreign keys
+  userId             String?
+  user               User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId])
+  @@index([entity])
+  @@index([entityId])
+  @@index([timestamp])
+}

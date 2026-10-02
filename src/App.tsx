@@ -140,7 +140,7 @@ export default function App() {
           <Route
             path="/corrective-actions"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
                 <CorrectiveActionsPage />
               </ProtectedRoute>
             }

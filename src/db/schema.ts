@@ -149,14 +149,49 @@ export const outletAlerts = pgTable("outlet_alerts", {
 // 8. Corrective Actions (CAPA) Table
 export const outletCorrectiveActions = pgTable("outlet_corrective_actions", {
   id: serial("id").primaryKey(),
-  actionId: text("action_id").notNull().unique(),
+  actionId: text("action_id").notNull().unique(), // e.g. CAPA-2026-042-01
   outletId: text("outlet_id").notNull().references(() => outlets.outletId),
-  title: text("title").notNull(),
-  assignedTo: text("assigned_to").notNull(),
-  dueDate: text("due_date").notNull(),
-  priority: text("priority").notNull(),
-  status: text("status").notNull().default("Pending"), // 'Pending' | 'In Progress' | 'Verified & Closed'
+  issue: text("issue").notNull(),
+  requiredAction: text("required_action").notNull(),
+  assignedPerson: text("assigned_person").notNull(),
+  deadline: text("deadline").notNull(), // YYYY-MM-DD
+  status: text("status").notNull().default("OPEN"), // 'OPEN' | 'IN_PROGRESS' | 'PENDING_VERIFICATION' | 'COMPLETED' | 'CLOSED' | 'OVERDUE'
+  currentStage: text("current_stage").notNull().default("Corrective Action Assigned"),
+  priority: text("priority").notNull().default("HIGH"), // 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL'
+  category: text("category").notNull().default("Operational Compliance"),
+  // Evidence details
+  evidence: text("evidence"), // Evidence notes / file name / reference URL
+  evidenceSubmittedBy: text("evidence_submitted_by"),
+  evidenceSubmittedAt: text("evidence_submitted_at"),
+  // Verification details
+  verificationNotes: text("verification_notes"),
+  verifiedBy: text("verified_by"),
+  verifiedAt: text("verified_at"),
+  verificationDecision: text("verification_decision"), // 'APPROVED' | 'REJECTED' | 'PENDING'
+  // Legacy / convenience fields
+  title: text("title").notNull().default("Corrective Action"),
+  assignedTo: text("assigned_to").notNull().default("Store Manager"),
+  dueDate: text("due_date").notNull().default("2026-10-15"),
   resolutionNotes: text("resolution_notes"),
+  inspectionId: text("inspection_id"),
+  createdBy: text("created_by").notNull().default("Compliance Officer"),
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// 8b. Corrective Action Audit Trail / History Table
+export const correctiveActionHistory = pgTable("corrective_action_history", {
+  id: serial("id").primaryKey(),
+  actionId: text("action_id").notNull(),
+  outletId: text("outlet_id").notNull(),
+  previousStatus: text("previous_status"),
+  newStatus: text("new_status").notNull(),
+  stage: text("stage").notNull(),
+  performedBy: text("performed_by").notNull(),
+  remarks: text("remarks").notNull(),
+  evidenceDetails: text("evidence_details"),
+  timestamp: text("timestamp").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
 });
 
 // 9. Audit History Table

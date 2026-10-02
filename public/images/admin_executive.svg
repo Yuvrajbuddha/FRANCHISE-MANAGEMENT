@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="100%" height="100%">
+  <defs>
+    <linearGradient id="adminBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#31104b" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="purpleCard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#581c87" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0.95" />
+    </linearGradient>
+  </defs>
+
+  <rect width="640" height="360" fill="url(#adminBg)" />
+
+  <!-- Security Shield & Database Cluster -->
+  <g transform="translate(60, 50)">
+    <rect x="0" y="0" width="230" height="160" rx="8" fill="url(#purpleCard)" stroke="#a855f7" stroke-width="1.5" />
+    <text x="14" y="24" fill="#faf5ff" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">RBAC & CLOUD SQL</text>
+    <text x="14" y="38" fill="#e9d5ff" font-family="system-ui, sans-serif" font-size="8">PostgreSQL Partitioning & Audit Logs</text>
+
+    <!-- Cluster nodes -->
+    <g transform="translate(14, 52)" font-family="system-ui, sans-serif" font-size="8" fill="#f3e8ff">
+      <rect x="0" y="0" width="195" height="26" rx="4" fill="#3b0764" />
+      <circle cx="12" cy="13" r="4" fill="#10b981" />
+      <text x="24" y="16" font-weight="bold">Master Cloud SQL DB: Primary Node</text>
+      
+      <rect x="0" y="32" width="195" height="26" rx="4" fill="#3b0764" />
+      <circle cx="12" cy="45" r="4" fill="#a855f7" />
+      <text x="24" y="48" font-weight="bold">Multi-Tenant Tenant Isolation: ACTIVE</text>
+
+      <rect x="0" y="64" width="195" height="26" rx="4" fill="#3b0764" />
+      <circle cx="12" cy="77" r="4" fill="#38bdf8" />
+      <text x="24" y="80" font-weight="bold">JWT Security: HS256 Signed (7d TTL)</text>
+    </g>
+  </g>
+
+  <!-- Right: Architecture Matrix -->
+  <g transform="translate(350, 50)">
+    <rect x="0" y="0" width="230" height="160" rx="8" fill="url(#purpleCard)" stroke="#c084fc" stroke-width="1.5" />
+    <text x="14" y="24" fill="#faf5ff" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">ENTERPRISE SYSTEM STATS</text>
+    <text x="14" y="38" fill="#e9d5ff" font-family="system-ui, sans-serif" font-size="8">Statutory Uptime: 99.99% SLA</text>
+
+    <g transform="translate(14, 55)" font-family="system-ui, sans-serif" font-size="9" fill="#f3e8ff">
+      <text x="0" y="12">148 Monitored Outlets Network-Wide</text>
+      <text x="0" y="32">10 Instant Replicated Store Databases</text>
+      <text x="0" y="52">Deterministic Scoring Engine v2.4</text>
+      <text x="0" y="72">Automatic Overdue SLA Escalation Active</text>
+    </g>
+  </g>
+
+  <!-- Pill Header -->
+  <g transform="translate(200, 16)">
+    <rect x="0" y="0" width="240" height="28" rx="14" fill="#4c1d95" stroke="#a855f7" stroke-width="1" />
+    <circle cx="16" cy="14" r="5" fill="#c084fc" />
+    <text x="30" y="18" fill="#faf5ff" font-family="system-ui, sans-serif" font-size="10" font-weight="bold">SYSTEM ADMINISTRATOR & IT</text>
+  </g>
+</svg>

@@ -1,0 +1,128 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" width="100%" height="100%">
+  <defs>
+    <linearGradient id="officerBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#451a03" />
+      <stop offset="50%" stop-color="#1e1b4b" />
+      <stop offset="100%" stop-color="#0f172a" />
+    </linearGradient>
+    <linearGradient id="amberCard" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#78350f" stop-opacity="0.85" />
+      <stop offset="100%" stop-color="#1e1b4b" stop-opacity="0.95" />
+    </linearGradient>
+    <filter id="amberGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="6" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="640" height="360" fill="url(#officerBg)" />
+
+  <!-- Surveillance Grid Lines -->
+  <g stroke="#d97706" stroke-width="0.5" stroke-dasharray="3,3" opacity="0.3">
+    <circle cx="320" cy="180" r="80" fill="none" />
+    <circle cx="320" cy="180" r="140" fill="none" />
+    <line x1="320" y1="20" x2="320" y2="340" />
+    <line x1="160" y1="180" x2="480" y2="180" />
+  </g>
+
+  <!-- Left: AI Vision Surveillance & CCTV Multi-Feed -->
+  <g transform="translate(40, 50)">
+    <rect x="0" y="0" width="230" height="160" rx="8" fill="url(#amberCard)" stroke="#f59e0b" stroke-width="1.5" />
+    
+    <!-- Top Bar -->
+    <rect x="12" y="12" width="70" height="6" rx="3" fill="#fbbf24" />
+    <text x="12" y="34" fill="#fef3c7" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">AI VISION SURVEILLANCE</text>
+    <rect x="160" y="12" width="58" height="16" rx="4" fill="#92400e" />
+    <circle cx="170" cy="20" r="3" fill="#ef4444" />
+    <text x="193" y="23" fill="#fef3c7" font-family="system-ui, sans-serif" font-size="8" font-weight="bold" text-anchor="middle">REC • LIVE</text>
+
+    <!-- Simulated CCTV Viewfinder -->
+    <rect x="12" y="44" width="206" height="102" rx="4" fill="#0f172a" stroke="#78350f" stroke-width="1" />
+    
+    <!-- Kitchen assembly line graphic inside CCTV -->
+    <rect x="24" y="90" width="182" height="40" fill="#1e293b" />
+    <line x1="24" y1="90" x2="206" y2="90" stroke="#334155" stroke-width="1.5" />
+
+    <!-- AI Bounding Box 1: Apron & Hairnet Compliant -->
+    <rect x="40" y="55" width="46" height="60" fill="none" stroke="#22c55e" stroke-width="1.5" stroke-dasharray="3,1" />
+    <rect x="40" y="50" width="46" height="10" fill="#15803d" />
+    <text x="63" y="58" fill="#dcfce7" font-family="system-ui, sans-serif" font-size="6" font-weight="bold" text-anchor="middle">PPE OK 99%</text>
+
+    <!-- AI Bounding Box 2: Prep Sanitization Notice -->
+    <rect x="135" y="65" width="55" height="50" fill="none" stroke="#f59e0b" stroke-width="1.5" />
+    <rect x="135" y="60" width="55" height="10" fill="#b45309" />
+    <text x="162" y="68" fill="#fef3c7" font-family="system-ui, sans-serif" font-size="6" font-weight="bold" text-anchor="middle">SPOT CHECK</text>
+
+    <!-- Crosshair Center -->
+    <circle cx="115" cy="95" r="8" fill="none" stroke="#f59e0b" stroke-width="1" opacity="0.6" />
+  </g>
+
+  <!-- Right: Digital Audit Tablet Checklist -->
+  <g transform="translate(370, 50)">
+    <rect x="0" y="0" width="230" height="160" rx="8" fill="url(#amberCard)" stroke="#f59e0b" stroke-width="1.5" />
+    <text x="14" y="24" fill="#fef3c7" font-family="system-ui, sans-serif" font-size="11" font-weight="bold">STATUTORY AUDIT DOSSIER</text>
+    <text x="14" y="38" fill="#fde68a" font-family="system-ui, sans-serif" font-size="8">Form: QSR-SOP-2026-REV3</text>
+
+    <!-- Checklist rows -->
+    <g transform="translate(14, 48)" font-family="system-ui, sans-serif" font-size="9" fill="#fef3c7">
+      <!-- Item 1 -->
+      <circle cx="8" cy="8" r="7" fill="#15803d" />
+      <path d="M 5 8 L 7 10 L 11 5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" fill="none" />
+      <text x="22" y="11">Double-Bag Anti-Tamper Seals</text>
+
+      <!-- Item 2 -->
+      <circle cx="8" cy="28" r="7" fill="#15803d" />
+      <path d="M 5 28 L 7 30 L 11 25" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" fill="none" />
+      <text x="22" y="31">Cook-To-Order Internal Probe Temp</text>
+
+      <!-- Item 3 -->
+      <circle cx="8" cy="48" r="7" fill="#b45309" />
+      <text x="8" y="52" fill="#ffffff" font-size="10" font-weight="bold" text-anchor="middle">!</text>
+      <text x="22" y="51" fill="#fde68a">Prep Line Handwash Station Refill</text>
+
+      <!-- Item 4 -->
+      <circle cx="8" cy="68" r="7" fill="#15803d" />
+      <path d="M 5 68 L 7 70 L 11 65" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" fill="none" />
+      <text x="22" y="71">Pest Management Exterminator Stamp</text>
+    </g>
+
+    <!-- Score Tally Footer -->
+    <rect x="14" y="132" width="202" height="18" rx="4" fill="#78350f" />
+    <text x="22" y="145" fill="#fef3c7" font-family="system-ui, sans-serif" font-size="9" font-weight="bold">AUDIT SCORE: 92/100</text>
+    <rect x="156" y="135" width="54" height="12" rx="3" fill="#15803d" />
+    <text x="183" y="144" fill="#dcfce7" font-family="system-ui, sans-serif" font-size="8" font-weight="bold" text-anchor="middle">PASSED</text>
+  </g>
+
+  <!-- Bottom: Closed-Loop CAPA Remediation Stamp -->
+  <g transform="translate(180, 240)">
+    <rect x="0" y="0" width="280" height="75" rx="10" fill="#1e1b4b" stroke="#818cf8" stroke-width="1" />
+    <text x="16" y="24" fill="#c7d2fe" font-family="system-ui, sans-serif" font-size="10" font-weight="bold">CLOSED-LOOP REMEDIATION (CAPA)</text>
+    <text x="16" y="38" fill="#94a3b8" font-family="system-ui, sans-serif" font-size="8">Issue Detected → Action Assigned → Evidence Verified → Closed</text>
+    
+    <!-- Mini Flow Stepper -->
+    <g transform="translate(16, 48)">
+      <circle cx="10" cy="10" r="8" fill="#4338ca" />
+      <text x="10" y="13" fill="#e0e7ff" font-family="system-ui, sans-serif" font-size="8" font-weight="bold" text-anchor="middle">1</text>
+      <line x1="18" y1="10" x2="68" y2="10" stroke="#6366f1" stroke-width="1.5" />
+      
+      <circle cx="76" cy="10" r="8" fill="#4338ca" />
+      <text x="76" y="13" fill="#e0e7ff" font-family="system-ui, sans-serif" font-size="8" font-weight="bold" text-anchor="middle">2</text>
+      <line x1="84" y1="10" x2="134" y2="10" stroke="#6366f1" stroke-width="1.5" />
+      
+      <circle cx="142" cy="10" r="8" fill="#4338ca" />
+      <text x="142" y="13" fill="#e0e7ff" font-family="system-ui, sans-serif" font-size="8" font-weight="bold" text-anchor="middle">3</text>
+      <line x1="150" y1="10" x2="200" y2="10" stroke="#10b981" stroke-width="1.5" />
+
+      <circle cx="208" cy="10" r="8" fill="#10b981" />
+      <text x="208" y="13" fill="#ffffff" font-family="system-ui, sans-serif" font-size="8" font-weight="bold" text-anchor="middle">✓</text>
+    </g>
+  </g>
+
+  <!-- Officer Pill Overlay -->
+  <g transform="translate(210, 16)">
+    <rect x="0" y="0" width="220" height="28" rx="14" fill="#78350f" stroke="#f59e0b" stroke-width="1" />
+    <circle cx="16" cy="14" r="5" fill="#fbbf24" />
+    <text x="30" y="18" fill="#fef3c7" font-family="system-ui, sans-serif" font-size="10" font-weight="bold">QUALITY & COMPLIANCE OFFICER</text>
+  </g>
+</svg>

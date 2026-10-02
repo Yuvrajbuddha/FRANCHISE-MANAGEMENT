@@ -4,12 +4,14 @@ import { AuthProvider } from "@/lib/AuthContext";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import LoginPage from "@/app/login/LoginPage";
+import StoreLoginPage from "@/app/login/StoreLoginPage";
 import { DashboardPlaceholder } from "@/app/dashboard/DashboardPlaceholder";
 import OutletsPage from "@/app/outlets/OutletsPage";
 import OutletDetailPage from "@/app/outlets/OutletDetailPage";
 import SalesPage from "@/app/sales/SalesPage";
 import InventoryPage from "@/app/inventory/InventoryPage";
 import CompliancePage from "@/app/compliance/CompliancePage";
+import ComplianceDetailPage from "@/app/compliance/ComplianceDetailPage";
 import EvidencePage from "@/app/evidence/EvidencePage";
 import RiskPage from "@/app/risk/RiskPage";
 import AlertsPage from "@/app/alerts/AlertsPage";
@@ -21,8 +23,10 @@ export default function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* Public Login Route */}
+        {/* Public Login Routes */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/login/store" element={<StoreLoginPage />} />
+        <Route path="/store-login" element={<StoreLoginPage />} />
 
         {/* Protected Dashboard & Module Routes wrapped in AppLayout */}
         <Route element={<AppLayout />}>
@@ -68,7 +72,7 @@ export default function App() {
           <Route
             path="/inventory"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
                 <InventoryPage />
               </ProtectedRoute>
             }
@@ -86,15 +90,23 @@ export default function App() {
           <Route
             path="/compliance"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
                 <CompliancePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/compliance/:inspectionId"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+                <ComplianceDetailPage />
               </ProtectedRoute>
             }
           />
           <Route
             path="/evidence"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
                 <EvidencePage />
               </ProtectedRoute>
             }
@@ -102,7 +114,7 @@ export default function App() {
           <Route
             path="/risk"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
                 <RiskPage />
               </ProtectedRoute>
             }
@@ -110,7 +122,7 @@ export default function App() {
           <Route
             path="/alerts"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
                 <AlertsPage />
               </ProtectedRoute>
             }

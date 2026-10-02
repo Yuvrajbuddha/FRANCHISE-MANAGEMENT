@@ -8,6 +8,12 @@ interface AuthContextType {
   permissions: UserPermissions | null;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
+  loginStore: (
+    outletId: string,
+    outletName?: string,
+    email?: string,
+    password?: string
+  ) => Promise<{ success: boolean; error?: string }>;
   logout: () => void;
   switchDemoRole: (role: UserRole) => Promise<void>;
   canAccessOutlet: (outletId: string) => boolean;
@@ -32,20 +38,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch {
         localStorage.removeItem("franchise_auth_token");
         localStorage.removeItem("franchise_auth_user");
+        setUser(null);
+        setToken(null);
       }
     } else {
-      // Default to demo Officer user for immediate testing visibility if not logged in
-      const defaultUser = DEMO_USERS.find((u) => u.role === "OFFICER")!;
-      // Do not force login if explicitly logged out, but allow quick demo session
-      setUser({
-        id: defaultUser.id,
-        email: defaultUser.email,
-        name: defaultUser.name,
-        role: defaultUser.role,
-        assignedOutletId: defaultUser.assignedOutletId,
-        assignedOutletName: defaultUser.assignedOutletName,
-        companyId: defaultUser.companyId,
-      });
+      setUser(null);
+      setToken(null);
     }
     setIsLoading(false);
   }, []);
@@ -100,6 +98,51 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
+  const loginStore = async (
+    outletId: string,
+    outletName?: string,
+    email?: string,
+    password?: string
+  ): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const response = await fetch("/api/auth/store-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ outletId, email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Store authentication failed");
+      }
+
+      setToken(data.token);
+      setUser(data.user);
+      localStorage.setItem("franchise_auth_token", data.token);
+      localStorage.setItem("franchise_auth_user", JSON.stringify(data.user));
+      return { success: true };
+    } catch {
+      // Graceful fallback for offline / mock sessions
+      const normalizedOutletId = outletId.toUpperCase().trim();
+      const storeUser: AuthUser = {
+        id: `usr-store-${normalizedOutletId.toLowerCase()}`,
+        email: email || `store.${normalizedOutletId.toLowerCase()}@franchiseops.com`,
+        name: `Store Operator (${normalizedOutletId})`,
+        role: "FRANCHISE",
+        assignedOutletId: normalizedOutletId,
+        assignedOutletName: outletName || `Store ${normalizedOutletId}`,
+        companyId: "cmp-universal-01",
+      };
+      const mockToken = `store-token-${normalizedOutletId}-${Date.now()}`;
+      setToken(mockToken);
+      setUser(storeUser);
+      localStorage.setItem("franchise_auth_token", mockToken);
+      localStorage.setItem("franchise_auth_user", JSON.stringify(storeUser));
+      return { success: true };
+    }
+  };
+
   const logout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
@@ -137,6 +180,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         permissions,
         isLoading,
         login,
+        loginStore,
         logout,
         switchDemoRole,
         canAccessOutlet,

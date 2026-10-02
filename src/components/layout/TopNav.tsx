@@ -62,7 +62,7 @@ export function TopNav({
 
         <div className="flex items-center gap-2 text-xs">
           <Link to="/" className="font-semibold text-slate-900 dark:text-slate-100 hover:underline">
-            Aura Foods Enterprise
+            Franchise Performance & Compliance
           </Link>
           <span className="text-slate-400">/</span>
           <span className="text-slate-500 hidden sm:inline dark:text-slate-400">

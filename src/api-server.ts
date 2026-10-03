@@ -62,8 +62,8 @@ const OUTLETS_MOCK = [
     city: "Lucknow",
     operatingModel: "FOCO",
     status: "ACTIVE",
-    manager: "Yuvraj Buddha",
-    assignedUserEmail: "yuvraj.buddha@aurafoods.com",
+    manager: "Yuvraj Gupta",
+    assignedUserEmail: "yuvraj.gupta@aurafoods.com",
     monthlyRevenue: "₹58.4 Lakh",
     complianceScore: "74%",
     riskScore: 68,
@@ -126,7 +126,7 @@ apiRouter.post("/auth/login", (req, res) => {
   // Support both primary emails and legacy role aliases
   const emailAliases: Record<string, string> = {
     "owner@aurafoods.com": "yash.gupta@aurafoods.com",
-    "franchise.lucknow@aurafoods.com": "yuvraj.buddha@aurafoods.com",
+    "franchise.lucknow@aurafoods.com": "yuvraj.gupta@aurafoods.com",
     "officer.sen@aurafoods.com": "karan.singhal@aurafoods.com",
   };
 

@@ -98,8 +98,8 @@ export const DEMO_USERS: (AuthUser & { passwordHash: string })[] = [
   },
   {
     id: "usr-franchise-03",
-    email: "yuvraj.buddha@aurafoods.com",
-    name: "Yuvraj Buddha",
+    email: "yuvraj.gupta@aurafoods.com",
+    name: "Yuvraj Gupta",
     role: "FRANCHISE",
     assignedOutletId: "OUT-042",
     assignedOutletName: "Hazratganj Flagship (Lucknow)",

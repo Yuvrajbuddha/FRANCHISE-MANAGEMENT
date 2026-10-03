@@ -1023,7 +1023,7 @@ export default function CorrectiveActionsPage() {
                   <Input
                     value={newAssignedPerson}
                     onChange={(e) => setNewAssignedPerson(e.target.value)}
-                    placeholder="e.g. Vikram Malhotra (GM)"
+                    placeholder="e.g. Yuvraj Gupta (GM)"
                     className="text-xs h-9"
                     required
                   />

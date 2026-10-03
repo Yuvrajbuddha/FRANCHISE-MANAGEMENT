@@ -109,7 +109,7 @@ export async function seedInitialCorrectiveActions() {
       verifiedAt: null,
       verificationDecision: "PENDING" as const,
       inspectionId: "INS-2026-042",
-      createdBy: "Officer Ananya Roy",
+      createdBy: "Officer Yuvraj Buddha",
     },
     {
       actionId: "CAPA-2026-042-02",
@@ -130,7 +130,7 @@ export async function seedInitialCorrectiveActions() {
       verifiedAt: null,
       verificationDecision: null,
       inspectionId: "INS-2026-043",
-      createdBy: "Officer Ananya Roy",
+      createdBy: "Officer Yuvraj Buddha",
     },
     {
       actionId: "CAPA-2026-089-01",
@@ -189,11 +189,11 @@ export async function seedInitialCorrectiveActions() {
       evidenceSubmittedBy: "Amitabh Verma",
       evidenceSubmittedAt: "2026-09-26 09:15",
       verificationNotes: "Verified compliant during unannounced remote visual audit. Soap level at 100%.",
-      verifiedBy: "Officer Ananya Roy",
+      verifiedBy: "Officer Yuvraj Buddha",
       verifiedAt: "2026-09-26 14:00",
       verificationDecision: "APPROVED" as const,
       inspectionId: "INS-2026-019",
-      createdBy: "Officer Ananya Roy",
+      createdBy: "Officer Yuvraj Buddha",
     },
   ];
 

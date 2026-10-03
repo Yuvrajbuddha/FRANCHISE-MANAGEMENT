@@ -98,8 +98,8 @@ export const DEMO_USERS: (AuthUser & { passwordHash: string })[] = [
   },
   {
     id: "usr-franchise-03",
-    email: "yuvraj.gupta@aurafoods.com",
-    name: "Yuvraj Gupta",
+    email: "store.lucknow@aurafoods.com",
+    name: "Store GM (OUT-042)",
     role: "FRANCHISE",
     assignedOutletId: "OUT-042",
     assignedOutletName: "Hazratganj Flagship (Lucknow)",
@@ -108,8 +108,8 @@ export const DEMO_USERS: (AuthUser & { passwordHash: string })[] = [
   },
   {
     id: "usr-officer-04",
-    email: "karan.singhal@aurafoods.com",
-    name: "Karan Singhal",
+    email: "yuvraj.buddha@aurafoods.com",
+    name: "Yuvraj Buddha",
     role: "OFFICER",
     companyId: "cmp-aura-01",
     passwordHash: "officer123",

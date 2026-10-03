@@ -62,8 +62,8 @@ const OUTLETS_MOCK = [
     city: "Lucknow",
     operatingModel: "FOCO",
     status: "ACTIVE",
-    manager: "Yuvraj Gupta",
-    assignedUserEmail: "yuvraj.gupta@aurafoods.com",
+    manager: "Store Operator",
+    assignedUserEmail: "store.lucknow@aurafoods.com",
     monthlyRevenue: "₹58.4 Lakh",
     complianceScore: "74%",
     riskScore: 68,
@@ -126,8 +126,14 @@ apiRouter.post("/auth/login", (req, res) => {
   // Support both primary emails and legacy role aliases
   const emailAliases: Record<string, string> = {
     "owner@aurafoods.com": "yash.gupta@aurafoods.com",
-    "franchise.lucknow@aurafoods.com": "yuvraj.gupta@aurafoods.com",
-    "officer.sen@aurafoods.com": "karan.singhal@aurafoods.com",
+    "franchise.lucknow@aurafoods.com": "store.lucknow@aurafoods.com",
+    "store.lucknow@franchiseops.com": "store.lucknow@aurafoods.com",
+    "officer.sen@aurafoods.com": "yuvraj.buddha@aurafoods.com",
+    "officer@aurafoods.com": "yuvraj.buddha@aurafoods.com",
+    "karan.singhal@aurafoods.com": "yuvraj.buddha@aurafoods.com",
+    "ananya.roy@aurafoods.in": "yuvraj.buddha@aurafoods.com",
+    "ananya.roy@aurafoods.com": "yuvraj.buddha@aurafoods.com",
+    "yuvraj.gupta@aurafoods.com": "yuvraj.buddha@aurafoods.com",
   };
 
   const lookupEmail = emailAliases[normalizedEmail] || normalizedEmail;

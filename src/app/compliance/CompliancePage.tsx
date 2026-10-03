@@ -884,8 +884,8 @@ export default function CompliancePage() {
                     <option value="Sunil Kapoor (Regional Inspection Head)">
                       Sunil Kapoor (Regional Inspection Head)
                     </option>
-                    <option value="Ananya Roy (Senior Quality Auditor)">
-                      Ananya Roy (Senior Quality Auditor)
+                    <option value="Yuvraj Buddha (Senior Quality Auditor)">
+                      Yuvraj Buddha (Senior Quality Auditor)
                     </option>
                   </select>
                 </div>

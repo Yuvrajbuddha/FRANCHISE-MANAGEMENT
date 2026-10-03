@@ -39,7 +39,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Badge } from "@/components/ui/badge";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -137,16 +136,6 @@ export default function LoginPage() {
             <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             148 Store Nodes Active
           </span>
-          <span className="text-slate-700">•</span>
-          <span className="flex items-center gap-1.5 text-slate-300">
-            <Radio className="h-3.5 w-3.5 text-blue-400" />
-            Zero External Desk
-          </span>
-          <span className="text-slate-700">•</span>
-          <span className="flex items-center gap-1.5 text-slate-300">
-            <ShieldCheck className="h-3.5 w-3.5 text-purple-400" />
-            ISO 27001 Rely
-          </span>
         </div>
       </header>
 
@@ -213,7 +202,7 @@ export default function LoginPage() {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-3 gap-3.5">
-            {/* 1. Franchisee Owner Compact Button Card */}
+            {/* 1. Franchisee Compact Button Card */}
             <div className="p-3 rounded-lg border border-slate-800 bg-slate-950/80 hover:border-blue-500/60 transition-all flex flex-col justify-between gap-2.5 group">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
@@ -222,14 +211,11 @@ export default function LoginPage() {
                   </div>
                   <div>
                     <h4 className="text-xs font-bold text-white group-hover:text-blue-400 transition-colors">
-                      Franchisee Owner
+                      Franchisee
                     </h4>
                     <span className="text-[10px] text-slate-400 font-mono">Multi-Store P&L</span>
                   </div>
                 </div>
-                <Badge variant="outline" className="text-[9px] border-blue-500/30 text-blue-300 bg-blue-950/40">
-                  Owner
-                </Badge>
               </div>
 
               <div className="text-[10px] text-slate-400 flex items-center justify-between">
@@ -244,7 +230,7 @@ export default function LoginPage() {
                 disabled={isLoadingRole === "OWNER"}
                 onClick={() => handleQuickLogin("OWNER", "/")}
               >
-                {isLoadingRole === "OWNER" ? "Signing In..." : "Sign In as Owner"}
+                {isLoadingRole === "OWNER" ? "Signing In..." : "Sign In"}
                 <ArrowRight className="h-3 w-3" />
               </Button>
             </div>
@@ -263,39 +249,25 @@ export default function LoginPage() {
                     <span className="text-[10px] text-emerald-400 font-mono">OUT-042 Scoped</span>
                   </div>
                 </div>
-                <Badge variant="outline" className="text-[9px] border-emerald-500/30 text-emerald-300 bg-emerald-950/40">
-                  Isolated
-                </Badge>
               </div>
 
               <div className="text-[10px] text-slate-400 flex items-center justify-between">
-                <span>Yuvraj Gupta</span>
+                <span>Store Operations</span>
                 <span className="font-mono text-emerald-400">Store GM</span>
               </div>
 
-              <div className="flex gap-1.5">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="w-1/2 border-slate-700 bg-slate-800/80 hover:bg-slate-700 text-slate-200 text-xs h-7.5 cursor-pointer"
-                  disabled={isLoadingRole === "FRANCHISE"}
-                  onClick={() => handleQuickLogin("FRANCHISE", "/")}
-                >
-                  {isLoadingRole === "FRANCHISE" ? "..." : "1-Click"}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="default"
-                  className="w-1/2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs h-7.5 cursor-pointer shadow-sm gap-1"
-                  onClick={() => navigate("/login/store")}
-                >
-                  <span>Store</span>
-                  <ArrowRight className="h-3 w-3" />
-                </Button>
-              </div>
+              <Button
+                size="sm"
+                variant="default"
+                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs h-7.5 cursor-pointer shadow-sm gap-1"
+                onClick={() => navigate("/login/store")}
+              >
+                <span>Sign In as Store</span>
+                <ArrowRight className="h-3 w-3" />
+              </Button>
             </div>
 
-            {/* 3. Quality & Compliance Officer Compact Button Card */}
+            {/* 3. Quality & Compliance Compact Button Card */}
             <div className="p-3 rounded-lg border border-slate-800 bg-slate-950/80 hover:border-amber-500/60 transition-all flex flex-col justify-between gap-2.5 group">
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-2">
@@ -304,19 +276,16 @@ export default function LoginPage() {
                   </div>
                   <div>
                     <h4 className="text-xs font-bold text-white group-hover:text-amber-400 transition-colors">
-                      Officer
+                      Quality & Compliance
                     </h4>
                     <span className="text-[10px] text-slate-400 font-mono">Audit & CAPA</span>
                   </div>
                 </div>
-                <Badge variant="outline" className="text-[9px] border-amber-500/30 text-amber-300 bg-amber-950/40">
-                  Auditor
-                </Badge>
               </div>
 
               <div className="text-[10px] text-slate-400 flex items-center justify-between">
-                <span>Officer Ananya Roy</span>
-                <span className="font-mono text-amber-400">Lead Auditor</span>
+                <span>Officer Yuvraj Buddha</span>
+                <span className="font-mono text-amber-400">Compliance</span>
               </div>
 
               <Button
@@ -326,7 +295,7 @@ export default function LoginPage() {
                 disabled={isLoadingRole === "OFFICER"}
                 onClick={() => handleQuickLogin("OFFICER", "/compliance")}
               >
-                {isLoadingRole === "OFFICER" ? "Signing In..." : "Sign In as Auditor"}
+                {isLoadingRole === "OFFICER" ? "Signing In..." : "Sign In"}
                 <ArrowRight className="h-3 w-3" />
               </Button>
             </div>
@@ -358,7 +327,7 @@ export default function LoginPage() {
                     type="email"
                     value={manualEmail}
                     onChange={(e) => setManualEmail(e.target.value)}
-                    placeholder="e.g. ananya.roy@aurafoods.in"
+                    placeholder="e.g. yuvraj.buddha@aurafoods.com"
                     className="bg-slate-950 border-slate-800 text-white text-xs h-8"
                     required
                   />
@@ -392,13 +361,6 @@ export default function LoginPage() {
       {/* Footer */}
       <footer className="max-w-7xl mx-auto w-full pt-3 border-t border-slate-800/80 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2 backdrop-blur-xs">
         <span>© 2026 AI-Assisted Franchise Performance & Compliance Monitoring. Confidential & Proprietary.</span>
-        <div className="flex items-center gap-3 text-xs font-medium">
-          <span className="text-slate-300 font-semibold">Deterministic Audit Engine</span>
-          <span className="text-slate-700">•</span>
-          <span className="text-slate-300 font-semibold">Zero External Desk</span>
-          <span className="text-slate-700">•</span>
-          <span className="text-slate-300 font-semibold">ISO 27001 Rely</span>
-        </div>
       </footer>
     </div>
   );

@@ -312,15 +312,13 @@ export default function AlertsPage() {
       {/* Header and Scan Trigger */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              Alerts & Operational Prioritization Matrix
-            </h1>
-            <Badge variant="outline" className="font-mono text-xs">
-              PostgreSQL Active
-            </Badge>
-          </div>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#F59E0B] block mb-1">
+            Operational Prioritization
+          </span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">
+            Alerts & <span className="italic text-amber-400">Prioritization Matrix</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
             Automated anomaly detection across 8 operational streams with tiered priority escalation.
           </p>
         </div>

@@ -49,7 +49,7 @@ interface ReconciliationRecord {
 }
 
 const PRESET_ITEMS = [
-  { name: "Frozen Patty Premium (Veg/Non-Veg)", category: "Raw Meat & Proteins", unit: "kg" },
+  { name: "Crispy Herb Potato & Corn Patty (Pure Veg)", category: "Vegetarian Proteins & Dairy", unit: "kg" },
   { name: "Organic Brioche Buns (4-inch)", category: "Bakery & Breads", unit: "trays" },
   { name: "Signature Truffle Sauce", category: "Dressings & Condiments", unit: "bottles" },
   { name: "Sanitizer Solution Concentrate (FSSAI)", category: "Hygiene & Cleaning", unit: "liters" },
@@ -59,7 +59,7 @@ const PRESET_ITEMS = [
 
 const CATEGORIES = [
   "All Categories",
-  "Raw Meat & Proteins",
+  "Vegetarian Proteins & Dairy",
   "Bakery & Breads",
   "Dressings & Condiments",
   "Hygiene & Cleaning",
@@ -307,16 +307,14 @@ export default function InventoryPage() {
       {/* Header & Primary Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              Inventory & Stock-Sales Reconciliation
-            </h1>
-            <Badge variant="outline" className="font-mono text-xs">
-              PostgreSQL Reconciled
-            </Badge>
-          </div>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Automated deterministic calculation: <code className="font-mono text-indigo-600 dark:text-indigo-400 font-semibold">Expected Closing = Opening + Company Supply - Recorded Sales</code>.
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] block mb-1">
+            Supply & Stock Control
+          </span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">
+            Inventory & <span className="italic text-indigo-400">Stock-Sales Reconciliation</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+            Automated deterministic calculation: <code className="font-mono text-indigo-400 font-semibold">Expected Closing = Opening + Company Supply - Recorded Sales</code>.
           </p>
         </div>
 

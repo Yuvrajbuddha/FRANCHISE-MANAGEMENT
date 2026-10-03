@@ -318,15 +318,13 @@ export default function CorrectiveActionsPage() {
       {/* Header and Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              Corrective Action (CAPA) Lifecycle Loop
-            </h1>
-            <Badge variant="outline" className="font-mono text-xs">
-              Closed-Loop Remediation
-            </Badge>
-          </div>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#10B981] block mb-1">
+            Statutory Remediation Protocol
+          </span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">
+            Corrective Action (CAPA) <span className="italic text-emerald-400">Lifecycle Loop</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
             End-to-end statutory compliance remediation: Issue Detected → Action Assigned → Evidence Verification → Closed.
           </p>
         </div>

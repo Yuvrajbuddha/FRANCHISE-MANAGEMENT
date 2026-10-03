@@ -89,7 +89,7 @@ interface SaleRecord {
 
 const CATEGORIES = [
   "Burgers & Combos",
-  "Chicken & Buckets",
+  "Pure Veg Bowls & Platters",
   "Vegetarian Specials",
   "Sides & Fries",
   "Beverages & Shakes",
@@ -98,11 +98,11 @@ const CATEGORIES = [
 
 const PRESET_PRODUCTS = [
   { name: "Signature Truffle Burger Meal", category: "Burgers & Combos", price: 380 },
-  { name: "Crispy Chicken Zinger Box", category: "Chicken & Buckets", price: 420 },
+  { name: "Crispy Paneer Feast Box", category: "Pure Veg Bowls & Platters", price: 420 },
   { name: "Paneer Supreme Brioche Combo", category: "Vegetarian Specials", price: 360 },
   { name: "Peri Peri Crinkle Fries (L)", category: "Sides & Fries", price: 150 },
   { name: "Belgian Chocolate Thickshake", category: "Beverages & Shakes", price: 210 },
-  { name: "Smoky BBQ Wings (8 pcs)", category: "Chicken & Buckets", price: 290 },
+  { name: "Smoky Tandoori Soya Chaap (8 pcs)", category: "Pure Veg Bowls & Platters", price: 290 },
 ];
 
 export default function SalesPage() {
@@ -378,15 +378,13 @@ export default function SalesPage() {
       {/* Header & Primary Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              Sales Management & Revenue Intelligence
-            </h1>
-            <Badge variant="outline" className="font-mono text-xs">
-              PostgreSQL Persisted
-            </Badge>
-          </div>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] block mb-1">
+            Financial Reconciliation
+          </span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">
+            Sales Management & <span className="italic text-indigo-400">Revenue Intelligence</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
             Real-time daily transaction recording, revenue analytics, and cross-channel settlement.
           </p>
         </div>
@@ -843,7 +841,7 @@ export default function SalesPage() {
           <div className="flex items-center gap-2">
             <ShoppingBag className="h-4 w-4 text-indigo-600" />
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-              Verified Sales Ledger (PostgreSQL Live)
+              Verified Sales Ledger
             </h3>
           </div>
           <span className="text-xs text-slate-400 font-mono">

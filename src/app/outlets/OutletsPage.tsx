@@ -179,29 +179,16 @@ export default function OutletsPage() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              Outlet Registry & Operations
-            </h1>
-            <Badge variant="outline" className="font-mono text-xs">
-              PostgreSQL Live
-            </Badge>
-          </div>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] block mb-1">
+            Network Directory
+          </span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">
+            Outlet Registry & <span className="italic text-indigo-400">Operations</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400 mt-1">
             Real-time multi-unit franchise monitoring, operating models (COCO/FOCO), and deterministic compliance.
           </p>
         </div>
-
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={fetchOutlets}
-          disabled={loading}
-          className="gap-2 cursor-pointer text-xs self-start sm:self-auto"
-        >
-          <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
-          <span>Refresh Database</span>
-        </Button>
       </div>
 
       {/* Franchise User Scope Notice (Enforcing: A franchise user must only see their assigned outlet) */}
@@ -282,7 +269,7 @@ export default function OutletsPage() {
 
           {/* Active summary counts */}
           <div className="flex items-center justify-between text-xs text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-800">
-            <span>Showing {filteredOutlets.length} of {outlets.length} PostgreSQL outlets</span>
+            <span>Showing {filteredOutlets.length} of {outlets.length} outlets</span>
             {(selectedCity !== "All Cities" ||
               selectedModel !== "All Models" ||
               selectedStatus !== "All Statuses" ||
@@ -307,7 +294,7 @@ export default function OutletsPage() {
       {loading && (
         <div className="flex items-center justify-center py-16 text-slate-400 gap-3">
           <RefreshCw className="h-5 w-5 animate-spin text-indigo-600" />
-          <span className="text-sm">Fetching verified outlets from Cloud SQL PostgreSQL...</span>
+          <span className="text-sm">Fetching verified outlets...</span>
         </div>
       )}
 

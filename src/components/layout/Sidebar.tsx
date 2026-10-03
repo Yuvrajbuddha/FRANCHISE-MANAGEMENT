@@ -16,7 +16,6 @@ import {
   Building2,
   LogOut,
   UserCheck,
-  ArrowRightLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useAuth } from "@/lib/AuthContext";
@@ -39,7 +38,7 @@ interface NavGroup {
 export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?: () => void }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, logout, switchDemoRole } = useAuth();
+  const { user, logout } = useAuth();
 
   const userRole = user?.role || "OFFICER";
 
@@ -89,16 +88,16 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
       label: "Compliance & Risk",
       items: [
         {
-          title: "Compliance Hub",
+          title: "Officer Dashboard",
           href: "/compliance",
           icon: ShieldCheck,
           allowedRoles: ["ADMIN", "OWNER", "OFFICER"],
         },
         {
-          title: "CCTV Evidence",
+          title: "Store Evidence",
           href: "/evidence",
           icon: Video,
-          allowedRoles: ["ADMIN", "OWNER", "OFFICER"],
+          allowedRoles: ["ADMIN", "OWNER", "OFFICER", "FRANCHISE"],
         },
         {
           title: "Risk Intelligence",
@@ -174,35 +173,6 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
             <span className="text-[11px] text-slate-500 font-medium">
               Performance & Compliance
             </span>
-          </div>
-        </div>
-
-        {/* Quick Role Switcher Bar for Seamless Evaluation */}
-        <div className="border-b border-slate-100 bg-slate-50/80 px-3 py-2 text-[11px] dark:border-slate-800 dark:bg-slate-800/40">
-          <div className="flex items-center justify-between text-slate-500 mb-1">
-            <span className="font-semibold flex items-center gap-1">
-              <ArrowRightLeft className="h-3 w-3" /> Test Role:
-            </span>
-            <span className="font-mono text-[10px] uppercase font-bold text-slate-700">
-              {userRole}
-            </span>
-          </div>
-          <div className="grid grid-cols-4 gap-1">
-            {(["ADMIN", "OWNER", "FRANCHISE", "OFFICER"] as UserRole[]).map((r) => (
-              <button
-                key={r}
-                onClick={() => switchDemoRole(r)}
-                className={cn(
-                  "rounded px-1.5 py-0.5 text-[9px] font-bold transition-all cursor-pointer",
-                  userRole === r
-                    ? "bg-slate-900 text-white shadow-xs"
-                    : "bg-white text-slate-600 border border-slate-200 hover:bg-slate-100"
-                )}
-                title={`Switch to demo ${r}`}
-              >
-                {r.slice(0, 3)}
-              </button>
-            ))}
           </div>
         </div>
 

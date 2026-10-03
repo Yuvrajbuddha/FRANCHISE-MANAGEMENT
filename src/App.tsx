@@ -12,6 +12,7 @@ import SalesPage from "@/app/sales/SalesPage";
 import InventoryPage from "@/app/inventory/InventoryPage";
 import CompliancePage from "@/app/compliance/CompliancePage";
 import ComplianceDetailPage from "@/app/compliance/ComplianceDetailPage";
+import StoreEvidenceReviewPage from "@/app/compliance/StoreEvidenceReviewPage";
 import EvidencePage from "@/app/evidence/EvidencePage";
 import RiskPage from "@/app/risk/RiskPage";
 import AlertsPage from "@/app/alerts/AlertsPage";
@@ -92,6 +93,22 @@ export default function App() {
             element={
               <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
                 <CompliancePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/compliance/review/:storeId"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+                <StoreEvidenceReviewPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/store-verification/:storeId"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+                <StoreEvidenceReviewPage />
               </ProtectedRoute>
             }
           />

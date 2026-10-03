@@ -199,7 +199,7 @@ export default function ComplianceDetailPage() {
               <span>•</span>
               <span className="flex items-center gap-1">
                 <UserCheck className="h-3.5 w-3.5" />
-                Auditor: {inspection.inspectorName}
+                Officer: {inspection.inspectorName || "Quality & Compliance Officer"}
               </span>
             </div>
           </div>
@@ -239,7 +239,7 @@ export default function ComplianceDetailPage() {
                 <span>Evidence Attachment Section</span>
               </CardTitle>
               <CardDescription className="text-xs">
-                Auditor photographs, test strip swatch readings, and IoT telemetry records.
+                Quality Officer photographs, test strip swatch readings, and IoT telemetry records.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-xs">
@@ -261,7 +261,7 @@ export default function ComplianceDetailPage() {
                   </span>
                   <p className="text-slate-600 dark:text-slate-300 text-xs pt-1">
                     {inspection.evidenceDescription ||
-                      "Digital inspection photograph captured during auditor walkthrough. Tamper-proof hash stored in PostgreSQL audit log."}
+                      "Digital inspection photograph captured during officer walkthrough. Tamper-proof hash stored in PostgreSQL audit log."}
                   </p>
                 </div>
               </div>
@@ -355,7 +355,7 @@ export default function ComplianceDetailPage() {
                     onChange={(e) => setSelectedStatus(e.target.value)}
                     className="w-full h-8 rounded border border-slate-200 bg-white px-2.5 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800 cursor-pointer"
                   >
-                    {COMPLIANCE_STATUSES.map((st) => (
+                    {(COMPLIANCE_STATUSES as readonly string[]).map((st: string) => (
                       <option key={st} value={st}>
                         {st}
                       </option>
@@ -365,23 +365,11 @@ export default function ComplianceDetailPage() {
 
                 <div>
                   <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
-                    Assigned Reviewer
+                    Quality & Compliance Officer
                   </label>
-                  <select
-                    value={assignedReviewerInput}
-                    onChange={(e) => setAssignedReviewerInput(e.target.value)}
-                    className="w-full h-8 rounded border border-slate-200 bg-white px-2.5 text-xs dark:border-slate-700 dark:bg-slate-800 cursor-pointer"
-                  >
-                    <option value="Karan Singhal (Lead Compliance Officer)">
-                      Karan Singhal (Lead Compliance Officer)
-                    </option>
-                    <option value="Sunil Kapoor (Regional Inspection Head)">
-                      Sunil Kapoor (Regional Inspection Head)
-                    </option>
-                    <option value="Yuvraj Buddha (Senior Quality Auditor)">
-                      Yuvraj Buddha (Senior Quality Auditor)
-                    </option>
-                  </select>
+                  <div className="w-full h-8 rounded border border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/80 px-2.5 text-xs flex items-center text-slate-300 font-medium">
+                    Quality & Compliance Officer
+                  </div>
                 </div>
 
                 <div>
@@ -409,21 +397,21 @@ export default function ComplianceDetailPage() {
             </CardContent>
           </Card>
 
-          {/* Reviewer Details Card */}
+          {/* Officer Details Card */}
           <Card className="border-slate-200 dark:border-slate-800">
             <CardHeader className="pb-2">
               <CardTitle className="text-xs uppercase font-bold text-slate-400">
-                Auditor & Assignment
+                Quality & Compliance Officer
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2 text-xs">
               <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-400">Assigned Reviewer:</span>
-                <span className="font-medium">{inspection.assignedReviewer}</span>
+                <span className="text-slate-400">Verifying Officer:</span>
+                <span className="font-medium">{inspection.inspectorName || "Quality & Compliance Officer"}</span>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                <span className="text-slate-400">Field Inspector:</span>
-                <span className="font-medium">{inspection.inspectorName}</span>
+                <span className="text-slate-400">Officer Role:</span>
+                <span className="font-medium text-emerald-400">Quality & Compliance Officer</span>
               </div>
               <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
                 <span className="text-slate-400">Store Outlet:</span>

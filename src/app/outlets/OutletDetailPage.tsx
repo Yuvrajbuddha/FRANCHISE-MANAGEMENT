@@ -1024,7 +1024,7 @@ export default function OutletDetailPage() {
 
                     <p className="text-slate-800 dark:text-slate-200 font-medium">{h.summary}</p>
                     <div className="text-[11px] text-slate-400">
-                      Lead Auditor: <span className="text-slate-600 dark:text-slate-300 font-medium">{h.auditorName}</span>
+                      Inspecting Quality Officer: <span className="text-slate-600 dark:text-slate-300 font-medium">{h.auditorName}</span>
                     </div>
                   </div>
                 ))}

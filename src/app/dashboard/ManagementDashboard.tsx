@@ -31,7 +31,6 @@ import {
   Zap,
   Activity,
   Layers,
-  ChevronRight,
   Check,
   X,
 } from "lucide-react";
@@ -147,18 +146,17 @@ export function ManagementDashboard() {
 
   return (
     <div className="space-y-6">
-      {/* Top Header & Refresh */}
+      {/* Top Header & Export */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
-              Enterprise Operations & Compliance Control Center
-            </h1>
-            <Badge variant="outline" className="font-mono text-xs text-emerald-600 border-emerald-500/40">
-              PostgreSQL Live
-            </Badge>
+        <div className="space-y-1">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#22D3EE] animate-pulse" />
+            <span>Supervisory Telemetry</span>
           </div>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
+          <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">
+            Enterprise Operations & Compliance <span className="italic text-indigo-400">Control Center</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-400">
             Real-time telemetry and supervisory intelligence spanning network outlets, audits, sales, CCTV, and CAPA.
           </p>
         </div>
@@ -167,18 +165,8 @@ export function ManagementDashboard() {
           <Button
             variant="outline"
             size="sm"
-            onClick={fetchDashboardData}
-            disabled={loading}
-            className="gap-1.5 cursor-pointer text-xs"
-          >
-            <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
-            <span>Refresh Live Data</span>
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
             onClick={() => window.print()}
-            className="gap-1.5 cursor-pointer text-xs hidden sm:flex"
+            className="gap-1.5 cursor-pointer text-xs hidden sm:flex border-white/10 bg-[#0A1224] text-slate-300 hover:text-white rounded-xl"
           >
             <Download className="h-3.5 w-3.5" />
             <span>Export View</span>
@@ -192,44 +180,6 @@ export function ManagementDashboard() {
           Store Isolation Active: Telemetry strictly scoped to your assigned store (<strong>{userOutlet}</strong>). Network benchmarks provided for context.
         </div>
       )}
-
-      {/* Complete Workflow Pipeline Tracker Banner */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider text-[11px]">
-            Integrated Operating Loop Architecture:
-          </span>
-          <span className="text-[11px] text-slate-400 font-mono">14-Step Closed Loop</span>
-        </div>
-        <div className="flex items-center overflow-x-auto pb-1 text-[10px] gap-1.5 no-scrollbar">
-          {[
-            { label: "Company", link: "/reports" },
-            { label: "Supply", link: "/inventory" },
-            { label: "Outlet", link: "/outlets" },
-            { label: "Inventory", link: "/inventory" },
-            { label: "Sales", link: "/sales" },
-            { label: "Analytics", link: "/dashboard" },
-            { label: "Compliance", link: "/compliance" },
-            { label: "CCTV Evidence", link: "/evidence" },
-            { label: "AI Verification", link: "/evidence" },
-            { label: "Risk Engine", link: "/risk" },
-            { label: "Risk Score", link: "/risk" },
-            { label: "Officer Review", link: "/alerts" },
-            { label: "Corrective Action", link: "/corrective-actions" },
-            { label: "Historical Record", link: "/corrective-actions" },
-          ].map((step, idx) => (
-            <React.Fragment key={step.label}>
-              <Link
-                to={step.link}
-                className="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-medium hover:bg-indigo-100 hover:text-indigo-700 whitespace-nowrap transition-colors"
-              >
-                {idx + 1}. {step.label}
-              </Link>
-              {idx < 13 && <ChevronRight className="h-3 w-3 text-slate-300 shrink-0" />}
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
 
       {/* Global Interactive Filter Bar */}
       <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">

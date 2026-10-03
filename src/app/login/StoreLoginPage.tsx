@@ -119,24 +119,24 @@ export default function StoreLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-900 text-slate-100 flex flex-col justify-between p-4 sm:p-6 lg:p-8 antialiased selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen bg-[#050B1A] text-slate-100 flex flex-col justify-between p-4 sm:p-6 lg:p-8 antialiased selection:bg-emerald-500 selection:text-white">
       {/* Top Bar Header */}
-      <header className="max-w-5xl mx-auto w-full flex items-center justify-between border-b border-slate-800 pb-4">
+      <header className="max-w-5xl mx-auto w-full flex items-center justify-between border-b border-white/10 pb-4">
         <div className="flex items-center gap-3">
           <Link
             to="/login"
-            className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors"
+            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0A1224] border border-white/10 text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
             title="Back to all portals"
           >
             <ArrowLeft className="h-4 w-4" />
           </Link>
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-600 text-white shadow-md shadow-emerald-600/30">
-              <Store className="h-4 w-4" />
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20">
+              <Store className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-bold text-sm tracking-tight text-white">
+                <span className="font-serif font-bold text-base tracking-tight text-white">
                   Store Operations Access
                 </span>
                 <Badge variant="outline" className="text-[10px] font-mono border-emerald-500/30 text-emerald-400 bg-emerald-950/40">
@@ -152,7 +152,7 @@ export default function StoreLoginPage() {
 
         <Link
           to="/login"
-          className="text-xs text-slate-400 hover:text-slate-200 flex items-center gap-1 font-medium transition-colors"
+          className="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium transition-colors"
         >
           <span>All Portals</span>
           <ArrowRight className="h-3 w-3" />
@@ -160,12 +160,15 @@ export default function StoreLoginPage() {
       </header>
 
       {/* Main Body */}
-      <main className="max-w-5xl mx-auto w-full my-auto py-6">
-        <div className="text-center max-w-xl mx-auto mb-6">
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-            Sign In to Your Assigned Store
+      <main className="max-w-5xl mx-auto w-full my-auto py-8">
+        <div className="text-center max-w-xl mx-auto mb-8 space-y-2">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
+            Unit Authentication Gate
+          </span>
+          <h1 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-white">
+            Sign In to Your <span className="italic text-emerald-400">Assigned Store</span>
           </h1>
-          <p className="mt-1 text-xs sm:text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-400">
             For security, each store operator can access only one store. Choose or enter your outlet code below.
           </p>
         </div>
@@ -254,17 +257,17 @@ export default function StoreLoginPage() {
           </div>
 
           {/* Right Column: Authentication Card (5 cols) */}
-          <div className="lg:col-span-5 rounded-xl border border-slate-700 bg-slate-800/90 p-5 shadow-xl shadow-black/30 space-y-4">
+          <div className="lg:col-span-5 rounded-[28px] border border-white/10 bg-[#0A1224] p-6 shadow-2xl space-y-5">
             <div>
               <div className="flex items-center justify-between mb-1">
-                <span className="text-[11px] font-mono text-emerald-400 font-semibold uppercase">
+                <span className="text-[10px] font-mono text-emerald-400 font-semibold uppercase">
                   Single-Store Login
                 </span>
                 <Badge className="bg-emerald-600/20 text-emerald-300 border-emerald-500/30 text-[10px]">
                   Outlet {customOutletCode.trim() || selectedOutlet.code}
                 </Badge>
               </div>
-              <h2 className="text-base font-bold text-white">
+              <h2 className="font-serif text-lg font-bold text-white">
                 Authorize Store Session
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">

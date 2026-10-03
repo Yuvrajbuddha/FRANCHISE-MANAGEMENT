@@ -1211,18 +1211,20 @@ const VALID_SEVERITIES = ["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const;
 
 const CreateInspectionSchema = z.object({
   outletId: z.string().min(1, "Outlet ID is required"),
-  title: z.string().min(3, "Title must be at least 3 characters"),
-  category: z.enum(VALID_COMPLIANCE_CATEGORIES),
-  severity: z.enum(VALID_SEVERITIES),
-  observation: z.string().min(5, "Observation details are required"),
+  title: z.string().min(3, "Title must be at least 3 characters").default("Officer Verification Audit"),
+  category: z.enum(VALID_COMPLIANCE_CATEGORIES).default("Hygiene"),
+  severity: z.enum(VALID_SEVERITIES).default("LOW"),
+  observation: z.string().min(3, "Observation details are required"),
   evidenceDescription: z.string().optional().nullable(),
   evidenceAttachment: z.string().optional().nullable(),
   evidenceType: z.string().optional().default("Photo & Telemetry Log"),
-  assignedReviewer: z.string().min(2, "Reviewer must be assigned"),
-  assignedReviewerEmail: z.string().optional().nullable(),
-  inspectorName: z.string().min(2, "Inspector name is required"),
-  inspectionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Inspection date must be YYYY-MM-DD"),
+  assignedReviewer: z.string().optional().default("Quality & Compliance Officer"),
+  assignedReviewerEmail: z.string().optional().nullable().default("officer.compliance@aurafoods.com"),
+  inspectorName: z.string().optional().default("Quality & Compliance Officer"),
+  inspectionDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Inspection date must be YYYY-MM-DD").default(() => new Date().toISOString().split("T")[0]),
   dueDate: z.string().optional().nullable(),
+  rating: z.number().min(1).max(10).optional(),
+  status: z.enum(VALID_COMPLIANCE_STATUSES).optional().default("VERIFIED"),
 });
 
 // GET /compliance - List with filters & trend calculations
@@ -1400,8 +1402,19 @@ apiRouter.post("/compliance", requireAuth, async (req: AuthenticatedRequest, res
 
   const inspectionId = `INS-${Date.now().toString().slice(-6)}`;
   const nowStr = new Date().toISOString().replace("T", " ").substring(0, 16);
+  const finalStatus = payload.status || (payload.rating ? "VERIFIED" : "OPEN");
 
   try {
+    // If rating is provided, update the store's compliance score in outlets table
+    let newStoreScore: number | undefined;
+    if (payload.rating !== undefined) {
+      newStoreScore = Math.min(100, Math.max(10, Math.round(payload.rating * 10)));
+      await db
+        .update(outlets)
+        .set({ complianceScore: newStoreScore })
+        .where(eq(outlets.outletId, targetOutletId));
+    }
+
     const [inserted] = await db
       .insert(complianceInspections)
       .values({
@@ -1410,7 +1423,7 @@ apiRouter.post("/compliance", requireAuth, async (req: AuthenticatedRequest, res
         title: payload.title,
         category: payload.category,
         severity: payload.severity,
-        status: "OPEN",
+        status: finalStatus,
         observation: payload.observation,
         evidenceDescription: payload.evidenceDescription || null,
         evidenceAttachment: payload.evidenceAttachment || "initial_observation_capture.png",
@@ -1426,18 +1439,24 @@ apiRouter.post("/compliance", requireAuth, async (req: AuthenticatedRequest, res
     // Log history creation event
     await db.insert(complianceHistory).values({
       inspectionId,
-      action: "CREATED",
+      action: payload.rating ? "VERIFIED" : "CREATED",
       previousStatus: null,
-      newStatus: "OPEN",
+      newStatus: finalStatus,
       changedBy: `${user.name} (${user.email})`,
-      notes: `Inspection created by ${payload.inspectorName}. Assigned reviewer: ${payload.assignedReviewer}.`,
+      notes: payload.rating
+        ? `Quality & Compliance Officer verified evidence. Assigned store rating: ${payload.rating}/10 (${newStoreScore}%). ${payload.observation}`
+        : `Inspection recorded by ${payload.inspectorName}. Assigned reviewer: ${payload.assignedReviewer}.`,
       timestamp: nowStr,
     });
 
     return res.status(201).json({
       success: true,
-      message: "Compliance inspection recorded successfully in PostgreSQL.",
+      message: payload.rating
+        ? `Store ${targetOutletId} rating successfully updated to ${payload.rating}/10 (${newStoreScore}%).`
+        : "Compliance inspection recorded successfully in PostgreSQL.",
       record: inserted,
+      updatedRating: payload.rating,
+      newComplianceScore: newStoreScore,
     });
   } catch (err: any) {
     console.error("Failed to create compliance inspection:", err);

@@ -20,19 +20,19 @@ export function TopNav({ onToggleSidebar }: TopNavProps) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-white/10 bg-[#070B18]/90 px-4 backdrop-blur-md lg:px-6">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-[#1E3A66] bg-[#0D1F3C] px-4 backdrop-blur-md lg:px-6 shadow-sm">
       {/* Mobile toggle + Page Context Title */}
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebar}
-          className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 text-slate-400 hover:text-white hover:bg-white/5 lg:hidden cursor-pointer"
+          className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#1E3A66] text-slate-200 hover:text-white hover:bg-[#152E56] lg:hidden cursor-pointer"
           aria-label="Toggle navigation menu"
         >
           <Menu className="h-5 w-5" />
         </button>
 
         <div className="flex items-center gap-2 text-sm font-semibold tracking-tight text-white">
-          <Link to="/" className="hover:text-[#818CF8] transition-colors">
+          <Link to="/" className="hover:text-blue-300 transition-colors">
             Franchise Performance & Compliance
           </Link>
         </div>
@@ -43,7 +43,7 @@ export function TopNav({ onToggleSidebar }: TopNavProps) {
         {user ? (
           <button
             onClick={handleLogout}
-            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-medium rounded-xl text-slate-300 hover:text-rose-300 hover:bg-rose-950/40 border border-transparent hover:border-rose-900/50 transition-all cursor-pointer"
             title="Sign Out"
             aria-label="Sign Out"
           >
@@ -51,7 +51,7 @@ export function TopNav({ onToggleSidebar }: TopNavProps) {
             <span className="hidden sm:inline">Sign Out</span>
           </button>
         ) : (
-          <Button size="sm" onClick={() => navigate("/login")} className="bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs">
+          <Button size="sm" onClick={() => navigate("/login")} className="bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs shadow-xs font-semibold">
             Sign In
           </Button>
         )}

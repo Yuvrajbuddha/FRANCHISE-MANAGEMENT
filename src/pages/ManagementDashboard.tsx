@@ -147,16 +147,16 @@ export function ManagementDashboard() {
   return (
     <div className="space-y-6">
       {/* Top Header & Export */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="rounded-2xl border border-indigo-200/80 bg-gradient-to-r from-indigo-50/80 via-white to-purple-50/60 p-6 sm:p-7 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
-          <div className="text-[10px] font-mono uppercase tracking-widest text-[#10B981] flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#10B981] animate-pulse" />
-            <span>Supervisory Telemetry</span>
+          <div className="text-[10px] font-mono uppercase tracking-widest text-indigo-700 flex items-center gap-1.5 font-bold">
+            <span className="h-1.5 w-1.5 rounded-full bg-indigo-600 animate-pulse" />
+            <span>FRANCHISEE EXECUTIVE CONSOLE · NETWORK TELEMETRY</span>
           </div>
-          <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">
-            Enterprise Operations & Compliance <span className="italic text-indigo-400">Control Center</span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            Enterprise Operations & Compliance <span className="italic text-indigo-600">Control Center</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
+          <p className="text-xs sm:text-sm text-slate-600">
             Real-time telemetry and supervisory intelligence spanning network outlets, audits, sales, CCTV, and CAPA.
           </p>
         </div>
@@ -166,7 +166,7 @@ export function ManagementDashboard() {
             variant="outline"
             size="sm"
             onClick={() => window.print()}
-            className="gap-1.5 cursor-pointer text-xs hidden sm:flex border-white/10 bg-[#0A1224] text-slate-300 hover:text-white rounded-xl"
+            className="gap-1.5 cursor-pointer text-xs hidden sm:flex border-slate-300 bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl shadow-2xs"
           >
             <Download className="h-3.5 w-3.5" />
             <span>Export View</span>

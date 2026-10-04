@@ -378,17 +378,17 @@ export default function StoreEvidenceReviewPage() {
   return (
     <div className="space-y-8 font-sans antialiased text-slate-100 pb-20 max-w-5xl mx-auto">
       {/* Top Breadcrumb Back */}
-      <div className="flex items-center justify-between border-b border-white/10 pb-4">
+      <div className="flex items-center justify-between border-b border-slate-200/80 pb-4">
         <Link
           to="/compliance"
-          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-400 hover:text-white transition-colors cursor-pointer group"
+          className="inline-flex items-center gap-2 text-xs font-semibold text-slate-600 hover:text-slate-900 transition-colors cursor-pointer group"
         >
           <ArrowLeft className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
           <span>← Back to Officer Dashboard</span>
         </Link>
 
-        <span className="text-[11px] font-mono text-slate-400">
-          Officer: <strong className="text-white">{user?.name || "Officer Yuvraj Buddha"}</strong>
+        <span className="text-[11px] font-mono text-slate-500">
+          Officer: <strong className="text-slate-900 font-bold">{user?.name || "Officer Yuvraj Buddha"}</strong>
         </span>
       </div>
 

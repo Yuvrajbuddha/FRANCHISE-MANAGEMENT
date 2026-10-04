@@ -179,13 +179,13 @@ export default function OutletsPage() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 block mb-1 font-semibold">
             Network Directory
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">
-            Outlet Registry & <span className="italic text-indigo-400">Operations</span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            Outlet Registry & <span className="italic text-indigo-600">Operations</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-600 mt-1">
             Real-time multi-unit franchise monitoring, operating models (COCO/FOCO), and deterministic compliance.
           </p>
         </div>

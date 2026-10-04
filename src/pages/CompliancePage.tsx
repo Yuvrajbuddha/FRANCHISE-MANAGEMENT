@@ -108,28 +108,28 @@ export default function CompliancePage() {
   }, [submissions, searchQuery, statusFilter]);
 
   return (
-    <div className="space-y-8 font-sans antialiased text-slate-100 pb-20 max-w-5xl mx-auto">
+    <div className="space-y-8 font-sans antialiased text-slate-900 pb-20 max-w-5xl mx-auto">
       {/* ======================================================== */}
       {/* 1. OFFICER DASHBOARD HEADER                              */}
       {/* ======================================================== */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-6">
+      <div className="rounded-2xl border border-blue-200/80 bg-gradient-to-r from-blue-50/80 via-white to-indigo-50/60 p-6 sm:p-7 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-[#10B981] flex items-center gap-1.5 mb-1">
-            <ShieldCheck className="h-3.5 w-3.5" />
-            <span>QUALITY & COMPLIANCE OFFICER</span>
+          <div className="text-[10px] font-mono uppercase tracking-widest text-blue-800 flex items-center gap-1.5 mb-1 font-bold">
+            <ShieldCheck className="h-3.5 w-3.5 text-blue-600" />
+            <span>QUALITY & COMPLIANCE DESK · REGULATORY AUDIT</span>
           </div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-white uppercase">
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase">
             OFFICER DASHBOARD
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5">
-            Review stores that have submitted CCTV surveillance recordings.
+          <p className="text-xs text-slate-600 mt-1">
+            Review stores that have submitted CCTV surveillance recordings and assign statutory ratings.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-[#071126] px-4 py-2 text-xs">
-            <UserCheck className="h-4 w-4 text-[#10B981]" />
-            <span className="font-medium text-slate-200">
+          <div className="flex items-center gap-2 rounded-xl border border-blue-200 bg-white/90 px-3.5 py-2 text-xs shadow-2xs">
+            <UserCheck className="h-4 w-4 text-emerald-600" />
+            <span className="font-semibold text-slate-800">
               {user?.name || "Officer Yuvraj Buddha"}
             </span>
           </div>
@@ -137,7 +137,7 @@ export default function CompliancePage() {
             variant="outline"
             size="sm"
             onClick={refreshList}
-            className="gap-1.5 cursor-pointer text-xs border-white/10 bg-[#071126] text-slate-300 hover:text-white rounded-xl h-10 px-3.5"
+            className="gap-1.5 cursor-pointer text-xs border-slate-300 bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl h-10 px-3.5 shadow-2xs"
           >
             <RefreshCw className="h-3.5 w-3.5" />
             <span>Refresh</span>

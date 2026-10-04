@@ -307,14 +307,14 @@ export default function InventoryPage() {
       {/* Header & Primary Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 block mb-1 font-semibold">
             Supply & Stock Control
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">
-            Inventory & <span className="italic text-indigo-400">Stock-Sales Reconciliation</span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            Inventory & <span className="italic text-indigo-600">Stock-Sales Reconciliation</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
-            Automated deterministic calculation: <code className="font-mono text-indigo-400 font-semibold">Expected Closing = Opening + Company Supply - Recorded Sales</code>.
+          <p className="text-xs sm:text-sm text-slate-600 mt-1">
+            Automated deterministic calculation: <code className="font-mono text-indigo-600 font-semibold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">Expected Closing = Opening + Company Supply - Recorded Sales</code>.
           </p>
         </div>
 

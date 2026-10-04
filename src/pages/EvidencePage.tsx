@@ -159,30 +159,30 @@ export default function EvidencePage() {
   };
 
   return (
-    <div className="space-y-8 font-sans antialiased text-slate-100 pb-20 max-w-5xl mx-auto">
+    <div className="space-y-8 font-sans antialiased text-slate-900 pb-20 max-w-5xl mx-auto">
       {/* ======================================================== */}
-      {/* 1. STORE HEADER                                          */}
+      {/* 1. STORE HEADER CARD WITH HIGH CONTRAST & TEAL ACCENTS   */}
       {/* ======================================================== */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-6">
+      <div className="rounded-2xl border border-teal-200/80 bg-gradient-to-r from-teal-50/80 via-white to-emerald-50/60 p-6 sm:p-7 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-slate-400 flex items-center gap-1.5 mb-1">
-            <Building className="h-3.5 w-3.5" />
-            <span>STORE CCTV PORTAL</span>
+          <div className="text-[10px] font-mono uppercase tracking-widest text-teal-800 flex items-center gap-1.5 mb-1 font-bold">
+            <Building className="h-3.5 w-3.5 text-teal-600" />
+            <span>STORE CCTV PORTAL · OPERATIONAL UNIT</span>
           </div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-white uppercase">
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase">
             {storeName}
           </h1>
-          <p className="text-xs text-slate-400 mt-0.5 font-mono">
-            Store ID: <span className="text-[#10B981] font-bold">{storeId}</span> · Daily CCTV Surveillance Upload
+          <p className="text-xs text-slate-600 mt-1 font-mono">
+            Store ID: <span className="text-teal-700 font-bold bg-teal-100/70 px-1.5 py-0.5 rounded border border-teal-200">{storeId}</span> · Daily CCTV Surveillance Upload
           </p>
         </div>
 
         <div className="flex items-center gap-2">
-          <Badge className="bg-white/5 text-slate-300 border-white/10 text-xs px-3 py-1 font-mono">
+          <Badge className="bg-teal-100 text-teal-800 border-teal-300 text-xs px-3 py-1 font-mono font-semibold">
             Store User
           </Badge>
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/10 border border-amber-500/25 text-[11px] text-amber-300">
-            <Lock className="h-3 w-3 text-amber-400" />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-100/90 border border-amber-300 text-[11px] text-amber-900 font-medium">
+            <Lock className="h-3.5 w-3.5 text-amber-700" />
             <span>Video Only · Photos Auto-Generated</span>
           </div>
         </div>

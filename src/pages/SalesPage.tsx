@@ -378,13 +378,13 @@ export default function SalesPage() {
       {/* Header & Primary Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 block mb-1 font-semibold">
             Financial Reconciliation
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">
-            Sales Management & <span className="italic text-indigo-400">Revenue Intelligence</span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
+            Sales Management & <span className="italic text-indigo-600">Revenue Intelligence</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-600 mt-1">
             Real-time daily transaction recording, revenue analytics, and cross-channel settlement.
           </p>
         </div>
@@ -716,7 +716,7 @@ export default function SalesPage() {
                     formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, "Revenue"]}
                     labelFormatter={(lbl, p: any) => `${p[0]?.payload?.name || lbl} (${lbl})`}
                   />
-                  <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} name="Outlet Revenue" />
+                  <Bar dataKey="revenue" fill="#6366f1" radius={[4, 4, 0, 0]} name="Outlet Revenue" />
                 </BarChart>
               </ResponsiveContainer>
             )}

@@ -157,20 +157,20 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
 
       <aside
         className={cn(
-          "fixed top-0 bottom-0 left-0 z-50 flex w-64 flex-col border-r border-slate-200 bg-white transition-transform duration-200 ease-in-out dark:border-white/10 dark:bg-[#070B18] lg:static lg:translate-x-0",
+          "fixed top-0 bottom-0 left-0 z-50 flex w-64 flex-col border-r border-slate-200/90 bg-[#F8FAFC] transition-transform duration-200 ease-in-out lg:static lg:translate-x-0 shadow-xs",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
         {/* Brand Header */}
-        <div className="flex h-16 items-center gap-2.5 border-b border-slate-200 px-5 dark:border-white/10">
-          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#4F46FF]/15 text-[#818CF8] border border-[#4F46FF]/30 font-bold shadow-xs">
+        <div className="flex h-16 items-center gap-2.5 border-b border-[#1E3A66] bg-[#0D1F3C] px-5">
+          <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-[#152E56] text-blue-300 border border-[#244A82] font-bold shadow-xs">
             <Building2 className="h-4 w-4" />
           </div>
           <div className="flex flex-col">
-            <span className="text-sm font-semibold tracking-tight text-slate-900 dark:text-slate-100">
+            <span className="text-sm font-semibold tracking-tight text-white">
               FranchiseIQ
             </span>
-            <span className="text-[11px] text-slate-400 font-medium">
+            <span className="text-[11px] text-slate-300 font-medium">
               Performance & Compliance
             </span>
           </div>
@@ -206,8 +206,8 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
                         className={cn(
                           "group flex items-center justify-between rounded-lg px-3 py-1.5 text-xs font-medium transition-colors",
                           isActive
-                            ? "bg-[#4F46FF]/15 text-white font-semibold border-l-2 border-[#4F46FF] dark:text-white"
-                            : "text-slate-600 hover:bg-slate-50 hover:text-slate-900 dark:text-slate-400 dark:hover:bg-white/5 dark:hover:text-slate-200"
+                            ? "bg-blue-50 text-blue-700 font-semibold border-l-2 border-blue-600"
+                            : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                         )}
                       >
                         <div className="flex items-center gap-2.5">
@@ -215,8 +215,8 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
                             className={cn(
                               "h-4 w-4 shrink-0 transition-colors",
                               isActive
-                                ? "text-[#818CF8]"
-                                : "text-slate-500 group-hover:text-slate-300"
+                                ? "text-blue-600"
+                                : "text-slate-400 group-hover:text-slate-600"
                             )}
                           />
                           <span className="truncate">{item.title}</span>
@@ -227,8 +227,8 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
                             className={cn(
                               "text-[10px] px-1.5 py-0.5 rounded font-mono font-medium",
                               item.badgeVariant === "warning"
-                                ? "bg-amber-500/15 text-amber-300 border border-amber-500/25"
-                                : "bg-white/5 text-slate-400 border border-white/10"
+                                ? "bg-amber-100 text-amber-800 border border-amber-200"
+                                : "bg-slate-100 text-slate-600 border border-slate-200"
                             )}
                           >
                             {item.badge}
@@ -244,18 +244,18 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
         </div>
 
         {/* User Card & Logout Button */}
-        <div className="border-t border-slate-200 p-3 dark:border-white/10">
-          <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-2.5 dark:border-white/10 dark:bg-[#0B1020]">
+        <div className="border-t border-slate-200 p-3">
+          <div className="flex items-center justify-between rounded-xl border border-slate-200 bg-slate-50 p-2.5">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/10 text-white font-semibold text-xs border border-white/10">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-200 text-slate-800 font-semibold text-xs border border-slate-300">
                 {user?.name ? user.name[0] : "U"}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="truncate text-xs font-semibold text-slate-900 dark:text-slate-100">
+                <p className="truncate text-xs font-semibold text-slate-900">
                   {user?.name || "Guest User"}
                 </p>
-                <div className="flex items-center gap-1 text-[10px] text-slate-400">
-                  <span className="font-semibold text-[#818CF8]">{userRole}</span>
+                <div className="flex items-center gap-1 text-[10px] text-slate-500">
+                  <span className="font-semibold text-slate-700">{userRole}</span>
                   {user?.assignedOutletId && (
                     <span>· {user.assignedOutletId}</span>
                   )}
@@ -265,7 +265,7 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
 
             <button
               onClick={handleLogout}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 transition-colors cursor-pointer"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
               title="Sign Out"
               aria-label="Sign Out"
             >

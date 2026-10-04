@@ -2565,7 +2565,7 @@ apiRouter.get("/dashboard/overview", requireAuth, async (req: AuthenticatedReque
 
     const riskDistribution = [
       { tier: "Low (0-20)", count: riskTiers.low, percentage: Math.round((riskTiers.low / (outletList.length || 1)) * 100), fill: "#10b981" },
-      { tier: "Moderate (21-40)", count: riskTiers.moderate, percentage: Math.round((riskTiers.moderate / (outletList.length || 1)) * 100), fill: "#3b82f6" },
+      { tier: "Moderate (21-40)", count: riskTiers.moderate, percentage: Math.round((riskTiers.moderate / (outletList.length || 1)) * 100), fill: "#14b8a6" },
       { tier: "Elevated (41-60)", count: riskTiers.elevated, percentage: Math.round((riskTiers.elevated / (outletList.length || 1)) * 100), fill: "#f59e0b" },
       { tier: "High (61-80)", count: riskTiers.high, percentage: Math.round((riskTiers.high / (outletList.length || 1)) * 100), fill: "#f97316" },
       { tier: "Critical (81-100)", count: riskTiers.critical, percentage: Math.round((riskTiers.critical / (outletList.length || 1)) * 100), fill: "#ef4444" },

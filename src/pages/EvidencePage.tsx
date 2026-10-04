@@ -165,7 +165,7 @@ export default function EvidencePage() {
       {/* ======================================================== */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-6">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] flex items-center gap-1.5 mb-1">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-slate-400 flex items-center gap-1.5 mb-1">
             <Building className="h-3.5 w-3.5" />
             <span>STORE CCTV PORTAL</span>
           </div>
@@ -221,7 +221,7 @@ export default function EvidencePage() {
             {currentSubmission.officerComment && (
               <div className="flex-1 max-w-xl p-4 rounded-2xl bg-[#050B1A] border border-white/10 text-xs space-y-1">
                 <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
-                  <FileCheck2 className="h-3.5 w-3.5 text-[#22D3EE]" />
+                  <FileCheck2 className="h-3.5 w-3.5 text-[#818CF8]" />
                   <span>Officer Feedback:</span>
                 </span>
                 <p className="text-slate-200 italic">
@@ -238,7 +238,7 @@ export default function EvidencePage() {
       {/* ======================================================== */}
       <div className="rounded-[28px] border border-white/10 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
         <div className="border-b border-white/10 pb-4">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] block mb-1">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
             MANDATORY COMPLIANCE DISPATCH
           </span>
           <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">
@@ -298,7 +298,7 @@ export default function EvidencePage() {
                   Select MP4 or WebM CCTV footage from store security recorder
                 </span>
               </div>
-              <span className="inline-block text-[11px] font-mono text-[#22D3EE] bg-[#22D3EE]/10 px-3 py-1 rounded-full border border-[#22D3EE]/20">
+              <span className="inline-block text-[11px] font-mono text-slate-300 bg-white/5 px-3 py-1 rounded-full border border-white/10">
                 Click to browse file
               </span>
             </button>
@@ -382,7 +382,7 @@ export default function EvidencePage() {
       <div className="rounded-[28px] border border-white/10 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-4">
           <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] block mb-1">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
               AUTOMATICALLY EXTRACTED EVIDENCE
             </span>
             <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">
@@ -425,7 +425,7 @@ export default function EvidencePage() {
               <div className="p-3.5 space-y-2">
                 <div className="flex items-center justify-between text-xs">
                   <span className="font-mono font-semibold text-white">{photo.id}</span>
-                  <span className="font-mono text-[11px] text-[#22D3EE] font-bold">
+                  <span className="font-mono text-[11px] text-slate-300 font-bold">
                     {photo.timestamp}
                   </span>
                 </div>
@@ -478,7 +478,7 @@ export default function EvidencePage() {
                 <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
                   Timestamp
                 </span>
-                <span className="font-mono text-sm text-[#22D3EE] font-bold">
+                <span className="font-mono text-sm text-white font-bold">
                   {previewPhoto.timestamp}
                 </span>
               </div>

@@ -378,7 +378,7 @@ export default function SalesPage() {
       {/* Header & Primary Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] block mb-1">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
             Financial Reconciliation
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">
@@ -425,8 +425,8 @@ export default function SalesPage() {
       )}
 
       {isReadOnly && (
-        <div className="flex items-center gap-2.5 rounded-lg border border-blue-500/30 bg-blue-50/60 dark:bg-blue-950/20 px-3.5 py-2.5 text-xs text-blue-900 dark:text-blue-300">
-          <Lock className="h-4 w-4 text-blue-600 dark:text-blue-400 shrink-0" />
+        <div className="flex items-center gap-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50/60 dark:bg-[#0A1224] px-3.5 py-2.5 text-xs text-slate-700 dark:text-slate-300">
+          <Lock className="h-4 w-4 text-slate-400 shrink-0" />
           <span>
             Executive Read-Only Scope: Owners and Compliance Officers have access to monitor revenue and charts without modification privileges.
           </span>
@@ -506,14 +506,14 @@ export default function SalesPage() {
             <div className="flex items-center gap-2 mt-1">
               <div className="flex-1 space-y-1">
                 <div className="flex justify-between text-[11px]">
-                  <span className="text-indigo-600 font-semibold">UPI {summary.upiShare}%</span>
-                  <span className="text-emerald-600 font-semibold">Cash {summary.cashShare}%</span>
-                  <span className="text-blue-600 font-semibold">Card {summary.cardShare}%</span>
+                  <span className="text-indigo-400 font-semibold">UPI {summary.upiShare}%</span>
+                  <span className="text-emerald-400 font-semibold">Cash {summary.cashShare}%</span>
+                  <span className="text-slate-300 font-semibold">Card {summary.cardShare}%</span>
                 </div>
                 <div className="flex h-2 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800">
                   <div style={{ width: `${summary.upiShare}%` }} className="bg-indigo-500" />
                   <div style={{ width: `${summary.cashShare}%` }} className="bg-emerald-500" />
-                  <div style={{ width: `${summary.cardShare}%` }} className="bg-blue-500" />
+                  <div style={{ width: `${summary.cardShare}%` }} className="bg-slate-500" />
                 </div>
               </div>
             </div>
@@ -896,7 +896,7 @@ export default function SalesPage() {
                           ? "text-indigo-600 border-indigo-500/30 text-[10px]"
                           : sale.paymentMode === "Cash"
                           ? "text-emerald-600 border-emerald-500/30 text-[10px]"
-                          : "text-blue-600 border-blue-500/30 text-[10px]"
+                          : "text-slate-300 border-white/10 text-[10px]"
                       }
                     >
                       {sale.paymentMode}

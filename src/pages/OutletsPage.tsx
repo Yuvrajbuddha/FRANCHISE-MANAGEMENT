@@ -153,7 +153,7 @@ export default function OutletsPage() {
         );
       case "Grace Period":
         return (
-          <Badge className="bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/30">
+          <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30">
             Grace Period
           </Badge>
         );
@@ -179,7 +179,7 @@ export default function OutletsPage() {
       {/* Header section */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] block mb-1">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
             Network Directory
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">

@@ -228,7 +228,7 @@ export default function OutletDetailPage() {
         );
       case "Grace Period":
         return (
-          <Badge className="bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/30">
+          <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30">
             Grace Period
           </Badge>
         );
@@ -346,7 +346,7 @@ export default function OutletDetailPage() {
           </div>
 
           <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-            <Phone className="h-4 w-4 text-blue-500 shrink-0" />
+            <Phone className="h-4 w-4 text-slate-400 shrink-0" />
             <div>
               <span className="text-[10px] text-slate-400 block font-medium">Contact & Support</span>
               <span>{outlet.contactPhone}</span>
@@ -770,7 +770,7 @@ export default function OutletDetailPage() {
                               ? "bg-red-500/10 text-red-600 border-red-500/30"
                               : c.severity === "High"
                               ? "bg-orange-500/10 text-orange-600 border-orange-500/30"
-                              : "bg-blue-500/10 text-blue-600 border-blue-500/30"
+                              : "bg-slate-500/10 text-slate-400 border-slate-500/30"
                           }
                         >
                           {c.severity}

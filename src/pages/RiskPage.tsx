@@ -46,7 +46,7 @@ export function getRiskLevelBadge(level: RiskLevel | string) {
       );
     case "moderate":
       return (
-        <Badge className="bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30 text-xs font-extrabold uppercase px-2.5 py-0.5">
+        <Badge className="bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30 text-xs font-extrabold uppercase px-2.5 py-0.5">
           Moderate Risk (21–40)
         </Badge>
       );
@@ -64,7 +64,7 @@ export function getScoreColor(score: number) {
   if (score > 80) return "text-red-600 dark:text-red-400";
   if (score > 60) return "text-orange-600 dark:text-orange-400";
   if (score > 40) return "text-amber-600 dark:text-amber-400";
-  if (score > 20) return "text-blue-600 dark:text-blue-400";
+  if (score > 20) return "text-teal-600 dark:text-teal-400";
   return "text-emerald-600 dark:text-emerald-400";
 }
 
@@ -72,7 +72,7 @@ export function getProgressColor(score: number) {
   if (score > 80) return "bg-red-500";
   if (score > 60) return "bg-orange-500";
   if (score > 40) return "bg-amber-500";
-  if (score > 20) return "bg-blue-500";
+  if (score > 20) return "bg-teal-500";
   return "bg-emerald-500";
 }
 
@@ -261,7 +261,7 @@ export default function RiskPage() {
                 </div>
                 <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden flex">
                   <div className="w-[20%] bg-emerald-500" title="Low (0-20)" />
-                  <div className="w-[20%] bg-blue-500" title="Moderate (21-40)" />
+                  <div className="w-[20%] bg-teal-500" title="Moderate (21-40)" />
                   <div className="w-[20%] bg-amber-500" title="Elevated (41-60)" />
                   <div className="w-[20%] bg-orange-500" title="High (61-80)" />
                   <div className="w-[20%] bg-red-500" title="Critical (81-100)" />

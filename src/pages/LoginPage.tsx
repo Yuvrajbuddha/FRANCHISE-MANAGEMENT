@@ -598,7 +598,7 @@ export default function LoginPage() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="h-7 w-7 rounded-xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/25 flex items-center justify-center shrink-0 mt-0.5">
+                  <div className="h-7 w-7 rounded-xl bg-teal-500/15 text-teal-400 border border-teal-500/25 flex items-center justify-center shrink-0 mt-0.5">
                     <CheckCircle2 className="h-4 w-4" />
                   </div>
                   <div>
@@ -733,8 +733,8 @@ export default function LoginPage() {
             </div>
             <div className="rounded-[24px] p-6 bg-[#0A1224] border border-white/10 space-y-2">
               <div className="text-xs text-slate-400 font-medium">Royalty Compliance</div>
-              <div className="font-serif text-3xl font-bold text-cyan-400">99.8%</div>
-              <div className="text-[11px] text-cyan-300 font-mono">Zero Unreconciled Gaps</div>
+              <div className="font-serif text-3xl font-bold text-teal-400">99.8%</div>
+              <div className="text-[11px] text-teal-300 font-mono">Zero Unreconciled Gaps</div>
             </div>
             <div className="rounded-[24px] p-6 bg-[#0A1224] border border-white/10 space-y-2">
               <div className="text-xs text-slate-400 font-medium">Inventory Freshness</div>
@@ -851,9 +851,9 @@ export default function LoginPage() {
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-[24px] p-6 bg-[#0A1224] border border-white/10 space-y-3 relative group hover:border-cyan-500/40 transition-all">
+            <div className="rounded-[24px] p-6 bg-[#0A1224] border border-white/10 space-y-3 relative group hover:border-slate-600 transition-all">
               <div className="flex items-center justify-between">
-                <div className="h-9 w-9 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center font-bold">
+                <div className="h-9 w-9 rounded-xl bg-teal-500/15 text-teal-400 flex items-center justify-center font-bold">
                   <Eye className="h-4 w-4" />
                 </div>
                 <span className="text-[10px] font-mono text-slate-400">02</span>
@@ -1044,8 +1044,8 @@ export default function LoginPage() {
                 Multi-unit P&L, consolidated EBITDA, gross sales ledger, inventory demands.
               </p>
             </div>
-            <div className="rounded-[24px] p-6 bg-[#0A1224] border border-white/10 space-y-3 hover:border-cyan-500/40 transition-all">
-              <Store className="h-8 w-8 text-cyan-400" />
+            <div className="rounded-[24px] p-6 bg-[#0A1224] border border-white/10 space-y-3 hover:border-slate-600 transition-all">
+              <Store className="h-8 w-8 text-slate-300" />
               <h4 className="font-serif text-lg font-bold text-white">Store Operator</h4>
               <p className="text-xs text-[#94A3B8]">
                 Isolated unit portal, opening checklists, CCTV review, POS settlement.
@@ -1075,8 +1075,8 @@ export default function LoginPage() {
       <section id="capa-loop" className="py-24 md:py-32 bg-[#071126] border-t border-white/5 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-16 space-y-4">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-[#F59E0B] bg-[#F59E0B]/10 px-3.5 py-1.5 rounded-full border border-[#F59E0B]/20 inline-block">
-              Statutory Remediation Protocol
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#F59E0B] block">
+              STATUTORY REMEDIATION PROTOCOL
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-white">
               Enforced accountability through the{" "}
@@ -1099,7 +1099,7 @@ export default function LoginPage() {
               </p>
             </div>
             <div className="p-6 rounded-[24px] bg-[#0A1224] border border-white/10 space-y-2">
-              <span className="text-[10px] font-mono text-cyan-400">PHASE 3–4</span>
+              <span className="text-[10px] font-mono text-slate-400">PHASE 3–4</span>
               <h4 className="font-semibold text-sm text-white">Action Plan & SLA</h4>
               <p className="text-xs text-[#94A3B8]">
                 Store GM assigns remediation tasks with automatic countdown timers.

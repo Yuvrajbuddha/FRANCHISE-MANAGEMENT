@@ -61,7 +61,7 @@ export function getAlertSeverityBadge(severity: string) {
       );
     case "MODERATE":
       return (
-        <Badge className="bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30 text-[10px] font-bold">
+        <Badge className="bg-teal-500/15 text-teal-700 dark:text-teal-300 border-teal-500/30 text-[10px] font-bold">
           MODERATE
         </Badge>
       );
@@ -94,7 +94,7 @@ export function getPriorityBadge(severity: string) {
       );
     case "MODERATE":
       return (
-        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-blue-600 dark:text-blue-400">
+        <span className="inline-flex items-center gap-1 text-[11px] font-medium text-teal-600 dark:text-teal-400">
           <Clock className="h-3.5 w-3.5" />
           Periodic review
         </span>
@@ -120,7 +120,7 @@ export function getStatusBadge(status: string) {
       );
     case "REVIEWED":
       return (
-        <Badge className="bg-blue-50 text-blue-700 dark:bg-blue-950/40 dark:text-blue-400 border-blue-200 text-[10px] font-semibold">
+        <Badge className="bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400 border-amber-200 text-[10px] font-semibold">
           REVIEWED
         </Badge>
       );
@@ -154,7 +154,7 @@ export function getTypeIcon(type: string) {
     case "CCTV evidence requiring review":
       return <Video className="h-4 w-4 text-indigo-500" />;
     case "Operational deviations":
-      return <Activity className="h-4 w-4 text-blue-500" />;
+      return <Activity className="h-4 w-4 text-teal-500" />;
     case "Sudden performance deterioration":
       return <Zap className="h-4 w-4 text-purple-500" />;
     case "Unresolved corrective actions":
@@ -378,8 +378,8 @@ export default function AlertsPage() {
               Multiple inventory variances, unverified CCTV, or overdue CAPA milestones.
             </p>
           </div>
-          <div className="p-2.5 rounded-lg border border-blue-200 bg-blue-50/50 dark:border-blue-950 dark:bg-blue-950/20 space-y-1">
-            <span className="font-bold text-blue-700 dark:text-blue-400 block text-xs">
+          <div className="p-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-[#0A1224] space-y-1">
+            <span className="font-bold text-teal-600 dark:text-teal-400 block text-xs">
               MODERATE: Periodic Review
             </span>
             <p className="text-[11px] text-slate-600 dark:text-slate-300">

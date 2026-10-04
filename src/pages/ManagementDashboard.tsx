@@ -149,8 +149,8 @@ export function ManagementDashboard() {
       {/* Top Header & Export */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="space-y-1">
-          <div className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] flex items-center gap-1.5">
-            <span className="h-1.5 w-1.5 rounded-full bg-[#22D3EE] animate-pulse" />
+          <div className="text-[10px] font-mono uppercase tracking-widest text-[#10B981] flex items-center gap-1.5">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#10B981] animate-pulse" />
             <span>Supervisory Telemetry</span>
           </div>
           <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">

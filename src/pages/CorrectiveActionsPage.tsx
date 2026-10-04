@@ -76,7 +76,7 @@ export function getCapaStatusBadge(status: CapaStatus | string, isOverdue?: bool
     case "OPEN":
     default:
       return (
-        <Badge className="bg-blue-500/15 text-blue-700 dark:text-blue-300 border-blue-500/30 text-xs font-bold">
+        <Badge className="bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30 text-xs font-bold">
           OPEN
         </Badge>
       );
@@ -90,7 +90,7 @@ export function getPriorityBadge(priority: string) {
     case "HIGH":
       return <Badge className="bg-orange-500 text-white text-[10px]">HIGH</Badge>;
     case "MEDIUM":
-      return <Badge className="bg-blue-600 text-white text-[10px]">MEDIUM</Badge>;
+      return <Badge className="bg-slate-700 text-slate-200 text-[10px]">MEDIUM</Badge>;
     default:
       return <Badge variant="outline" className="text-[10px]">LOW</Badge>;
   }
@@ -398,10 +398,10 @@ export default function CorrectiveActionsPage() {
 
         <Card className="border-slate-200 dark:border-slate-800">
           <CardHeader className="p-3 pb-1">
-            <span className="text-[10px] font-bold uppercase text-blue-500">Open</span>
+            <span className="text-[10px] font-bold uppercase text-amber-500">Open</span>
           </CardHeader>
           <CardContent className="p-3 pt-0">
-            <span className="text-xl font-bold font-mono text-blue-600 dark:text-blue-400">
+            <span className="text-xl font-bold font-mono text-amber-600 dark:text-amber-400">
               {summary.open}
             </span>
           </CardContent>

@@ -307,7 +307,7 @@ export default function InventoryPage() {
       {/* Header & Primary Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] block mb-1">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
             Supply & Stock Control
           </span>
           <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-slate-100">

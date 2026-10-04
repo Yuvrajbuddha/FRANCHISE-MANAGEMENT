@@ -283,7 +283,7 @@ export default function StoreEvidenceReviewPage() {
               onClick={() => setShowFullDossier(true)}
               className="w-full sm:w-auto border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 text-xs font-semibold h-12 px-6 rounded-2xl cursor-pointer gap-2 transition-all"
             >
-              <FileText className="h-4 w-4 text-[#22D3EE]" />
+              <FileText className="h-4 w-4 text-slate-300" />
               <span>View Full Inspection</span>
             </Button>
 
@@ -339,7 +339,7 @@ export default function StoreEvidenceReviewPage() {
                     >
                       <div className="flex items-center gap-3">
                         <span className="font-mono font-bold text-white">{p.id}</span>
-                        <span className="font-mono text-[#22D3EE]">{p.timestamp}</span>
+                        <span className="font-mono text-slate-400">{p.timestamp}</span>
                         <span className="text-[11px] text-slate-400">{p.zone}</span>
                       </div>
                       <div>
@@ -397,7 +397,7 @@ export default function StoreEvidenceReviewPage() {
       {/* ======================================================== */}
       <div className="rounded-[28px] border border-white/10 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
         <div className="border-b border-white/10 pb-4">
-          <div className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] flex items-center gap-1.5 mb-1">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-[#10B981] flex items-center gap-1.5 mb-1">
             <Building className="h-3.5 w-3.5" />
             <span>STATUTORY STORE VERIFICATION</span>
           </div>
@@ -458,8 +458,8 @@ export default function StoreEvidenceReviewPage() {
             <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
               Photos Generated
             </span>
-            <div className="flex items-center gap-1.5 font-mono text-sm font-bold text-[#22D3EE]">
-              <Camera className="h-3.5 w-3.5 text-[#22D3EE]" />
+            <div className="flex items-center gap-1.5 font-mono text-sm font-bold text-slate-200">
+              <Camera className="h-3.5 w-3.5 text-slate-400" />
               <span>{photos.length} photos</span>
             </div>
           </div>
@@ -522,7 +522,7 @@ export default function StoreEvidenceReviewPage() {
                   </div>
 
                   {/* Clean Prominent Timestamp */}
-                  <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-md bg-[#050B1A]/90 backdrop-blur-md text-xs font-mono font-bold text-[#22D3EE] border border-white/15">
+                  <div className="absolute bottom-2 left-2 px-2.5 py-1 rounded-md bg-[#050B1A]/90 backdrop-blur-md text-xs font-mono font-bold text-white border border-white/15">
                     {photo.timestamp}
                   </div>
 
@@ -552,7 +552,7 @@ export default function StoreEvidenceReviewPage() {
                 <div className="p-3.5 space-y-1">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-mono font-bold text-white">{photo.id}</span>
-                    <span className="font-mono text-xs font-bold text-[#22D3EE]">
+                    <span className="font-mono text-xs font-bold text-slate-300">
                       {photo.timestamp}
                     </span>
                   </div>
@@ -684,7 +684,7 @@ export default function StoreEvidenceReviewPage() {
                 </h3>
                 <div className="flex items-center gap-2 text-xs font-mono mt-0.5">
                   <span className="text-slate-400">Timestamp:</span>
-                  <span className="text-[#22D3EE] font-bold text-sm">
+                  <span className="text-slate-200 font-bold text-sm">
                     {activePhoto.timestamp}
                   </span>
                   <span className="text-slate-600">·</span>
@@ -708,7 +708,7 @@ export default function StoreEvidenceReviewPage() {
                 alt={activePhoto.id}
                 className="w-full h-full object-contain"
               />
-              <div className="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-[#050B1A]/90 backdrop-blur-md text-xs font-mono font-bold text-[#22D3EE] border border-white/20">
+              <div className="absolute bottom-3 left-3 px-3 py-1.5 rounded-lg bg-[#050B1A]/90 backdrop-blur-md text-xs font-mono font-bold text-white border border-white/20">
                 Timestamp: {activePhoto.timestamp}
               </div>
             </div>

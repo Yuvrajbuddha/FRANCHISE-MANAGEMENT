@@ -114,7 +114,7 @@ export default function CompliancePage() {
       {/* ======================================================== */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-6">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-[#22D3EE] flex items-center gap-1.5 mb-1">
+          <div className="text-[10px] font-mono uppercase tracking-widest text-[#10B981] flex items-center gap-1.5 mb-1">
             <ShieldCheck className="h-3.5 w-3.5" />
             <span>QUALITY & COMPLIANCE OFFICER</span>
           </div>
@@ -181,7 +181,7 @@ export default function CompliancePage() {
         <div className="rounded-2xl border border-white/10 bg-[#071126] p-5 space-y-1">
           <div className="flex items-center justify-between text-[11px] font-mono uppercase text-slate-400">
             <span>TOTAL CCTV SUBMISSIONS</span>
-            <Camera className="h-4 w-4 text-[#22D3EE]" />
+            <Camera className="h-4 w-4 text-slate-400" />
           </div>
           <div className="font-serif text-3xl font-bold text-white">
             {summaryMetrics.total}
@@ -284,8 +284,8 @@ export default function CompliancePage() {
                       Photos Generated:
                     </span>
                     <div className="flex items-center gap-1.5 font-mono text-slate-200 font-bold mt-0.5">
-                      <Camera className="h-3.5 w-3.5 text-[#22D3EE]" />
-                      <span className="text-[#22D3EE]">{store.photosCount}</span>
+                      <Camera className="h-3.5 w-3.5 text-slate-400" />
+                      <span className="text-slate-200">{store.photosCount}</span>
                     </div>
                   </div>
                 </div>

@@ -20,7 +20,7 @@ export function TopNav({ onToggleSidebar }: TopNavProps) {
   };
 
   return (
-    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-white/10 bg-[#050B1A]/90 px-4 backdrop-blur-md lg:px-6">
+    <header className="sticky top-0 z-30 flex h-16 w-full items-center justify-between border-b border-white/10 bg-[#070B18]/90 px-4 backdrop-blur-md lg:px-6">
       {/* Mobile toggle + Page Context Title */}
       <div className="flex items-center gap-3">
         <button
@@ -32,7 +32,7 @@ export function TopNav({ onToggleSidebar }: TopNavProps) {
         </button>
 
         <div className="flex items-center gap-2 text-sm font-semibold tracking-tight text-white">
-          <Link to="/" className="hover:text-indigo-400 transition-colors">
+          <Link to="/" className="hover:text-[#818CF8] transition-colors">
             Franchise Performance & Compliance
           </Link>
         </div>

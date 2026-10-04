@@ -182,9 +182,9 @@ export function ManagementDashboard() {
       )}
 
       {/* Global Interactive Filter Bar */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
-        <div className="flex items-center gap-1.5 font-bold text-slate-900 dark:text-slate-100 text-xs">
-          <Filter className="h-4 w-4 text-indigo-600" />
+      <div className="rounded-2xl border border-white/10 bg-[#0B1020] p-4 shadow-sm space-y-3">
+        <div className="flex items-center gap-1.5 font-bold text-white text-xs">
+          <Filter className="h-4 w-4 text-[#818CF8]" />
           <span>Multi-Dimensional Filtering</span>
         </div>
 
@@ -197,7 +197,7 @@ export function ManagementDashboard() {
             <select
               value={selectedDate}
               onChange={(e) => setSelectedDate(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer"
+              className="w-full h-9 rounded-xl border border-white/10 bg-[#070B18] px-2.5 text-xs font-semibold text-slate-200 cursor-pointer"
             >
               <option value="Today">Today (Oct 02, 2026)</option>
               <option value="Last 7 Days">Last 7 Days</option>
@@ -214,7 +214,7 @@ export function ManagementDashboard() {
             <select
               value={selectedCity}
               onChange={(e) => setSelectedCity(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer"
+              className="w-full h-9 rounded-xl border border-white/10 bg-[#070B18] px-2.5 text-xs font-semibold text-slate-200 cursor-pointer"
             >
               <option value="All Cities">All Cities</option>
               <option value="Lucknow">Lucknow (Flagship Hub)</option>
@@ -239,7 +239,7 @@ export function ManagementDashboard() {
               value={selectedOutlet}
               onChange={(e) => setSelectedOutlet(e.target.value)}
               disabled={isFranchise}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer"
+              className="w-full h-9 rounded-xl border border-white/10 bg-[#070B18] px-2.5 text-xs font-semibold text-slate-200 cursor-pointer disabled:opacity-50"
             >
               <option value="All Outlets">All Network Outlets</option>
               <option value="OUT-042">OUT-042 (Lucknow Flagship)</option>
@@ -263,7 +263,7 @@ export function ManagementDashboard() {
             <select
               value={selectedRiskLevel}
               onChange={(e) => setSelectedRiskLevel(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer"
+              className="w-full h-9 rounded-xl border border-white/10 bg-[#070B18] px-2.5 text-xs font-semibold text-slate-200 cursor-pointer"
             >
               <option value="All Risk Levels">All Risk Tiers</option>
               <option value="Low">Low (0-20)</option>
@@ -282,7 +282,7 @@ export function ManagementDashboard() {
             <select
               value={selectedComplianceStatus}
               onChange={(e) => setSelectedComplianceStatus(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-2.5 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 cursor-pointer"
+              className="w-full h-9 rounded-xl border border-white/10 bg-[#070B18] px-2.5 text-xs font-semibold text-slate-200 cursor-pointer"
             >
               <option value="All Statuses">All Statuses</option>
               <option value="Active">Active</option>
@@ -308,7 +308,7 @@ export function ManagementDashboard() {
                 setSelectedComplianceStatus("All Statuses");
                 setSelectedDate("Month to Date");
               }}
-              className="text-xs text-indigo-600 hover:underline font-medium cursor-pointer"
+              className="text-xs text-indigo-400 hover:underline font-medium cursor-pointer"
             >
               Reset all filters
             </button>
@@ -319,19 +319,19 @@ export function ManagementDashboard() {
       {/* CORE KPI CARDS (Real Database Metrics) */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
         {/* Total Outlets */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-1 pt-4">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>Total Outlets</span>
-              <Building2 className="h-4 w-4 text-indigo-500" />
+              <Building2 className="h-4 w-4 text-indigo-400" />
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 font-mono">
+              <span className="text-2xl font-extrabold text-white font-mono">
                 {summary.totalOutlets}
               </span>
-              <Link to="/outlets" className="text-xs text-indigo-600 hover:underline inline-flex items-center gap-0.5">
+              <Link to="/outlets" className="text-xs text-indigo-400 hover:underline inline-flex items-center gap-0.5">
                 <span>Directory</span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
@@ -343,19 +343,19 @@ export function ManagementDashboard() {
         </Card>
 
         {/* Revenue */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-1 pt-4">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>Net Revenue</span>
-              <TrendingUp className="h-4 w-4 text-emerald-500" />
+              <TrendingUp className="h-4 w-4 text-emerald-400" />
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">
+              <span className="text-2xl font-extrabold text-emerald-400 font-mono">
                 {formatCurrency(summary.totalRevenue)}
               </span>
-              <Link to="/sales" className="text-xs text-emerald-600 hover:underline inline-flex items-center gap-0.5">
+              <Link to="/sales" className="text-xs text-emerald-400 hover:underline inline-flex items-center gap-0.5">
                 <span>Sales Log</span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
@@ -367,19 +367,19 @@ export function ManagementDashboard() {
         </Card>
 
         {/* EBITDA / Profit */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-1 pt-4">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>EBITDA / Profit</span>
-              <DollarSign className="h-4 w-4 text-blue-500" />
+              <DollarSign className="h-4 w-4 text-teal-400" />
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-blue-600 dark:text-blue-400 font-mono">
+              <span className="text-2xl font-extrabold text-white font-mono">
                 {formatCurrency(summary.ebitda)}
               </span>
-              <Badge variant="outline" className="text-[10px] font-bold text-blue-600">
+              <Badge variant="outline" className="text-[10px] font-bold text-teal-400 border-teal-500/30 bg-teal-500/10">
                 {summary.ebitdaMargin}% Margin
               </Badge>
             </div>
@@ -390,19 +390,19 @@ export function ManagementDashboard() {
         </Card>
 
         {/* Compliance Percentage */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-1 pt-4">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>Compliance %</span>
-              <ShieldCheck className="h-4 w-4 text-indigo-500" />
+              <ShieldCheck className="h-4 w-4 text-emerald-400" />
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">
+              <span className="text-2xl font-extrabold text-emerald-400 font-mono">
                 {summary.compliancePercentage}%
               </span>
-              <Link to="/compliance" className="text-xs text-indigo-600 hover:underline inline-flex items-center gap-0.5">
+              <Link to="/compliance" className="text-xs text-emerald-400 hover:underline inline-flex items-center gap-0.5">
                 <span>Audits</span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
@@ -414,21 +414,21 @@ export function ManagementDashboard() {
         </Card>
 
         {/* Overall Risk Score */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-1 pt-4">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 flex items-center justify-between">
               <span>Overall Risk Score</span>
-              <AlertTriangle className="h-4 w-4 text-amber-500" />
+              <AlertTriangle className="h-4 w-4 text-amber-400" />
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
               <span className={`text-2xl font-extrabold font-mono ${
-                summary.overallRiskScore > 40 ? "text-amber-600" : "text-emerald-600"
+                summary.overallRiskScore > 40 ? "text-amber-400" : "text-emerald-400"
               }`}>
                 {summary.overallRiskScore}/100
               </span>
-              <Link to="/risk" className="text-xs text-amber-600 hover:underline inline-flex items-center gap-0.5">
+              <Link to="/risk" className="text-xs text-amber-400 hover:underline inline-flex items-center gap-0.5">
                 <span>Risk Engine</span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
@@ -444,91 +444,91 @@ export function ManagementDashboard() {
       <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
         <Link
           to="/inventory"
-          className="p-3 rounded-xl border border-slate-200 bg-white hover:border-amber-400 hover:bg-amber-50/30 transition-all dark:border-slate-800 dark:bg-slate-900"
+          className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-amber-500/40 hover:bg-amber-500/5 transition-all"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase text-slate-400">Inventory Mismatch</span>
-            <Boxes className="h-4 w-4 text-amber-500" />
+            <Boxes className="h-4 w-4 text-amber-400" />
           </div>
-          <span className="text-lg font-bold font-mono text-slate-900 dark:text-slate-100 mt-1 block">
+          <span className="text-lg font-bold font-mono text-white mt-1 block">
             {counts.inventoryDiscrepanciesCount} Cases
           </span>
-          <span className="text-[10px] text-amber-600 font-semibold">Stock Reconciliation</span>
+          <span className="text-[10px] text-amber-400 font-semibold">Stock Reconciliation</span>
         </Link>
 
         <Link
           to="/alerts"
-          className="p-3 rounded-xl border border-slate-200 bg-white hover:border-red-400 hover:bg-red-50/30 transition-all dark:border-slate-800 dark:bg-slate-900"
+          className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-rose-500/40 hover:bg-rose-500/5 transition-all"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase text-slate-400">Compliance Alerts</span>
-            <ShieldAlert className="h-4 w-4 text-red-500" />
+            <ShieldAlert className="h-4 w-4 text-rose-400" />
           </div>
-          <span className="text-lg font-bold font-mono text-red-600 dark:text-red-400 mt-1 block">
+          <span className="text-lg font-bold font-mono text-rose-400 mt-1 block">
             {counts.complianceAlertsCount} Alerts
           </span>
-          <span className="text-[10px] text-red-600 font-semibold">Prioritized Queue</span>
+          <span className="text-[10px] text-rose-400 font-semibold">Prioritized Queue</span>
         </Link>
 
         <Link
           to="/complaints"
-          className="p-3 rounded-xl border border-slate-200 bg-white hover:border-purple-400 hover:bg-purple-50/30 transition-all dark:border-slate-800 dark:bg-slate-900"
+          className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-purple-500/40 hover:bg-purple-500/5 transition-all"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase text-slate-400">Complaints</span>
-            <MessageSquare className="h-4 w-4 text-purple-500" />
+            <MessageSquare className="h-4 w-4 text-purple-400" />
           </div>
-          <span className="text-lg font-bold font-mono text-slate-900 dark:text-slate-100 mt-1 block">
+          <span className="text-lg font-bold font-mono text-white mt-1 block">
             {counts.customerComplaintsCount} Tickets
           </span>
-          <span className="text-[10px] text-purple-600 font-semibold">Guest Sentiment</span>
+          <span className="text-[10px] text-purple-400 font-semibold">Guest Sentiment</span>
         </Link>
 
         <Link
           to="/evidence"
-          className="p-3 rounded-xl border border-slate-200 bg-white hover:border-indigo-400 hover:bg-indigo-50/30 transition-all dark:border-slate-800 dark:bg-slate-900"
+          className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase text-slate-400">CCTV Evidence</span>
-            <Video className="h-4 w-4 text-indigo-500" />
+            <Video className="h-4 w-4 text-indigo-400" />
           </div>
-          <span className="text-lg font-bold font-mono text-slate-900 dark:text-slate-100 mt-1 block">
+          <span className="text-lg font-bold font-mono text-white mt-1 block">
             {counts.cctvCasesCount} Feeds
           </span>
-          <span className="text-[10px] text-indigo-600 font-semibold">Frame Verifications</span>
+          <span className="text-[10px] text-indigo-400 font-semibold">AI Prep Verification</span>
         </Link>
 
         <Link
           to="/corrective-actions"
-          className="p-3 rounded-xl border border-slate-200 bg-white hover:border-teal-400 hover:bg-teal-50/30 transition-all dark:border-slate-800 dark:bg-slate-900 col-span-2 sm:col-span-1"
+          className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-teal-500/40 hover:bg-teal-500/5 transition-all col-span-2 sm:col-span-1"
         >
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase text-slate-400">CAPA Actions</span>
-            <FileCheck2 className="h-4 w-4 text-teal-500" />
+            <FileCheck2 className="h-4 w-4 text-teal-400" />
           </div>
-          <span className="text-lg font-bold font-mono text-slate-900 dark:text-slate-100 mt-1 block">
+          <span className="text-lg font-bold font-mono text-white mt-1 block">
             {counts.correctiveActionsCount} Mandates
           </span>
-          <span className="text-[10px] text-teal-600 font-semibold">Closed-Loop Status</span>
+          <span className="text-[10px] text-teal-400 font-semibold">Closed-Loop Status</span>
         </Link>
       </div>
 
       {/* CHARTS ROW 1: Sales Trends & Risk Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Sales Trends Chart */}
-        <Card className="lg:col-span-2 border-slate-200 dark:border-slate-800">
+        <Card className="lg:col-span-2 border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-                  <BarChart3 className="h-4 w-4 text-indigo-600" />
+                  <BarChart3 className="h-4 w-4 text-[#818CF8]" />
                   <span>Real Sales Trends & Revenue Performance</span>
                 </CardTitle>
                 <CardDescription className="text-xs">
                   Daily net sales turnover and transaction volume logged in PostgreSQL
                 </CardDescription>
               </div>
-              <Link to="/sales" className="text-xs text-indigo-600 hover:underline">
+              <Link to="/sales" className="text-xs text-[#818CF8] hover:underline">
                 View Sales →
               </Link>
             </div>
@@ -543,12 +543,12 @@ export function ManagementDashboard() {
                       <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.06)" />
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} />
                   <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
                   <Tooltip
                     formatter={(v: any) => [`₹${Number(v).toLocaleString()}`, "Revenue"]}
-                    contentStyle={{ borderRadius: 8, fontSize: 12 }}
+                    contentStyle={{ backgroundColor: "#0B1020", borderColor: "rgba(255,255,255,0.1)", borderRadius: 12, color: "#fff", fontSize: 12 }}
                   />
                   <Area
                     type="monotone"
@@ -566,7 +566,7 @@ export function ManagementDashboard() {
         </Card>
 
         {/* Risk Distribution Chart */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div>
@@ -578,7 +578,7 @@ export function ManagementDashboard() {
                   Classification across 5 deterministic risk tiers
                 </CardDescription>
               </div>
-              <Link to="/risk" className="text-xs text-amber-600 hover:underline">
+              <Link to="/risk" className="text-xs text-amber-400 hover:underline">
                 View Risk →
               </Link>
             </div>
@@ -613,11 +613,11 @@ export function ManagementDashboard() {
       {/* OUTLET TABLES: High-Risk Outlets & Underperforming Outlets */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* High-Risk Outlets (Clickable to profile or risk breakdown) */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-sm font-bold flex items-center gap-1.5 text-red-600 dark:text-red-400">
+                <CardTitle className="text-sm font-bold flex items-center gap-1.5 text-rose-400">
                   <AlertTriangle className="h-4 w-4" />
                   <span>High-Risk Outlets Requiring Oversight</span>
                 </CardTitle>
@@ -631,7 +631,7 @@ export function ManagementDashboard() {
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 border-y border-slate-200 dark:border-slate-800">
+                <thead className="bg-white/5 text-slate-400 border-y border-white/10">
                   <tr>
                     <th className="py-2.5 px-3 font-semibold">Outlet (Link)</th>
                     <th className="py-2.5 px-3 font-semibold">City</th>
@@ -640,34 +640,34 @@ export function ManagementDashboard() {
                     <th className="py-2.5 px-3 font-semibold text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-white/5">
                   {(data?.highRiskOutlets || []).map((o: any) => (
-                    <tr key={o.outletId} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+                    <tr key={o.outletId} className="hover:bg-white/5 transition-colors">
                       <td className="py-2.5 px-3">
                         <Link
                           to={`/outlets/${o.outletId}`}
-                          className="font-mono font-bold text-indigo-600 hover:underline block"
+                          className="font-mono font-bold text-[#818CF8] hover:underline block"
                           title="Open Outlet Profile"
                         >
                           {o.outletId}
                         </Link>
-                        <span className="text-[11px] text-slate-700 dark:text-slate-300 truncate max-w-[140px] block">
+                        <span className="text-[11px] text-slate-300 truncate max-w-[140px] block">
                           {o.name}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3">{o.city}</td>
+                      <td className="py-2.5 px-3 text-slate-300">{o.city}</td>
                       <td className="py-2.5 px-3">
-                        <span className="font-mono font-bold px-2 py-0.5 rounded bg-red-50 text-red-700 dark:bg-red-950 dark:text-red-400">
+                        <span className="font-mono font-bold px-2 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/25">
                           {o.riskScore}/100
                         </span>
                       </td>
-                      <td className="py-2.5 px-3 font-mono">{o.complianceScore}%</td>
+                      <td className="py-2.5 px-3 font-mono text-emerald-400">{o.complianceScore}%</td>
                       <td className="py-2.5 px-3 text-right">
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => setRiskModalOutlet(o)}
-                          className="h-6 text-[10px] px-2 cursor-pointer gap-1"
+                          className="h-6 text-[10px] px-2 cursor-pointer gap-1 border-white/10 bg-white/5 hover:bg-white/10 text-slate-200"
                         >
                           <Eye className="h-3 w-3" />
                           <span>Breakdown</span>
@@ -682,11 +682,11 @@ export function ManagementDashboard() {
         </Card>
 
         {/* Underperforming Outlets */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div>
-                <CardTitle className="text-sm font-bold flex items-center gap-1.5 text-amber-600 dark:text-amber-400">
+                <CardTitle className="text-sm font-bold flex items-center gap-1.5 text-amber-400">
                   <ArrowDownRight className="h-4 w-4" />
                   <span>Underperforming Outlets</span>
                 </CardTitle>
@@ -694,7 +694,7 @@ export function ManagementDashboard() {
                   Outlets ranking lowest in monthly sales run-rate
                 </CardDescription>
               </div>
-              <Link to="/outlets" className="text-xs text-indigo-600 hover:underline">
+              <Link to="/outlets" className="text-xs text-[#818CF8] hover:underline">
                 View All Outlets →
               </Link>
             </div>
@@ -702,7 +702,7 @@ export function ManagementDashboard() {
           <CardContent className="p-0">
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 border-y border-slate-200 dark:border-slate-800">
+                <thead className="bg-white/5 text-slate-400 border-y border-white/10">
                   <tr>
                     <th className="py-2.5 px-3 font-semibold">Outlet (Link)</th>
                     <th className="py-2.5 px-3 font-semibold">City</th>
@@ -711,33 +711,33 @@ export function ManagementDashboard() {
                     <th className="py-2.5 px-3 font-semibold text-right">Profile</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-white/5">
                   {(data?.underperformingOutlets || []).map((o: any) => (
-                    <tr key={o.outletId} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
+                    <tr key={o.outletId} className="hover:bg-white/5 transition-colors">
                       <td className="py-2.5 px-3">
                         <Link
                           to={`/outlets/${o.outletId}`}
-                          className="font-mono font-bold text-indigo-600 hover:underline block"
+                          className="font-mono font-bold text-[#818CF8] hover:underline block"
                         >
                           {o.outletId}
                         </Link>
-                        <span className="text-[11px] text-slate-700 dark:text-slate-300 truncate max-w-[140px] block">
+                        <span className="text-[11px] text-slate-300 truncate max-w-[140px] block">
                           {o.name}
                         </span>
                       </td>
-                      <td className="py-2.5 px-3">{o.city}</td>
-                      <td className="py-2.5 px-3 font-mono font-semibold">
+                      <td className="py-2.5 px-3 text-slate-300">{o.city}</td>
+                      <td className="py-2.5 px-3 font-mono font-semibold text-white">
                         {formatCurrency(o.revenueMonthly)}
                       </td>
                       <td className="py-2.5 px-3">
-                        <Badge variant="outline" className="text-[10px]">
+                        <Badge variant="outline" className="text-[10px] border-white/10 text-slate-300">
                           {o.status}
                         </Badge>
                       </td>
                       <td className="py-2.5 px-3 text-right">
                         <Link
                           to={`/outlets/${o.outletId}`}
-                          className="text-indigo-600 hover:underline inline-flex items-center gap-0.5 text-xs font-medium"
+                          className="text-[#818CF8] hover:underline inline-flex items-center gap-0.5 text-xs font-medium"
                         >
                           <span>Profile</span>
                           <ArrowRight className="h-3 w-3" />
@@ -755,12 +755,12 @@ export function ManagementDashboard() {
       {/* CHARTS ROW 2: City-Wise Performance & Historical Trends */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* City-Wise Performance Table & Bar */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-                  <Building2 className="h-4 w-4 text-indigo-600" />
+                  <Building2 className="h-4 w-4 text-[#818CF8]" />
                   <span>City-Wise Regional Performance</span>
                 </CardTitle>
                 <CardDescription className="text-xs">
@@ -773,12 +773,12 @@ export function ManagementDashboard() {
             <div className="h-56 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data?.cityPerformance || []}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.06)" />
                   <XAxis dataKey="city" tick={{ fontSize: 11 }} />
                   <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${(v / 100000).toFixed(0)}L`} />
                   <Tooltip
                     formatter={(v: any) => [`₹${Number(v).toLocaleString()}`, "Est. Monthly Revenue"]}
-                    contentStyle={{ borderRadius: 8, fontSize: 12 }}
+                    contentStyle={{ backgroundColor: "#0B1020", borderColor: "rgba(255,255,255,0.1)", borderRadius: 12, color: "#fff", fontSize: 12 }}
                   />
                   <Bar dataKey="revenue" fill="#6366f1" radius={[4, 4, 0, 0]} name="Monthly Turnover" />
                 </BarChart>
@@ -788,12 +788,12 @@ export function ManagementDashboard() {
         </Card>
 
         {/* Historical Trends (Month-on-Month Compliance & Risk) */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-                  <Activity className="h-4 w-4 text-emerald-600" />
+                  <Activity className="h-4 w-4 text-emerald-400" />
                   <span>Historical Network Trends</span>
                 </CardTitle>
                 <CardDescription className="text-xs">
@@ -806,10 +806,10 @@ export function ManagementDashboard() {
             <div className="h-56 w-full">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={data?.historicalTrends || []}>
-                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(255,255,255,0.06)" />
                   <XAxis dataKey="month" tick={{ fontSize: 11 }} />
                   <YAxis tick={{ fontSize: 11 }} domain={[0, 100]} />
-                  <Tooltip contentStyle={{ borderRadius: 8, fontSize: 12 }} />
+                  <Tooltip contentStyle={{ backgroundColor: "#0B1020", borderColor: "rgba(255,255,255,0.1)", borderRadius: 12, color: "#fff", fontSize: 12 }} />
                   <Legend iconSize={8} wrapperStyle={{ fontSize: 11 }} />
                   <Line
                     type="monotone"
@@ -835,57 +835,57 @@ export function ManagementDashboard() {
       {/* RECENT OPERATIONAL FEEDS: Alerts & Discrepancies (Clickable) */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Compliance Alerts (Clicking opens alert case) */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-                  <ShieldAlert className="h-4 w-4 text-red-500" />
+                  <ShieldAlert className="h-4 w-4 text-rose-400" />
                   <span>Recent Compliance Alerts (Click to Open Case)</span>
                 </CardTitle>
                 <CardDescription className="text-xs">
                   Active prioritized anomalies from PostgreSQL outlet_alerts
                 </CardDescription>
               </div>
-              <Link to="/alerts" className="text-xs text-red-600 hover:underline">
+              <Link to="/alerts" className="text-xs text-rose-400 hover:underline">
                 View All Alerts →
               </Link>
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+            <div className="divide-y divide-white/5 text-xs">
               {(data?.recentAlerts || []).map((a: any) => (
                 <div
                   key={a.id}
                   onClick={() => setAlertModalItem(a)}
-                  className="p-3 hover:bg-slate-50/70 dark:hover:bg-slate-800/50 cursor-pointer flex items-start justify-between gap-3 transition-colors"
+                  className="p-3 hover:bg-white/5 cursor-pointer flex items-start justify-between gap-3 transition-colors"
                 >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-indigo-600">{a.alertId}</span>
+                      <span className="font-mono font-bold text-[#818CF8]">{a.alertId}</span>
                       <Link
                         to={`/outlets/${a.outletId}`}
                         onClick={(e) => e.stopPropagation()}
-                        className="font-mono text-[11px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-semibold text-slate-700 dark:text-slate-300 hover:text-indigo-600"
+                        className="font-mono text-[11px] bg-white/5 border border-white/10 px-1.5 py-0.5 rounded font-semibold text-slate-300 hover:text-[#818CF8]"
                       >
                         {a.outletId}
                       </Link>
                       <Badge
                         className={
                           a.severity === "CRITICAL"
-                            ? "bg-red-500/15 text-red-700 border-red-500/30 text-[10px]"
+                            ? "bg-rose-500/15 text-rose-300 border-rose-500/30 text-[10px]"
                             : a.severity === "HIGH"
-                            ? "bg-orange-500/15 text-orange-700 border-orange-500/30 text-[10px]"
-                            : "bg-blue-500/15 text-blue-700 border-blue-500/30 text-[10px]"
+                            ? "bg-amber-500/15 text-amber-300 border-amber-500/30 text-[10px]"
+                            : "bg-slate-500/15 text-slate-300 border-slate-500/30 text-[10px]"
                         }
                       >
                         {a.severity}
                       </Badge>
                     </div>
-                    <p className="text-slate-800 dark:text-slate-200 line-clamp-1">{a.message}</p>
+                    <p className="text-slate-200 line-clamp-1">{a.message}</p>
                     <span className="text-[10px] text-slate-400 block">{a.priority} • {a.createdDate}</span>
                   </div>
-                  <Button size="sm" variant="ghost" className="h-6 text-[11px] shrink-0 text-indigo-600">
+                  <Button size="sm" variant="ghost" className="h-6 text-[11px] shrink-0 text-[#818CF8] hover:bg-white/5">
                     Case →
                   </Button>
                 </div>
@@ -895,25 +895,25 @@ export function ManagementDashboard() {
         </Card>
 
         {/* Active Corrective Actions (CAPA) */}
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-white/10 bg-[#0B1020]">
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div>
                 <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-                  <FileCheck2 className="h-4 w-4 text-teal-600" />
+                  <FileCheck2 className="h-4 w-4 text-teal-400" />
                   <span>Corrective Action Pipeline (CAPA)</span>
                 </CardTitle>
                 <CardDescription className="text-xs">
                   Statutory remediation mandates across workflow stages
                 </CardDescription>
               </div>
-              <Link to="/corrective-actions" className="text-xs text-teal-600 hover:underline">
+              <Link to="/corrective-actions" className="text-xs text-teal-400 hover:underline">
                 View All CAPAs →
               </Link>
             </div>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+            <div className="divide-y divide-white/5 text-xs">
               {(data?.recentCapas || []).map((c: any) => (
                 <div key={c.id} className="p-3 flex items-start justify-between gap-3">
                   <div className="space-y-1">
@@ -949,65 +949,65 @@ export function ManagementDashboard() {
 
       {/* DRILLDOWN MODAL: High-Risk Outlet Risk Breakdown */}
       {riskModalOutlet && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 text-xs">
-            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[#0B1020] border border-white/10 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 text-xs">
+            <div className="flex items-start justify-between border-b border-white/10 pb-3">
               <div>
-                <span className="font-mono font-bold text-red-600 text-xs">{riskModalOutlet.outletId}</span>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                <span className="font-mono font-bold text-rose-400 text-xs">{riskModalOutlet.outletId}</span>
+                <h3 className="text-base font-bold text-white">
                   {riskModalOutlet.name} — Risk Engine Breakdown
                 </h3>
                 <span className="text-slate-400">{riskModalOutlet.city} • Manager: {riskModalOutlet.manager}</span>
               </div>
-              <button onClick={() => setRiskModalOutlet(null)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setRiskModalOutlet(null)} className="text-slate-400 hover:text-white">
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="p-3.5 bg-red-50 dark:bg-red-950/30 rounded-xl border border-red-200 dark:border-red-900 flex items-center justify-between">
+            <div className="p-3.5 bg-rose-500/10 rounded-xl border border-rose-500/25 flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-bold uppercase text-red-600 block">Composite Deterministic Risk</span>
-                <span className="text-2xl font-black font-mono text-red-600">{riskModalOutlet.riskScore}/100</span>
+                <span className="text-[10px] font-bold uppercase text-rose-400 block">Composite Deterministic Risk</span>
+                <span className="text-2xl font-black font-mono text-rose-400">{riskModalOutlet.riskScore}/100</span>
               </div>
               <div className="text-right">
                 <span className="text-[10px] font-bold uppercase text-slate-400 block">Compliance Audit Score</span>
-                <span className="text-lg font-bold font-mono text-slate-800 dark:text-slate-200">
+                <span className="text-lg font-bold font-mono text-emerald-400">
                   {riskModalOutlet.complianceScore}%
                 </span>
               </div>
             </div>
 
             <div className="space-y-2">
-              <span className="font-bold text-slate-900 dark:text-slate-100 block">Weighted Risk Factors:</span>
+              <span className="font-bold text-white block">Weighted Risk Factors:</span>
               <div className="space-y-1.5">
-                <div className="p-2 rounded bg-slate-50 dark:bg-slate-800/40 flex justify-between">
-                  <span>Sales & Cash Anomaly Ratio (30% weight)</span>
-                  <span className="font-mono font-bold text-red-600">Elevated (62% cash vs 30% par)</span>
+                <div className="p-2 rounded-xl bg-white/5 border border-white/5 flex justify-between">
+                  <span className="text-slate-300">Sales & Cash Anomaly Ratio (30% weight)</span>
+                  <span className="font-mono font-bold text-rose-400">Elevated (62% cash vs 30% par)</span>
                 </div>
-                <div className="p-2 rounded bg-slate-50 dark:bg-slate-800/40 flex justify-between">
-                  <span>Compliance Inspections & SOPs (25% weight)</span>
-                  <span className="font-mono font-bold text-amber-600">Walk-in chiller temp variance</span>
+                <div className="p-2 rounded-xl bg-white/5 border border-white/5 flex justify-between">
+                  <span className="text-slate-300">Compliance Inspections & SOPs (25% weight)</span>
+                  <span className="font-mono font-bold text-amber-400">Walk-in chiller temp variance</span>
                 </div>
-                <div className="p-2 rounded bg-slate-50 dark:bg-slate-800/40 flex justify-between">
-                  <span>Customer Experience & Tickets (15% weight)</span>
-                  <span className="font-mono font-bold text-slate-600">2 Active Service Tickets</span>
+                <div className="p-2 rounded-xl bg-white/5 border border-white/5 flex justify-between">
+                  <span className="text-slate-300">Customer Experience & Tickets (15% weight)</span>
+                  <span className="font-mono font-bold text-slate-400">2 Active Service Tickets</span>
                 </div>
-                <div className="p-2 rounded bg-slate-50 dark:bg-slate-800/40 flex justify-between">
-                  <span>Stock & Inventory Variance (10% weight)</span>
-                  <span className="font-mono font-bold text-amber-600">Variance in Truffle Sauce</span>
+                <div className="p-2 rounded-xl bg-white/5 border border-white/5 flex justify-between">
+                  <span className="text-slate-300">Stock & Inventory Variance (10% weight)</span>
+                  <span className="font-mono font-bold text-amber-400">Variance in Truffle Sauce</span>
                 </div>
               </div>
             </div>
 
-            <div className="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex justify-between items-center pt-2 border-t border-white/10">
               <Link
                 to={`/outlets/${riskModalOutlet.outletId}`}
-                className="text-indigo-600 hover:underline inline-flex items-center gap-1 font-semibold"
+                className="text-[#818CF8] hover:underline inline-flex items-center gap-1 font-semibold"
               >
                 <span>Open Store Profile Dossier</span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
-              <Button size="sm" onClick={() => setRiskModalOutlet(null)}>
+              <Button size="sm" onClick={() => setRiskModalOutlet(null)} className="bg-white/10 hover:bg-white/15 text-white border border-white/10">
                 Close
               </Button>
             </div>
@@ -1017,46 +1017,58 @@ export function ManagementDashboard() {
 
       {/* DRILLDOWN MODAL: Alert Case Details */}
       {alertModalItem && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 text-xs">
-            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-[#0B1020] border border-white/10 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4 text-xs">
+            <div className="flex items-start justify-between border-b border-white/10 pb-3">
               <div>
-                <span className="font-mono font-bold text-indigo-600 text-xs">{alertModalItem.alertId}</span>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                <span className="font-mono font-bold text-[#818CF8] text-xs">{alertModalItem.alertId}</span>
+                <h3 className="text-base font-bold text-white">
                   {alertModalItem.type}
                 </h3>
                 <span className="text-slate-400">Outlet: {alertModalItem.outletId} • Date: {alertModalItem.createdDate}</span>
               </div>
-              <button onClick={() => setAlertModalItem(null)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setAlertModalItem(null)} className="text-slate-400 hover:text-white">
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800 space-y-1">
-              <span className="font-bold text-slate-400 uppercase text-[10px] block">Operational Anomaly Message</span>
-              <p className="text-slate-800 dark:text-slate-200 text-sm leading-relaxed">{alertModalItem.message}</p>
+            <div className="p-3 bg-white/5 rounded-xl border border-white/10 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-300">Severity Level:</span>
+                <Badge
+                  className={
+                    alertModalItem.severity === "CRITICAL"
+                      ? "bg-rose-500/15 text-rose-300 border-rose-500/30 text-[10px]"
+                      : alertModalItem.severity === "HIGH"
+                      ? "bg-amber-500/15 text-amber-300 border-amber-500/30 text-[10px]"
+                      : "bg-slate-500/15 text-slate-300 border-slate-500/30 text-[10px]"
+                  }
+                >
+                  {alertModalItem.severity}
+                </Badge>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-slate-300">Department:</span>
+                <span className="text-slate-300">{alertModalItem.category}</span>
+              </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <div className="p-2.5 rounded bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">Severity Tier</span>
-                <span className="font-bold text-slate-900 dark:text-slate-100">{alertModalItem.severity}</span>
-              </div>
-              <div className="p-2.5 rounded bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800">
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">Priority Guideline</span>
-                <span className="font-bold text-slate-900 dark:text-slate-100">{alertModalItem.priority}</span>
-              </div>
+            <div className="space-y-1">
+              <span className="font-bold text-white block">Incident Details:</span>
+              <p className="text-slate-300 leading-relaxed bg-white/5 p-3 rounded-xl border border-white/5">
+                {alertModalItem.message}
+              </p>
             </div>
 
-            <div className="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex justify-between items-center pt-2 border-t border-white/10">
               <Link
                 to="/alerts"
-                className="text-indigo-600 hover:underline inline-flex items-center gap-1 font-semibold"
+                className="text-[#818CF8] hover:underline inline-flex items-center gap-1 font-semibold"
               >
-                <span>Navigate to Alert Queue</span>
+                <span>Go to Incident Registry</span>
                 <ArrowRight className="h-3 w-3" />
               </Link>
-              <Button size="sm" onClick={() => setAlertModalItem(null)}>
+              <Button size="sm" onClick={() => setAlertModalItem(null)} className="bg-white/10 hover:bg-white/15 text-white border border-white/10">
                 Dismiss
               </Button>
             </div>

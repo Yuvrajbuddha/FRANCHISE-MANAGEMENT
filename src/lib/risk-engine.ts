@@ -27,6 +27,10 @@ if (apiKey) {
   aiClient = new GoogleGenAI({ apiKey });
 }
 
+// In-memory cache for explanations and rate-limit cooldown tracker
+const explanationCache = new Map<string, string>();
+let rateLimitCooldownUntil = 0;
+
 /**
  * Determine risk level based on strict deterministic brackets:
  * 0–20 = Low
@@ -332,7 +336,11 @@ export async function calculateOutletRisk(outletId: string): Promise<RiskAssessm
   // Generate Natural-Language Explanation:
   // Gemini may generate the narrative explanation, but NEVER the numerical score.
   let explanation = "";
-  if (aiClient) {
+  const cacheKey = `${normOutletId}-${finalScore}-${level}`;
+
+  if (explanationCache.has(cacheKey)) {
+    explanation = explanationCache.get(cacheKey)!;
+  } else if (aiClient && Date.now() > rateLimitCooldownUntil) {
     try {
       const prompt = `Outlet: ${normOutletId}
 Deterministic Risk Score: ${finalScore}/100
@@ -359,13 +367,21 @@ IMPORTANT ETHICAL RULE: Do NOT allege fraud or declare intentional misconduct. F
       });
 
       explanation = response.text?.trim() || "";
-    } catch (aiErr) {
-      console.warn("[Risk Engine] Gemini explanation fallback:", aiErr);
+      if (explanation) {
+        explanationCache.set(cacheKey, explanation);
+      }
+    } catch (aiErr: any) {
+      // If 429 quota or rate-limit error, enter cooldown for 60 seconds
+      const errMsg = String(aiErr?.message || aiErr || "");
+      if (errMsg.includes("429") || errMsg.includes("quota") || errMsg.includes("RESOURCE_EXHAUSTED")) {
+        rateLimitCooldownUntil = Date.now() + 60_000;
+      }
     }
   }
 
   if (!explanation) {
     explanation = `${normOutletId} received a deterministic risk score of ${finalScore}/100 (${level} Risk). Primary drivers include ${factorList[0].name.toLowerCase()} (${factorList[0].desc}) and ${factorList[1].name.toLowerCase()} (${factorList[1].desc}). All contributing metrics reflect operational variance under active monitoring.`;
+    explanationCache.set(cacheKey, explanation);
   }
 
   const assessmentId = `RSK-${normOutletId}-${Date.now().toString().slice(-5)}`;

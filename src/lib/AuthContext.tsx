@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { AuthUser, ROLE_PERMISSIONS, UserPermissions, DEMO_USERS } from "./auth";
+import { AuthUser, ROLE_PERMISSIONS, UserPermissions, DEMO_USERS } from "./auth-constants";
 import { UserRole } from "@/types";
 
 interface AuthContextType {

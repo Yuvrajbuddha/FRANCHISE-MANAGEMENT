@@ -106,82 +106,72 @@ export default function LoginPage() {
       {/* ======================================================== */}
       {/* 1. MINIMAL PREMIUM EDITORIAL NAVIGATION                  */}
       {/* ======================================================== */}
-      <header className="sticky top-0 z-50 bg-[#050B1A]/85 backdrop-blur-xl border-b border-white/10 transition-colors">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      <header className="sticky top-0 z-50 bg-[#050B1A]/90 backdrop-blur-md border-b border-white/10 transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
           {/* Left: Project logo & name */}
-          <div className="flex items-center gap-3.5">
-            <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4F46FF] to-[#6366F1] text-white shadow-lg shadow-indigo-500/20 border border-white/10">
+          <div className="flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#4F46FF]/15 text-[#818CF8] border border-[#4F46FF]/30">
               <Building2 className="h-5 w-5" />
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-serif text-lg sm:text-xl font-bold tracking-tight text-white">
-                  FranchiseIQ
-                </span>
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-                  Sentinel v4.2
-                </span>
-              </div>
-              <p className="text-[11px] text-[#94A3B8] hidden sm:block">
+              <span className="font-serif text-lg font-bold text-white block leading-tight">
+                FranchiseIQ
+              </span>
+              <span className="text-[11px] text-slate-400 hidden sm:block">
                 Performance & Compliance Monitoring
-              </p>
+              </span>
             </div>
           </div>
 
-          {/* Center: Existing navigation links */}
-          <nav className="hidden lg:flex items-center gap-8 text-xs font-medium text-[#94A3B8]">
+          {/* Center: Simplified quiet navigation links */}
+          <nav className="hidden lg:flex items-center gap-7 text-xs text-slate-400">
             <a href="#overview" className="hover:text-white transition-colors">
               Overview
             </a>
-            <a href="#why-platform" className="hover:text-white transition-colors">
-              Operational Blindspots
-            </a>
             <a href="#operations" className="hover:text-white transition-colors">
-              Connected Telemetry
-            </a>
-            <a href="#performance" className="hover:text-white transition-colors">
-              Financial Intelligence
+              Operations
             </a>
             <a href="#evidence" className="hover:text-white transition-colors">
               AI Verification
             </a>
             <a href="#risk-engine" className="hover:text-white transition-colors">
-              Risk Engine
+              Risk
             </a>
             <a href="#capa-loop" className="hover:text-white transition-colors">
-              CAPA Loop
+              CAPA
             </a>
           </nav>
 
           {/* Right: Authentication / Access Action */}
-          <div className="hidden sm:flex items-center gap-4">
-            <div className="flex items-center gap-2 text-[11px] font-medium text-[#10B981] bg-[#10B981]/10 px-3 py-1.5 rounded-full border border-[#10B981]/20">
-              <span className="h-2 w-2 rounded-full bg-[#10B981] animate-pulse" />
-              <span>10 Metros Active</span>
+          <div className="hidden sm:flex items-center gap-3">
+            <div className="flex items-center gap-1.5 text-[11px] text-slate-400 font-mono">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" />
+              <span>Online</span>
             </div>
             <button
+              type="button"
               onClick={scrollToPortals}
-              className="text-xs font-semibold bg-[#4F46FF] hover:bg-[#6366F1] text-white px-5 py-2.5 rounded-2xl transition-all shadow-md shadow-indigo-500/25 hover:shadow-indigo-500/40 cursor-pointer flex items-center gap-2"
+              className="bg-[#4F46FF] hover:bg-[#6366F1] text-white text-xs font-semibold h-9 px-4 rounded-xl cursor-pointer transition-all"
             >
-              <span>Access Workspace</span>
-              <ArrowRight className="h-3.5 w-3.5" />
+              Access Workspace
             </button>
           </div>
 
-          {/* Mobile Hamburger Toggle */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden flex h-10 w-10 items-center justify-center rounded-2xl bg-white/5 border border-white/10 text-slate-300 hover:text-white cursor-pointer"
-            aria-label="Toggle menu"
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          {/* Mobile menu toggle */}
+          <div className="lg:hidden flex items-center">
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/5"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-b border-white/10 bg-[#071126] px-6 py-6 space-y-4">
-            <nav className="flex flex-col gap-3 text-sm text-[#94A3B8]">
+          <div className="lg:hidden border-b border-white/10 bg-[#071126] px-4 py-4 space-y-3 animate-in fade-in text-xs">
+            <nav className="flex flex-col gap-2 text-slate-300">
               <a
                 href="#overview"
                 onClick={() => setMobileMenuOpen(false)}
@@ -190,25 +180,11 @@ export default function LoginPage() {
                 Overview
               </a>
               <a
-                href="#why-platform"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-white py-1"
-              >
-                Operational Blindspots
-              </a>
-              <a
                 href="#operations"
                 onClick={() => setMobileMenuOpen(false)}
                 className="hover:text-white py-1"
               >
-                Connected Telemetry
-              </a>
-              <a
-                href="#performance"
-                onClick={() => setMobileMenuOpen(false)}
-                className="hover:text-white py-1"
-              >
-                Financial Intelligence
+                Operations
               </a>
               <a
                 href="#evidence"
@@ -222,7 +198,14 @@ export default function LoginPage() {
                 onClick={() => setMobileMenuOpen(false)}
                 className="hover:text-white py-1"
               >
-                Risk Engine
+                Risk
+              </a>
+              <a
+                href="#capa-loop"
+                onClick={() => setMobileMenuOpen(false)}
+                className="hover:text-white py-1"
+              >
+                CAPA
               </a>
             </nav>
             <button
@@ -230,10 +213,10 @@ export default function LoginPage() {
                 setMobileMenuOpen(false);
                 scrollToPortals();
               }}
-              className="w-full text-xs font-semibold bg-[#4F46FF] text-white py-3 rounded-2xl flex items-center justify-center gap-2"
+              className="w-full text-xs font-semibold bg-[#4F46FF] text-white py-2.5 rounded-xl flex items-center justify-center gap-1.5"
             >
               <span>Access Workspace</span>
-              <ArrowRight className="h-4 w-4" />
+              <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
         )}
@@ -242,285 +225,148 @@ export default function LoginPage() {
       {/* ======================================================== */}
       {/* SECTION 1: HERO / PORTAL SELECTION                       */}
       {/* ======================================================== */}
-      <section id="overview" className="relative pt-16 pb-24 md:pt-28 md:pb-36 overflow-hidden">
-        {/* Subtle Enterprise Network Visualization in Background */}
-        <div className="absolute inset-0 pointer-events-none -z-10 overflow-hidden">
-          {/* Subtle Connected Nodes SVG */}
-          <svg
-            className="absolute w-full h-full opacity-15 stroke-indigo-400/30"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <defs>
-              <pattern id="grid-dots" width="40" height="40" patternUnits="userSpaceOnUse">
-                <circle cx="2" cy="2" r="1" fill="#4F46FF" opacity="0.4" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid-dots)" />
-            {/* Connected Network Vector Lines */}
-            <path
-              d="M 120,180 L 340,240 L 620,190 L 890,260 L 1150,210"
-              strokeDasharray="4 6"
-              strokeWidth="1.5"
-              fill="none"
-            />
-            <path
-              d="M 280,360 L 520,320 L 780,380 L 1040,310"
-              strokeDasharray="4 6"
-              strokeWidth="1.5"
-              fill="none"
-            />
-          </svg>
-
-          {/* Soft Node Glows */}
-          <div className="absolute top-20 left-1/4 w-[500px] h-[300px] bg-[#4F46FF]/12 rounded-full blur-3xl" />
-          <div className="absolute top-48 right-1/4 w-[450px] h-[300px] bg-[#22D3EE]/10 rounded-full blur-3xl" />
-          <div className="absolute bottom-10 left-1/2 -translate-x-1/2 w-[700px] h-[250px] bg-[#00B894]/8 rounded-full blur-3xl" />
-
-          {/* Subtle Floating Node Markers */}
-          <div className="hidden lg:block absolute top-32 left-[12%] text-[10px] font-mono text-indigo-300/60 border border-indigo-500/20 bg-[#071126]/60 backdrop-blur-xs px-2.5 py-1 rounded-full">
-            ● NODE_DELHI_019 [SYNC OK]
-          </div>
-          <div className="hidden lg:block absolute top-52 right-[10%] text-[10px] font-mono text-cyan-300/60 border border-cyan-500/20 bg-[#071126]/60 backdrop-blur-xs px-2.5 py-1 rounded-full">
-            ● NODE_BLR_114 [CHILLER 3.4°C]
-          </div>
-          <div className="hidden lg:block absolute bottom-32 left-[18%] text-[10px] font-mono text-emerald-300/60 border border-emerald-500/20 bg-[#071126]/60 backdrop-blur-xs px-2.5 py-1 rounded-full">
-            ● NODE_LKO_042 [POS 100%]
-          </div>
-        </div>
-
+      <section id="overview" className="relative pt-12 pb-16 md:pt-16 md:pb-20 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-4xl mx-auto text-center space-y-6">
+          <div className="max-w-2xl mx-auto text-center space-y-3">
             {/* Small uppercase label */}
-            <div className="inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-widest text-[#F59E0B] bg-[#F59E0B]/10 px-4 py-1.5 rounded-full border border-[#F59E0B]/20">
-              <Sparkles className="h-3.5 w-3.5" />
-              <span>Closed-Loop Enterprise Operational Governance</span>
-            </div>
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-400 block">
+              ENTERPRISE OPERATIONS
+            </span>
 
-            {/* Large editorial serif heading with highlighted phrase */}
-            <h1 className="font-serif text-4xl sm:text-6xl lg:text-7xl text-[#F8FAFC] font-normal tracking-tight leading-[1.1]">
-              Select Your{" "}
-              <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-[#6366F1] via-[#22D3EE] to-[#00B894]">
-                Designated Operating Portal
-              </span>
+            {/* Main heading */}
+            <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-white font-normal tracking-tight">
+              Select Your Portal
             </h1>
 
-            {/* Supporting paragraph */}
-            <p className="text-base sm:text-lg text-[#94A3B8] max-w-2xl mx-auto leading-relaxed font-sans">
-              Cryptographically isolated portals designed for multi-outlet franchisees,
-              on-the-ground store managers, and statutory compliance auditors.
+            {/* Short description */}
+            <p className="text-sm sm:text-base text-slate-400 font-sans">
+              Choose your workspace to continue.
             </p>
-
-            {/* Current KPI / Information Chips */}
-            <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-[#0A1224]/80 px-4 py-2 text-xs font-medium text-slate-300 backdrop-blur-md shadow-inner">
-                <Store className="h-3.5 w-3.5 text-[#22D3EE]" />
-                <span>10 Live DB Metros</span>
-              </div>
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-[#0A1224]/80 px-4 py-2 text-xs font-medium text-slate-300 backdrop-blur-md shadow-inner">
-                <TrendingUp className="h-3.5 w-3.5 text-[#00B894]" />
-                <span>₹84.6 Cr Net GMV</span>
-              </div>
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-[#0A1224]/80 px-4 py-2 text-xs font-medium text-slate-300 backdrop-blur-md shadow-inner">
-                <Video className="h-3.5 w-3.5 text-[#6366F1]" />
-                <span>AI Vision Prep Line Audit</span>
-              </div>
-              <div className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-[#0A1224]/80 px-4 py-2 text-xs font-medium text-slate-300 backdrop-blur-md shadow-inner">
-                <ShieldCheck className="h-3.5 w-3.5 text-[#F59E0B]" />
-                <span>8-Stage CAPA Resolution</span>
-              </div>
-            </div>
           </div>
 
           {/* Global Error Banner */}
           {errorMessage && (
-            <div className="max-w-2xl mx-auto mt-8 flex items-center gap-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 p-4 text-xs text-rose-300">
-              <ShieldAlert className="h-5 w-5 shrink-0 text-rose-400" />
+            <div className="max-w-md mx-auto mt-6 flex items-center gap-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 p-3.5 text-xs text-rose-300">
+              <ShieldAlert className="h-4 w-4 shrink-0 text-rose-400" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           {/* ======================================================== */}
-          {/* LIVEDIN-STYLE PREMIUM ROLE CARDS (SECTION 1 PORTALS)     */}
+          {/* THREE COMPACT, CLEAN PORTAL CARDS (1 ROW ON DESKTOP)     */}
           {/* ======================================================== */}
-          <div id="portals-section" className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Card 1: Franchisee */}
-            <div className="group relative rounded-[28px] border border-white/10 bg-[#0A1224]/90 p-8 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-indigo-500/40 hover:shadow-2xl hover:shadow-indigo-500/10 flex flex-col justify-between">
-              <div className="space-y-6">
+          <div id="portals-section" className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+            {/* Card 1: FRANCHISEE */}
+            <div className="rounded-[24px] border border-white/10 bg-[#071126] p-6 shadow-xl flex flex-col justify-between hover:border-[#4F46FF]/50 transition-all group">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="h-12 w-12 rounded-2xl bg-indigo-500/15 text-indigo-400 border border-indigo-500/25 flex items-center justify-center">
-                    <Building2 className="h-6 w-6" />
+                  <div className="h-11 w-11 rounded-2xl bg-[#4F46FF]/10 text-[#818CF8] border border-[#4F46FF]/20 flex items-center justify-center">
+                    <Building2 className="h-5 w-5" />
                   </div>
-                  <span className="text-[11px] font-mono font-medium text-indigo-300 bg-indigo-500/15 border border-indigo-500/20 px-3 py-1 rounded-full">
-                    12 Outlets
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#818CF8] font-bold">
+                    FRANCHISEE
                   </span>
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#F59E0B]">
-                    Portfolio Governance
-                  </span>
-                  <h3 className="font-serif text-2xl font-bold text-white mt-1 group-hover:text-indigo-400 transition-colors">
+                  <h3 className="font-serif text-2xl font-bold text-white">
                     Franchisee
                   </h3>
-                  <p className="text-xs text-[#94A3B8] mt-2.5 leading-relaxed">
-                    Consolidated multi-unit P&L visibility, real-time EBITDA
-                    benchmarking, centralized inventory demand, and brand royalty
-                    audits.
+                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                    Manage your stores and overall business performance.
                   </p>
-                </div>
-
-                <div className="pt-4 border-t border-white/5 space-y-2 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Designated Operator</span>
-                    <span className="font-medium text-slate-200">Yash Gupta</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Scope</span>
-                    <span className="font-mono text-emerald-400">Multi-Store P&L</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Access Level</span>
-                    <span className="text-indigo-300">Full Network Owner</span>
-                  </div>
                 </div>
               </div>
 
-              <div className="pt-8">
+              <div className="pt-6">
                 <Button
-                  size="lg"
-                  className="w-full bg-[#4F46FF] hover:bg-[#6366F1] text-white font-semibold text-xs h-12 rounded-2xl shadow-lg shadow-indigo-600/25 cursor-pointer gap-2 transition-all hover:scale-[1.01]"
+                  className="w-full bg-[#4F46FF] hover:bg-[#6366F1] text-white font-semibold text-xs h-11 rounded-xl shadow-md shadow-[#4F46FF]/20 cursor-pointer gap-2 transition-all uppercase tracking-wider"
                   disabled={isLoadingRole === "OWNER"}
                   onClick={() => handleQuickLogin("OWNER", "/")}
                 >
-                  <span>
-                    {isLoadingRole === "OWNER" ? "Verifying Session..." : "Sign In as Franchisee"}
-                  </span>
-                  <ArrowRight className="h-4 w-4" />
+                  <span>{isLoadingRole === "OWNER" ? "Verifying..." : "Enter Portal →"}</span>
                 </Button>
               </div>
             </div>
 
-            {/* Card 2: Store Operations */}
-            <div className="group relative rounded-[28px] border border-white/10 bg-[#0A1224]/90 p-8 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-cyan-500/40 hover:shadow-2xl hover:shadow-cyan-500/10 flex flex-col justify-between">
-              <div className="space-y-6">
+            {/* Card 2: STORE */}
+            <div className="rounded-[24px] border border-white/10 bg-[#071126] p-6 shadow-xl flex flex-col justify-between hover:border-slate-500/40 transition-all group">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="h-12 w-12 rounded-2xl bg-cyan-500/15 text-cyan-400 border border-cyan-500/25 flex items-center justify-center">
-                    <Store className="h-6 w-6" />
+                  <div className="h-11 w-11 rounded-2xl bg-white/5 text-slate-300 border border-white/10 flex items-center justify-center">
+                    <Store className="h-5 w-5" />
                   </div>
-                  <span className="text-[11px] font-mono font-medium text-cyan-300 bg-cyan-500/15 border border-cyan-500/20 px-3 py-1 rounded-full">
-                    OUT-042 Partition
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-bold">
+                    STORE
                   </span>
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#22D3EE]">
-                    Unit-Level Execution
-                  </span>
-                  <h3 className="font-serif text-2xl font-bold text-white mt-1 group-hover:text-cyan-400 transition-colors">
-                    Store Operations
+                  <h3 className="font-serif text-2xl font-bold text-white">
+                    Store
                   </h3>
-                  <p className="text-xs text-[#94A3B8] mt-2.5 leading-relaxed">
-                    Cryptographically isolated outlet partition. Daily shift
-                    opening protocols, tamper-seal packaging logs, and real-time POS
-                    sync.
+                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                    Manage store operations and submit CCTV evidence.
                   </p>
                 </div>
-
-                <div className="pt-4 border-t border-white/5 space-y-2 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Station Target</span>
-                    <span className="font-medium text-slate-200">Hazratganj Flagship</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Role Title</span>
-                    <span className="font-mono text-cyan-400">Store GM</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Data Isolation</span>
-                    <span className="text-emerald-400">Strict Outlet Boundary</span>
-                  </div>
-                </div>
               </div>
 
-              <div className="pt-8">
+              <div className="pt-6">
                 <Button
-                  size="lg"
-                  className="w-full bg-[#071126] hover:bg-[#0F1B35] text-white border border-white/15 font-semibold text-xs h-12 rounded-2xl shadow-md cursor-pointer gap-2 transition-all hover:scale-[1.01]"
-                  onClick={() => navigate("/login/store")}
+                  className="w-full bg-white/10 hover:bg-white/15 text-white border border-white/10 font-semibold text-xs h-11 rounded-xl shadow-sm cursor-pointer gap-2 transition-all uppercase tracking-wider"
+                  disabled={isLoadingRole === "FRANCHISE"}
+                  onClick={() => handleQuickLogin("FRANCHISE", "/evidence")}
                 >
-                  <span>Sign In as Store</span>
-                  <ArrowRight className="h-4 w-4" />
+                  <span>{isLoadingRole === "FRANCHISE" ? "Verifying..." : "Enter Portal →"}</span>
                 </Button>
               </div>
             </div>
 
-            {/* Card 3: Quality & Compliance Officer */}
-            <div className="group relative rounded-[28px] border border-white/10 bg-[#0A1224]/90 p-8 shadow-xl backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-emerald-500/40 hover:shadow-2xl hover:shadow-emerald-500/10 flex flex-col justify-between">
-              <div className="space-y-6">
+            {/* Card 3: QUALITY OFFICER */}
+            <div className="rounded-[24px] border border-white/10 bg-[#071126] p-6 shadow-xl flex flex-col justify-between hover:border-[#10B981]/50 transition-all group">
+              <div className="space-y-4">
                 <div className="flex items-center justify-between">
-                  <div className="h-12 w-12 rounded-2xl bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 flex items-center justify-center">
-                    <ShieldCheck className="h-6 w-6" />
+                  <div className="h-11 w-11 rounded-2xl bg-[#10B981]/10 text-[#10B981] border border-[#10B981]/20 flex items-center justify-center">
+                    <ShieldCheck className="h-5 w-5" />
                   </div>
-                  <span className="text-[11px] font-mono font-medium text-emerald-300 bg-emerald-500/15 border border-emerald-500/20 px-3 py-1 rounded-full">
-                    Officer Dashboard
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-[#10B981] font-bold">
+                    QUALITY OFFICER
                   </span>
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#00B894]">
-                    Officer Review & Ratings
-                  </span>
-                  <h3 className="font-serif text-2xl font-bold text-white mt-1 group-hover:text-emerald-400 transition-colors">
+                  <h3 className="font-serif text-2xl font-bold text-white">
                     Quality & Compliance Officer
                   </h3>
-                  <p className="text-xs text-[#94A3B8] mt-2.5 leading-relaxed">
-                    Review store evidence, verify compliance and assign store ratings.
+                  <p className="text-xs text-slate-400 mt-2 leading-relaxed">
+                    Review store evidence and give compliance ratings.
                   </p>
-                </div>
-
-                <div className="pt-4 border-t border-white/5 space-y-2 text-xs">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Designated Officer</span>
-                    <span className="font-medium text-slate-200">Officer Yuvraj Buddha</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Operational Scope</span>
-                    <span className="font-mono text-emerald-400">All Network Stores</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-400">Verification Authority</span>
-                    <span className="text-indigo-400">Direct Store Rating & Verification</span>
-                  </div>
                 </div>
               </div>
 
-              <div className="pt-8">
+              <div className="pt-6">
                 <Button
-                  size="lg"
-                  className="w-full bg-[#10B981] hover:bg-[#059669] text-white font-semibold text-xs h-12 rounded-2xl shadow-lg shadow-emerald-600/25 cursor-pointer gap-2 transition-all hover:scale-[1.01]"
+                  className="w-full bg-[#10B981] hover:bg-[#059669] text-white font-semibold text-xs h-11 rounded-xl shadow-md shadow-[#10B981]/20 cursor-pointer gap-2 transition-all uppercase tracking-wider"
                   disabled={isLoadingRole === "OFFICER"}
                   onClick={() => handleQuickLogin("OFFICER", "/compliance")}
                 >
-                  <span>
-                    {isLoadingRole === "OFFICER" ? "Verifying Session..." : "Sign In as Quality Officer"}
-                  </span>
-                  <ArrowRight className="h-4 w-4" />
+                  <span>{isLoadingRole === "OFFICER" ? "Verifying..." : "Enter Portal →"}</span>
                 </Button>
               </div>
             </div>
           </div>
 
           {/* Collapsible Corporate Credentials Form */}
-          <div className="mt-12 text-center max-w-xl mx-auto">
+          <div className="mt-10 text-center max-w-md mx-auto">
             <button
               onClick={() => setShowManualLogin(!showManualLogin)}
-              className="text-xs font-medium text-slate-400 hover:text-white inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl border border-white/10 bg-[#0A1224] hover:bg-[#0E1A33] transition-all cursor-pointer shadow-sm"
+              className="text-xs font-medium text-slate-400 hover:text-white inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-white/10 bg-[#071126] hover:bg-white/5 transition-all cursor-pointer shadow-sm"
             >
-              <KeyRound className="h-3.5 w-3.5 text-[#F59E0B]" />
+              <KeyRound className="h-3.5 w-3.5 text-slate-400" />
               <span>
                 {showManualLogin
-                  ? "Close Corporate Credentials Form"
-                  : "Need to authenticate with custom enterprise credentials?"}
+                  ? "Close Custom Credentials Form"
+                  : "Sign in with custom email & password"}
               </span>
               <ChevronDown
                 className={`h-3.5 w-3.5 transition-transform ${
@@ -530,32 +376,32 @@ export default function LoginPage() {
             </button>
 
             {showManualLogin && (
-              <div className="mt-6 p-7 rounded-[28px] border border-white/10 bg-[#0A1224] shadow-2xl text-left transition-all backdrop-blur-xl">
-                <div className="mb-5">
-                  <h4 className="font-serif text-lg font-bold text-white">
-                    Corporate Single Sign-On
+              <div className="mt-4 p-6 rounded-2xl border border-white/10 bg-[#071126] shadow-2xl text-left transition-all">
+                <div className="mb-4">
+                  <h4 className="font-serif text-base font-bold text-white">
+                    Corporate Sign-In
                   </h4>
-                  <p className="text-xs text-[#94A3B8]">
-                    Enter your registered enterprise email address and password.
+                  <p className="text-xs text-slate-400">
+                    Enter your registered enterprise credentials.
                   </p>
                 </div>
 
-                <form onSubmit={handleManualSubmit} className="space-y-4">
+                <form onSubmit={handleManualSubmit} className="space-y-3">
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                      Corporate Email
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
+                      Email
                     </label>
                     <Input
                       type="email"
                       value={manualEmail}
                       onChange={(e) => setManualEmail(e.target.value)}
                       placeholder="e.g. yuvraj.buddha@aurafoods.com"
-                      className="bg-[#050B1A] border-white/10 text-white text-xs h-11 rounded-xl focus:border-indigo-500"
+                      className="bg-[#050B1A] border-white/10 text-white text-xs h-10 rounded-xl focus:border-[#4F46FF]"
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">
                       Password
                     </label>
                     <Input
@@ -563,16 +409,16 @@ export default function LoginPage() {
                       value={manualPassword}
                       onChange={(e) => setManualPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="bg-[#050B1A] border-white/10 text-white text-xs h-11 rounded-xl focus:border-indigo-500"
+                      className="bg-[#050B1A] border-white/10 text-white text-xs h-10 rounded-xl focus:border-[#4F46FF]"
                       required
                     />
                   </div>
                   <Button
                     type="submit"
-                    className="w-full bg-[#4F46FF] hover:bg-[#6366F1] text-white text-xs h-11 rounded-xl font-semibold cursor-pointer shadow-md shadow-indigo-600/30 transition-all"
+                    className="w-full bg-[#4F46FF] hover:bg-[#6366F1] text-white text-xs h-10 rounded-xl font-semibold cursor-pointer shadow-md shadow-[#4F46FF]/20 transition-all uppercase tracking-wider"
                     disabled={isManualLoading}
                   >
-                    {isManualLoading ? "Verifying Credentials..." : "Authenticate Session"}
+                    {isManualLoading ? "Verifying..." : "Authenticate Session"}
                   </Button>
                 </form>
               </div>
@@ -604,12 +450,12 @@ export default function LoginPage() {
       <section id="why-platform" className="py-24 md:py-32 bg-[#071126] border-t border-white/5 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-16 space-y-4">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-[#22D3EE] bg-[#22D3EE]/10 px-3.5 py-1.5 rounded-full border border-[#22D3EE]/20 inline-block">
-              The Multi-Unit Challenge
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-400 block">
+              THE MULTI-UNIT CHALLENGE
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-white">
               Eliminating operational blindspots across{" "}
-              <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-[#22D3EE] to-[#00B894]">
+              <span className="font-serif italic text-slate-300">
                 distributed franchise networks.
               </span>
             </h2>
@@ -723,12 +569,12 @@ export default function LoginPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
             {/* Left: Text Storytelling */}
             <div className="space-y-6">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-[#00B894] bg-[#00B894]/10 px-3.5 py-1.5 rounded-full border border-[#00B894]/20 inline-block">
-                Connected Enterprise Architecture
+              <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#10B981] block">
+                CONNECTED ENTERPRISE ARCHITECTURE
               </span>
               <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-white">
                 Unified telemetry across{" "}
-                <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-[#00B894] via-[#22D3EE] to-[#6366F1]">
+                <span className="font-serif italic text-slate-300">
                   every operating franchise node.
                 </span>
               </h2>
@@ -858,12 +704,12 @@ export default function LoginPage() {
       <section id="performance" className="py-24 md:py-32 bg-[#071126] border-t border-white/5 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-[#F59E0B] bg-[#F59E0B]/10 px-3.5 py-1.5 rounded-full border border-[#F59E0B]/20 inline-block">
-              Financial & Unit Economics
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#F59E0B] block">
+              FINANCIAL & UNIT ECONOMICS
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-white">
               Real-time EBITDA and{" "}
-              <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-[#F59E0B] to-[#22D3EE]">
+              <span className="font-serif italic text-[#F59E0B]">
                 revenue leakage prevention.
               </span>
             </h2>
@@ -972,12 +818,12 @@ export default function LoginPage() {
       <section id="evidence" className="py-24 md:py-32 bg-[#050B1A] border-t border-white/5 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="max-w-3xl mb-16 space-y-4">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-[#6366F1] bg-[#6366F1]/10 px-3.5 py-1.5 rounded-full border border-[#6366F1]/20 inline-block">
-              Computer Vision & CCTV Auditing
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#818CF8] block">
+              COMPUTER VISION & CCTV AUDITING
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-white">
               AI assists.{" "}
-              <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-[#6366F1] via-[#22D3EE] to-white">
+              <span className="font-serif italic text-slate-300">
                 Human verifies.
               </span>
             </h2>
@@ -1137,12 +983,12 @@ export default function LoginPage() {
 
             {/* Right: Text Storytelling */}
             <div className="space-y-6">
-              <span className="text-[11px] font-bold uppercase tracking-widest text-[#22D3EE] bg-[#22D3EE]/10 px-3.5 py-1.5 rounded-full border border-[#22D3EE]/20 inline-block">
-                Predictive Risk Engine
+              <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-400 block">
+                PREDICTIVE RISK ENGINE
               </span>
               <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-white">
                 Predictive composite risk scoring{" "}
-                <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-[#22D3EE] via-[#6366F1] to-[#00B894]">
+                <span className="font-serif italic text-slate-300">
                   with mathematical rigor.
                 </span>
               </h2>
@@ -1176,12 +1022,12 @@ export default function LoginPage() {
       <section id="roles" className="py-24 md:py-32 bg-[#050B1A] border-t border-white/5 relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <span className="text-[11px] font-bold uppercase tracking-widest text-[#00B894] bg-[#00B894]/10 px-3.5 py-1.5 rounded-full border border-[#00B894]/20 inline-block">
-              Cryptographic Data Isolation
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#10B981] block">
+              CRYPTOGRAPHIC DATA ISOLATION
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-white">
               Tailored interfaces for{" "}
-              <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-[#00B894] via-[#22D3EE] to-white">
+              <span className="font-serif italic text-slate-300">
                 every governance tier.
               </span>
             </h2>
@@ -1234,7 +1080,7 @@ export default function LoginPage() {
             </span>
             <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-white">
               Enforced accountability through the{" "}
-              <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-[#F59E0B] via-[#22D3EE] to-white">
+              <span className="font-serif italic text-[#F59E0B]">
                 8-stage CAPA loop.
               </span>
             </h2>
@@ -1281,36 +1127,25 @@ export default function LoginPage() {
       {/* SECTION 9: FINAL CTA / LOGIN PORTAL ANCHOR               */}
       {/* ======================================================== */}
       <section className="py-24 md:py-36 bg-gradient-to-b from-[#071126] to-[#050B1A] border-t border-white/5 relative overflow-hidden text-center">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-          <span className="text-[11px] font-bold uppercase tracking-widest text-[#22D3EE] bg-[#22D3EE]/10 px-4 py-1.5 rounded-full border border-[#22D3EE]/20 inline-block">
-            Enterprise Access
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+          <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-400 block">
+            ENTERPRISE PLATFORM
           </span>
-          <h2 className="font-serif text-4xl sm:text-6xl font-normal leading-tight text-white">
-            Ready to verify your{" "}
-            <span className="font-serif italic text-transparent bg-clip-text bg-gradient-to-r from-[#6366F1] via-[#22D3EE] to-[#00B894]">
-              franchise network?
-            </span>
+          <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-white">
+            Ready to access your workspace?
           </h2>
-          <p className="text-base sm:text-lg text-[#94A3B8] max-w-2xl mx-auto leading-relaxed">
-            Select your authorized operating role to access live telemetry, financial reconciliation, and CCTV auditing.
+          <p className="text-sm sm:text-base text-slate-400 max-w-xl mx-auto leading-relaxed">
+            Select your authorized portal to review store performance, daily CCTV evidence, and compliance ratings.
           </p>
 
-          <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <div className="pt-2 flex items-center justify-center">
             <Button
               size="lg"
               onClick={scrollToPortals}
-              className="w-full sm:w-auto bg-[#4F46FF] hover:bg-[#6366F1] text-white font-semibold text-sm h-13 px-8 rounded-2xl shadow-xl shadow-indigo-600/30 cursor-pointer gap-2 transition-all hover:scale-105"
+              className="bg-[#4F46FF] hover:bg-[#6366F1] text-white font-semibold text-xs h-12 px-8 rounded-xl shadow-lg shadow-[#4F46FF]/20 cursor-pointer gap-2 transition-all uppercase tracking-wider"
             >
-              <span>Select Your Operating Portal</span>
+              <span>Select Your Portal</span>
               <ArrowRight className="h-4 w-4" />
-            </Button>
-            <Button
-              size="lg"
-              variant="outline"
-              onClick={() => handleQuickLogin("ADMIN", "/")}
-              className="w-full sm:w-auto border-white/15 bg-white/5 hover:bg-white/10 text-white font-semibold text-sm h-13 px-7 rounded-2xl cursor-pointer"
-            >
-              <span>Sign In as Corporate Admin</span>
             </Button>
           </div>
         </div>
@@ -1323,7 +1158,7 @@ export default function LoginPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-white/5">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#4F46FF] to-[#6366F1] text-white">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#4F46FF]/15 text-[#818CF8] border border-[#4F46FF]/30">
                 <Building2 className="h-4 w-4" />
               </div>
               <span className="font-serif text-lg font-bold text-white">
@@ -1331,24 +1166,21 @@ export default function LoginPage() {
               </span>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-[#94A3B8]">
+            <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
               <a href="#overview" className="hover:text-white transition-colors">
                 Overview
               </a>
-              <a href="#why-platform" className="hover:text-white transition-colors">
-                Operational Blindspots
-              </a>
               <a href="#operations" className="hover:text-white transition-colors">
-                Connected Telemetry
-              </a>
-              <a href="#performance" className="hover:text-white transition-colors">
-                Financial Intelligence
+                Operations
               </a>
               <a href="#evidence" className="hover:text-white transition-colors">
                 AI Verification
               </a>
               <a href="#risk-engine" className="hover:text-white transition-colors">
-                Risk Engine
+                Risk
+              </a>
+              <a href="#capa-loop" className="hover:text-white transition-colors">
+                CAPA
               </a>
             </div>
           </div>
@@ -1357,12 +1189,9 @@ export default function LoginPage() {
             <p>
               © 2026 AI-Assisted Franchise Performance & Compliance Monitoring. Confidential & Proprietary.
             </p>
-            <div className="flex items-center gap-4 text-[11px] font-mono text-slate-500">
-              <span>10 Metros Active</span>
-              <span>·</span>
-              <span>Statutory Compliance Architecture</span>
-              <span>·</span>
-              <span>Single Sign-On Enabled</span>
+            <div className="flex items-center gap-2 text-[11px] font-mono text-slate-500">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" />
+              <span>Enterprise Compliance Infrastructure</span>
             </div>
           </div>
         </div>

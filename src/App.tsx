@@ -3,22 +3,22 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider } from "@/lib/AuthContext";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
-import LoginPage from "@/app/login/LoginPage";
-import StoreLoginPage from "@/app/login/StoreLoginPage";
-import { DashboardPlaceholder } from "@/app/dashboard/DashboardPlaceholder";
-import OutletsPage from "@/app/outlets/OutletsPage";
-import OutletDetailPage from "@/app/outlets/OutletDetailPage";
-import SalesPage from "@/app/sales/SalesPage";
-import InventoryPage from "@/app/inventory/InventoryPage";
-import CompliancePage from "@/app/compliance/CompliancePage";
-import ComplianceDetailPage from "@/app/compliance/ComplianceDetailPage";
-import StoreEvidenceReviewPage from "@/app/compliance/StoreEvidenceReviewPage";
-import EvidencePage from "@/app/evidence/EvidencePage";
-import RiskPage from "@/app/risk/RiskPage";
-import AlertsPage from "@/app/alerts/AlertsPage";
-import ComplaintsPage from "@/app/complaints/ComplaintsPage";
-import CorrectiveActionsPage from "@/app/corrective-actions/CorrectiveActionsPage";
-import ReportsPage from "@/app/reports/ReportsPage";
+import LoginPage from "@/pages/LoginPage";
+import StoreLoginPage from "@/pages/StoreLoginPage";
+import ManagementDashboard from "@/pages/ManagementDashboard";
+import OutletsPage from "@/pages/OutletsPage";
+import OutletDetailPage from "@/pages/OutletDetailPage";
+import SalesPage from "@/pages/SalesPage";
+import InventoryPage from "@/pages/InventoryPage";
+import CompliancePage from "@/pages/CompliancePage";
+import ComplianceDetailPage from "@/pages/ComplianceDetailPage";
+import StoreEvidenceReviewPage from "@/pages/StoreEvidenceReviewPage";
+import EvidencePage from "@/pages/EvidencePage";
+import RiskPage from "@/pages/RiskPage";
+import AlertsPage from "@/pages/AlertsPage";
+import ComplaintsPage from "@/pages/ComplaintsPage";
+import CorrectiveActionsPage from "@/pages/CorrectiveActionsPage";
+import ReportsPage from "@/pages/ReportsPage";
 
 export default function App() {
   return (
@@ -35,7 +35,7 @@ export default function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <DashboardPlaceholder />
+                <ManagementDashboard />
               </ProtectedRoute>
             }
           />

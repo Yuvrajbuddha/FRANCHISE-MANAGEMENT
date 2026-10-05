@@ -30,7 +30,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { NetworkBackground } from "@/components/NetworkBackground";
+import { PortalNetworkBackground } from "@/components/PortalNetworkBackground";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -73,10 +73,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#EEF2F6] text-slate-900 antialiased selection:bg-blue-600 selection:text-white font-sans relative">
-      {/* Subtle Background Interactive Network */}
-      <NetworkBackground />
-
+    <div className="min-h-screen bg-transparent text-slate-900 antialiased selection:bg-blue-600 selection:text-white font-sans relative">
       <div className="relative z-10">
         {/* ======================================================== */}
         {/* 1. DARK NAVY ENTERPRISE NAVIGATION BAR                   */}
@@ -197,7 +194,10 @@ export default function LoginPage() {
         {/* SECTION 1: HERO / PORTAL SELECTION                       */}
         {/* ======================================================== */}
         <section id="overview" className="relative pt-12 pb-16 md:pt-16 md:pb-20 overflow-hidden bg-[#EEF3F8]/80 backdrop-blur-xs border-b border-slate-200/80">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Interactive Network Background ONLY for this specific portal selection section */}
+          <PortalNetworkBackground />
+
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="max-w-2xl mx-auto text-center space-y-3">
               {/* Small uppercase label */}
               <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-600 block">

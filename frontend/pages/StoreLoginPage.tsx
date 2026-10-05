@@ -84,7 +84,7 @@ export default function StoreLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050B1A] text-slate-100 flex flex-col justify-between p-4 sm:p-6 lg:p-8 antialiased selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen bg-[#050B1A]/95 text-slate-100 flex flex-col justify-between p-4 sm:p-6 lg:p-8 antialiased selection:bg-emerald-500 selection:text-white relative overflow-hidden">
       {/* Top Bar Header */}
       <header className="max-w-6xl mx-auto w-full flex items-center justify-between border-b border-white/10 pb-4">
         <div className="flex items-center gap-3">

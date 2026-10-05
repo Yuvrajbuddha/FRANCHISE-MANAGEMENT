@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { Outlet } from "react-router-dom";
 import { Sidebar } from "./Sidebar";
 import { TopNav } from "./TopNav";
-import { NetworkBackground } from "../NetworkBackground";
 
 interface AppLayoutProps {
   children?: React.ReactNode;
@@ -13,10 +12,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [selectedCity, setSelectedCity] = useState("All Cities");
 
   return (
-    <div className="flex min-h-screen bg-[#EEF2F6] text-slate-900 antialiased selection:bg-[#4F46FF] selection:text-white relative">
-      {/* Subtle Background Interactive Network */}
-      <NetworkBackground />
-
+    <div className="flex min-h-screen bg-transparent text-slate-900 antialiased selection:bg-[#4F46FF] selection:text-white relative">
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 

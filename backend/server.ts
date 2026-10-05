@@ -1186,6 +1186,313 @@ apiRouter.delete("/inventory/reconciliations/:id", requireAuth, async (req: Auth
 });
 
 // =========================================================
+// 1. DEDICATED INVENTORY STOCK API (On-Hand Store Physical Stock)
+// =========================================================
+
+const DEFAULT_STOCK_ITEMS = [
+  { itemName: "Frozen Patty Premium (Veg/Non-Veg)", category: "Raw Meat & Proteins", stockQuantity: 320, unit: "kg", reorderLevel: 100, unitCost: 240, status: "In Stock" },
+  { itemName: "Organic Brioche Buns (4-inch)", category: "Bakery & Breads", stockQuantity: 180, unit: "trays", reorderLevel: 60, unitCost: 120, status: "In Stock" },
+  { itemName: "Signature Truffle Sauce", category: "Dressings & Condiments", stockQuantity: 18, unit: "bottles", reorderLevel: 25, unitCost: 450, status: "Low Stock" },
+  { itemName: "Sanitizer Solution Concentrate (FSSAI)", category: "Hygiene & Cleaning", stockQuantity: 45, unit: "liters", reorderLevel: 15, unitCost: 180, status: "In Stock" },
+  { itemName: "Paper Takeaway Kraft Bags (L)", category: "Packaging Material", stockQuantity: 850, unit: "units", reorderLevel: 500, unitCost: 6.5, status: "In Stock" },
+  { itemName: "Belgian Chocolate Shake Mix", category: "Beverages & Shakes", stockQuantity: 62, unit: "liters", reorderLevel: 30, unitCost: 310, status: "In Stock" },
+  { itemName: "Imported French Fries (Crispy 9mm)", category: "Raw Meat & Proteins", stockQuantity: 210, unit: "kg", reorderLevel: 80, unitCost: 165, status: "In Stock" },
+  { itemName: "Refined Canola Frying Oil (15L)", category: "Dressings & Condiments", stockQuantity: 8, unit: "tins", reorderLevel: 12, unitCost: 1850, status: "Low Stock" },
+  { itemName: "Cheddar Cheese Slices (Pack of 84)", category: "Vegetarian Proteins & Dairy", stockQuantity: 4, unit: "packs", reorderLevel: 10, unitCost: 720, status: "Critical Shortage" },
+  { itemName: "Compostable Paper Straws (500pk)", category: "Packaging Material", stockQuantity: 1200, unit: "units", reorderLevel: 400, unitCost: 1.2, status: "In Stock" },
+];
+
+apiRouter.get("/inventory/stock", requireAuth, async (req: AuthenticatedRequest, res) => {
+  const user = req.user!;
+  const { outletId, category, status, search } = req.query as {
+    outletId?: string;
+    category?: string;
+    status?: string;
+    search?: string;
+  };
+
+  try {
+    let queryResults = await db.select().from(outletInventory);
+
+    // If outletInventory is sparse in DB, seed defaults for active outlets so all stores have realistic stock
+    if (queryResults.length < 15) {
+      const activeOutlets = ["OUT-042", "OUT-019", "OUT-089", "OUT-114", "OUT-055"];
+      for (const outId of activeOutlets) {
+        const existing = queryResults.filter((i) => i.outletId === outId);
+        if (existing.length === 0) {
+          for (const defItem of DEFAULT_STOCK_ITEMS) {
+            await db.insert(outletInventory).values({
+              outletId: outId,
+              itemName: defItem.itemName,
+              category: defItem.category,
+              stockQuantity: String(defItem.stockQuantity),
+              unit: defItem.unit,
+              reorderLevel: String(defItem.reorderLevel),
+              unitCost: String(defItem.unitCost),
+              status: defItem.status,
+              lastAudited: "2026-10-02",
+            });
+          }
+        }
+      }
+      queryResults = await db.select().from(outletInventory);
+    }
+
+    // Role-based outlet filter
+    if (user.role === "FRANCHISE") {
+      const assigned = (user.assignedOutletId || "OUT-042").toUpperCase();
+      queryResults = queryResults.filter((i) => i.outletId.toUpperCase() === assigned);
+    } else if (outletId && outletId !== "All Outlets") {
+      queryResults = queryResults.filter((i) => i.outletId.toUpperCase() === outletId.toUpperCase());
+    }
+
+    if (category && category !== "All Categories") {
+      queryResults = queryResults.filter((i) => i.category.toLowerCase() === category.toLowerCase());
+    }
+
+    if (status && status !== "All Statuses") {
+      queryResults = queryResults.filter((i) => i.status.toLowerCase() === status.toLowerCase());
+    }
+
+    if (search && search.trim()) {
+      const q = search.toLowerCase().trim();
+      queryResults = queryResults.filter(
+        (i) =>
+          i.itemName.toLowerCase().includes(q) ||
+          i.category.toLowerCase().includes(q) ||
+          i.outletId.toLowerCase().includes(q)
+      );
+    }
+
+    // Calculate Summary KPIs
+    const totalSkus = queryResults.length;
+    let inStockCount = 0;
+    let lowStockCount = 0;
+    let criticalStockCount = 0;
+    let totalInventoryValue = 0;
+
+    queryResults.forEach((item) => {
+      const qty = Number(item.stockQuantity) || 0;
+      const cost = Number(item.unitCost) || 0;
+      totalInventoryValue += qty * cost;
+
+      if (item.status === "In Stock") inStockCount++;
+      else if (item.status === "Low Stock") lowStockCount++;
+      else if (item.status === "Critical Shortage") criticalStockCount++;
+    });
+
+    return res.json({
+      stockItems: queryResults,
+      summary: {
+        totalSkus,
+        inStockCount,
+        lowStockCount,
+        criticalStockCount,
+        totalInventoryValue: Number(totalInventoryValue.toFixed(2)),
+        healthScorePct: totalSkus > 0 ? Math.round((inStockCount / totalSkus) * 100) : 100,
+      },
+    });
+  } catch (err: any) {
+    console.error("Failed to load inventory stock:", err);
+    return res.status(500).json({ error: "Failed to retrieve store inventory stock." });
+  }
+});
+
+// POST /inventory/stock/audit - Update physical count
+apiRouter.post("/inventory/stock/audit", requireAuth, async (req: AuthenticatedRequest, res) => {
+  const { id, physicalCount, notes } = req.body;
+  if (!id || physicalCount === undefined) {
+    return res.status(400).json({ error: "Item ID and physical count are required." });
+  }
+
+  try {
+    const [existing] = await db.select().from(outletInventory).where(eq(outletInventory.id, Number(id)));
+    if (!existing) {
+      return res.status(404).json({ error: "Inventory item not found." });
+    }
+
+    const countNum = Number(physicalCount);
+    const reorderNum = Number(existing.reorderLevel);
+    let newStatus = "In Stock";
+    if (countNum <= reorderNum * 0.4) newStatus = "Critical Shortage";
+    else if (countNum <= reorderNum) newStatus = "Low Stock";
+
+    const updated = await db
+      .update(outletInventory)
+      .set({
+        stockQuantity: String(countNum),
+        status: newStatus,
+        lastAudited: new Date().toISOString().split("T")[0],
+      })
+      .where(eq(outletInventory.id, Number(id)))
+      .returning();
+
+    return res.json({
+      success: true,
+      message: `Physical stock count updated for ${existing.itemName}.`,
+      item: updated[0],
+    });
+  } catch (err: any) {
+    console.error("Failed to update stock audit:", err);
+    return res.status(500).json({ error: "Failed to record physical audit count." });
+  }
+});
+
+// =========================================================
+// 2. DEDICATED COMPANY SUPPLY API (Supplies Received from HQ)
+// =========================================================
+
+apiRouter.get("/supply/consignments", requireAuth, async (req: AuthenticatedRequest, res) => {
+  const user = req.user!;
+  const { outletId, category, status, search } = req.query as {
+    outletId?: string;
+    category?: string;
+    status?: string;
+    search?: string;
+  };
+
+  try {
+    const rawReconciliations = await db
+      .select()
+      .from(inventoryReconciliations)
+      .orderBy(desc(inventoryReconciliations.periodDate), desc(inventoryReconciliations.id));
+
+    // Map each reconciliation period to an inward company supply shipment consignment
+    let consignments = rawReconciliations.map((r, index) => {
+      let deliveryStatus = "Delivered & Verified";
+      if (r.hasDiscrepancy) {
+        deliveryStatus = "Discrepancy Flagged";
+      } else if (index % 5 === 0) {
+        deliveryStatus = "In Transit";
+      }
+
+      return {
+        id: r.id,
+        consignmentId: `SUP-${r.reconciliationId.replace("REC-", "")}`,
+        reconciliationId: r.reconciliationId,
+        outletId: r.outletId,
+        itemName: r.itemName,
+        category: r.category,
+        unit: r.unit,
+        quantitySupplied: Number(r.companySupply) || 0,
+        dispatchDate: r.periodDate,
+        deliveryStatus,
+        carrier: "Aura Cold-Chain Fleet",
+        invoiceNumber: `INV-2026-${(r.id * 17 + 3400).toString()}`,
+        reconciledBy: r.reconciledBy || "HQ Central Dispatch",
+        notes: r.notes || "Scheduled commissary batch fulfillment.",
+      };
+    });
+
+    // Role-based outlet filter
+    if (user.role === "FRANCHISE") {
+      const assigned = (user.assignedOutletId || "OUT-042").toUpperCase();
+      consignments = consignments.filter((c) => c.outletId.toUpperCase() === assigned);
+    } else if (outletId && outletId !== "All Outlets") {
+      consignments = consignments.filter((c) => c.outletId.toUpperCase() === outletId.toUpperCase());
+    }
+
+    if (category && category !== "All Categories") {
+      consignments = consignments.filter((c) => c.category.toLowerCase() === category.toLowerCase());
+    }
+
+    if (status && status !== "All Statuses") {
+      consignments = consignments.filter((c) => c.deliveryStatus.toLowerCase() === status.toLowerCase());
+    }
+
+    if (search && search.trim()) {
+      const q = search.toLowerCase().trim();
+      consignments = consignments.filter(
+        (c) =>
+          c.consignmentId.toLowerCase().includes(q) ||
+          c.itemName.toLowerCase().includes(q) ||
+          c.outletId.toLowerCase().includes(q) ||
+          c.invoiceNumber.toLowerCase().includes(q)
+      );
+    }
+
+    // Compute Company Supply KPIs
+    const totalShipments = consignments.length;
+    let totalUnitsSupplied = 0;
+    let verifiedCount = 0;
+    let inTransitCount = 0;
+    let flaggedCount = 0;
+
+    consignments.forEach((c) => {
+      totalUnitsSupplied += c.quantitySupplied;
+      if (c.deliveryStatus === "Delivered & Verified") verifiedCount++;
+      else if (c.deliveryStatus === "In Transit") inTransitCount++;
+      else if (c.deliveryStatus === "Discrepancy Flagged") flaggedCount++;
+    });
+
+    const fulfillmentRate =
+      totalShipments > 0 ? Number(((verifiedCount / totalShipments) * 100).toFixed(1)) : 100;
+
+    return res.json({
+      consignments,
+      summary: {
+        totalShipments,
+        totalUnitsSupplied,
+        verifiedCount,
+        inTransitCount,
+        flaggedCount,
+        fulfillmentRate,
+      },
+    });
+  } catch (err: any) {
+    console.error("Failed to load company supply consignments:", err);
+    return res.status(500).json({ error: "Failed to retrieve company supply consignments." });
+  }
+});
+
+// POST /supply/consignments - Submit new supply requisition or dispatch
+apiRouter.post("/supply/consignments", requireAuth, async (req: AuthenticatedRequest, res) => {
+  const user = req.user!;
+  const { outletId, itemName, category, unit, quantityRequested, periodDate, notes } = req.body;
+
+  if (!outletId || !itemName || !quantityRequested) {
+    return res.status(400).json({ error: "Outlet, item name, and supply quantity are required." });
+  }
+
+  try {
+    const supplyId = `REC-${Date.now().toString().slice(-6)}`;
+    const qtyNum = Number(quantityRequested);
+
+    const inserted = await db
+      .insert(inventoryReconciliations)
+      .values({
+        reconciliationId: supplyId,
+        outletId: outletId.toUpperCase(),
+        itemName,
+        category: category || "Raw Meat & Ingredients",
+        unit: unit || "units",
+        openingStock: "0",
+        companySupply: String(qtyNum),
+        recordedSales: "0",
+        expectedClosingStock: String(qtyNum),
+        actualPhysicalStock: String(qtyNum),
+        variance: "0",
+        variancePercentage: "0",
+        reviewStatus: "Normal",
+        hasDiscrepancy: false,
+        periodDate: periodDate || new Date().toISOString().split("T")[0],
+        notes: notes || "Store commissary replenishment request.",
+        reconciledBy: user.email,
+      })
+      .returning();
+
+    return res.json({
+      success: true,
+      message: `Company supply order for ${qtyNum} ${unit || "units"} of ${itemName} submitted successfully.`,
+      consignment: inserted[0],
+    });
+  } catch (err: any) {
+    console.error("Failed to create supply consignment:", err);
+    return res.status(500).json({ error: "Failed to submit company supply order." });
+  }
+});
+
+// =========================================================
 // COMPLIANCE MANAGEMENT API
 // =========================================================
 

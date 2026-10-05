@@ -16,6 +16,9 @@ import {
   AlertTriangle,
   FileCheck2,
   Store,
+  Layers,
+  FileVideo,
+  Info,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -28,13 +31,24 @@ import {
   savePhotosForStore,
   createGeneratedPhotosForSubmission,
 } from "@/services/cctvEvidenceStore";
-import { STORES_MAP } from "@/utils/stores-data";
+import { STORES_MAP, ALL_NETWORK_STORES } from "@/utils/stores-data";
 
 export default function EvidencePage() {
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-  const storeId = user?.assignedOutletId || "OUT-042";
+  // Role check: Only Store role ('FRANCHISE') can upload CCTV videos.
+  // Franchisee Owner ('OWNER' or 'ADMIN') has read-only supervisory access.
+  const isStoreRole = user?.role === "FRANCHISE";
+  const isOwner = user?.role === "OWNER" || user?.role === "ADMIN";
+
+  // For Store role: locked to their assigned outlet.
+  // For Franchisee Owner: can switch between stores to supervise evidence.
+  const [selectedOutletId, setSelectedOutletId] = useState<string>(
+    user?.assignedOutletId || "OUT-042"
+  );
+  const storeId = isStoreRole ? (user?.assignedOutletId || "OUT-042") : selectedOutletId;
+
   const matchedStore = STORES_MAP[storeId];
   const currentDate = "04 Oct 2026";
 
@@ -43,8 +57,15 @@ export default function EvidencePage() {
   const [photos, setPhotos] = useState<GeneratedPhoto[]>(() => loadPhotosForStore(storeId));
 
   // Current Store's latest CCTV submission
-  const currentSubmission = submissions.find((s) => s.storeId === storeId) || submissions.find((s) => s.storeId === "OUT-042");
-  const storeName = currentSubmission?.storeName || matchedStore?.name || user?.assignedOutletName || (storeId === "OUT-042" ? "Lucknow Central" : `Store ${storeId}`);
+  const currentSubmission =
+    submissions.find((s) => s.storeId === storeId) ||
+    submissions.find((s) => s.storeId === "OUT-042");
+
+  const storeName =
+    currentSubmission?.storeName ||
+    matchedStore?.name ||
+    user?.assignedOutletName ||
+    (storeId === "OUT-042" ? "Lucknow Central" : `Store ${storeId}`);
 
   // Upload Form State (STORE CAN ONLY UPLOAD VIDEOS)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -54,10 +75,10 @@ export default function EvidencePage() {
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean>(false);
   const [submissionStatus, setSubmissionStatus] = useState<"IDLE" | "PROCESSING" | "SUBMITTED">("IDLE");
 
-  // Read-only Photo Viewer modal for Store User
+  // Read-only Photo Viewer modal for Store / Owner
   const [previewPhoto, setPreviewPhoto] = useState<GeneratedPhoto | null>(null);
 
-  // Sync latest submission and photos
+  // Sync latest submission and photos when storeId changes
   useEffect(() => {
     const subs = loadCctvSubmissions();
     setSubmissions(subs);
@@ -65,8 +86,9 @@ export default function EvidencePage() {
     setPhotos(storePhotos);
   }, [storeId]);
 
-  // Video Selection
+  // Video Selection (Restricted strictly to Store role)
   const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!isStoreRole) return;
     const file = e.target.files?.[0];
     if (file) {
       setSelectedFile(file);
@@ -76,8 +98,10 @@ export default function EvidencePage() {
     }
   };
 
-  // Submit CCTV Video
+  // Submit CCTV Video (Restricted strictly to Store role)
   const handleSubmitCctv = () => {
+    if (!isStoreRole) return;
+
     setIsProcessing(true);
     setSubmissionStatus("PROCESSING");
     setSubmissionSuccess(false);
@@ -165,37 +189,82 @@ export default function EvidencePage() {
   return (
     <div className="space-y-8 font-sans antialiased text-slate-900 pb-20 max-w-5xl mx-auto">
       {/* ======================================================== */}
-      {/* 1. STORE HEADER CARD WITH HIGH CONTRAST & TEAL ACCENTS   */}
+      {/* 1. HEADER CARD (ROLE-ADAPTIVE)                           */}
       {/* ======================================================== */}
       <div className="rounded-2xl border border-teal-200/80 bg-gradient-to-r from-teal-50/80 via-white to-emerald-50/60 p-6 sm:p-7 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <div className="text-[10px] font-mono uppercase tracking-widest text-teal-800 flex items-center gap-1.5 mb-1 font-bold">
             <Building className="h-3.5 w-3.5 text-teal-600" />
-            <span>STORE CCTV PORTAL · OPERATIONAL UNIT</span>
+            <span>
+              {isStoreRole
+                ? "STORE CCTV PORTAL · OPERATIONAL UNIT"
+                : "STORE EVIDENCE REPOSITORY · FRANCHISEE SUPERVISION"}
+            </span>
           </div>
           <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase">
             {storeName}
           </h1>
           <p className="text-xs text-slate-600 mt-1 font-mono">
-            Store ID: <span className="text-teal-700 font-bold bg-teal-100/70 px-1.5 py-0.5 rounded border border-teal-200">{storeId}</span> · Daily CCTV Surveillance Upload
+            Store ID:{" "}
+            <span className="text-teal-700 font-bold bg-teal-100/70 px-1.5 py-0.5 rounded border border-teal-200">
+              {storeId}
+            </span>{" "}
+            ·{" "}
+            {isStoreRole
+              ? "Daily CCTV Surveillance Upload"
+              : "Store Evidence & CCTV Compliance Monitoring"}
           </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
-          <Link
-            to="/login/store"
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-teal-300 bg-white hover:bg-teal-50 text-teal-800 text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
-            title="Switch Store"
-          >
-            <Store className="h-3.5 w-3.5 text-teal-600" />
-            <span>Select Another Store</span>
-          </Link>
-          <Badge className="bg-teal-100 text-teal-800 border-teal-300 text-xs px-3 py-1 font-mono font-semibold">
-            Store Operator
-          </Badge>
+          {/* If Store Role: link to switch store */}
+          {isStoreRole && (
+            <Link
+              to="/login/store"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-teal-300 bg-white hover:bg-teal-50 text-teal-800 text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+              title="Switch Store"
+            >
+              <Store className="h-3.5 w-3.5 text-teal-600" />
+              <span>Select Another Store</span>
+            </Link>
+          )}
+
+          {/* If Franchisee Owner: Dropdown to inspect evidence for any network store */}
+          {!isStoreRole && (
+            <div className="flex items-center gap-2 bg-white px-2.5 py-1 rounded-xl border border-slate-200 shadow-2xs">
+              <span className="text-[11px] text-slate-500 font-medium">Viewing Outlet:</span>
+              <select
+                value={selectedOutletId}
+                onChange={(e) => setSelectedOutletId(e.target.value)}
+                className="text-xs font-mono font-bold text-slate-800 bg-transparent focus:outline-none cursor-pointer"
+              >
+                {ALL_NETWORK_STORES.map((s) => (
+                  <option key={s.code} value={s.code}>
+                    {s.code} — {s.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          )}
+
+          {/* Role Badge */}
+          {isStoreRole ? (
+            <Badge className="bg-teal-100 text-teal-800 border-teal-300 text-xs px-3 py-1 font-mono font-semibold">
+              Store Operator
+            </Badge>
+          ) : (
+            <Badge className="bg-blue-100 text-blue-800 border-blue-300 text-xs px-3 py-1 font-mono font-semibold">
+              Franchisee Owner (Read-Only)
+            </Badge>
+          )}
+
           <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-100/90 border border-amber-300 text-[11px] text-amber-900 font-medium">
             <Lock className="h-3.5 w-3.5 text-amber-700" />
-            <span>Video Only · Photos Auto-Generated</span>
+            <span>
+              {isStoreRole
+                ? "Video Only · Photos Auto-Generated"
+                : "CCTV Upload Restricted to Store Operators"}
+            </span>
           </div>
         </div>
       </div>
@@ -246,150 +315,238 @@ export default function EvidencePage() {
       )}
 
       {/* ======================================================== */}
-      {/* 3. DAILY CCTV UPLOAD (STORE USER HAS ONLY VIDEO UPLOAD)   */}
+      {/* 3A. DAILY CCTV UPLOAD (STORE ROLE ONLY)                   */}
       {/* ======================================================== */}
-      <div className="rounded-[28px] border border-teal-500/25 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
-        <div className="border-b border-white/10 pb-4">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
-            MANDATORY COMPLIANCE DISPATCH
-          </span>
-          <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">
-            DAILY CCTV UPLOAD
-          </h2>
-          <p className="text-xs text-slate-400 mt-0.5">
-            The Store user can upload only CCTV video. Photos are automatically generated by the system across recording timestamps.
-          </p>
-        </div>
-
-        {/* Success Banner */}
-        {submissionSuccess && (
-          <div className="p-4 rounded-2xl border border-[#10B981]/30 bg-[#10B981]/10 text-[#10B981] text-xs flex items-center justify-between shadow-lg shadow-[#10B981]/5">
-            <div className="flex items-center gap-2.5">
-              <CheckCircle2 className="h-5 w-5 text-[#10B981] shrink-0" />
-              <div>
-                <span className="font-bold text-sm block">✓ CCTV submitted successfully</span>
-                <span className="text-[11px] text-slate-300">
-                  Status: <strong className="text-amber-400 font-mono">PROCESSING</strong> → System generated {photos.length} timestamped photos for Officer review.
-                </span>
-              </div>
-            </div>
-            <button
-              onClick={() => setSubmissionSuccess(false)}
-              className="text-slate-400 hover:text-white cursor-pointer"
-            >
-              <X className="h-4 w-4" />
-            </button>
-          </div>
-        )}
-
-        {/* Video Upload Control */}
-        <div className="space-y-6">
-          {/* File Picker */}
-          <div>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="video/mp4,video/webm,video/quicktime"
-              className="hidden"
-              onChange={handleVideoSelect}
-            />
-
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              className="w-full border-2 border-dashed border-white/20 hover:border-[#4F46FF] bg-[#050B1A] hover:bg-white/[0.02] rounded-2xl p-8 text-center space-y-3 cursor-pointer transition-all group"
-            >
-              <div className="h-14 w-14 rounded-2xl bg-[#4F46FF]/15 text-[#4F46FF] border border-[#4F46FF]/30 flex items-center justify-center mx-auto group-hover:scale-105 transition-transform">
-                <Video className="h-7 w-7" />
-              </div>
-              <div>
-                <span className="font-serif text-lg font-bold text-white block">
-                  [ Upload CCTV Video ]
-                </span>
-                <span className="text-xs text-slate-400 mt-1 block">
-                  Select MP4 or WebM CCTV footage from store security recorder
-                </span>
-              </div>
-              <span className="inline-block text-[11px] font-mono text-slate-300 bg-white/5 px-3 py-1 rounded-full border border-white/10">
-                Click to browse file
-              </span>
-            </button>
+      {isStoreRole && (
+        <div className="rounded-[28px] border border-teal-500/25 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
+          <div className="border-b border-white/10 pb-4">
+            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
+              MANDATORY COMPLIANCE DISPATCH
+            </span>
+            <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">
+              DAILY CCTV UPLOAD
+            </h2>
+            <p className="text-xs text-slate-400 mt-0.5">
+              The Store user can upload only CCTV video. Photos are automatically generated by the system across recording timestamps.
+            </p>
           </div>
 
-          {/* Selected Video Details */}
-          <div className="rounded-2xl bg-[#050B1A] border border-white/10 p-5 space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-              {/* Video Name */}
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
-                  Video Name
-                </span>
-                <div className="font-mono text-white font-medium truncate">
-                  {selectedFile ? selectedFile.name : videoName}
+          {/* Success Banner */}
+          {submissionSuccess && (
+            <div className="p-4 rounded-2xl border border-[#10B981]/30 bg-[#10B981]/10 text-[#10B981] text-xs flex items-center justify-between shadow-lg shadow-[#10B981]/5">
+              <div className="flex items-center gap-2.5">
+                <CheckCircle2 className="h-5 w-5 text-[#10B981] shrink-0" />
+                <div>
+                  <span className="font-bold text-sm block">✓ CCTV submitted successfully</span>
+                  <span className="text-[11px] text-slate-300">
+                    Status: <strong className="text-amber-400 font-mono">PROCESSING</strong> → System generated {photos.length} timestamped photos for Officer review.
+                  </span>
                 </div>
               </div>
-
-              {/* Video Duration Selector */}
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
-                  Video Duration
-                </span>
-                <div className="flex items-center gap-1.5">
-                  {[
-                    { label: "1 hr (3 photos)", hours: 1 },
-                    { label: "4-5 hrs (5 photos)", hours: 5 },
-                    { label: "8 hrs (8-10 photos)", hours: 8 },
-                  ].map((d) => (
-                    <button
-                      key={d.hours}
-                      type="button"
-                      onClick={() => setDurationHours(d.hours)}
-                      className={`px-2.5 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-all ${
-                        durationHours === d.hours
-                          ? "bg-[#4F46FF] text-white font-bold"
-                          : "bg-white/5 text-slate-400 hover:text-white border border-white/10"
-                      }`}
-                    >
-                      {d.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              {/* Upload Date */}
-              <div className="space-y-1">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
-                  Upload Date
-                </span>
-                <div className="flex items-center gap-1.5 font-mono text-slate-300">
-                  <Calendar className="h-3.5 w-3.5 text-slate-500" />
-                  <span>{currentDate}</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Submit CCTV Button */}
-            <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-              <span className="text-[11px] text-slate-400">
-                System automatically selects random frames across the entire duration.
-              </span>
-
-              <Button
-                type="button"
-                onClick={handleSubmitCctv}
-                disabled={isProcessing}
-                className="bg-[#4F46FF] hover:bg-[#6366F1] text-white font-bold text-xs h-11 px-8 rounded-xl shadow-lg shadow-[#4F46FF]/30 cursor-pointer gap-2 transition-all uppercase tracking-wider"
+              <button
+                onClick={() => setSubmissionSuccess(false)}
+                className="text-slate-400 hover:text-white cursor-pointer"
               >
-                <Upload className="h-4 w-4" />
-                <span>{isProcessing ? "Processing Video..." : "SUBMIT CCTV"}</span>
-              </Button>
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Video Upload Control */}
+          <div className="space-y-6">
+            {/* File Picker */}
+            <div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="video/mp4,video/webm,video/quicktime"
+                className="hidden"
+                onChange={handleVideoSelect}
+              />
+
+              <button
+                type="button"
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full border-2 border-dashed border-white/20 hover:border-[#4F46FF] bg-[#050B1A] hover:bg-white/[0.02] rounded-2xl p-8 text-center space-y-3 cursor-pointer transition-all group"
+              >
+                <div className="h-14 w-14 rounded-2xl bg-[#4F46FF]/15 text-[#4F46FF] border border-[#4F46FF]/30 flex items-center justify-center mx-auto group-hover:scale-105 transition-transform">
+                  <Video className="h-7 w-7" />
+                </div>
+                <div>
+                  <span className="font-serif text-lg font-bold text-white block">
+                    [ Upload CCTV Video ]
+                  </span>
+                  <span className="text-xs text-slate-400 mt-1 block">
+                    Select MP4 or WebM CCTV footage from store security recorder
+                  </span>
+                </div>
+                <span className="inline-block text-[11px] font-mono text-slate-300 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                  Click to browse file
+                </span>
+              </button>
+            </div>
+
+            {/* Selected Video Details */}
+            <div className="rounded-2xl bg-[#050B1A] border border-white/10 p-5 space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                {/* Video Name */}
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                    Video Name
+                  </span>
+                  <div className="font-mono text-white font-medium truncate">
+                    {selectedFile ? selectedFile.name : videoName}
+                  </div>
+                </div>
+
+                {/* Video Duration Selector */}
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                    Video Duration
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    {[
+                      { label: "1 hr (3 photos)", hours: 1 },
+                      { label: "4-5 hrs (5 photos)", hours: 5 },
+                      { label: "8 hrs (8-10 photos)", hours: 8 },
+                    ].map((d) => (
+                      <button
+                        key={d.hours}
+                        type="button"
+                        onClick={() => setDurationHours(d.hours)}
+                        className={`px-2.5 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-all ${
+                          durationHours === d.hours
+                            ? "bg-[#4F46FF] text-white font-bold"
+                            : "bg-white/5 text-slate-400 hover:text-white border border-white/10"
+                        }`}
+                      >
+                        {d.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Upload Date */}
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                    Upload Date
+                  </span>
+                  <div className="flex items-center gap-1.5 font-mono text-slate-300">
+                    <Calendar className="h-3.5 w-3.5 text-slate-500" />
+                    <span>{currentDate}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Submit CCTV Button */}
+              <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                <span className="text-[11px] text-slate-400">
+                  System automatically selects random frames across the entire duration.
+                </span>
+
+                <Button
+                  type="button"
+                  onClick={handleSubmitCctv}
+                  disabled={isProcessing}
+                  className="bg-[#4F46FF] hover:bg-[#6366F1] text-white font-bold text-xs h-11 px-8 rounded-xl shadow-lg shadow-[#4F46FF]/30 cursor-pointer gap-2 transition-all uppercase tracking-wider"
+                >
+                  <Upload className="h-4 w-4" />
+                  <span>{isProcessing ? "Processing Video..." : "SUBMIT CCTV"}</span>
+                </Button>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* ======================================================== */}
-      {/* 4. SYSTEM-GENERATED CCTV PHOTOS (READ-ONLY FOR STORE)     */}
+      {/* 3B. CCTV SUBMISSION DOSSIER (FRANCHISEE OWNER READ-ONLY)  */}
+      {/* ======================================================== */}
+      {!isStoreRole && (
+        <div className="rounded-[28px] border border-blue-500/20 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
+          <div className="border-b border-white/10 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
+                STORE EVIDENCE SUBMISSION DOSSIER
+              </span>
+              <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">
+                SURVEILLANCE EVIDENCE LOG
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Surveillance footage submitted by on-ground store operators. Frames are automatically extracted for compliance review.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <Badge
+                variant="outline"
+                className={`text-xs px-3 py-1 font-mono font-semibold ${
+                  currentSubmission?.status === "Verified"
+                    ? "border-emerald-500/40 text-emerald-400 bg-emerald-500/10"
+                    : "border-amber-500/40 text-amber-400 bg-amber-500/10"
+                }`}
+              >
+                {currentSubmission?.status === "Verified"
+                  ? "✓ Verified by Officer"
+                  : "⏳ Pending Officer Review"}
+              </Badge>
+            </div>
+          </div>
+
+          {/* Submission Info Grid (No Upload Button, No File Picker) */}
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
+            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
+              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
+                <FileVideo className="h-3.5 w-3.5 text-blue-400" />
+                <span>Video Footage</span>
+              </span>
+              <div className="font-mono text-white font-medium truncate" title={currentSubmission?.videoName || videoName}>
+                {currentSubmission?.videoName || videoName}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
+              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5 text-teal-400" />
+                <span>Recorded Duration</span>
+              </span>
+              <div className="font-mono text-white font-medium">
+                {currentSubmission?.durationLabel || "8 hours"}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
+              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5 text-purple-400" />
+                <span>Upload Date</span>
+              </span>
+              <div className="font-mono text-white font-medium">
+                {currentSubmission?.uploadDate || currentDate}
+              </div>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
+              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
+                <Layers className="h-3.5 w-3.5 text-emerald-400" />
+                <span>Extracted Frames</span>
+              </span>
+              <div className="font-mono text-white font-medium">
+                {photos.length} timestamped photos
+              </div>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 p-3.5 rounded-xl bg-blue-950/40 border border-blue-500/20 text-xs text-blue-300">
+            <Info className="h-4 w-4 shrink-0 text-blue-400" />
+            <span>
+              Daily surveillance footage is recorded and submitted exclusively by the store operator. Franchisee Owners can monitor submitted footage telemetry and compliance rating outcomes.
+            </span>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* 4. SYSTEM-GENERATED CCTV PHOTOS (READ-ONLY GALLERY)       */}
       {/* ======================================================== */}
       <div className="rounded-[28px] border border-teal-500/25 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-4">

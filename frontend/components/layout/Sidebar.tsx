@@ -71,7 +71,7 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
           allowedRoles: ["ADMIN", "OWNER", "FRANCHISE"],
         },
         {
-          title: "Inventory & Stock",
+          title: "Inventory Stock",
           href: "/inventory",
           icon: Boxes,
           allowedRoles: ["ADMIN", "OWNER", "FRANCHISE"],
@@ -80,18 +80,7 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
           title: "Company Supply",
           href: "/supply",
           icon: Truck,
-          allowedRoles: ["ADMIN", "OWNER"],
-        },
-      ],
-    },
-    {
-      label: "Compliance & Risk",
-      items: [
-        {
-          title: "Officer Dashboard",
-          href: "/compliance",
-          icon: ShieldCheck,
-          allowedRoles: ["ADMIN", "OWNER", "OFFICER"],
+          allowedRoles: ["ADMIN", "OWNER", "FRANCHISE"],
         },
         {
           title: "Store Evidence",
@@ -99,11 +88,22 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
           icon: Video,
           allowedRoles: ["ADMIN", "OWNER", "OFFICER", "FRANCHISE"],
         },
+      ],
+    },
+    {
+      label: "Complaints & Risk",
+      items: [
+        {
+          title: "Officer Dashboard",
+          href: "/compliance",
+          icon: ShieldCheck,
+          allowedRoles: ["ADMIN", "OFFICER"],
+        },
         {
           title: "Risk Intelligence",
           href: "/risk",
           icon: Flame,
-          allowedRoles: ["ADMIN", "OWNER", "OFFICER"],
+          allowedRoles: ["ADMIN", "OFFICER"],
         },
         {
           title: "Active Alerts",
@@ -111,18 +111,18 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
           icon: AlertTriangle,
           badge: "6",
           badgeVariant: "warning",
-          allowedRoles: ["ADMIN", "OWNER", "OFFICER"],
+          allowedRoles: ["ADMIN", "OFFICER"],
         },
         {
           title: "Complaints Registry",
           href: "/complaints",
           icon: MessageSquareWarning,
-          allowedRoles: ["ADMIN", "OWNER", "OFFICER"],
+          allowedRoles: ["ADMIN", "OFFICER"],
         },
       ],
     },
     {
-      label: "Resolution & Audits",
+      label: "Resolution & Audit",
       items: [
         {
           title: "Corrective Actions",
@@ -131,10 +131,10 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
           allowedRoles: ["ADMIN", "OFFICER", "FRANCHISE"],
         },
         {
-          title: "Executive Reports",
+          title: "Executed Reports",
           href: "/reports",
           icon: FileBarChart,
-          allowedRoles: ["ADMIN", "OWNER"],
+          allowedRoles: ["ADMIN", "OFFICER"],
         },
       ],
     },

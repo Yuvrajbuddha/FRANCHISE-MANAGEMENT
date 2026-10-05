@@ -66,6 +66,7 @@ export function ManagementDashboard() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const isFranchise = user?.role === "FRANCHISE";
+  const isOwner = user?.role === "OWNER";
   const userOutlet = user?.assignedOutletId || "OUT-042";
 
   // Filter States
@@ -402,10 +403,12 @@ export function ManagementDashboard() {
               <span className="text-2xl font-extrabold text-emerald-400 font-mono">
                 {summary.compliancePercentage}%
               </span>
-              <Link to="/compliance" className="text-xs text-emerald-400 hover:underline inline-flex items-center gap-0.5">
-                <span>Audits</span>
-                <ArrowRight className="h-3 w-3" />
-              </Link>
+              {!isOwner && (
+                <Link to="/compliance" className="text-xs text-emerald-400 hover:underline inline-flex items-center gap-0.5">
+                  <span>Audits</span>
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              )}
             </div>
             <p className="text-[11px] text-slate-500 mt-1">
               Live audit adherence benchmark
@@ -428,10 +431,12 @@ export function ManagementDashboard() {
               }`}>
                 {summary.overallRiskScore}/100
               </span>
-              <Link to="/risk" className="text-xs text-amber-400 hover:underline inline-flex items-center gap-0.5">
-                <span>Risk Engine</span>
-                <ArrowRight className="h-3 w-3" />
-              </Link>
+              {!isOwner && (
+                <Link to="/risk" className="text-xs text-amber-400 hover:underline inline-flex items-center gap-0.5">
+                  <span>Risk Engine</span>
+                  <ArrowRight className="h-3 w-3" />
+                </Link>
+              )}
             </div>
             <p className="text-[11px] text-slate-500 mt-1">
               Composite weighted multi-factor score
@@ -441,82 +446,142 @@ export function ManagementDashboard() {
       </div>
 
       {/* OPERATIONAL COUNTERS ROW */}
-      <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
-        <Link
-          to="/inventory"
-          className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-amber-500/40 hover:bg-amber-500/5 transition-all"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase text-slate-400">Inventory Mismatch</span>
-            <Boxes className="h-4 w-4 text-amber-400" />
-          </div>
-          <span className="text-lg font-bold font-mono text-white mt-1 block">
-            {counts.inventoryDiscrepanciesCount} Cases
-          </span>
-          <span className="text-[10px] text-amber-400 font-semibold">Stock Reconciliation</span>
-        </Link>
+      {isOwner ? (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <Link
+            to="/inventory"
+            className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-amber-500/40 hover:bg-amber-500/5 transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase text-slate-400">Inventory Stock</span>
+              <Boxes className="h-4 w-4 text-amber-400" />
+            </div>
+            <span className="text-lg font-bold font-mono text-white mt-1 block">
+              {counts.inventoryDiscrepanciesCount} Cases
+            </span>
+            <span className="text-[10px] text-amber-400 font-semibold">Store Stock Level</span>
+          </Link>
 
-        <Link
-          to="/alerts"
-          className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-rose-500/40 hover:bg-rose-500/5 transition-all"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase text-slate-400">Compliance Alerts</span>
-            <ShieldAlert className="h-4 w-4 text-rose-400" />
-          </div>
-          <span className="text-lg font-bold font-mono text-rose-400 mt-1 block">
-            {counts.complianceAlertsCount} Alerts
-          </span>
-          <span className="text-[10px] text-rose-400 font-semibold">Prioritized Queue</span>
-        </Link>
+          <Link
+            to="/supply"
+            className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-teal-500/40 hover:bg-teal-500/5 transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase text-slate-400">Company Supply</span>
+              <Package className="h-4 w-4 text-teal-400" />
+            </div>
+            <span className="text-lg font-bold font-mono text-white mt-1 block">
+              Active
+            </span>
+            <span className="text-[10px] text-teal-400 font-semibold">Inward Shipments</span>
+          </Link>
 
-        <Link
-          to="/complaints"
-          className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-purple-500/40 hover:bg-purple-500/5 transition-all"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase text-slate-400">Complaints</span>
-            <MessageSquare className="h-4 w-4 text-purple-400" />
-          </div>
-          <span className="text-lg font-bold font-mono text-white mt-1 block">
-            {counts.customerComplaintsCount} Tickets
-          </span>
-          <span className="text-[10px] text-purple-400 font-semibold">Guest Sentiment</span>
-        </Link>
+          <Link
+            to="/sales"
+            className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-blue-500/40 hover:bg-blue-500/5 transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase text-slate-400">Sales Analytics</span>
+              <TrendingUp className="h-4 w-4 text-blue-400" />
+            </div>
+            <span className="text-lg font-bold font-mono text-white mt-1 block">
+              {summary.totalOutlets} Outlets
+            </span>
+            <span className="text-[10px] text-blue-400 font-semibold">Revenue Telemetry</span>
+          </Link>
 
-        <Link
-          to="/evidence"
-          className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase text-slate-400">CCTV Evidence</span>
-            <Video className="h-4 w-4 text-indigo-400" />
-          </div>
-          <span className="text-lg font-bold font-mono text-white mt-1 block">
-            {counts.cctvCasesCount} Feeds
-          </span>
-          <span className="text-[10px] text-indigo-400 font-semibold">AI Prep Verification</span>
-        </Link>
+          <Link
+            to="/evidence"
+            className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase text-slate-400">Store Evidence</span>
+              <Video className="h-4 w-4 text-indigo-400" />
+            </div>
+            <span className="text-lg font-bold font-mono text-white mt-1 block">
+              {counts.cctvCasesCount} Feeds
+            </span>
+            <span className="text-[10px] text-indigo-400 font-semibold">Store CCTV Logs</span>
+          </Link>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-5 gap-3">
+          <Link
+            to="/inventory"
+            className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-amber-500/40 hover:bg-amber-500/5 transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase text-slate-400">Inventory Mismatch</span>
+              <Boxes className="h-4 w-4 text-amber-400" />
+            </div>
+            <span className="text-lg font-bold font-mono text-white mt-1 block">
+              {counts.inventoryDiscrepanciesCount} Cases
+            </span>
+            <span className="text-[10px] text-amber-400 font-semibold">Stock Reconciliation</span>
+          </Link>
 
-        <Link
-          to="/corrective-actions"
-          className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-teal-500/40 hover:bg-teal-500/5 transition-all col-span-2 sm:col-span-1"
-        >
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-bold uppercase text-slate-400">CAPA Actions</span>
-            <FileCheck2 className="h-4 w-4 text-teal-400" />
-          </div>
-          <span className="text-lg font-bold font-mono text-white mt-1 block">
-            {counts.correctiveActionsCount} Mandates
-          </span>
-          <span className="text-[10px] text-teal-400 font-semibold">Closed-Loop Status</span>
-        </Link>
-      </div>
+          <Link
+            to="/alerts"
+            className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-rose-500/40 hover:bg-rose-500/5 transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase text-slate-400">Compliance Alerts</span>
+              <ShieldAlert className="h-4 w-4 text-rose-400" />
+            </div>
+            <span className="text-lg font-bold font-mono text-rose-400 mt-1 block">
+              {counts.complianceAlertsCount} Alerts
+            </span>
+            <span className="text-[10px] text-rose-400 font-semibold">Prioritized Queue</span>
+          </Link>
+
+          <Link
+            to="/complaints"
+            className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-purple-500/40 hover:bg-purple-500/5 transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase text-slate-400">Complaints</span>
+              <MessageSquare className="h-4 w-4 text-purple-400" />
+            </div>
+            <span className="text-lg font-bold font-mono text-white mt-1 block">
+              {counts.customerComplaintsCount} Tickets
+            </span>
+            <span className="text-[10px] text-purple-400 font-semibold">Guest Sentiment</span>
+          </Link>
+
+          <Link
+            to="/evidence"
+            className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-indigo-500/40 hover:bg-indigo-500/5 transition-all"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase text-slate-400">CCTV Evidence</span>
+              <Video className="h-4 w-4 text-indigo-400" />
+            </div>
+            <span className="text-lg font-bold font-mono text-white mt-1 block">
+              {counts.cctvCasesCount} Feeds
+            </span>
+            <span className="text-[10px] text-indigo-400 font-semibold">AI Prep Verification</span>
+          </Link>
+
+          <Link
+            to="/corrective-actions"
+            className="p-3 rounded-xl border border-white/10 bg-[#0B1020] hover:border-teal-500/40 hover:bg-teal-500/5 transition-all col-span-2 sm:col-span-1"
+          >
+            <div className="flex items-center justify-between">
+              <span className="text-[10px] font-bold uppercase text-slate-400">CAPA Actions</span>
+              <FileCheck2 className="h-4 w-4 text-teal-400" />
+            </div>
+            <span className="text-lg font-bold font-mono text-white mt-1 block">
+              {counts.correctiveActionsCount} Mandates
+            </span>
+            <span className="text-[10px] text-teal-400 font-semibold">Closed-Loop Status</span>
+          </Link>
+        </div>
+      )}
 
       {/* CHARTS ROW 1: Sales Trends & Risk Distribution */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Sales Trends Chart */}
-        <Card className="lg:col-span-2 border-white/10 bg-[#0B1020]">
+        <Card className={`${isOwner ? "lg:col-span-3" : "lg:col-span-2"} border-white/10 bg-[#0B1020]`}>
           <CardHeader className="pb-2">
             <div className="flex items-center justify-between">
               <div>
@@ -566,48 +631,50 @@ export function ManagementDashboard() {
         </Card>
 
         {/* Risk Distribution Chart */}
-        <Card className="border-white/10 bg-[#0B1020]">
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-                  <Scale className="h-4 w-4 text-amber-500" />
-                  <span>Network Risk Distribution</span>
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  Classification across 5 deterministic risk tiers
-                </CardDescription>
+        {!isOwner && (
+          <Card className="border-white/10 bg-[#0B1020]">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-sm font-bold flex items-center gap-1.5">
+                    <Scale className="h-4 w-4 text-amber-500" />
+                    <span>Network Risk Distribution</span>
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    Classification across 5 deterministic risk tiers
+                  </CardDescription>
+                </div>
+                <Link to="/risk" className="text-xs text-amber-400 hover:underline">
+                  View Risk →
+                </Link>
               </div>
-              <Link to="/risk" className="text-xs text-amber-400 hover:underline">
-                View Risk →
-              </Link>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-2">
-            <div className="h-64 w-full">
-              <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
-                  <Pie
-                    data={data?.riskDistribution || []}
-                    cx="50%"
-                    cy="50%"
-                    innerRadius={50}
-                    outerRadius={80}
-                    paddingAngle={3}
-                    dataKey="count"
-                    nameKey="tier"
-                  >
-                    {(data?.riskDistribution || []).map((entry: any, index: number) => (
-                      <Cell key={`cell-${index}`} fill={entry.fill} />
-                    ))}
-                  </Pie>
-                  <Tooltip formatter={(v: any, name: any) => [`${v} Outlets`, name]} />
-                  <Legend iconSize={8} wrapperStyle={{ fontSize: 11 }} />
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </CardContent>
-        </Card>
+            </CardHeader>
+            <CardContent className="pt-2">
+              <div className="h-64 w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={data?.riskDistribution || []}
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={50}
+                      outerRadius={80}
+                      paddingAngle={3}
+                      dataKey="count"
+                      nameKey="tier"
+                    >
+                      {(data?.riskDistribution || []).map((entry: any, index: number) => (
+                        <Cell key={`cell-${index}`} fill={entry.fill} />
+                      ))}
+                    </Pie>
+                    <Tooltip formatter={(v: any, name: any) => [`${v} Outlets`, name]} />
+                    <Legend iconSize={8} wrapperStyle={{ fontSize: 11 }} />
+                  </PieChart>
+                </ResponsiveContainer>
+              </div>
+            </CardContent>
+          </Card>
+        )}
       </div>
 
       {/* OUTLET TABLES: High-Risk Outlets & Underperforming Outlets */}
@@ -832,120 +899,122 @@ export function ManagementDashboard() {
         </Card>
       </div>
 
-      {/* RECENT OPERATIONAL FEEDS: Alerts & Discrepancies (Clickable) */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Compliance Alerts (Clicking opens alert case) */}
-        <Card className="border-white/10 bg-[#0B1020]">
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-                  <ShieldAlert className="h-4 w-4 text-rose-400" />
-                  <span>Recent Compliance Alerts (Click to Open Case)</span>
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  Active prioritized anomalies from PostgreSQL outlet_alerts
-                </CardDescription>
-              </div>
-              <Link to="/alerts" className="text-xs text-rose-400 hover:underline">
-                View All Alerts →
-              </Link>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y divide-white/5 text-xs">
-              {(data?.recentAlerts || []).map((a: any) => (
-                <div
-                  key={a.id}
-                  onClick={() => setAlertModalItem(a)}
-                  className="p-3 hover:bg-white/5 cursor-pointer flex items-start justify-between gap-3 transition-colors"
-                >
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-[#818CF8]">{a.alertId}</span>
-                      <Link
-                        to={`/outlets/${a.outletId}`}
-                        onClick={(e) => e.stopPropagation()}
-                        className="font-mono text-[11px] bg-white/5 border border-white/10 px-1.5 py-0.5 rounded font-semibold text-slate-300 hover:text-[#818CF8]"
-                      >
-                        {a.outletId}
-                      </Link>
-                      <Badge
-                        className={
-                          a.severity === "CRITICAL"
-                            ? "bg-rose-500/15 text-rose-300 border-rose-500/30 text-[10px]"
-                            : a.severity === "HIGH"
-                            ? "bg-amber-500/15 text-amber-300 border-amber-500/30 text-[10px]"
-                            : "bg-slate-500/15 text-slate-300 border-slate-500/30 text-[10px]"
-                        }
-                      >
-                        {a.severity}
-                      </Badge>
-                    </div>
-                    <p className="text-slate-200 line-clamp-1">{a.message}</p>
-                    <span className="text-[10px] text-slate-400 block">{a.priority} • {a.createdDate}</span>
-                  </div>
-                  <Button size="sm" variant="ghost" className="h-6 text-[11px] shrink-0 text-[#818CF8] hover:bg-white/5">
-                    Case →
-                  </Button>
+      {/* RECENT OPERATIONAL FEEDS: Alerts & Discrepancies (Clickable - Officer & Admin Only) */}
+      {!isOwner && (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {/* Compliance Alerts (Clicking opens alert case) */}
+          <Card className="border-white/10 bg-[#0B1020]">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-sm font-bold flex items-center gap-1.5">
+                    <ShieldAlert className="h-4 w-4 text-rose-400" />
+                    <span>Recent Compliance Alerts (Click to Open Case)</span>
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    Active prioritized anomalies from PostgreSQL outlet_alerts
+                  </CardDescription>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* Active Corrective Actions (CAPA) */}
-        <Card className="border-white/10 bg-[#0B1020]">
-          <CardHeader className="pb-2">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-                  <FileCheck2 className="h-4 w-4 text-teal-400" />
-                  <span>Corrective Action Pipeline (CAPA)</span>
-                </CardTitle>
-                <CardDescription className="text-xs">
-                  Statutory remediation mandates across workflow stages
-                </CardDescription>
+                <Link to="/alerts" className="text-xs text-rose-400 hover:underline">
+                  View All Alerts →
+                </Link>
               </div>
-              <Link to="/corrective-actions" className="text-xs text-teal-400 hover:underline">
-                View All CAPAs →
-              </Link>
-            </div>
-          </CardHeader>
-          <CardContent className="p-0">
-            <div className="divide-y divide-white/5 text-xs">
-              {(data?.recentCapas || []).map((c: any) => (
-                <div key={c.id} className="p-3 flex items-start justify-between gap-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono font-bold text-teal-600">{c.actionId}</span>
-                      <Link
-                        to={`/outlets/${c.outletId}`}
-                        className="font-mono text-[11px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-semibold text-slate-700 dark:text-slate-300"
-                      >
-                        {c.outletId}
-                      </Link>
-                      <Badge variant="outline" className="text-[10px]">
-                        {c.status}
-                      </Badge>
-                    </div>
-                    <p className="text-slate-800 dark:text-slate-200 font-medium line-clamp-1">{c.issue}</p>
-                    <span className="text-[10px] text-slate-400 block">
-                      Stage: {c.currentStage} • Assignee: {c.assignedPerson} • Due: {c.deadline}
-                    </span>
-                  </div>
-                  <Link
-                    to="/corrective-actions"
-                    className="text-teal-600 hover:underline text-xs font-medium shrink-0 pt-1"
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-white/5 text-xs">
+                {(data?.recentAlerts || []).map((a: any) => (
+                  <div
+                    key={a.id}
+                    onClick={() => setAlertModalItem(a)}
+                    className="p-3 hover:bg-white/5 cursor-pointer flex items-start justify-between gap-3 transition-colors"
                   >
-                    Remediate →
-                  </Link>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-[#818CF8]">{a.alertId}</span>
+                        <Link
+                          to={`/outlets/${a.outletId}`}
+                          onClick={(e) => e.stopPropagation()}
+                          className="font-mono text-[11px] bg-white/5 border border-white/10 px-1.5 py-0.5 rounded font-semibold text-slate-300 hover:text-[#818CF8]"
+                        >
+                          {a.outletId}
+                        </Link>
+                        <Badge
+                          className={
+                            a.severity === "CRITICAL"
+                              ? "bg-rose-500/15 text-rose-300 border-rose-500/30 text-[10px]"
+                              : a.severity === "HIGH"
+                              ? "bg-amber-500/15 text-amber-300 border-amber-500/30 text-[10px]"
+                              : "bg-slate-500/15 text-slate-300 border-slate-500/30 text-[10px]"
+                          }
+                        >
+                          {a.severity}
+                        </Badge>
+                      </div>
+                      <p className="text-slate-200 line-clamp-1">{a.message}</p>
+                      <span className="text-[10px] text-slate-400 block">{a.priority} • {a.createdDate}</span>
+                    </div>
+                    <Button size="sm" variant="ghost" className="h-6 text-[11px] shrink-0 text-[#818CF8] hover:bg-white/5">
+                      Case →
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Active Corrective Actions (CAPA) */}
+          <Card className="border-white/10 bg-[#0B1020]">
+            <CardHeader className="pb-2">
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="text-sm font-bold flex items-center gap-1.5">
+                    <FileCheck2 className="h-4 w-4 text-teal-400" />
+                    <span>Corrective Action Pipeline (CAPA)</span>
+                  </CardTitle>
+                  <CardDescription className="text-xs">
+                    Statutory remediation mandates across workflow stages
+                  </CardDescription>
                 </div>
-              ))}
-            </div>
-          </CardContent>
-        </Card>
-      </div>
+                <Link to="/corrective-actions" className="text-xs text-teal-400 hover:underline">
+                  View All CAPAs →
+                </Link>
+              </div>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-white/5 text-xs">
+                {(data?.recentCapas || []).map((c: any) => (
+                  <div key={c.id} className="p-3 flex items-start justify-between gap-3">
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-teal-600">{c.actionId}</span>
+                        <Link
+                          to={`/outlets/${c.outletId}`}
+                          className="font-mono text-[11px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-semibold text-slate-700 dark:text-slate-300"
+                        >
+                          {c.outletId}
+                        </Link>
+                        <Badge variant="outline" className="text-[10px]">
+                          {c.status}
+                        </Badge>
+                      </div>
+                      <p className="text-slate-800 dark:text-slate-200 font-medium line-clamp-1">{c.issue}</p>
+                      <span className="text-[10px] text-slate-400 block">
+                        Stage: {c.currentStage} • Assignee: {c.assignedPerson} • Due: {c.deadline}
+                      </span>
+                    </div>
+                    <Link
+                      to="/corrective-actions"
+                      className="text-teal-600 hover:underline text-xs font-medium shrink-0 pt-1"
+                    >
+                      Remediate →
+                    </Link>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* DRILLDOWN MODAL: High-Risk Outlet Risk Breakdown */}
       {riskModalOutlet && (

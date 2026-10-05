@@ -9,7 +9,8 @@ import ManagementDashboard from "@/pages/ManagementDashboard";
 import OutletsPage from "@/pages/OutletsPage";
 import OutletDetailPage from "@/pages/OutletDetailPage";
 import SalesPage from "@/pages/SalesPage";
-import InventoryPage from "@/pages/InventoryPage";
+import InventoryStockPage from "@/pages/InventoryStockPage";
+import CompanySupplyPage from "@/pages/CompanySupplyPage";
 import CompliancePage from "@/pages/CompliancePage";
 import ComplianceDetailPage from "@/pages/ComplianceDetailPage";
 import StoreEvidenceReviewPage from "@/pages/StoreEvidenceReviewPage";
@@ -74,24 +75,24 @@ export default function App() {
             path="/inventory"
             element={
               <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
-                <InventoryPage />
+                <InventoryStockPage />
               </ProtectedRoute>
             }
           />
           <Route
             path="/supply"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER"]}>
-                <InventoryPage />
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+                <CompanySupplyPage />
               </ProtectedRoute>
             }
           />
 
-          {/* Compliance & Risk */}
+          {/* Complaints & Risk - Restricted to Admin & Officer */}
           <Route
             path="/compliance"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER"]}>
                 <CompliancePage />
               </ProtectedRoute>
             }
@@ -99,7 +100,7 @@ export default function App() {
           <Route
             path="/compliance/review/:storeId"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER"]}>
                 <StoreEvidenceReviewPage />
               </ProtectedRoute>
             }
@@ -107,7 +108,7 @@ export default function App() {
           <Route
             path="/store-verification/:storeId"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER"]}>
                 <StoreEvidenceReviewPage />
               </ProtectedRoute>
             }
@@ -115,7 +116,7 @@ export default function App() {
           <Route
             path="/compliance/:inspectionId"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER"]}>
                 <ComplianceDetailPage />
               </ProtectedRoute>
             }
@@ -131,7 +132,7 @@ export default function App() {
           <Route
             path="/risk"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER"]}>
                 <RiskPage />
               </ProtectedRoute>
             }
@@ -139,7 +140,7 @@ export default function App() {
           <Route
             path="/alerts"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER"]}>
                 <AlertsPage />
               </ProtectedRoute>
             }
@@ -147,17 +148,17 @@ export default function App() {
           <Route
             path="/complaints"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER"]}>
                 <ComplaintsPage />
               </ProtectedRoute>
             }
           />
 
-          {/* Resolution & Reports */}
+          {/* Resolution & Audit - Restricted to Admin, Officer, and Store for CAPA */}
           <Route
             path="/corrective-actions"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER", "FRANCHISE"]}>
                 <CorrectiveActionsPage />
               </ProtectedRoute>
             }
@@ -165,7 +166,7 @@ export default function App() {
           <Route
             path="/reports"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER"]}>
                 <ReportsPage />
               </ProtectedRoute>
             }

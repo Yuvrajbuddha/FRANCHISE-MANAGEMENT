@@ -47,7 +47,7 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
       label: "Core Overview",
       items: [
         {
-          title: "Dashboard",
+          title: "Core Overview",
           href: "/",
           icon: LayoutDashboard,
           allowedRoles: ["ADMIN", "OWNER", "FRANCHISE", "OFFICER"],

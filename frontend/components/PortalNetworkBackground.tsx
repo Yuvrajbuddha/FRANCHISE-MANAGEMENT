@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 
-interface Node {
+interface NetworkNode {
   x: number;
   y: number;
   baseVx: number;
@@ -8,20 +8,23 @@ interface Node {
   vx: number;
   vy: number;
   radius: number;
-  color: string;
+  isSpecial: boolean; // active/major node with stronger cyan glow
+  pulseOffset: number;
 }
 
 /**
  * PortalNetworkBackground
- * 
- * Subtle, interactive, network-style animation strictly scoped to the 
- * "Select Your Portal" section.
- * 
- * - HTML5 Canvas with transparent background (preserves exact section color).
- * - Small subtle dots and very thin low-opacity connecting lines.
- * - Gentle mouse reactivity when hovering over the section.
- * - Responsive, Retina-crisp (DPI aware), reduced-motion friendly, touch-friendly.
- * - Pointer-events: none to guarantee zero interference with buttons and cards.
+ *
+ * High-contrast, interactive digital network background strictly scoped to
+ * the "Select Your Portal" section.
+ *
+ * Design Spec:
+ * - Light Section Background + Dark Navy Network Lines + Bright Blue/Cyan Nodes + Subtle Glow
+ * - Highly visible against light background (#EEF3F8)
+ * - HTML5 Canvas with transparent background (100% preserves section styling)
+ * - Interactive mouse physics and dynamic distance-based connecting lines
+ * - Retina-crisp DPI scaling, prefers-reduced-motion friendly
+ * - pointer-events: none ensures zero interference with cards, buttons, or links
  */
 export function PortalNetworkBackground() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -36,7 +39,9 @@ export function PortalNetworkBackground() {
     if (!ctx) return;
 
     // Check user preference for reduced motion
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
     let animationFrameId: number;
     let width = 0;
@@ -49,32 +54,32 @@ export function PortalNetworkBackground() {
       y: -2000,
       targetX: -2000,
       targetY: -2000,
-      radius: 140, // subtle interaction radius
+      radius: 160, // interactive influence radius
       isActive: false,
     };
 
-    // Low-opacity, enterprise palette harmonizing with the 3 portal cards
-    const palette = [
-      "rgba(79, 70, 229, ",  // Indigo (Franchisee)
-      "rgba(13, 148, 136, ", // Teal (Store)
-      "rgba(16, 185, 129, ", // Emerald (Quality Officer)
-      "rgba(37, 99, 235, ",  // Blue (General Enterprise)
-    ];
-
-    let nodes: Node[] = [];
-    const maxConnectionDistance = 125;
+    let nodes: NetworkNode[] = [];
+    const maxConnectionDistance = 135;
 
     const initNodes = () => {
-      // Scale node count conservatively based on section area (25 - 45 nodes)
-      const count = Math.max(22, Math.min(45, Math.floor((width * height) / 22000)));
+      // Density scaled to section dimensions (approx 35 - 60 nodes)
+      const count = Math.max(
+        32,
+        Math.min(58, Math.floor((width * height) / 14500))
+      );
       nodes = [];
 
       for (let i = 0; i < count; i++) {
-        // Slow, elegant ambient drift
-        const speed = prefersReducedMotion ? 0 : 0.28;
+        // Natural ambient drift
+        const speed = prefersReducedMotion ? 0 : 0.32;
         const vx = (Math.random() - 0.5) * speed;
         const vy = (Math.random() - 0.5) * speed;
-        const color = palette[i % palette.length];
+
+        // ~30% are major active nodes with stronger cyan glow
+        const isSpecial = i % 3 === 0;
+        const radius = isSpecial
+          ? Math.random() * 0.8 + 2.8 // 2.8px - 3.6px for major nodes
+          : Math.random() * 0.6 + 2.0; // 2.0px - 2.6px for regular nodes
 
         nodes.push({
           x: Math.random() * width,
@@ -83,8 +88,9 @@ export function PortalNetworkBackground() {
           baseVy: vy,
           vx,
           vy,
-          radius: Math.random() * 1.0 + 1.1, // Small 1.1px - 2.1px circular nodes
-          color,
+          radius,
+          isSpecial,
+          pulseOffset: Math.random() * Math.PI * 2,
         });
       }
     };
@@ -113,12 +119,11 @@ export function PortalNetworkBackground() {
       const clientX = e.clientX - rect.left;
       const clientY = e.clientY - rect.top;
 
-      // Only activate if cursor is within or immediately adjacent to this section
       if (
-        clientX >= -50 &&
-        clientX <= width + 50 &&
-        clientY >= -50 &&
-        clientY <= height + 50
+        clientX >= -60 &&
+        clientX <= width + 60 &&
+        clientY >= -60 &&
+        clientY <= height + 60
       ) {
         mouse.targetX = clientX;
         mouse.targetY = clientY;
@@ -156,7 +161,7 @@ export function PortalNetworkBackground() {
         return;
       }
 
-      // Smooth cursor lerp interpolation
+      // Smooth mouse cursor interpolation
       if (mouse.isActive) {
         mouse.x += (mouse.targetX - mouse.x) * 0.16;
         mouse.y += (mouse.targetY - mouse.y) * 0.16;
@@ -165,10 +170,10 @@ export function PortalNetworkBackground() {
         mouse.y = -2000;
       }
 
-      // Transparent clear — preserves underlying section background color 100%
+      // Transparent clear — preserves background color
       ctx.clearRect(0, 0, width, height);
 
-      // Faint, subtle ambient radial focus around cursor
+      // Ambient radial spotlight around cursor (deep blue / soft cyan aura)
       if (mouse.isActive && mouse.x > 0 && mouse.y > 0 && !prefersReducedMotion) {
         const aura = ctx.createRadialGradient(
           mouse.x,
@@ -178,8 +183,8 @@ export function PortalNetworkBackground() {
           mouse.y,
           mouse.radius
         );
-        aura.addColorStop(0, "rgba(59, 130, 246, 0.04)");
-        aura.addColorStop(0.6, "rgba(99, 102, 241, 0.015)");
+        aura.addColorStop(0, "rgba(6, 182, 212, 0.08)");
+        aura.addColorStop(0.5, "rgba(15, 30, 75, 0.04)");
         aura.addColorStop(1, "rgba(255, 255, 255, 0)");
 
         ctx.fillStyle = aura;
@@ -189,8 +194,9 @@ export function PortalNetworkBackground() {
       }
 
       const nodeCount = nodes.length;
+      const time = Date.now() * 0.002;
 
-      // Update positions & draw network
+      // 1. UPDATE POSITIONS & PHYSIC REACTION
       for (let i = 0; i < nodeCount; i++) {
         const node = nodes[i];
 
@@ -198,63 +204,131 @@ export function PortalNetworkBackground() {
           node.x += node.vx;
           node.y += node.vy;
 
-          // Gentle restorative damping towards base velocity
+          // Restorative damping toward base velocity
           node.vx += (node.baseVx - node.vx) * 0.02;
           node.vy += (node.baseVy - node.vy) * 0.02;
 
           // Boundary wrap
-          if (node.x < -15) node.x = width + 15;
-          else if (node.x > width + 15) node.x = -15;
-          if (node.y < -15) node.y = height + 15;
-          else if (node.y > height + 15) node.y = -15;
+          if (node.x < -20) node.x = width + 20;
+          else if (node.x > width + 20) node.x = -20;
+          if (node.y < -20) node.y = height + 20;
+          else if (node.y > height + 20) node.y = -20;
 
-          // Cursor interaction: gentle displacement & subtle connection
+          // Cursor displacement & connection physics
           if (mouse.isActive) {
             const dxMouse = mouse.x - node.x;
             const dyMouse = mouse.y - node.y;
             const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
 
             if (distMouse < mouse.radius && distMouse > 1) {
-              const force = (1 - distMouse / mouse.radius) * 0.6;
-              node.vx -= (dxMouse / distMouse) * force * 0.35;
-              node.vy -= (dyMouse / distMouse) * force * 0.35;
+              const force = (1 - distMouse / mouse.radius) * 0.65;
+              node.vx -= (dxMouse / distMouse) * force * 0.32;
+              node.vy -= (dyMouse / distMouse) * force * 0.32;
 
-              // Subtle web connection to cursor
-              const lineAlpha = (1 - distMouse / mouse.radius) * 0.18;
+              // Dark navy line connecting from node to cursor
+              const lineAlpha = (1 - distMouse / mouse.radius) * 0.50;
               ctx.beginPath();
               ctx.moveTo(node.x, node.y);
               ctx.lineTo(mouse.x, mouse.y);
-              ctx.strokeStyle = `rgba(59, 130, 246, ${lineAlpha})`;
-              ctx.lineWidth = 0.75;
+              ctx.strokeStyle = `rgba(15, 32, 68, ${lineAlpha})`;
+              ctx.lineWidth = 1.15;
               ctx.stroke();
             }
           }
         }
+      }
 
-        // Draw node (small circular dot with low opacity)
-        ctx.beginPath();
-        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
-        ctx.fillStyle = `${node.color}0.30)`;
-        ctx.fill();
+      // 2. DRAW CONNECTING LINES (DARK NAVY / DEEP BLUE - HIGH CONTRAST)
+      for (let i = 0; i < nodeCount; i++) {
+        const nodeA = nodes[i];
 
-        // Connect nearby nodes within distance threshold
         for (let j = i + 1; j < nodeCount; j++) {
           const nodeB = nodes[j];
-          const dx = node.x - nodeB.x;
-          const dy = node.y - nodeB.y;
+          const dx = nodeA.x - nodeB.x;
+          const dy = nodeA.y - nodeB.y;
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < maxConnectionDistance) {
-            // Low opacity thin line (fading out smoothly as distance increases)
-            const alpha = (1 - dist / maxConnectionDistance) * 0.12;
+            // Distance-based opacity: strong enough to clearly see on light background
+            const distanceRatio = 1 - dist / maxConnectionDistance;
+            const baseAlpha = nodeA.isSpecial || nodeB.isSpecial ? 0.45 : 0.36;
+            const alpha = distanceRatio * baseAlpha;
+
             ctx.beginPath();
-            ctx.moveTo(node.x, node.y);
+            ctx.moveTo(nodeA.x, nodeA.y);
             ctx.lineTo(nodeB.x, nodeB.y);
-            ctx.strokeStyle = `rgba(37, 99, 235, ${alpha})`;
-            ctx.lineWidth = 0.65;
+            // Deep navy / dark blue line
+            ctx.strokeStyle = `rgba(15, 32, 68, ${alpha})`;
+            ctx.lineWidth = distanceRatio > 0.5 ? 1.15 : 0.85;
             ctx.stroke();
           }
         }
+      }
+
+      // 3. DRAW NODES (BRIGHT CYAN/BLUE WITH DARK CONTRAST RIM & SUBTLE GLOW)
+      for (let i = 0; i < nodeCount; i++) {
+        const node = nodes[i];
+
+        // Subtle organic breathing pulse
+        const pulse = Math.sin(time + node.pulseOffset) * 0.18 + 1;
+        const glowRadius = node.radius * (node.isSpecial ? 3.6 : 2.5) * pulse;
+
+        // A. Subtle bright outer glow halo
+        const glow = ctx.createRadialGradient(
+          node.x,
+          node.y,
+          0,
+          node.x,
+          node.y,
+          glowRadius
+        );
+
+        if (node.isSpecial) {
+          glow.addColorStop(0, "rgba(6, 182, 212, 0.55)"); // Vibrant Cyan
+          glow.addColorStop(0.5, "rgba(2, 132, 199, 0.22)");
+          glow.addColorStop(1, "rgba(6, 182, 212, 0)");
+        } else {
+          glow.addColorStop(0, "rgba(14, 116, 215, 0.38)"); // Royal Blue
+          glow.addColorStop(0.6, "rgba(15, 32, 68, 0.12)");
+          glow.addColorStop(1, "rgba(15, 32, 68, 0)");
+        }
+
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, glowRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        // B. Dark navy perimeter ring (Guarantees razor-sharp contrast against light background)
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius + 0.65, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(10, 24, 52, 0.88)";
+        ctx.fill();
+
+        // C. Bright Blue / Cyan Core
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = node.isSpecial ? "#06b6d4" : "#0284c7";
+        ctx.fill();
+
+        // D. Tech pinpoint spark in center
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.radius * 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = node.isSpecial ? "#f0fdf4" : "#e0f2fe";
+        ctx.fill();
+      }
+
+      // 4. DRAW CURSOR RETICLE (Interactive focal point)
+      if (mouse.isActive && mouse.x > 0 && mouse.y > 0 && !prefersReducedMotion) {
+        ctx.beginPath();
+        ctx.arc(mouse.x, mouse.y, 4, 0, Math.PI * 2);
+        ctx.fillStyle = "rgba(6, 182, 212, 0.9)";
+        ctx.fill();
+
+        ctx.beginPath();
+        ctx.arc(mouse.x, mouse.y, 8, 0, Math.PI * 2);
+        ctx.strokeStyle = "rgba(15, 32, 68, 0.4)";
+        ctx.lineWidth = 1;
+        ctx.stroke();
       }
 
       if (!prefersReducedMotion) {
@@ -263,7 +337,7 @@ export function PortalNetworkBackground() {
     };
 
     if (prefersReducedMotion) {
-      render(); // Render once statically
+      render(); // Static single render
     } else {
       animationFrameId = requestAnimationFrame(render);
     }
@@ -283,10 +357,8 @@ export function PortalNetworkBackground() {
       aria-hidden="true"
       className="absolute inset-0 pointer-events-none z-0 overflow-hidden select-none"
     >
-      <canvas
-        ref={canvasRef}
-        className="w-full h-full block"
-      />
+      <canvas ref={canvasRef} className="w-full h-full block" />
     </div>
   );
 }
+export default PortalNetworkBackground;

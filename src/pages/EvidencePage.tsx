@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import {
   Video,
@@ -14,6 +15,7 @@ import {
   X,
   AlertTriangle,
   FileCheck2,
+  Store,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -26,13 +28,14 @@ import {
   savePhotosForStore,
   createGeneratedPhotosForSubmission,
 } from "@/lib/cctvEvidenceStore";
+import { STORES_MAP } from "@/lib/stores-data";
 
 export default function EvidencePage() {
   const { user } = useAuth();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const storeId = user?.assignedOutletId || "OUT-042";
-  const storeName = storeId === "OUT-042" ? "Lucknow Central" : `Store ${storeId}`;
+  const matchedStore = STORES_MAP[storeId];
   const currentDate = "04 Oct 2026";
 
   // CCTV Submissions state
@@ -40,7 +43,8 @@ export default function EvidencePage() {
   const [photos, setPhotos] = useState<GeneratedPhoto[]>(() => loadPhotosForStore(storeId));
 
   // Current Store's latest CCTV submission
-  const currentSubmission = submissions.find((s) => s.storeId === storeId) || submissions[0];
+  const currentSubmission = submissions.find((s) => s.storeId === storeId) || submissions.find((s) => s.storeId === "OUT-042");
+  const storeName = currentSubmission?.storeName || matchedStore?.name || user?.assignedOutletName || (storeId === "OUT-042" ? "Lucknow Central" : `Store ${storeId}`);
 
   // Upload Form State (STORE CAN ONLY UPLOAD VIDEOS)
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
@@ -177,9 +181,17 @@ export default function EvidencePage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            to="/login/store"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-teal-300 bg-white hover:bg-teal-50 text-teal-800 text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+            title="Switch Store"
+          >
+            <Store className="h-3.5 w-3.5 text-teal-600" />
+            <span>Select Another Store</span>
+          </Link>
           <Badge className="bg-teal-100 text-teal-800 border-teal-300 text-xs px-3 py-1 font-mono font-semibold">
-            Store User
+            Store Operator
           </Badge>
           <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-100/90 border border-amber-300 text-[11px] text-amber-900 font-medium">
             <Lock className="h-3.5 w-3.5 text-amber-700" />
@@ -236,7 +248,7 @@ export default function EvidencePage() {
       {/* ======================================================== */}
       {/* 3. DAILY CCTV UPLOAD (STORE USER HAS ONLY VIDEO UPLOAD)   */}
       {/* ======================================================== */}
-      <div className="rounded-[28px] border border-white/10 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
+      <div className="rounded-[28px] border border-teal-500/25 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
         <div className="border-b border-white/10 pb-4">
           <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
             MANDATORY COMPLIANCE DISPATCH
@@ -379,7 +391,7 @@ export default function EvidencePage() {
       {/* ======================================================== */}
       {/* 4. SYSTEM-GENERATED CCTV PHOTOS (READ-ONLY FOR STORE)     */}
       {/* ======================================================== */}
-      <div className="rounded-[28px] border border-white/10 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
+      <div className="rounded-[28px] border border-teal-500/25 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-4">
           <div>
             <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">

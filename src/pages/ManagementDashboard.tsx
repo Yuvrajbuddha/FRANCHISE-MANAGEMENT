@@ -182,7 +182,7 @@ export function ManagementDashboard() {
       )}
 
       {/* Global Interactive Filter Bar */}
-      <div className="rounded-2xl border border-white/10 bg-[#0B1020] p-4 shadow-sm space-y-3">
+      <div className="rounded-2xl border border-indigo-500/25 bg-[#0B1020] p-4 shadow-sm space-y-3">
         <div className="flex items-center gap-1.5 font-bold text-white text-xs">
           <Filter className="h-4 w-4 text-[#818CF8]" />
           <span>Multi-Dimensional Filtering</span>

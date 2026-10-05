@@ -150,7 +150,7 @@ export default function CompliancePage() {
       {/* ======================================================== */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Pending Reviews */}
-        <div className="rounded-2xl border border-white/10 bg-[#071126] p-5 space-y-1">
+        <div className="rounded-2xl border border-amber-500/30 bg-[#081226] p-5 space-y-1 shadow-sm">
           <div className="flex items-center justify-between text-[11px] font-mono uppercase text-slate-400">
             <span>PENDING REVIEWS</span>
             <Clock className="h-4 w-4 text-[#F59E0B]" />
@@ -164,7 +164,7 @@ export default function CompliancePage() {
         </div>
 
         {/* Verified Stores */}
-        <div className="rounded-2xl border border-white/10 bg-[#071126] p-5 space-y-1">
+        <div className="rounded-2xl border border-emerald-500/30 bg-[#081226] p-5 space-y-1 shadow-sm">
           <div className="flex items-center justify-between text-[11px] font-mono uppercase text-slate-400">
             <span>VERIFIED STORES</span>
             <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
@@ -178,10 +178,10 @@ export default function CompliancePage() {
         </div>
 
         {/* Total CCTV Submissions */}
-        <div className="rounded-2xl border border-white/10 bg-[#071126] p-5 space-y-1">
+        <div className="rounded-2xl border border-blue-500/30 bg-[#081226] p-5 space-y-1 shadow-sm">
           <div className="flex items-center justify-between text-[11px] font-mono uppercase text-slate-400">
             <span>TOTAL CCTV SUBMISSIONS</span>
-            <Camera className="h-4 w-4 text-slate-400" />
+            <Camera className="h-4 w-4 text-blue-400" />
           </div>
           <div className="font-serif text-3xl font-bold text-white">
             {summaryMetrics.total}
@@ -195,7 +195,7 @@ export default function CompliancePage() {
       {/* ======================================================== */}
       {/* 3. STORES SUBMITTED CCTV LIST                            */}
       {/* ======================================================== */}
-      <div className="rounded-[28px] border border-white/10 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
+      <div className="rounded-[28px] border border-blue-500/25 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-4">
           <div>
             <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">

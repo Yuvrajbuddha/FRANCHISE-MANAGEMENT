@@ -7,12 +7,10 @@ import {
   Store,
   ShieldCheck,
   ArrowRight,
-  KeyRound,
   CheckCircle2,
   Sparkles,
   ShieldAlert,
   Video,
-  ChevronDown,
   BarChart3,
   Scale,
   Activity,
@@ -32,7 +30,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { NetworkBackground } from "@/components/NetworkBackground";
 
 export default function LoginPage() {
@@ -41,12 +38,6 @@ export default function LoginPage() {
 
   const [isLoadingRole, setIsLoadingRole] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  // Manual custom login state
-  const [showManualLogin, setShowManualLogin] = useState(false);
-  const [manualEmail, setManualEmail] = useState("");
-  const [manualPassword, setManualPassword] = useState("");
-  const [isManualLoading, setIsManualLoading] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   // 1-Click Fast Role Sign-In
@@ -71,27 +62,6 @@ export default function LoginPage() {
       navigate(targetRoute || "/");
     } else {
       setErrorMessage(res.error || "Authentication failed. Please retry.");
-    }
-  };
-
-  // Custom credentials login
-  const handleManualSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!manualEmail || !manualPassword) {
-      setErrorMessage("Please enter both email and password.");
-      return;
-    }
-
-    setErrorMessage(null);
-    setIsManualLoading(true);
-
-    const res = await login(manualEmail, manualPassword);
-    setIsManualLoading(false);
-
-    if (res.success) {
-      navigate("/");
-    } else {
-      setErrorMessage(res.error || "Invalid email or password.");
     }
   };
 
@@ -149,10 +119,6 @@ export default function LoginPage() {
 
             {/* Right: Authentication / Access Action */}
             <div className="hidden sm:flex items-center gap-3">
-              <div className="flex items-center gap-1.5 text-[11px] text-slate-300 font-mono">
-                <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" />
-                <span>Online</span>
-              </div>
               <button
                 type="button"
                 onClick={scrollToPortals}
@@ -319,10 +285,9 @@ export default function LoginPage() {
                 <div className="pt-6">
                   <Button
                     className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs h-11 rounded-xl shadow-xs cursor-pointer gap-2 transition-all uppercase tracking-wider"
-                    disabled={isLoadingRole === "FRANCHISE"}
-                    onClick={() => handleQuickLogin("FRANCHISE", "/evidence")}
+                    onClick={() => navigate("/login/store")}
                   >
-                    <span>{isLoadingRole === "FRANCHISE" ? "Verifying..." : "Enter Portal →"}</span>
+                    <span>Select Store & Enter →</span>
                   </Button>
                 </div>
               </div>
@@ -360,75 +325,6 @@ export default function LoginPage() {
                 </div>
               </div>
             </div>
-
-          {/* Collapsible Corporate Credentials Form */}
-          <div className="mt-10 text-center max-w-md mx-auto">
-            <button
-              onClick={() => setShowManualLogin(!showManualLogin)}
-              className="text-xs font-medium text-slate-600 hover:text-slate-900 inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 transition-all cursor-pointer shadow-xs"
-            >
-              <KeyRound className="h-3.5 w-3.5 text-slate-500" />
-              <span>
-                {showManualLogin
-                  ? "Close Custom Credentials Form"
-                  : "Sign in with custom email & password"}
-              </span>
-              <ChevronDown
-                className={`h-3.5 w-3.5 transition-transform ${
-                  showManualLogin ? "rotate-180" : ""
-                }`}
-              />
-            </button>
-
-            {showManualLogin && (
-              <div className="mt-4 p-6 rounded-2xl border border-slate-200 bg-white shadow-lg text-left transition-all">
-                <div className="mb-4">
-                  <h4 className="font-serif text-base font-bold text-slate-900">
-                    Corporate Sign-In
-                  </h4>
-                  <p className="text-xs text-slate-500">
-                    Enter your registered enterprise credentials.
-                  </p>
-                </div>
-
-                <form onSubmit={handleManualSubmit} className="space-y-3">
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                      Email
-                    </label>
-                    <Input
-                      type="email"
-                      value={manualEmail}
-                      onChange={(e) => setManualEmail(e.target.value)}
-                      placeholder="e.g. yuvraj.buddha@aurafoods.com"
-                      className="bg-slate-50 border-slate-200 text-slate-900 text-xs h-10 rounded-xl focus:border-slate-500"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-bold uppercase tracking-wider text-slate-600 mb-1">
-                      Password
-                    </label>
-                    <Input
-                      type="password"
-                      value={manualPassword}
-                      onChange={(e) => setManualPassword(e.target.value)}
-                      placeholder="••••••••"
-                      className="bg-slate-50 border-slate-200 text-slate-900 text-xs h-10 rounded-xl focus:border-slate-500"
-                      required
-                    />
-                  </div>
-                  <Button
-                    type="submit"
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs h-10 rounded-xl font-semibold cursor-pointer shadow-xs transition-all uppercase tracking-wider"
-                    disabled={isManualLoading}
-                  >
-                    {isManualLoading ? "Verifying..." : "Authenticate Session"}
-                  </Button>
-                </form>
-              </div>
-            )}
-          </div>
         </div>
       </section>
 

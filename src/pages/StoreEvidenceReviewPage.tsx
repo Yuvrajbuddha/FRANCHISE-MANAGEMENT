@@ -28,6 +28,7 @@ import {
   loadPhotosForStore,
   savePhotosForStore,
 } from "@/lib/cctvEvidenceStore";
+import { STORES_MAP } from "@/lib/stores-data";
 
 export default function StoreEvidenceReviewPage() {
   const { storeId } = useParams<{ storeId: string }>();
@@ -40,8 +41,9 @@ export default function StoreEvidenceReviewPage() {
   const [submissions, setSubmissions] = useState<CctvSubmission[]>(loadCctvSubmissions);
   const currentSub = submissions.find((s) => s.storeId === activeStoreId) || submissions[0];
 
-  const storeName = currentSub?.storeName || (activeStoreId === "OUT-042" ? "Lucknow Central" : `Store ${activeStoreId}`);
-  const storeLocation = activeStoreId === "OUT-042" ? "Lucknow" : activeStoreId === "OUT-089" ? "Noida" : "Metro City";
+  const matchedStore = STORES_MAP[activeStoreId];
+  const storeName = currentSub?.storeName || matchedStore?.name || (activeStoreId === "OUT-042" ? "Lucknow Central" : `Store ${activeStoreId}`);
+  const storeLocation = matchedStore?.city || (activeStoreId === "OUT-042" ? "Lucknow" : activeStoreId === "OUT-089" ? "Noida" : "Metro City");
   const cctvDate = currentSub?.uploadDate || "04 Oct 2026";
 
   const [photos, setPhotos] = useState<GeneratedPhoto[]>(() => loadPhotosForStore(activeStoreId));

@@ -149,7 +149,7 @@ export function generateRandomTimestamps(durationHours: number): { timeFormatted
   return results;
 }
 
-// Initial seed stores for the Officer Dashboard
+// Initial seed stores for the Officer Dashboard - complete 10-store network
 export const INITIAL_CCTV_SUBMISSIONS: CctvSubmission[] = [
   {
     id: "CCTV-OUT042-20261004",
@@ -203,6 +203,76 @@ export const INITIAL_CCTV_SUBMISSIONS: CctvSubmission[] = [
     inspectionDate: "03 Oct 2026",
     officerName: "Officer Yuvraj Buddha",
   },
+  {
+    id: "CCTV-OUT055-20261004",
+    storeId: "OUT-055",
+    storeName: "FC Road Corner",
+    videoName: "CCTV_PUNE_SHIFT_ALL_04OCT2026.mp4",
+    durationLabel: "6 hours",
+    durationHours: 6,
+    uploadDate: "04 Oct 2026",
+    status: "Pending Review",
+    photosCount: 6,
+  },
+  {
+    id: "CCTV-OUT073-20261004",
+    storeId: "OUT-073",
+    storeName: "MI Road Heritage",
+    videoName: "CCTV_JAIPUR_EVENING_04OCT2026.mp4",
+    durationLabel: "4 hours",
+    durationHours: 4,
+    uploadDate: "04 Oct 2026",
+    status: "Pending Review",
+    photosCount: 5,
+  },
+  {
+    id: "CCTV-OUT128-20261003",
+    storeId: "OUT-128",
+    storeName: "Bandra West Linking Road",
+    videoName: "CCTV_MUMBAI_DAILY_03OCT2026.mp4",
+    durationLabel: "8 hours",
+    durationHours: 8,
+    uploadDate: "03 Oct 2026",
+    status: "Pending Review",
+    photosCount: 8,
+  },
+  {
+    id: "CCTV-OUT142-20261004",
+    storeId: "OUT-142",
+    storeName: "Cyber Hub Galleria",
+    videoName: "CCTV_GURGAON_PEAK_04OCT2026.mp4",
+    durationLabel: "7 hours",
+    durationHours: 7,
+    uploadDate: "04 Oct 2026",
+    status: "Pending Review",
+    photosCount: 7,
+  },
+  {
+    id: "CCTV-OUT061-20261003",
+    storeId: "OUT-061",
+    storeName: "Civil Lines Cantt",
+    videoName: "CCTV_KANPUR_DISPATCH_03OCT2026.mp4",
+    durationLabel: "3 hours",
+    durationHours: 3,
+    uploadDate: "03 Oct 2026",
+    status: "Verified",
+    photosCount: 4,
+    finalRating: 9,
+    officerComment: "Excellent waste segregation and cold probe logs.",
+    inspectionDate: "03 Oct 2026",
+    officerName: "Officer Yuvraj Buddha",
+  },
+  {
+    id: "CCTV-OUT097-20261004",
+    storeId: "OUT-097",
+    storeName: "Assi Ghat Promenade",
+    videoName: "CCTV_VARANASI_RUSH_04OCT2026.mp4",
+    durationLabel: "5 hours",
+    durationHours: 5,
+    uploadDate: "04 Oct 2026",
+    status: "Pending Review",
+    photosCount: 6,
+  },
 ];
 
 // Helper: Zones for generated photos
@@ -244,9 +314,15 @@ export function createGeneratedPhotosForSubmission(
 // Storage helpers
 export function loadCctvSubmissions(): CctvSubmission[] {
   try {
-    const data = localStorage.getItem("cctv_submissions_v2");
-    if (data) {
-      return JSON.parse(data);
+    const raw = localStorage.getItem("cctv_submissions_v4") || localStorage.getItem("cctv_submissions_v2");
+    if (raw) {
+      const stored = JSON.parse(raw) as CctvSubmission[];
+      // Guarantee ALL 10 network stores are present in the list
+      const existingIds = new Set(stored.map((s) => s.storeId));
+      const missing = INITIAL_CCTV_SUBMISSIONS.filter((init) => !existingIds.has(init.storeId));
+      const merged = missing.length > 0 ? [...stored, ...missing] : stored;
+      saveCctvSubmissions(merged);
+      return merged;
     }
   } catch {}
   saveCctvSubmissions(INITIAL_CCTV_SUBMISSIONS);
@@ -255,6 +331,7 @@ export function loadCctvSubmissions(): CctvSubmission[] {
 
 export function saveCctvSubmissions(submissions: CctvSubmission[]) {
   try {
+    localStorage.setItem("cctv_submissions_v4", JSON.stringify(submissions));
     localStorage.setItem("cctv_submissions_v2", JSON.stringify(submissions));
   } catch {}
 }
@@ -269,7 +346,11 @@ export function loadPhotosForStore(storeId: string): GeneratedPhoto[] {
 
   // If not found, create initial photos based on submission
   const submissions = loadCctvSubmissions();
-  const sub = submissions.find((s) => s.storeId === storeId) || submissions[0];
+  const sub = submissions.find((s) => s.storeId === storeId) || {
+    id: `CCTV-${storeId}-INIT`,
+    storeId,
+    durationHours: 8,
+  };
   const newPhotos = createGeneratedPhotosForSubmission(
     sub.id,
     storeId,

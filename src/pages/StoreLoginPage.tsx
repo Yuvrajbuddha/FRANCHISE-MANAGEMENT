@@ -3,93 +3,31 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/lib/AuthContext";
 import {
   Store,
-  Building2,
-  Lock,
   ArrowLeft,
   ArrowRight,
-  ShieldCheck,
-  AlertCircle,
   ShieldAlert,
   MapPin,
   CheckCircle2,
-  KeyRound,
-  FileSpreadsheet,
-  Boxes,
+  Lock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-
-// Representative outlets available across network for fast selection or demo
-const OUTLETS_LIST = [
-  {
-    code: "OUT-042",
-    name: "Hazratganj Flagship",
-    city: "Lucknow",
-    model: "FOCO",
-    manager: "Store Operator",
-    email: "store.lucknow@franchiseops.com",
-    activeStaff: 14,
-  },
-  {
-    code: "OUT-089",
-    name: "Sector 18 Market",
-    city: "Noida",
-    model: "COCO",
-    manager: "Store Operator",
-    email: "store.noida@franchiseops.com",
-    activeStaff: 18,
-  },
-  {
-    code: "OUT-114",
-    name: "Koramangala 5th Block",
-    city: "Bengaluru",
-    model: "FOCO",
-    manager: "Store Operator",
-    email: "store.blr@franchiseops.com",
-    activeStaff: 16,
-  },
-  {
-    code: "OUT-019",
-    name: "Connaught Place Inner",
-    city: "Delhi",
-    model: "COCO",
-    manager: "Store Operator",
-    email: "store.delhi@franchiseops.com",
-    activeStaff: 22,
-  },
-  {
-    code: "OUT-055",
-    name: "FC Road Corner",
-    city: "Pune",
-    model: "COCO",
-    manager: "Store Operator",
-    email: "store.pune@franchiseops.com",
-    activeStaff: 12,
-  },
-  {
-    code: "OUT-073",
-    name: "MI Road Heritage",
-    city: "Jaipur",
-    model: "FOCO",
-    manager: "Store Operator",
-    email: "store.jaipur@franchiseops.com",
-    activeStaff: 15,
-  },
-];
+import { ALL_NETWORK_STORES, StoreOutletInfo } from "@/lib/stores-data";
 
 export default function StoreLoginPage() {
   const { loginStore } = useAuth();
   const navigate = useNavigate();
 
-  const [selectedOutlet, setSelectedOutlet] = useState(OUTLETS_LIST[0]);
+  // Do NOT pre-select Lucknow Central or any store automatically
+  const [selectedOutlet, setSelectedOutlet] = useState<StoreOutletInfo | null>(null);
   const [customOutletCode, setCustomOutletCode] = useState("");
-  const [operatorEmail, setOperatorEmail] = useState(OUTLETS_LIST[0].email);
+  const [operatorEmail, setOperatorEmail] = useState("");
   const [accessPin, setAccessPin] = useState("store123");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSelectPreset = (outlet: (typeof OUTLETS_LIST)[0]) => {
+  const handleSelectPreset = (outlet: StoreOutletInfo) => {
     setSelectedOutlet(outlet);
     setCustomOutletCode("");
     setOperatorEmail(outlet.email);
@@ -97,22 +35,49 @@ export default function StoreLoginPage() {
     setErrorMessage(null);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleQuickEnterStore = async (outlet: StoreOutletInfo) => {
+    setSelectedOutlet(outlet);
+    setCustomOutletCode("");
+    setOperatorEmail(outlet.email);
     setErrorMessage(null);
     setIsSubmitting(true);
 
-    const targetCode = (customOutletCode.trim() || selectedOutlet.code).toUpperCase();
-    const targetName = customOutletCode.trim()
-      ? `Outlet ${targetCode}`
-      : `${selectedOutlet.name} (${selectedOutlet.city})`;
+    const targetCode = outlet.code.toUpperCase();
+    const targetName = `${outlet.name} (${outlet.city})`;
 
-    const res = await loginStore(targetCode, targetName, operatorEmail, accessPin);
+    const res = await loginStore(targetCode, targetName, outlet.email, "store123");
     setIsSubmitting(false);
 
     if (res.success) {
-      // Direct navigation straight into this specific outlet's dossier!
-      navigate(`/outlets/${targetCode}`);
+      navigate("/evidence");
+    } else {
+      setErrorMessage(res.error || "Store authentication failed. Please verify credentials.");
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(null);
+
+    const targetCode = (customOutletCode.trim() || selectedOutlet?.code || "").toUpperCase();
+    if (!targetCode) {
+      setErrorMessage("Please select a store to continue.");
+      return;
+    }
+
+    setIsSubmitting(true);
+    const targetName = customOutletCode.trim()
+      ? `Outlet ${targetCode}`
+      : selectedOutlet
+      ? `${selectedOutlet.name} (${selectedOutlet.city})`
+      : `Store ${targetCode}`;
+
+    const email = operatorEmail.trim() || `store.${targetCode.toLowerCase()}@franchiseops.com`;
+    const res = await loginStore(targetCode, targetName, email, accessPin);
+    setIsSubmitting(false);
+
+    if (res.success) {
+      navigate("/evidence");
     } else {
       setErrorMessage(res.error || "Store authentication failed. Please verify credentials.");
     }
@@ -121,11 +86,11 @@ export default function StoreLoginPage() {
   return (
     <div className="min-h-screen bg-[#050B1A] text-slate-100 flex flex-col justify-between p-4 sm:p-6 lg:p-8 antialiased selection:bg-emerald-500 selection:text-white">
       {/* Top Bar Header */}
-      <header className="max-w-5xl mx-auto w-full flex items-center justify-between border-b border-white/10 pb-4">
+      <header className="max-w-6xl mx-auto w-full flex items-center justify-between border-b border-white/10 pb-4">
         <div className="flex items-center gap-3">
           <Link
             to="/login"
-            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0A1224] border border-white/10 text-slate-300 hover:text-white hover:bg-white/5 transition-colors"
+            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0A1224] border border-white/10 text-slate-300 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
             title="Back to all portals"
           >
             <ArrowLeft className="h-4 w-4" />
@@ -160,16 +125,16 @@ export default function StoreLoginPage() {
       </header>
 
       {/* Main Body */}
-      <main className="max-w-5xl mx-auto w-full my-auto py-8">
-        <div className="text-center max-w-xl mx-auto mb-8 space-y-2">
+      <main className="max-w-6xl mx-auto w-full my-auto py-8">
+        <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
           <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
             Unit Authentication Gate
           </span>
           <h1 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-white">
-            Sign In to Your <span className="italic text-emerald-400">Assigned Store</span>
+            Select Your <span className="italic text-emerald-400">Assigned Store</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-400">
-            For security, each store operator can access only one store. Choose or enter your outlet code below.
+            Please choose your specific store from the complete network directory below. Access is partitioned strictly to the selected location.
           </p>
         </div>
 
@@ -181,55 +146,75 @@ export default function StoreLoginPage() {
           </div>
         )}
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start max-w-4xl mx-auto">
-          {/* Left Column: Preset Store Outlets (7 cols) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start max-w-6xl mx-auto">
+          {/* Left Column: Complete Network Store Outlets (7 cols) */}
           <div className="lg:col-span-7 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-400">
-                Select Store / Outlet Location
+              <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                Available Stores ({ALL_NETWORK_STORES.length})
               </span>
-              <span className="text-[11px] text-slate-500 font-mono">
-                Click any store to auto-fill
+              <span className="text-[11px] text-slate-400 font-mono">
+                Click any store to select or enter directly
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-              {OUTLETS_LIST.map((outlet) => {
+            {/* Display ALL available stores */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[520px] overflow-y-auto pr-1">
+              {ALL_NETWORK_STORES.map((outlet) => {
                 const isSelected =
-                  !customOutletCode && selectedOutlet.code === outlet.code;
+                  !customOutletCode && selectedOutlet?.code === outlet.code;
                 return (
-                  <button
+                  <div
                     key={outlet.code}
-                    type="button"
                     onClick={() => handleSelectPreset(outlet)}
-                    className={`text-left p-3.5 rounded-xl border transition-all cursor-pointer relative ${
+                    className={`text-left p-3.5 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between gap-2.5 ${
                       isSelected
-                        ? "border-emerald-500 bg-emerald-950/30 ring-1 ring-emerald-500/50"
+                        ? "border-emerald-500 bg-emerald-950/40 ring-1 ring-emerald-500/60"
                         : "border-slate-800 bg-slate-800/60 hover:border-slate-700 hover:bg-slate-800"
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-mono text-xs font-bold text-emerald-400">
-                        {outlet.code}
+                    <div>
+                      <div className="flex items-center justify-between mb-1">
+                        <span className="font-mono text-xs font-bold text-emerald-400">
+                          {outlet.code}
+                        </span>
+                        <Badge
+                          variant="outline"
+                          className="text-[10px] font-mono border-slate-700 text-slate-300 py-0"
+                        >
+                          {outlet.city}
+                        </Badge>
+                      </div>
+                      <div className="text-xs font-semibold text-white truncate">
+                        {outlet.name}
+                      </div>
+                      <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1.5">
+                        <MapPin className="h-3 w-3 text-slate-500 shrink-0" />
+                        <span>{outlet.model} Model · {outlet.activeStaff} Staff</span>
+                      </div>
+                    </div>
+
+                    <div className="pt-2 border-t border-white/5 flex items-center justify-between">
+                      <span className="text-[10px] text-slate-400 font-mono">
+                        Mgr: {outlet.manager}
                       </span>
-                      <Badge
-                        variant="outline"
-                        className="text-[10px] font-mono border-slate-700 text-slate-400 py-0"
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleQuickEnterStore(outlet);
+                        }}
+                        disabled={isSubmitting}
+                        className="text-[10px] font-bold text-emerald-400 hover:text-white px-2 py-1 rounded bg-emerald-950/60 border border-emerald-500/30 hover:bg-emerald-600 transition-colors cursor-pointer"
                       >
-                        {outlet.city}
-                      </Badge>
+                        Enter →
+                      </button>
                     </div>
-                    <div className="text-xs font-medium text-white truncate">
-                      {outlet.name}
-                    </div>
-                    <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1.5">
-                      <MapPin className="h-3 w-3 text-slate-500" />
-                      <span>{outlet.model} Model · {outlet.activeStaff} Staff</span>
-                    </div>
+
                     {isSelected && (
                       <CheckCircle2 className="h-4 w-4 text-emerald-400 absolute top-3 right-3" />
                     )}
-                  </button>
+                  </div>
                 );
               })}
             </div>
@@ -245,9 +230,11 @@ export default function StoreLoginPage() {
                   placeholder="e.g. OUT-101, OUT-077"
                   value={customOutletCode}
                   onChange={(e) => {
-                    setCustomOutletCode(e.target.value.toUpperCase());
-                    if (e.target.value) {
-                      setOperatorEmail(`store.${e.target.value.toLowerCase()}@franchiseops.com`);
+                    const val = e.target.value.toUpperCase();
+                    setCustomOutletCode(val);
+                    if (val) {
+                      setSelectedOutlet(null);
+                      setOperatorEmail(`store.${val.toLowerCase()}@franchiseops.com`);
                     }
                   }}
                   className="bg-slate-900 border-slate-700 text-white font-mono text-xs h-9 uppercase"
@@ -264,14 +251,20 @@ export default function StoreLoginPage() {
                   Single-Store Login
                 </span>
                 <Badge className="bg-emerald-600/20 text-emerald-300 border-emerald-500/30 text-[10px]">
-                  Outlet {customOutletCode.trim() || selectedOutlet.code}
+                  {customOutletCode.trim()
+                    ? `Outlet ${customOutletCode.trim()}`
+                    : selectedOutlet
+                    ? `Outlet ${selectedOutlet.code}`
+                    : "No Store Selected"}
                 </Badge>
               </div>
               <h2 className="font-serif text-lg font-bold text-white">
                 Authorize Store Session
               </h2>
               <p className="text-xs text-slate-400 mt-0.5">
-                Access is strictly partitioned to this single outlet.
+                {selectedOutlet || customOutletCode.trim()
+                  ? `Selected: ${customOutletCode.trim() || selectedOutlet?.name}`
+                  : "Please select a store on the left to proceed."}
               </p>
             </div>
 
@@ -281,9 +274,15 @@ export default function StoreLoginPage() {
                   Active Outlet Assignment
                 </label>
                 <div className="rounded-lg bg-slate-900/90 border border-slate-700 px-3 py-2 text-xs font-mono text-emerald-300 flex items-center justify-between">
-                  <span>{customOutletCode.trim() || selectedOutlet.code}</span>
-                  <span className="text-[11px] text-slate-400 font-sans">
-                    {customOutletCode.trim() ? "Custom Outlet" : selectedOutlet.name}
+                  <span>
+                    {customOutletCode.trim() || selectedOutlet?.code || "— None Selected —"}
+                  </span>
+                  <span className="text-[11px] text-slate-400 font-sans truncate max-w-[160px]">
+                    {customOutletCode.trim()
+                      ? "Custom Outlet"
+                      : selectedOutlet
+                      ? selectedOutlet.name
+                      : "Click a store to select"}
                   </span>
                 </div>
               </div>
@@ -296,6 +295,7 @@ export default function StoreLoginPage() {
                   type="email"
                   value={operatorEmail}
                   onChange={(e) => setOperatorEmail(e.target.value)}
+                  placeholder="Select store or enter email"
                   className="bg-slate-900 border-slate-700 text-white text-xs h-9"
                   required
                 />
@@ -328,16 +328,18 @@ export default function StoreLoginPage() {
 
               <Button
                 type="submit"
-                disabled={isSubmitting}
-                className="w-full bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs h-10 shadow-md shadow-emerald-900/40 cursor-pointer gap-2"
+                disabled={isSubmitting || (!selectedOutlet && !customOutletCode.trim())}
+                className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold text-xs h-10 shadow-md shadow-emerald-900/40 cursor-pointer gap-2"
               >
                 {isSubmitting ? (
                   <span>Verifying Store Authority...</span>
-                ) : (
+                ) : selectedOutlet || customOutletCode.trim() ? (
                   <>
-                    <span>Enter Store Portal ({customOutletCode.trim() || selectedOutlet.code})</span>
+                    <span>Enter Store Dashboard ({customOutletCode.trim() || selectedOutlet?.name})</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </>
+                ) : (
+                  <span>Please Select a Store Above</span>
                 )}
               </Button>
             </form>
@@ -346,7 +348,7 @@ export default function StoreLoginPage() {
       </main>
 
       {/* Footer */}
-      <footer className="max-w-5xl mx-auto w-full pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2">
+      <footer className="max-w-6xl mx-auto w-full pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2">
         <span>© 2026 AI-Assisted Franchise Performance & Compliance Monitoring. Confidential & Proprietary.</span>
         <div className="flex items-center gap-3 text-xs font-medium">
           <span className="text-slate-300 font-semibold">Deterministic Audit Engine</span>

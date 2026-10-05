@@ -1,6 +1,6 @@
 import express from "express";
 import { createServer as createViteServer } from "vite";
-import apiApp from "./src/api-server";
+import apiApp from "./backend/server";
 
 const app = express();
 const PORT = process.env.PORT || 3000;

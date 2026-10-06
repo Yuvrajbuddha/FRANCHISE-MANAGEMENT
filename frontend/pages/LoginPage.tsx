@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PortalNetworkBackground } from "@/components/PortalNetworkBackground";
+import { NetworkTrajectoryGraph } from "@/components/NetworkTrajectoryGraph";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -325,8 +326,8 @@ export default function LoginPage() {
                 </div>
               </div>
             </div>
-        </div>
-      </section>
+          </div>
+        </section>
 
       {/* ======================================================== */}
       {/* CURVED WAVE TRANSITION 1: SOFT LIGHT SURFACE             */}
@@ -644,72 +645,8 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Minimal Elegant SVG Graph Showcase */}
-          <div className="rounded-[32px] border border-slate-200 bg-white p-8 shadow-xs space-y-6">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div>
-                <h3 className="font-serif text-xl font-bold text-slate-900">
-                  Network Revenue Trajectory vs Statutory Royalty Yield
-                </h3>
-                <p className="text-xs text-slate-500 mt-1">
-                  Monthly aggregated billing with automatic POS ledger settlement
-                </p>
-              </div>
-              <div className="flex items-center gap-4 text-xs font-mono">
-                <span className="flex items-center gap-1.5 text-indigo-600 font-semibold">
-                  <span className="h-2 w-2 rounded-full bg-indigo-600" /> Gross GMV
-                </span>
-                <span className="flex items-center gap-1.5 text-emerald-600 font-semibold">
-                  <span className="h-2 w-2 rounded-full bg-emerald-600" /> Settled Net
-                </span>
-              </div>
-            </div>
-
-            {/* SVG Minimal Line Chart */}
-            <div className="h-48 w-full pt-4">
-              <svg className="w-full h-full" viewBox="0 0 800 160" preserveAspectRatio="none">
-                <defs>
-                  <linearGradient id="gmv-grad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#2563EB" stopOpacity="0.1" />
-                    <stop offset="100%" stopColor="#2563EB" stopOpacity="0" />
-                  </linearGradient>
-                </defs>
-                {/* Horizontal Grid lines */}
-                <line x1="0" y1="40" x2="800" y2="40" stroke="#E2E8F0" strokeDasharray="3 3" />
-                <line x1="0" y1="80" x2="800" y2="80" stroke="#E2E8F0" strokeDasharray="3 3" />
-                <line x1="0" y1="120" x2="800" y2="120" stroke="#E2E8F0" strokeDasharray="3 3" />
-
-                {/* Area fill */}
-                <path
-                  d="M0,130 C120,110 240,120 360,80 C480,90 600,40 800,20 L800,160 L0,160 Z"
-                  fill="url(#gmv-grad)"
-                />
-
-                {/* Line 1: Gross GMV */}
-                <path
-                  d="M0,130 C120,110 240,120 360,80 C480,90 600,40 800,20"
-                  fill="none"
-                  stroke="#2563EB"
-                  strokeWidth="2.5"
-                />
-
-                {/* Line 2: Settled Net */}
-                <path
-                  d="M0,140 C120,125 240,130 360,95 C480,105 600,60 800,40"
-                  fill="none"
-                  stroke="#10B981"
-                  strokeWidth="2"
-                  strokeDasharray="4 3"
-                />
-
-                {/* Points */}
-                <circle cx="360" cy="80" r="4" fill="#2563EB" />
-                <circle cx="800" cy="20" r="4" fill="#2563EB" />
-                <circle cx="360" cy="95" r="4" fill="#10B981" />
-                <circle cx="800" cy="40" r="4" fill="#10B981" />
-              </svg>
-            </div>
-          </div>
+          {/* Network Revenue Trajectory vs Statutory Royalty Yield Graph Showcase */}
+          <NetworkTrajectoryGraph />
         </div>
       </section>
 

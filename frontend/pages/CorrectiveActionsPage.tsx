@@ -530,28 +530,28 @@ export default function CorrectiveActionsPage() {
           </span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
+        <div className="overflow-x-auto w-full">
+          <table className="w-full text-left text-xs min-w-[1150px]">
             <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 border-b border-slate-200 dark:border-slate-800">
               <tr>
-                <th className="py-3 px-3.5 font-semibold">CAPA ID</th>
-                <th className="py-3 px-3.5 font-semibold">Outlet</th>
-                <th className="py-3 px-3.5 font-semibold max-w-[240px]">Issue & Required Action</th>
-                <th className="py-3 px-3.5 font-semibold">Assigned Person</th>
-                <th className="py-3 px-3.5 font-semibold">Deadline & SLA</th>
-                <th className="py-3 px-3.5 font-semibold">Workflow Stage</th>
-                <th className="py-3 px-3.5 font-semibold">Status</th>
-                <th className="py-3 px-3.5 font-semibold text-right">Actions</th>
+                <th className="py-3 px-3.5 font-semibold min-w-[140px]">CAPA ID</th>
+                <th className="py-3 px-3.5 font-semibold min-w-[90px]">Outlet</th>
+                <th className="py-3 px-3.5 font-semibold min-w-[95px]">Priority</th>
+                <th className="py-3 px-3.5 font-semibold min-w-[300px]">Action (Issue & Required Mandate)</th>
+                <th className="py-3 px-3.5 font-semibold min-w-[170px]">Assigned Person / Manager / Lead</th>
+                <th className="py-3 px-3.5 font-semibold min-w-[130px]">Due Date & SLA</th>
+                <th className="py-3 px-3.5 font-semibold min-w-[130px]">Workflow Stage</th>
+                <th className="py-3 px-3.5 font-semibold min-w-[110px]">Status</th>
+                <th className="py-3 px-3.5 font-semibold text-right min-w-[310px]">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
               {displayedActions.map((item) => (
                 <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                  <td className="py-3 px-3.5 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+                  <td className="py-3 px-3.5 font-mono font-bold text-indigo-600 dark:text-indigo-400 whitespace-nowrap">
                     {item.actionId}
-                    <div className="pt-0.5">{getPriorityBadge(item.priority)}</div>
                   </td>
-                  <td className="py-3 px-3.5">
+                  <td className="py-3 px-3.5 whitespace-nowrap">
                     <Link
                       to={`/outlets/${item.outletId}`}
                       className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 hover:text-indigo-700 dark:hover:bg-indigo-900 transition-colors inline-flex items-center gap-1"
@@ -560,21 +560,24 @@ export default function CorrectiveActionsPage() {
                       <span>{item.outletId}</span>
                     </Link>
                   </td>
-                  <td className="py-3 px-3.5 max-w-[240px]">
-                    <span className="font-semibold text-slate-900 dark:text-slate-100 block line-clamp-1">
+                  <td className="py-3 px-3.5 whitespace-nowrap">
+                    {getPriorityBadge(item.priority)}
+                  </td>
+                  <td className="py-3 px-3.5 min-w-[300px]">
+                    <span className="font-semibold text-slate-900 dark:text-slate-100 block leading-snug">
                       {item.issue}
                     </span>
-                    <span className="text-[11px] text-slate-500 line-clamp-2 mt-0.5">
+                    <span className="text-[11px] text-slate-500 block mt-1 leading-relaxed">
                       {item.requiredAction}
                     </span>
                   </td>
                   <td className="py-3 px-3.5">
-                    <span className="font-medium text-slate-800 dark:text-slate-200 block">
+                    <span className="font-medium text-slate-800 dark:text-slate-200 block whitespace-nowrap">
                       {item.assignedPerson}
                     </span>
-                    <span className="text-[10px] text-slate-400">{item.category}</span>
+                    <span className="text-[10px] text-slate-400 block whitespace-nowrap">{item.category}</span>
                   </td>
-                  <td className="py-3 px-3.5 font-mono">
+                  <td className="py-3 px-3.5 font-mono whitespace-nowrap">
                     <span className="block text-slate-700 dark:text-slate-300">{item.deadline}</span>
                     {item.isOverdue || item.status === "OVERDUE" ? (
                       <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-red-600 dark:text-red-400">
@@ -589,54 +592,56 @@ export default function CorrectiveActionsPage() {
                       </span>
                     )}
                   </td>
-                  <td className="py-3 px-3.5">
+                  <td className="py-3 px-3.5 whitespace-nowrap">
                     <span className="font-medium text-[11px] text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
                       {item.currentStage}
                     </span>
                   </td>
-                  <td className="py-3 px-3.5">
+                  <td className="py-3 px-3.5 whitespace-nowrap">
                     {getCapaStatusBadge(item.status, item.isOverdue)}
                   </td>
-                  <td className="py-3 px-3.5 text-right space-x-1 whitespace-nowrap">
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      onClick={() => handleOpenDetail(item)}
-                      className="h-7 text-xs gap-1 cursor-pointer"
-                    >
-                      <Eye className="h-3 w-3" />
-                      <span>Dossier</span>
-                    </Button>
-
-                    {item.status !== "CLOSED" && (
+                  <td className="py-3 px-3.5 text-right whitespace-nowrap">
+                    <div className="flex items-center justify-end gap-1.5">
                       <Button
                         size="sm"
-                        variant="secondary"
-                        onClick={() => setEvidenceModalItem(item)}
+                        variant="outline"
+                        onClick={() => handleOpenDetail(item)}
                         className="h-7 text-xs gap-1 cursor-pointer"
                       >
-                        <Upload className="h-3 w-3 text-indigo-600" />
-                        <span>Submit Evidence</span>
+                        <Eye className="h-3 w-3" />
+                        <span>Dossier</span>
                       </Button>
-                    )}
 
-                    {isOfficerOrAdmin && item.status !== "CLOSED" && (
-                      <Button
-                        size="sm"
-                        onClick={() => setVerifyModalItem(item)}
-                        className="h-7 text-xs gap-1 bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer"
-                      >
-                        <ShieldCheck className="h-3 w-3" />
-                        <span>Verify & Sign-Off</span>
-                      </Button>
-                    )}
+                      {item.status !== "CLOSED" && (
+                        <Button
+                          size="sm"
+                          variant="secondary"
+                          onClick={() => setEvidenceModalItem(item)}
+                          className="h-7 text-xs gap-1 cursor-pointer"
+                        >
+                          <Upload className="h-3 w-3 text-indigo-600" />
+                          <span>Submit Evidence</span>
+                        </Button>
+                      )}
+
+                      {isOfficerOrAdmin && item.status !== "CLOSED" && (
+                        <Button
+                          size="sm"
+                          onClick={() => setVerifyModalItem(item)}
+                          className="h-7 text-xs gap-1 bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer"
+                        >
+                          <ShieldCheck className="h-3 w-3" />
+                          <span>Verify & Sign-Off</span>
+                        </Button>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}
 
               {displayedActions.length === 0 && (
                 <tr>
-                  <td colSpan={8} className="py-12 text-center text-slate-400">
+                  <td colSpan={9} className="py-12 text-center text-slate-400">
                     No corrective actions match the specified filters.
                   </td>
                 </tr>
@@ -777,8 +782,8 @@ export default function CorrectiveActionsPage() {
 
       {/* SUBMIT EVIDENCE MODAL */}
       {evidenceModalItem && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 text-xs">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-xs my-auto">
             <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
                 <span className="font-mono font-bold text-indigo-600">{evidenceModalItem.actionId}</span>
@@ -843,8 +848,8 @@ export default function CorrectiveActionsPage() {
 
       {/* OFFICER VERIFICATION MODAL */}
       {verifyModalItem && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 text-xs">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-xs my-auto">
             <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
               <div>
                 <span className="font-mono font-bold text-indigo-600">{verifyModalItem.actionId}</span>
@@ -936,132 +941,151 @@ export default function CorrectiveActionsPage() {
 
       {/* CREATE CORRECTIVE ACTION MODAL */}
       {createModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 text-xs">
-            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-xl sm:max-w-2xl w-full shadow-2xl flex flex-col max-h-[90vh] my-auto overflow-hidden">
+            {/* Modal Header - Fixed at Top */}
+            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-4.5 shrink-0 bg-slate-50/70 dark:bg-slate-900/70">
               <div>
                 <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
                   Assign New Corrective Action (CAPA)
                 </h3>
-                <p className="text-slate-500">Initiate statutory remediation workflow for an identified infraction.</p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  Initiate statutory remediation workflow for an identified infraction.
+                </p>
               </div>
-              <button onClick={() => setCreateModalOpen(false)} className="text-slate-400 hover:text-slate-600">
-                <X className="h-4 w-4" />
+              <button
+                type="button"
+                onClick={() => setCreateModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                aria-label="Close modal"
+              >
+                <X className="h-5 w-5" />
               </button>
             </div>
 
-            <form onSubmit={handleCreateAction} className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                    Target Outlet
-                  </label>
-                  <select
-                    value={newOutletId}
-                    onChange={(e) => setNewOutletId(e.target.value)}
-                    className="w-full h-9 rounded-md border border-slate-200 bg-white px-2.5 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800 cursor-pointer"
-                    disabled={isFranchise}
-                  >
-                    <option value="OUT-042">OUT-042 (Lucknow Flagship)</option>
-                    <option value="OUT-089">OUT-089 (Noida Sector 18)</option>
-                    <option value="OUT-114">OUT-114 (Bengaluru Koramangala)</option>
-                    <option value="OUT-019">OUT-019 (Delhi CP Inner)</option>
-                  </select>
+            {/* Modal Form with Scrollable Content & Fixed Footer */}
+            <form onSubmit={handleCreateAction} className="flex flex-col flex-1 overflow-hidden">
+              {/* Scrollable Fields Body */}
+              <div className="p-6 overflow-y-auto flex-1 space-y-4 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                      Target Outlet
+                    </label>
+                    <select
+                      value={newOutletId}
+                      onChange={(e) => setNewOutletId(e.target.value)}
+                      className="w-full h-9.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800 cursor-pointer focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                      disabled={isFranchise}
+                    >
+                      <option value="OUT-042">OUT-042 (Lucknow Flagship)</option>
+                      <option value="OUT-089">OUT-089 (Noida Sector 18)</option>
+                      <option value="OUT-114">OUT-114 (Bengaluru Koramangala)</option>
+                      <option value="OUT-019">OUT-019 (Delhi CP Inner)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                      Priority Tier
+                    </label>
+                    <select
+                      value={newPriority}
+                      onChange={(e) => setNewPriority(e.target.value as any)}
+                      className="w-full h-9.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800 cursor-pointer focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                    >
+                      <option value="CRITICAL">CRITICAL</option>
+                      <option value="HIGH">HIGH</option>
+                      <option value="MEDIUM">MEDIUM</option>
+                      <option value="LOW">LOW</option>
+                    </select>
+                  </div>
                 </div>
 
                 <div>
-                  <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                    Priority Tier
-                  </label>
-                  <select
-                    value={newPriority}
-                    onChange={(e) => setNewPriority(e.target.value as any)}
-                    className="w-full h-9 rounded-md border border-slate-200 bg-white px-2.5 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800 cursor-pointer"
-                  >
-                    <option value="CRITICAL">CRITICAL</option>
-                    <option value="HIGH">HIGH</option>
-                    <option value="MEDIUM">MEDIUM</option>
-                    <option value="LOW">LOW</option>
-                  </select>
-                </div>
-              </div>
-
-              <div>
-                <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                  Issue Title / Violation Detected
-                </label>
-                <Input
-                  value={newIssue}
-                  onChange={(e) => setNewIssue(e.target.value)}
-                  placeholder="e.g. Chiller temperature reading exceeded par (+8.5°C)"
-                  className="text-xs h-9"
-                  required
-                />
-              </div>
-
-              <div>
-                <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                  Required Corrective Action (Remediation Mandate)
-                </label>
-                <textarea
-                  rows={3}
-                  value={newRequiredAction}
-                  onChange={(e) => setNewRequiredAction(e.target.value)}
-                  placeholder="e.g. Inspect door magnetic gasket seal, recalibrate digital sensor probe, and log hourly verification temps for 48 hours."
-                  className="w-full rounded-md border border-slate-200 p-2 text-xs dark:border-slate-700 dark:bg-slate-800"
-                  required
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                    Assigned Person / Manager / Lead
+                  <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                    Issue Title / Violation Detected
                   </label>
                   <Input
-                    value={newAssignedPerson}
-                    onChange={(e) => setNewAssignedPerson(e.target.value)}
-                    placeholder="e.g. Yuvraj Buddha (GM)"
-                    className="text-xs h-9"
+                    value={newIssue}
+                    onChange={(e) => setNewIssue(e.target.value)}
+                    placeholder="e.g. Chiller temperature reading exceeded par (+8.5°C)"
+                    className="text-xs h-9.5 rounded-lg"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                    Statutory Deadline (Due Date)
+                  <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                    Required Corrective Action (Remediation Mandate)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={newRequiredAction}
+                    onChange={(e) => setNewRequiredAction(e.target.value)}
+                    placeholder="e.g. Inspect door magnetic gasket seal, recalibrate digital sensor probe, and log hourly verification temps for 48 hours."
+                    className="w-full rounded-lg border border-slate-200 p-3 text-xs dark:border-slate-700 dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                    required
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                      Assigned Person / Manager / Lead
+                    </label>
+                    <Input
+                      value={newAssignedPerson}
+                      onChange={(e) => setNewAssignedPerson(e.target.value)}
+                      placeholder="e.g. Yuvraj Buddha (GM)"
+                      className="text-xs h-9.5 rounded-lg"
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                      Statutory Deadline (Due Date)
+                    </label>
+                    <Input
+                      type="date"
+                      value={newDeadline}
+                      onChange={(e) => setNewDeadline(e.target.value)}
+                      className="text-xs h-9.5 rounded-lg"
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                    Compliance Category
                   </label>
                   <Input
-                    type="date"
-                    value={newDeadline}
-                    onChange={(e) => setNewDeadline(e.target.value)}
-                    className="text-xs h-9"
-                    required
+                    value={newCategory}
+                    onChange={(e) => setNewCategory(e.target.value)}
+                    placeholder="e.g. Cold Chain Hygiene / Food Safety"
+                    className="text-xs h-9.5 rounded-lg"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                  Compliance Category
-                </label>
-                <Input
-                  value={newCategory}
-                  onChange={(e) => setNewCategory(e.target.value)}
-                  placeholder="e.g. Cold Chain Hygiene / Food Safety"
-                  className="text-xs h-9"
-                />
-              </div>
-
-              <div className="flex justify-end gap-2 pt-2">
-                <Button type="button" variant="outline" size="sm" onClick={() => setCreateModalOpen(false)}>
+              {/* Modal Footer - Fixed at Bottom, Never Cut Off */}
+              <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 shrink-0">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setCreateModalOpen(false)}
+                  className="cursor-pointer h-9 px-4 text-xs rounded-lg"
+                >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   size="sm"
                   disabled={isCreating}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer"
+                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer h-9 px-4 text-xs rounded-lg shadow-sm"
                 >
                   {isCreating ? "Assigning..." : "Assign Corrective Action"}
                 </Button>

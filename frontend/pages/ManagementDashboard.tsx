@@ -1373,7 +1373,7 @@ export function ManagementDashboard() {
       {/* 9. OFFICER-ONLY COMPLIANCE ALERTS & CAPA AUDIT PIPELINE  */}
       {/* ======================================================== */}
       {isOfficer && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="space-y-6">
           {/* Compliance Alerts */}
           <Card className="border-white/10 bg-[#0B1020]">
             <CardHeader className="pb-2">
@@ -1435,53 +1435,132 @@ export function ManagementDashboard() {
           </Card>
 
           {/* Active Corrective Actions (CAPA) */}
-          <Card className="border-white/10 bg-[#0B1020]">
-            <CardHeader className="pb-2">
-              <div className="flex items-center justify-between">
+          <Card className="border-white/10 bg-[#0B1020] w-full overflow-hidden">
+            <CardHeader className="pb-3 border-b border-white/5">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div>
-                  <CardTitle className="text-sm font-bold flex items-center gap-1.5">
+                  <CardTitle className="text-sm font-bold flex items-center gap-2 text-white">
                     <FileCheck2 className="h-4 w-4 text-teal-400" />
                     <span>Corrective Action Pipeline (CAPA)</span>
                   </CardTitle>
-                  <CardDescription className="text-xs">
+                  <CardDescription className="text-xs text-slate-400 mt-0.5">
                     Statutory remediation mandates across workflow stages
                   </CardDescription>
                 </div>
-                <Link to="/corrective-actions" className="text-xs text-teal-400 hover:underline">
-                  View All CAPAs →
+                <Link
+                  to="/corrective-actions"
+                  className="text-xs text-teal-400 hover:text-teal-300 hover:underline font-medium inline-flex items-center gap-1 self-start sm:self-auto"
+                >
+                  <span>View All CAPAs</span>
+                  <ArrowRight className="h-3 w-3" />
                 </Link>
               </div>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="divide-y divide-white/5 text-xs">
-                {(data?.recentCapas || []).map((c: any) => (
-                  <div key={c.id} className="p-3 flex items-start justify-between gap-3">
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-teal-600">{c.actionId}</span>
-                        <Link
-                          to={`/outlets/${c.outletId}`}
-                          className="font-mono text-[11px] bg-slate-100 dark:bg-slate-800 px-1.5 py-0.5 rounded font-semibold text-slate-700 dark:text-slate-300"
-                        >
-                          {c.outletId}
-                        </Link>
-                        <Badge variant="outline" className="text-[10px]">
-                          {c.status}
-                        </Badge>
-                      </div>
-                      <p className="text-slate-800 dark:text-slate-200 font-medium line-clamp-1">{c.issue}</p>
-                      <span className="text-[10px] text-slate-400 block">
-                        Stage: {c.currentStage} • Assignee: {c.assignedPerson} • Due: {c.deadline}
-                      </span>
-                    </div>
-                    <Link
-                      to="/corrective-actions"
-                      className="text-teal-600 hover:underline text-xs font-medium shrink-0 pt-1"
-                    >
-                      Remediate →
-                    </Link>
-                  </div>
-                ))}
+              <div className="overflow-x-auto w-full">
+                <table className="w-full text-left text-xs min-w-[980px]">
+                  <thead className="bg-white/5 text-slate-400 border-b border-white/10">
+                    <tr>
+                      <th className="py-3 px-3.5 font-semibold min-w-[130px]">CAPA ID</th>
+                      <th className="py-3 px-3.5 font-semibold min-w-[85px]">Outlet</th>
+                      <th className="py-3 px-3.5 font-semibold min-w-[95px]">Priority</th>
+                      <th className="py-3 px-3.5 font-semibold min-w-[280px]">Action</th>
+                      <th className="py-3 px-3.5 font-semibold min-w-[175px]">Assigned Person / Manager / Lead</th>
+                      <th className="py-3 px-3.5 font-semibold min-w-[110px]">Due Date</th>
+                      <th className="py-3 px-3.5 font-semibold min-w-[95px]">Status</th>
+                      <th className="py-3 px-3.5 font-semibold text-right min-w-[100px]">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-white/5 text-slate-200">
+                    {(data?.recentCapas || []).map((c: any) => (
+                      <tr key={c.id} className="hover:bg-white/5 transition-colors">
+                        <td className="py-3 px-3.5 whitespace-nowrap">
+                          <span className="font-mono font-bold text-teal-400 block text-xs">
+                            {c.actionId}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3.5 whitespace-nowrap">
+                          <Link
+                            to={`/outlets/${c.outletId}`}
+                            className="font-mono text-[11px] bg-white/5 border border-white/10 px-2 py-0.5 rounded font-semibold text-slate-300 hover:text-teal-400 transition-colors inline-block"
+                          >
+                            {c.outletId}
+                          </Link>
+                        </td>
+                        <td className="py-3 px-3.5 whitespace-nowrap">
+                          <Badge
+                            className={`text-[9px] px-2 py-0.5 font-semibold ${
+                              c.priority === "CRITICAL"
+                                ? "bg-rose-500/15 text-rose-300 border-rose-500/30"
+                                : c.priority === "HIGH"
+                                ? "bg-amber-500/15 text-amber-300 border-amber-500/30"
+                                : c.priority === "MEDIUM"
+                                ? "bg-blue-500/15 text-blue-300 border-blue-500/30"
+                                : "bg-slate-500/15 text-slate-300 border-slate-500/30"
+                            }`}
+                          >
+                            {c.priority || "MEDIUM"}
+                          </Badge>
+                        </td>
+                        <td className="py-3 px-3.5 min-w-[280px]">
+                          <p className="text-slate-100 font-medium whitespace-normal leading-relaxed text-xs">
+                            {c.issue}
+                          </p>
+                          {c.requiredAction && (
+                            <p className="text-[11px] text-slate-400 mt-1 whitespace-normal leading-relaxed">
+                              {c.requiredAction}
+                            </p>
+                          )}
+                        </td>
+                        <td className="py-3 px-3.5">
+                          <span className="text-slate-200 block font-medium whitespace-nowrap text-xs">
+                            {c.assignedPerson || "Unassigned"}
+                          </span>
+                          <span className="text-[10px] text-slate-400 block whitespace-nowrap mt-0.5">
+                            Stage: {c.currentStage}
+                          </span>
+                        </td>
+                        <td className="py-3 px-3.5 whitespace-nowrap">
+                          <span className="font-mono text-slate-200 block text-xs">
+                            {c.deadline}
+                          </span>
+                          {c.isOverdue || c.status === "OVERDUE" ? (
+                            <span className="text-[10px] font-bold text-rose-400 block mt-0.5">
+                              OVERDUE
+                            </span>
+                          ) : (
+                            <span className="text-[10px] text-slate-400 block mt-0.5">
+                              Active SLA
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-3 px-3.5 whitespace-nowrap">
+                          <Badge
+                            variant="outline"
+                            className={`text-[10px] ${
+                              c.status === "CLOSED"
+                                ? "border-emerald-500/40 text-emerald-300 bg-emerald-500/10"
+                                : c.status === "OVERDUE"
+                                ? "border-rose-500/40 text-rose-300 bg-rose-500/10"
+                                : "border-teal-500/40 text-teal-300 bg-teal-500/10"
+                            }`}
+                          >
+                            {c.status}
+                          </Badge>
+                        </td>
+                        <td className="py-3 px-3.5 text-right whitespace-nowrap">
+                          <Link
+                            to="/corrective-actions"
+                            className="text-teal-400 hover:text-teal-300 hover:underline text-xs font-semibold inline-flex items-center gap-1 bg-teal-500/10 px-2.5 py-1 rounded border border-teal-500/20"
+                          >
+                            <span>Remediate</span>
+                            <ArrowRight className="h-3 w-3" />
+                          </Link>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
             </CardContent>
           </Card>

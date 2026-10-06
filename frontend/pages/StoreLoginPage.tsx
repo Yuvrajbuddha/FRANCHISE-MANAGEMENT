@@ -55,6 +55,26 @@ export default function StoreLoginPage() {
     }
   };
 
+  const handleQuickEnterCustom = async () => {
+    const code = customOutletCode.trim().toUpperCase();
+    if (!code) {
+      setErrorMessage("Please enter a Store Outlet Code.");
+      return;
+    }
+    setIsSubmitting(true);
+    setErrorMessage(null);
+    const targetName = `Outlet ${code}`;
+    const email = operatorEmail.trim() || `store.${code.toLowerCase()}@franchiseops.com`;
+    const res = await loginStore(code, targetName, email, accessPin || "store123");
+    setIsSubmitting(false);
+
+    if (res.success) {
+      navigate("/evidence");
+    } else {
+      setErrorMessage(res.error || "Store authentication failed. Please verify credentials.");
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
@@ -147,87 +167,24 @@ export default function StoreLoginPage() {
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start max-w-6xl mx-auto">
-          {/* Left Column: Complete Network Store Outlets (7 cols) */}
-          <div className="lg:col-span-7 space-y-3">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
-                Available Stores ({ALL_NETWORK_STORES.length})
-              </span>
-              <span className="text-[11px] text-slate-400 font-mono">
-                Click any store to select or enter directly
-              </span>
-            </div>
-
-            {/* Display ALL available stores */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[520px] overflow-y-auto pr-1">
-              {ALL_NETWORK_STORES.map((outlet) => {
-                const isSelected =
-                  !customOutletCode && selectedOutlet?.code === outlet.code;
-                return (
-                  <div
-                    key={outlet.code}
-                    onClick={() => handleSelectPreset(outlet)}
-                    className={`text-left p-3.5 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between gap-2.5 ${
-                      isSelected
-                        ? "border-emerald-500 bg-emerald-950/40 ring-1 ring-emerald-500/60"
-                        : "border-slate-800 bg-slate-800/60 hover:border-slate-700 hover:bg-slate-800"
-                    }`}
-                  >
-                    <div>
-                      <div className="flex items-center justify-between mb-1">
-                        <span className="font-mono text-xs font-bold text-emerald-400">
-                          {outlet.code}
-                        </span>
-                        <Badge
-                          variant="outline"
-                          className="text-[10px] font-mono border-slate-700 text-slate-300 py-0"
-                        >
-                          {outlet.city}
-                        </Badge>
-                      </div>
-                      <div className="text-xs font-semibold text-white truncate">
-                        {outlet.name}
-                      </div>
-                      <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1.5">
-                        <MapPin className="h-3 w-3 text-slate-500 shrink-0" />
-                        <span>{outlet.model} Model · {outlet.activeStaff} Staff</span>
-                      </div>
-                    </div>
-
-                    <div className="pt-2 border-t border-white/5 flex items-center justify-between">
-                      <span className="text-[10px] text-slate-400 font-mono">
-                        Mgr: {outlet.manager}
-                      </span>
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleQuickEnterStore(outlet);
-                        }}
-                        disabled={isSubmitting}
-                        className="text-[10px] font-bold text-emerald-400 hover:text-white px-2 py-1 rounded bg-emerald-950/60 border border-emerald-500/30 hover:bg-emerald-600 transition-colors cursor-pointer"
-                      >
-                        Enter →
-                      </button>
-                    </div>
-
-                    {isSelected && (
-                      <CheckCircle2 className="h-4 w-4 text-emerald-400 absolute top-3 right-3" />
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Custom Outlet Code Option */}
-            <div className="rounded-xl border border-slate-800 bg-slate-800/40 p-3">
-              <label className="block text-[11px] font-medium text-slate-300 mb-1.5">
-                Or enter another custom Store Outlet Code:
-              </label>
-              <div className="flex gap-2">
+          {/* Left Column: Store Outlet Code Entry & Network Stores (7 cols) */}
+          <div className="lg:col-span-7 space-y-5">
+            {/* 1. Enter Store Outlet Code Section (ABOVE Available Stores) */}
+            <div className="rounded-2xl border border-emerald-500/30 bg-[#0A1428] p-4 shadow-sm space-y-2.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-semibold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
+                  <Lock className="h-3.5 w-3.5" />
+                  <span>Enter Store Outlet Code</span>
+                </label>
+                <span className="text-[10px] text-slate-400 font-mono">Direct Code Access</span>
+              </div>
+              <p className="text-[11px] text-slate-300">
+                Have a specific outlet code? Enter it below to access your store portal directly:
+              </p>
+              <div className="flex flex-col sm:flex-row gap-2 pt-0.5">
                 <Input
                   type="text"
-                  placeholder="e.g. OUT-101, OUT-077"
+                  placeholder="e.g. OUT-042, OUT-089, OUT-114..."
                   value={customOutletCode}
                   onChange={(e) => {
                     const val = e.target.value.toUpperCase();
@@ -237,8 +194,95 @@ export default function StoreLoginPage() {
                       setOperatorEmail(`store.${val.toLowerCase()}@franchiseops.com`);
                     }
                   }}
-                  className="bg-slate-900 border-slate-700 text-white font-mono text-xs h-9 uppercase"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" && customOutletCode.trim()) {
+                      e.preventDefault();
+                      handleQuickEnterCustom();
+                    }
+                  }}
+                  className="bg-slate-900/90 border-slate-700 text-white font-mono text-xs h-10 uppercase flex-1 focus:border-emerald-500"
                 />
+                <Button
+                  type="button"
+                  onClick={handleQuickEnterCustom}
+                  disabled={!customOutletCode.trim() || isSubmitting}
+                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs h-10 px-4 rounded-lg cursor-pointer shrink-0 transition-colors gap-1.5 disabled:opacity-50"
+                >
+                  <span>{isSubmitting && customOutletCode.trim() ? "Entering..." : "Enter Store →"}</span>
+                </Button>
+              </div>
+            </div>
+
+            {/* 2. Available Stores Section */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                  Available Stores ({ALL_NETWORK_STORES.length})
+                </span>
+                <span className="text-[11px] text-slate-400 font-mono">
+                  Click any store to select or enter directly
+                </span>
+              </div>
+
+              {/* Display ALL available stores */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[460px] overflow-y-auto pr-1">
+                {ALL_NETWORK_STORES.map((outlet) => {
+                  const isSelected =
+                    !customOutletCode && selectedOutlet?.code === outlet.code;
+                  return (
+                    <div
+                      key={outlet.code}
+                      onClick={() => handleSelectPreset(outlet)}
+                      className={`text-left p-3.5 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between gap-2.5 ${
+                        isSelected
+                          ? "border-emerald-500 bg-emerald-950/40 ring-1 ring-emerald-500/60"
+                          : "border-slate-800 bg-slate-800/60 hover:border-slate-700 hover:bg-slate-800"
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <span className="font-mono text-xs font-bold text-emerald-400">
+                            {outlet.code}
+                          </span>
+                          <Badge
+                            variant="outline"
+                            className="text-[10px] font-mono border-slate-700 text-slate-300 py-0"
+                          >
+                            {outlet.city}
+                          </Badge>
+                        </div>
+                        <div className="text-xs font-semibold text-white truncate">
+                          {outlet.name}
+                        </div>
+                        <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1.5">
+                          <MapPin className="h-3 w-3 text-slate-500 shrink-0" />
+                          <span>{outlet.model} Model · {outlet.activeStaff} Staff</span>
+                        </div>
+                      </div>
+
+                      <div className="pt-2 border-t border-white/5 flex items-center justify-between">
+                        <span className="text-[10px] text-slate-400 font-mono">
+                          Mgr: {outlet.manager}
+                        </span>
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleQuickEnterStore(outlet);
+                          }}
+                          disabled={isSubmitting}
+                          className="text-[10px] font-bold text-emerald-400 hover:text-white px-2 py-1 rounded bg-emerald-950/60 border border-emerald-500/30 hover:bg-emerald-600 transition-colors cursor-pointer"
+                        >
+                          Enter →
+                        </button>
+                      </div>
+
+                      {isSelected && (
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400 absolute top-3 right-3" />
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>

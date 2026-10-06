@@ -4,6 +4,7 @@ import { AuthProvider } from "@/context/AuthContext";
 import { AppLayout } from "@/components/layout/AppLayout";
 import { ProtectedRoute } from "@/components/layout/ProtectedRoute";
 import LoginPage from "@/pages/LoginPage";
+import FranchiseeLoginPage from "@/pages/FranchiseeLoginPage";
 import StoreLoginPage from "@/pages/StoreLoginPage";
 import ManagementDashboard from "@/pages/ManagementDashboard";
 import OutletsPage from "@/pages/OutletsPage";
@@ -27,6 +28,8 @@ export default function App() {
       <Routes>
         {/* Public Login Routes */}
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/login/franchisee" element={<FranchiseeLoginPage />} />
+        <Route path="/franchisee-login" element={<FranchiseeLoginPage />} />
         <Route path="/login/store" element={<StoreLoginPage />} />
         <Route path="/store-login" element={<StoreLoginPage />} />
 

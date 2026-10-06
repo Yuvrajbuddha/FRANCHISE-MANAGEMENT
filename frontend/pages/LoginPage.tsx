@@ -31,7 +31,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PortalNetworkBackground } from "@/components/PortalNetworkBackground";
-import { NetworkTrajectoryGraph } from "@/components/NetworkTrajectoryGraph";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -253,10 +252,9 @@ export default function LoginPage() {
                 <div className="pt-6">
                   <Button
                     className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs h-11 rounded-xl shadow-xs cursor-pointer gap-2 transition-all uppercase tracking-wider"
-                    disabled={isLoadingRole === "OWNER"}
-                    onClick={() => handleQuickLogin("OWNER", "/")}
+                    onClick={() => navigate("/login/franchisee")}
                   >
-                    <span>{isLoadingRole === "OWNER" ? "Verifying..." : "Enter Portal →"}</span>
+                    <span>Enter Portal →</span>
                   </Button>
                 </div>
               </div>
@@ -644,9 +642,6 @@ export default function LoginPage() {
               <div className="text-[11px] text-emerald-700 font-mono font-semibold">FIFO Stock Rotation</div>
             </div>
           </div>
-
-          {/* Network Revenue Trajectory vs Statutory Royalty Yield Graph Showcase */}
-          <NetworkTrajectoryGraph />
         </div>
       </section>
 

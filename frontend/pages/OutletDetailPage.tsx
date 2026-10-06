@@ -274,9 +274,6 @@ export default function OutletDetailPage() {
                 {outlet.operatingModel} Model
               </Badge>
               {getStatusBadge(outlet.status)}
-              <Badge variant="outline" className="text-[10px] font-mono text-slate-400 border-slate-200">
-                PostgreSQL Backed
-              </Badge>
             </div>
 
             <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">

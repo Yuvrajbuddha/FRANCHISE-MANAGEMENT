@@ -143,7 +143,7 @@ export default function CorrectiveActionsPage() {
   const [newOutletId, setNewOutletId] = useState(isFranchise ? userOutlet : "OUT-042");
   const [newIssue, setNewIssue] = useState("");
   const [newRequiredAction, setNewRequiredAction] = useState("");
-  const [newAssignedPerson, setNewAssignedPerson] = useState("");
+  const [newAssignedPerson, setNewAssignedPerson] = useState("Yuvraj Buddha");
   const [newDeadline, setNewDeadline] = useState("");
   const [newPriority, setNewPriority] = useState<"LOW" | "MEDIUM" | "HIGH" | "CRITICAL">("HIGH");
   const [newCategory, setNewCategory] = useState("Operational Compliance");
@@ -229,7 +229,7 @@ export default function CorrectiveActionsPage() {
       setCreateModalOpen(false);
       setNewIssue("");
       setNewRequiredAction("");
-      setNewAssignedPerson("");
+      setNewAssignedPerson("Yuvraj Buddha");
       setNewDeadline("");
       fetchActions();
     } catch (err: any) {
@@ -1016,12 +1016,12 @@ export default function CorrectiveActionsPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">
-                    Assigned Person (Manager / Lead)
+                    Assigned Person / Manager / Lead
                   </label>
                   <Input
                     value={newAssignedPerson}
                     onChange={(e) => setNewAssignedPerson(e.target.value)}
-                    placeholder="e.g. Yuvraj Gupta (GM)"
+                    placeholder="e.g. Yuvraj Buddha (GM)"
                     className="text-xs h-9"
                     required
                   />

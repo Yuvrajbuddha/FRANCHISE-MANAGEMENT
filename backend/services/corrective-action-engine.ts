@@ -81,7 +81,26 @@ export async function checkAndFlagOverdueActions(): Promise<number> {
  */
 export async function seedInitialCorrectiveActions() {
   const existing = await db.select().from(outletCorrectiveActions);
-  if (existing.length > 0) return;
+  if (existing.length > 0) {
+    // Migrate any existing database records containing Yuvraj Gupta to Yuvraj Buddha
+    for (const row of existing) {
+      if (
+        row.assignedPerson?.includes("Yuvraj Gupta") ||
+        row.assignedTo?.includes("Yuvraj Gupta") ||
+        row.evidenceSubmittedBy?.includes("Yuvraj Gupta")
+      ) {
+        await db
+          .update(outletCorrectiveActions)
+          .set({
+            assignedPerson: row.assignedPerson?.replace("Yuvraj Gupta", "Yuvraj Buddha"),
+            assignedTo: row.assignedTo?.replace("Yuvraj Gupta", "Yuvraj Buddha"),
+            evidenceSubmittedBy: row.evidenceSubmittedBy?.replace("Yuvraj Gupta", "Yuvraj Buddha"),
+          })
+          .where(eq(outletCorrectiveActions.actionId, row.actionId));
+      }
+    }
+    return;
+  }
 
   const now = new Date();
   const todayStr = now.toISOString().split("T")[0];
@@ -95,14 +114,14 @@ export async function seedInitialCorrectiveActions() {
       outletId: "OUT-042",
       issue: "Chiller Temperature Reading Exceeded SOP Threshold (+8.5°C vs standard 4°C)",
       requiredAction: "Inspect door magnetic gasket seal, recalibrate digital sensor probe, and log 48-hr hourly manual verification temps.",
-      assignedPerson: "Yuvraj Gupta (Store GM)",
+      assignedPerson: "Yuvraj Buddha (Store GM)",
       deadline: pastDateStr, // OVERDUE
       status: "OVERDUE" as CapaStatus,
       currentStage: "Deadline",
       priority: "CRITICAL" as const,
       category: "Cold Chain Hygiene",
       evidence: "HVAC contractor inspection invoice and replacement gasket dispatch receipt.",
-      evidenceSubmittedBy: "Yuvraj Gupta",
+      evidenceSubmittedBy: "Yuvraj Buddha",
       evidenceSubmittedAt: "2026-09-29 16:30",
       verificationNotes: "Awaiting final officer physical thermometer spot-check verification.",
       verifiedBy: null,

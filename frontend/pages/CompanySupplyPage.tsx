@@ -399,90 +399,183 @@ export default function CompanySupplyPage() {
         </CardContent>
       </Card>
 
-      {/* Main Company Supply Table */}
-      <Card className="rounded-2xl border-slate-200 shadow-xs bg-white overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-600 font-medium">
-                <th className="py-3 px-4">Consignment Reference</th>
-                <th className="py-3 px-3">Supply Item & Category</th>
-                <th className="py-3 px-3">Destination Outlet</th>
-                <th className="py-3 px-3 text-right">Supplied Quantity</th>
-                <th className="py-3 px-3 text-center">Dispatch Date</th>
-                <th className="py-3 px-3 text-center">Delivery Status</th>
-                <th className="py-3 px-3">Carrier / Fleet</th>
-                <th className="py-3 px-3">Acknowledged By</th>
-                <th className="py-3 px-4 text-slate-500">Batch Notes</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {loading ? (
-                <tr>
-                  <td colSpan={9} className="py-12 text-center text-slate-400">
-                    <RefreshCw className="h-6 w-6 animate-spin mx-auto text-teal-600 mb-2" />
-                    <span>Loading company supply consignments...</span>
-                  </td>
-                </tr>
-              ) : consignments.length === 0 ? (
-                <tr>
-                  <td colSpan={9} className="py-12 text-center text-slate-500">
-                    <Truck className="h-8 w-8 mx-auto text-slate-300 mb-2" />
-                    <p className="font-medium text-slate-700">No company supply shipments found.</p>
-                    <p className="text-[11px] text-slate-400 mt-1">Try resetting the outlet, category, or status filters.</p>
-                  </td>
-                </tr>
-              ) : (
-                consignments.map((c) => (
-                  <tr key={c.id} className="hover:bg-slate-50/60 transition-colors">
-                    <td className="py-3 px-4">
-                      <div className="font-mono font-semibold text-slate-900">{c.consignmentId}</div>
-                      <div className="text-[10px] text-slate-500 font-mono">{c.invoiceNumber}</div>
-                    </td>
-                    <td className="py-3 px-3">
-                      <div className="font-semibold text-slate-900">{c.itemName}</div>
-                      <div className="text-[11px] text-slate-500">{c.category}</div>
-                    </td>
-                    <td className="py-3 px-3">
-                      <span className="font-mono font-medium text-slate-700">{c.outletId}</span>
-                    </td>
-                    <td className="py-3 px-3 text-right font-mono font-bold text-teal-700 text-sm">
-                      {c.quantitySupplied.toLocaleString()} <span className="text-[10px] text-slate-500 font-sans font-normal">{c.unit}</span>
-                    </td>
-                    <td className="py-3 px-3 text-center text-slate-600 font-mono text-[11px]">
-                      {c.dispatchDate}
-                    </td>
-                    <td className="py-3 px-3 text-center">
-                      {c.deliveryStatus === "Delivered & Verified" ? (
-                        <Badge variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50 text-[10px] font-medium">
-                          Delivered & Verified
-                        </Badge>
-                      ) : c.deliveryStatus === "In Transit" ? (
-                        <Badge variant="outline" className="border-sky-200 text-sky-700 bg-sky-50 text-[10px] font-medium">
-                          In Transit
-                        </Badge>
-                      ) : (
-                        <Badge variant="outline" className="border-rose-200 text-rose-700 bg-rose-50 text-[10px] font-semibold">
-                          Discrepancy Flagged
-                        </Badge>
-                      )}
-                    </td>
-                    <td className="py-3 px-3 text-slate-600 text-[11px]">
-                      {c.carrier}
-                    </td>
-                    <td className="py-3 px-3 text-slate-600 text-[11px]">
-                      {c.reconciledBy}
-                    </td>
-                    <td className="py-3 px-4 text-slate-500 text-[11px] max-w-xs truncate" title={c.notes}>
-                      {c.notes || "—"}
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+      {/* Supply Consignments Records Section Header */}
+      <div className="flex items-center justify-between px-1 text-xs text-slate-500 font-medium">
+        <span>
+          Showing <strong className="text-slate-800 font-semibold">{consignments.length}</strong> supply consignments
+        </span>
+        <span className="text-slate-400 hidden sm:inline">
+          Vertical Card Layout · All 9 Fields Visible
+        </span>
+      </div>
+
+      {/* Main Company Supply Cards Grid */}
+      {loading ? (
+        <Card className="rounded-2xl border-slate-200 shadow-xs bg-white p-12 text-center text-slate-400">
+          <RefreshCw className="h-6 w-6 animate-spin mx-auto text-teal-600 mb-2" />
+          <span>Loading company supply consignments...</span>
+        </Card>
+      ) : consignments.length === 0 ? (
+        <Card className="rounded-2xl border-slate-200 shadow-xs bg-white p-12 text-center text-slate-500">
+          <Truck className="h-8 w-8 mx-auto text-slate-300 mb-2" />
+          <p className="font-medium text-slate-700">No company supply shipments found.</p>
+          <p className="text-[11px] text-slate-400 mt-1">Try resetting the outlet, category, or status filters.</p>
+        </Card>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+          {consignments.map((c) => (
+            <Card
+              key={c.id}
+              className="rounded-2xl border-slate-200 shadow-xs hover:shadow-md hover:border-teal-300 transition-all bg-white p-5 flex flex-col justify-between"
+            >
+              {/* Card Header: Consignment Ref & Delivery Status Badge */}
+              <div className="flex items-start justify-between gap-3 pb-3.5 border-b border-slate-100">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-teal-50 text-teal-600 border border-teal-200/80 shrink-0">
+                    <Truck className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold block">
+                      Consignment Ref
+                    </span>
+                    <span className="font-mono text-sm font-bold text-slate-900 block leading-tight">
+                      {c.consignmentId}
+                    </span>
+                    {c.invoiceNumber && (
+                      <span className="text-[10px] text-slate-500 font-mono">
+                        Inv: {c.invoiceNumber}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Status Badge in Header */}
+                <div className="shrink-0">
+                  {c.deliveryStatus === "Delivered & Verified" ? (
+                    <Badge
+                      variant="outline"
+                      className="border-emerald-300 text-emerald-800 bg-emerald-50 text-xs font-semibold px-2.5 py-1"
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 mr-1.5" />
+                      Delivered & Verified
+                    </Badge>
+                  ) : c.deliveryStatus === "In Transit" ? (
+                    <Badge
+                      variant="outline"
+                      className="border-blue-300 text-blue-800 bg-blue-50 text-xs font-semibold px-2.5 py-1"
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-1.5 animate-pulse" />
+                      In Transit
+                    </Badge>
+                  ) : (
+                    <Badge
+                      variant="outline"
+                      className="border-rose-300 text-rose-800 bg-rose-50 text-xs font-semibold px-2.5 py-1"
+                    >
+                      <span className="h-1.5 w-1.5 rounded-full bg-rose-500 mr-1.5" />
+                      Discrepancy Flagged
+                    </Badge>
+                  )}
+                </div>
+              </div>
+
+              {/* Vertical Card Rows: All 9 Fields in clear Label-Value Format */}
+              <div className="py-2 space-y-2 text-xs divide-y divide-slate-100 flex-1">
+                {/* 1. Consignment Reference */}
+                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
+                  <span className="text-slate-500 font-medium shrink-0">Consignment Reference:</span>
+                  <span className="font-mono font-bold text-slate-900 sm:text-right">
+                    {c.consignmentId}
+                  </span>
+                </div>
+
+                {/* 2. Supply Item & Category */}
+                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                  <span className="text-slate-500 font-medium shrink-0">Supply Item & Category:</span>
+                  <span className="text-slate-900 font-semibold sm:text-right">
+                    {c.itemName}{" "}
+                    <span className="text-slate-500 font-normal text-[11px]">
+                      ({c.category})
+                    </span>
+                  </span>
+                </div>
+
+                {/* 3. Destination Outlet */}
+                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                  <span className="text-slate-500 font-medium shrink-0">Destination Outlet:</span>
+                  <span className="font-mono font-bold text-teal-800 bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded text-[11px] sm:self-end">
+                    {c.outletId}
+                  </span>
+                </div>
+
+                {/* 4. Supplied Quantity */}
+                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                  <span className="text-slate-500 font-medium shrink-0">Supplied Quantity:</span>
+                  <span className="font-mono font-bold text-teal-700 sm:text-right text-sm">
+                    {c.quantitySupplied.toLocaleString()}{" "}
+                    <span className="text-xs text-slate-600 font-sans font-medium">{c.unit}</span>
+                  </span>
+                </div>
+
+                {/* 5. Dispatch Date */}
+                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                  <span className="text-slate-500 font-medium shrink-0">Dispatch Date:</span>
+                  <span className="font-mono text-slate-700 sm:text-right">
+                    {c.dispatchDate}
+                  </span>
+                </div>
+
+                {/* 6. Delivery Status */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 pt-2">
+                  <span className="text-slate-500 font-medium shrink-0">Delivery Status:</span>
+                  <div>
+                    {c.deliveryStatus === "Delivered & Verified" ? (
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                        Delivered & Verified
+                      </span>
+                    ) : c.deliveryStatus === "In Transit" ? (
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
+                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+                        In Transit
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-rose-700 bg-rose-50 px-2.5 py-0.5 rounded-full border border-rose-200">
+                        <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
+                        Discrepancy Flagged
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* 7. Carrier / Fleet */}
+                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                  <span className="text-slate-500 font-medium shrink-0">Carrier / Fleet:</span>
+                  <span className="text-slate-700 font-medium sm:text-right">
+                    {c.carrier || "—"}
+                  </span>
+                </div>
+
+                {/* 8. Acknowledged By */}
+                <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                  <span className="text-slate-500 font-medium shrink-0">Acknowledged By:</span>
+                  <span className="text-slate-700 font-mono text-[11px] sm:text-right break-all">
+                    {c.reconciledBy || "—"}
+                  </span>
+                </div>
+
+                {/* 9. Batch Notes */}
+                <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 pt-2">
+                  <span className="text-slate-500 font-medium shrink-0">Batch Notes:</span>
+                  <span className="text-slate-600 sm:text-right sm:max-w-[65%] italic text-[11px] leading-relaxed">
+                    {c.notes || "Normal variance within machine distribution."}
+                  </span>
+                </div>
+              </div>
+            </Card>
+          ))}
         </div>
-      </Card>
+      )}
 
       {/* Request Company Supply Modal */}
       {isOrderModalOpen && (

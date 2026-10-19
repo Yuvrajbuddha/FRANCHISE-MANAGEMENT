@@ -17,7 +17,7 @@ export function AppLayout({ children }: AppLayoutProps) {
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
       {/* Main Content Area */}
-      <div className="flex flex-1 flex-col overflow-x-hidden relative z-10">
+      <div className="flex flex-1 flex-col overflow-x-hidden relative z-10 w-full min-w-0">
         <TopNav
           onToggleSidebar={() => setSidebarOpen(!sidebarOpen)}
           selectedCity={selectedCity}

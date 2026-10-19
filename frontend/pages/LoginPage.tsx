@@ -78,8 +78,8 @@ export default function LoginPage() {
         {/* ======================================================== */}
         {/* 1. DARK NAVY ENTERPRISE NAVIGATION BAR                   */}
         {/* ======================================================== */}
-        <header className="sticky top-0 z-50 bg-[#0D1F3C] backdrop-blur-md border-b border-[#1E3A66] transition-colors shadow-sm text-white">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+        <header className="sticky top-0 z-50 w-full bg-[#0D1F3C] backdrop-blur-md border-b border-[#1E3A66] transition-colors shadow-sm text-white">
+          <div className="w-full px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
             {/* Left: Project logo & name */}
             <div className="flex items-center gap-3">
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#152E56] text-blue-300 border border-[#244A82] font-bold shadow-xs">

@@ -104,48 +104,50 @@ export default function StoreLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050B1A]/95 text-slate-100 flex flex-col justify-between p-4 sm:p-6 lg:p-8 antialiased selection:bg-emerald-500 selection:text-white relative overflow-hidden">
-      {/* Top Bar Header */}
-      <header className="max-w-6xl mx-auto w-full flex items-center justify-between border-b border-white/10 pb-4">
-        <div className="flex items-center gap-3">
-          <Link
-            to="/login"
-            className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0A1224] border border-white/10 text-slate-300 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
-            title="Back to all portals"
-          >
-            <ArrowLeft className="h-4 w-4" />
-          </Link>
-          <div className="flex items-center gap-2.5">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20">
-              <Store className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="font-serif font-bold text-base tracking-tight text-white">
-                  Store Operations Access
-                </span>
-                <Badge variant="outline" className="text-[10px] font-mono border-emerald-500/30 text-emerald-400 bg-emerald-950/40">
-                  Single-Store Isolated
-                </Badge>
+    <div className="min-h-screen bg-[#050B1A]/95 text-slate-100 flex flex-col justify-between antialiased selection:bg-emerald-500 selection:text-white relative overflow-hidden">
+      {/* Full-Width Top Bar Navigation */}
+      <header className="w-full border-b border-white/10 bg-[#0A1224]/80 backdrop-blur-md sticky top-0 z-30">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Link
+              to="/login"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0A1224] border border-white/10 text-slate-300 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+              title="Back to all portals"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Link>
+            <div className="flex items-center gap-2.5">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20">
+                <Store className="h-5 w-5" />
               </div>
-              <p className="text-[11px] text-slate-400">
-                AI-Assisted Franchise Performance & Compliance Monitoring
-              </p>
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="font-serif font-bold text-base tracking-tight text-white">
+                    Store Operations Access
+                  </span>
+                  <Badge variant="outline" className="text-[10px] font-mono border-emerald-500/30 text-emerald-400 bg-emerald-950/40">
+                    Single-Store Isolated
+                  </Badge>
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  AI-Assisted Franchise Performance & Compliance Monitoring
+                </p>
+              </div>
             </div>
           </div>
-        </div>
 
-        <Link
-          to="/login"
-          className="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium transition-colors"
-        >
-          <span>All Portals</span>
-          <ArrowRight className="h-3 w-3" />
-        </Link>
+          <Link
+            to="/login"
+            className="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium transition-colors"
+          >
+            <span>All Portals</span>
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        </div>
       </header>
 
       {/* Main Body */}
-      <main className="max-w-6xl mx-auto w-full my-auto py-8">
+      <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
           <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
             Unit Authentication Gate
@@ -391,15 +393,17 @@ export default function StoreLoginPage() {
         </div>
       </main>
 
-      {/* Footer */}
-      <footer className="max-w-6xl mx-auto w-full pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2">
-        <span>© 2026 AI-Assisted Franchise Performance & Compliance Monitoring. Confidential & Proprietary.</span>
-        <div className="flex items-center gap-3 text-xs font-medium">
-          <span className="text-slate-300 font-semibold">Deterministic Audit Engine</span>
-          <span className="text-slate-700">•</span>
-          <span className="text-slate-300 font-semibold">Zero External Desk</span>
-          <span className="text-slate-700">•</span>
-          <span className="text-slate-300 font-semibold">ISO 27001 Rely</span>
+      {/* Full-Width Footer */}
+      <footer className="w-full border-t border-slate-800 bg-[#0A1224]/50 relative z-10">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2">
+          <span>© 2026 AI-Assisted Franchise Performance & Compliance Monitoring. Confidential & Proprietary.</span>
+          <div className="flex items-center gap-3 text-xs font-medium">
+            <span className="text-slate-300 font-semibold">Deterministic Audit Engine</span>
+            <span className="text-slate-700">•</span>
+            <span className="text-slate-300 font-semibold">Zero External Desk</span>
+            <span className="text-slate-700">•</span>
+            <span className="text-slate-300 font-semibold">ISO 27001 Rely</span>
+          </div>
         </div>
       </footer>
     </div>

@@ -37,6 +37,9 @@ import {
   Camera,
   FileVideo,
   Users,
+  MapPin,
+  Maximize2,
+  XCircle,
 } from "lucide-react";
 import {
   Card,
@@ -69,6 +72,7 @@ import {
   loadPhotosForStore,
   CctvSubmission,
   GeneratedPhoto,
+  generateCctvPhotoDataUrl,
 } from "@/services/cctvEvidenceStore";
 
 export function ManagementDashboard() {
@@ -112,6 +116,20 @@ export function ManagementDashboard() {
   // Drilldown Modals
   const [riskModalOutlet, setRiskModalOutlet] = useState<any>(null);
   const [alertModalItem, setAlertModalItem] = useState<any>(null);
+  const [dashboardPreviewPhoto, setDashboardPreviewPhoto] = useState<GeneratedPhoto | null>(null);
+
+  // Keyboard Escape listener for lightbox preview modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setDashboardPreviewPhoto(null);
+      }
+    };
+    if (dashboardPreviewPhoto) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [dashboardPreviewPhoto]);
 
   const fetchDashboardData = async () => {
     setLoading(true);
@@ -913,133 +931,416 @@ export function ManagementDashboard() {
       {/* 5. STORE-SPECIFIC SURVEILLANCE & EVIDENCE DOSSIER        */}
       {/* ======================================================== */}
       {isFranchise && (
-        <div className="rounded-[28px] border border-teal-500/30 bg-[#071126] p-6 sm:p-7 shadow-2xl space-y-6">
-          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-4">
-            <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-teal-400 block mb-1 font-bold">
+        <div className="rounded-[28px] border border-slate-700/70 bg-[#071126] p-6 sm:p-7 lg:p-8 shadow-2xl space-y-6 text-slate-100">
+          {/* Header Area: Heading & Description on Left, Status & Button on Right */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-700/60 pb-5">
+            <div className="space-y-1">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-800/40 px-2.5 py-0.5 rounded-full font-semibold inline-block mb-1">
                 STORE SURVEILLANCE & EVIDENCE STATUS
               </span>
-              <h2 className="font-serif text-2xl font-bold tracking-tight text-white uppercase">
-                {userOutlet} Daily Surveillance Evidence
+              <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white uppercase">
+                {userOutlet} DAILY SURVEILLANCE EVIDENCE
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
                 Automatically extracted frames and statutory compliance ratings verified by the Quality & Compliance Officer.
               </p>
             </div>
 
-            <div className="flex items-center gap-2">
-              <Badge
-                variant="outline"
-                className={`text-xs px-3 py-1 font-mono font-semibold ${
-                  storeSubmission?.status === "Verified"
-                    ? "border-emerald-500/40 text-emerald-400 bg-emerald-500/10"
-                    : "border-amber-500/40 text-amber-400 bg-amber-500/10"
-                }`}
-              >
-                {storeSubmission?.status === "Verified"
-                  ? "✓ Verified by Officer"
-                  : "⏳ Pending Officer Review"}
-              </Badge>
+            {/* Status & CTA aligned neatly to the right, stacked on mobile */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+              {storeSubmission?.status === "Verified" ? (
+                <span className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-emerald-500/15 text-emerald-300 border border-emerald-500/30 shadow-2xs">
+                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                  <span>Verified by Officer</span>
+                </span>
+              ) : (
+                <span className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-2xs">
+                  <Clock className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+                  <span>Pending Officer Review</span>
+                </span>
+              )}
+
               <Link
                 to="/evidence"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#4F46FF] hover:bg-[#6366F1] text-white text-xs font-semibold shadow-md transition-all"
+                className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
               >
-                <Video className="h-3.5 w-3.5" />
+                <Video className="h-3.5 w-3.5 shrink-0" />
                 <span>Go to Store CCTV Portal</span>
+                <ArrowRight className="h-3 w-3 text-blue-200 shrink-0" />
               </Link>
             </div>
           </div>
 
-          {/* Submission Specs */}
-          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
-            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
-                <FileVideo className="h-3.5 w-3.5 text-blue-400" />
+          {/* Submission Specs: Four Redesigned Metadata Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {/* Card 1: CCTV Recording File */}
+            <div className="p-4 rounded-2xl bg-[#050B1A] border border-slate-700/60 flex flex-col justify-between space-y-2.5 h-full">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                  <FileVideo className="h-3.5 w-3.5" />
+                </span>
                 <span>CCTV Recording File</span>
               </span>
-              <div className="font-mono text-white font-medium truncate">
+              <div
+                className="font-mono text-white text-xs sm:text-sm font-bold truncate"
+                title={storeSubmission?.videoName || "CCTV_DAILY_RECORDING_04OCT2026.mp4"}
+              >
                 {storeSubmission?.videoName || "CCTV_DAILY_RECORDING_04OCT2026.mp4"}
               </div>
+              <div className="text-[11px] text-slate-400 font-mono pt-1 border-t border-slate-800 flex items-center justify-between">
+                <span>Format: MP4</span>
+                <span className="text-blue-400 font-semibold cursor-help" title={storeSubmission?.videoName || "CCTV_DAILY_RECORDING_04OCT2026.mp4"}>
+                  Security Raw
+                </span>
+              </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5 text-teal-400" />
+            {/* Card 2: Recorded Duration */}
+            <div className="p-4 rounded-2xl bg-[#050B1A] border border-slate-700/60 flex flex-col justify-between space-y-2.5 h-full">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                  <Clock className="h-3.5 w-3.5" />
+                </span>
                 <span>Recorded Duration</span>
               </span>
-              <div className="font-mono text-white font-medium">
+              <div className="font-mono text-white text-base sm:text-lg font-bold">
                 {storeSubmission?.durationLabel || "8 hours"}
               </div>
-            </div>
-
-            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5 text-purple-400" />
-                <span>Upload Date</span>
-              </span>
-              <div className="font-mono text-white font-medium">
-                {storeSubmission?.uploadDate || "04 Oct 2026"}
+              <div className="text-[11px] text-slate-400 font-mono pt-1 border-t border-slate-800 flex items-center justify-between">
+                <span>Coverage</span>
+                <span className="text-cyan-400 font-semibold">Full Operating Shift</span>
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-400" />
+            {/* Card 3: Upload Date */}
+            <div className="p-4 rounded-2xl bg-[#050B1A] border border-slate-700/60 flex flex-col justify-between space-y-2.5 h-full">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/10 text-purple-400 border border-purple-500/20">
+                  <Calendar className="h-3.5 w-3.5" />
+                </span>
+                <span>Upload Date</span>
+              </span>
+              <div className="font-mono text-white text-base sm:text-lg font-bold">
+                {storeSubmission?.uploadDate || "04 Oct 2026"}
+              </div>
+              <div className="text-[11px] text-slate-400 font-mono pt-1 border-t border-slate-800 flex items-center justify-between">
+                <span>Cycle</span>
+                <span className="text-purple-300 font-semibold">Daily Mandatory</span>
+              </div>
+            </div>
+
+            {/* Card 4: Officer Rating */}
+            <div className="p-4 rounded-2xl bg-[#050B1A] border border-slate-700/60 flex flex-col justify-between space-y-2.5 h-full">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 font-semibold flex items-center gap-2">
+                <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                </span>
                 <span>Officer Rating</span>
               </span>
-              <div className="font-mono text-emerald-400 font-bold text-sm">
-                {storeSubmission?.finalRating ? `${storeSubmission.finalRating} / 10` : "Pending Inspection"}
+              {storeSubmission?.finalRating ? (
+                <div className="flex items-baseline gap-1.5 font-mono">
+                  <span className="font-serif text-2xl font-bold text-emerald-400">
+                    {storeSubmission.finalRating}
+                  </span>
+                  <span className="text-xs text-slate-400 font-semibold">/ 10 Rating</span>
+                </div>
+              ) : (
+                <div className="mt-0.5">
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-500/10 text-amber-300 border border-amber-500/25 text-xs font-mono font-semibold">
+                    <Clock className="h-3 w-3 text-amber-400 shrink-0" />
+                    <span>Pending Inspection</span>
+                  </span>
+                </div>
+              )}
+              <div className="text-[11px] text-slate-400 font-mono pt-1 border-t border-slate-800 flex items-center justify-between">
+                <span>Compliance Audit</span>
+                <span className={storeSubmission?.finalRating ? "text-emerald-400 font-semibold" : "text-amber-400 font-semibold"}>
+                  {storeSubmission?.finalRating ? "Certified" : "Awaiting Review"}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Officer Feedback Box (Read-Only) */}
           {storeSubmission?.officerComment && (
-            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 text-xs space-y-1">
+            <div className="p-4 rounded-2xl bg-[#050B1A] border border-emerald-500/25 text-xs space-y-1.5">
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-mono uppercase text-emerald-400 block font-semibold flex items-center gap-1.5">
-                  <FileCheck2 className="h-3.5 w-3.5 text-emerald-400" />
+                  <FileCheck2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
                   <span>Officer Statutory Feedback:</span>
                 </span>
                 <span className="text-[10px] text-slate-400 font-mono">
                   Inspected: {storeSubmission.inspectionDate || "04 Oct 2026"}
                 </span>
               </div>
-              <p className="text-slate-200 italic">"{storeSubmission.officerComment}"</p>
+              <p className="text-slate-200 italic leading-relaxed">"{storeSubmission.officerComment}"</p>
             </div>
           )}
 
-          {/* Extracted Frame Thumbnails */}
-          <div className="space-y-3">
-            <span className="text-xs font-mono uppercase tracking-wider text-slate-400 block">
-              Extracted Evidence Frames ({storePhotos.length} Photos)
-            </span>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-              {storePhotos.slice(0, 4).map((p) => (
+          {/* Extracted Frame Thumbnails Gallery */}
+          <div className="space-y-4 pt-3 border-t border-slate-700/60">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+              <div>
+                <h3 className="text-sm sm:text-base font-serif font-bold tracking-tight text-white flex items-center gap-2">
+                  <Camera className="h-4 w-4 text-cyan-400" />
+                  <span>Extracted Evidence Frames ({storePhotos.length} Photos)</span>
+                </h3>
+                <p className="text-xs text-slate-400">
+                  Click any frame to inspect full-resolution capture telemetry and statutory timestamps.
+                </p>
+              </div>
+              <Link
+                to="/evidence"
+                className="text-xs text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1.5 transition-colors self-start sm:self-auto"
+              >
+                <span>Store CCTV Portal</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </div>
+
+            {/* Responsive 4-col wide / 2-col medium / 1-col mobile grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+              {storePhotos.map((p, pIdx) => (
                 <div
                   key={p.id}
-                  className="rounded-xl overflow-hidden border border-white/10 bg-[#050B1A] group"
+                  onClick={() => setDashboardPreviewPhoto(p)}
+                  className="rounded-2xl overflow-hidden border border-slate-700/60 bg-[#0B1528] group hover:border-cyan-500/50 hover:shadow-cyan-500/10 transition-all cursor-pointer flex flex-col justify-between"
                 >
-                  <div className="relative aspect-[16/10] bg-black">
+                  {/* Thumbnail Frame (16:9 aspect ratio) */}
+                  <div className="relative aspect-video w-full bg-slate-900 overflow-hidden border-b border-slate-700/60">
                     <img
                       src={p.imageUrl}
-                      alt={p.id}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                      alt={`${p.id} - ${p.zone}`}
+                      loading="lazy"
+                      onError={(e) => {
+                        const fallback = generateCctvPhotoDataUrl(p.timestamp, p.zone, userOutlet, pIdx);
+                        (e.currentTarget as HTMLImageElement).src = fallback;
+                      }}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
-                    <div className="absolute top-1 left-1 px-1.5 py-0.5 rounded bg-black/70 text-[9px] font-mono text-white">
-                      {p.timestamp}
+                    {/* Top Left Photo Tag */}
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                      <span className="px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-mono font-bold text-white border border-white/15 shadow-sm">
+                        {p.id}
+                      </span>
+                      <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded-md bg-cyan-950/80 backdrop-blur-md text-[9px] font-mono font-semibold text-cyan-300 border border-cyan-500/30">
+                        CAM-0{((pIdx % 4) + 1)}
+                      </span>
+                    </div>
+
+                    {/* Top Right Timestamp */}
+                    <div className="absolute top-2.5 right-2.5">
+                      <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/85 backdrop-blur-md text-[10px] font-mono font-bold text-emerald-400 border border-emerald-500/30 shadow-sm">
+                        <Clock className="h-3 w-3 text-emerald-400" />
+                        {p.timestamp}
+                      </span>
+                    </div>
+
+                    {/* Hover Inspect Indicator */}
+                    <div className="absolute inset-0 bg-cyan-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                      <span className="px-3 py-1 rounded-full bg-black/85 backdrop-blur-md text-xs font-medium text-white border border-white/20 shadow-md flex items-center gap-1.5">
+                        <Maximize2 className="h-3.5 w-3.5 text-cyan-400" />
+                        Inspect Frame
+                      </span>
                     </div>
                   </div>
-                  <div className="p-2 flex items-center justify-between text-[10px] font-mono">
-                    <span className="text-slate-300 truncate max-w-[80px]">{p.zone}</span>
-                    <Badge variant="outline" className="text-[9px] px-1 py-0">
-                      {p.status}
-                    </Badge>
+
+                  {/* Card Meta & Review Status */}
+                  <div className="p-3.5 flex-1 flex flex-col justify-between space-y-2.5">
+                    <div>
+                      <div className="flex items-center justify-between text-xs mb-1">
+                        <span className="font-serif font-bold text-sm text-white tracking-tight flex items-center gap-1.5">
+                          <Camera className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+                          {p.id}
+                        </span>
+                        <span className="font-mono text-xs text-slate-300 font-semibold bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-700/60">
+                          {p.timestamp}
+                        </span>
+                      </div>
+
+                      {/* Evidence Category / Zone Label */}
+                      <div className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
+                        <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                        <span className="truncate text-slate-200" title={p.zone}>
+                          {p.zone}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Status Badge */}
+                    <div className="pt-2 border-t border-slate-700/50 flex items-center justify-between">
+                      <span className="text-[10px] font-mono uppercase text-slate-400 tracking-wider font-semibold">
+                        Review Status
+                      </span>
+                      <Badge
+                        variant="outline"
+                        className={`text-[10px] px-2 py-0.5 font-semibold ${
+                          p.status === "Correct"
+                            ? "border-emerald-500/40 text-emerald-400 bg-emerald-500/10"
+                            : p.status === "Incorrect"
+                            ? "border-rose-500/40 text-rose-400 bg-rose-500/10"
+                            : p.status === "Needs Review"
+                            ? "border-amber-500/40 text-amber-300 bg-amber-500/10"
+                            : "border-slate-700 text-slate-300 bg-slate-800/80"
+                        }`}
+                      >
+                        {p.status === "Correct"
+                          ? "Approved"
+                          : p.status === "Incorrect"
+                          ? "Rejected"
+                          : p.status === "Needs Review"
+                          ? "Needs Re-review"
+                          : "Pending Officer Review"}
+                      </Badge>
+                    </div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
+
+          {/* Lightbox Modal for Dashboard Photo Preview */}
+          {dashboardPreviewPhoto && (
+            <div
+              role="dialog"
+              aria-modal="true"
+              aria-label="CCTV Evidence Frame Preview"
+              onClick={() => setDashboardPreviewPhoto(null)}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in"
+            >
+              <div
+                onClick={(e) => e.stopPropagation()}
+                className="relative w-full max-w-3xl rounded-[28px] border border-slate-700 bg-[#071126] p-6 shadow-2xl space-y-5 my-auto text-slate-100"
+              >
+                {/* Modal Header */}
+                <div className="flex items-center justify-between border-b border-slate-700/70 pb-4">
+                  <div className="space-y-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-800/40 px-2.5 py-0.5 rounded-full font-semibold">
+                        CCTV EVIDENCE RECORD
+                      </span>
+                      <span className="text-xs font-mono text-slate-400">
+                        {dashboardPreviewPhoto.id}
+                      </span>
+                    </div>
+                    <h3 className="font-serif text-xl sm:text-2xl font-bold text-white uppercase tracking-tight">
+                      {dashboardPreviewPhoto.id} · {dashboardPreviewPhoto.timestamp}
+                    </h3>
+                    <p className="text-xs text-slate-300 font-mono">
+                      {storeName} ({userOutlet}) · Extracted from {storeSubmission?.videoName || "CCTV footage"}
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setDashboardPreviewPhoto(null)}
+                    aria-label="Close photo preview"
+                    className="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 cursor-pointer border border-white/10 transition-colors"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+
+                {/* Modal 16:9 Image Frame */}
+                <div className="rounded-2xl overflow-hidden border border-slate-700 bg-black aspect-video w-full shadow-inner">
+                  <img
+                    src={dashboardPreviewPhoto.imageUrl}
+                    alt={`${dashboardPreviewPhoto.id} - ${dashboardPreviewPhoto.zone}`}
+                    onError={(e) => {
+                      const fallback = generateCctvPhotoDataUrl(dashboardPreviewPhoto.timestamp, dashboardPreviewPhoto.zone, userOutlet, 0);
+                      (e.currentTarget as HTMLImageElement).src = fallback;
+                    }}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+
+                {/* Modal Evidence Telemetry Grid */}
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-xl bg-[#050B1A] border border-slate-700/80 text-xs">
+                  <div>
+                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-0.5">
+                      Capture Timestamp
+                    </span>
+                    <span className="font-mono text-sm text-white font-bold">
+                      {dashboardPreviewPhoto.timestamp}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-0.5">
+                      Evidence Zone
+                    </span>
+                    <span className="font-mono text-xs text-cyan-300 font-semibold truncate block">
+                      {dashboardPreviewPhoto.zone}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-0.5">
+                      Surveillance Source
+                    </span>
+                    <span className="font-mono text-xs text-slate-200">
+                      {storeSubmission?.id || `CCTV-${userOutlet}`}
+                    </span>
+                  </div>
+
+                  <div>
+                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-1">
+                      Compliance Status
+                    </span>
+                    <Badge
+                      variant="outline"
+                      className={`text-[10px] px-2 py-0.5 font-semibold ${
+                        dashboardPreviewPhoto.status === "Correct"
+                          ? "border-emerald-500/40 text-emerald-400 bg-emerald-500/10"
+                          : dashboardPreviewPhoto.status === "Incorrect"
+                          ? "border-rose-500/40 text-rose-400 bg-rose-500/10"
+                          : dashboardPreviewPhoto.status === "Needs Review"
+                          ? "border-amber-500/40 text-amber-300 bg-amber-500/10"
+                          : "border-slate-700 text-slate-300 bg-slate-800/80"
+                      }`}
+                    >
+                      {dashboardPreviewPhoto.status === "Correct"
+                        ? "Approved"
+                        : dashboardPreviewPhoto.status === "Incorrect"
+                        ? "Rejected"
+                        : dashboardPreviewPhoto.status === "Needs Review"
+                        ? "Needs Re-review"
+                        : "Pending Officer Review"}
+                    </Badge>
+                  </div>
+                </div>
+
+                {dashboardPreviewPhoto.officerComment && (
+                  <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 text-xs space-y-1">
+                    <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold block">
+                      Officer Review Comment:
+                    </span>
+                    <p className="text-slate-200 italic">"{dashboardPreviewPhoto.officerComment}"</p>
+                  </div>
+                )}
+
+                <div className="flex justify-between items-center pt-3 border-t border-slate-700/70">
+                  <span className="text-[11px] font-mono text-slate-400">
+                    Press <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">Esc</kbd> to close
+                  </span>
+                  <div className="flex items-center gap-3">
+                    <Link
+                      to="/evidence"
+                      className="text-xs text-cyan-400 hover:text-cyan-300 font-medium"
+                    >
+                      Go to Evidence Portal →
+                    </Link>
+                    <Button
+                      type="button"
+                      onClick={() => setDashboardPreviewPhoto(null)}
+                      className="bg-white/10 hover:bg-white/20 text-white text-xs h-9 px-5 rounded-xl border border-white/15 cursor-pointer font-medium"
+                    >
+                      Close Preview
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 

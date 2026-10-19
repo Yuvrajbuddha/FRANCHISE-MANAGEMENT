@@ -19,6 +19,10 @@ import {
   Layers,
   FileVideo,
   Info,
+  Camera,
+  Maximize2,
+  MapPin,
+  XCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -30,6 +34,7 @@ import {
   loadPhotosForStore,
   savePhotosForStore,
   createGeneratedPhotosForSubmission,
+  generateCctvPhotoDataUrl,
 } from "@/services/cctvEvidenceStore";
 import { STORES_MAP, ALL_NETWORK_STORES } from "@/utils/stores-data";
 
@@ -153,33 +158,46 @@ export default function EvidencePage() {
     }, 1200);
   };
 
+  // Keyboard Escape listener for lightbox preview modal
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setPreviewPhoto(null);
+      }
+    };
+    if (previewPhoto) {
+      window.addEventListener("keydown", handleKeyDown);
+    }
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [previewPhoto]);
+
   const getStatusBadge = (status: GeneratedPhoto["status"]) => {
     switch (status) {
       case "Correct":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30">
-            <Check className="h-3 w-3" />
-            <span>Correct</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-2xs">
+            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+            <span>Approved</span>
           </span>
         );
       case "Incorrect":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#EF4444]/15 text-[#EF4444] border border-[#EF4444]/30">
-            <X className="h-3 w-3" />
-            <span>Incorrect</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30 shadow-2xs">
+            <XCircle className="h-3.5 w-3.5 text-rose-400 shrink-0" />
+            <span>Rejected</span>
           </span>
         );
       case "Needs Review":
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/30">
-            <AlertTriangle className="h-3 w-3" />
-            <span>Needs Review</span>
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-2xs">
+            <AlertTriangle className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+            <span>Needs Re-review</span>
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-white/5 text-slate-400 border border-white/10">
-            <Clock className="h-3 w-3 text-amber-400" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 border border-slate-700/80 shadow-2xs">
+            <Clock className="h-3.5 w-3.5 text-amber-400 shrink-0" />
             <span>Pending Officer Review</span>
           </span>
         );
@@ -546,61 +564,123 @@ export default function EvidencePage() {
       )}
 
       {/* ======================================================== */}
-      {/* 4. SYSTEM-GENERATED CCTV PHOTOS (READ-ONLY GALLERY)       */}
+      {/* 4. SYSTEM-GENERATED CCTV PHOTOS (EVIDENCE GALLERY)        */}
       {/* ======================================================== */}
-      <div className="rounded-[28px] border border-teal-500/25 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-4">
-          <div>
-            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
-              AUTOMATICALLY EXTRACTED EVIDENCE
-            </span>
-            <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">
-              GENERATED PHOTOS ({photos.length})
+      <div className="rounded-[28px] border border-slate-700/80 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-700/60 pb-5">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-800/50 px-2.5 py-0.5 rounded-full font-semibold">
+                AUTOMATED SURVEILLANCE TELEMETRY
+              </span>
+              <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">
+                · 1080P HD Extractions
+              </span>
+            </div>
+            <h2 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-white">
+              Generated Photos ({photos.length})
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              Random frames extracted across recording duration for Officer review. Store users cannot edit or verify photos.
+            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+              Photos are automatically extracted across the CCTV recording duration for officer compliance review. Store operators have read-only access and cannot modify or verify frames.
             </p>
           </div>
 
-          <div className="text-[11px] font-mono text-slate-400 bg-[#050B1A] px-3.5 py-1.5 rounded-xl border border-white/10">
-            CCTV ID: <span className="text-slate-200">{currentSubmission?.id}</span>
+          {/* CCTV ID Badge Aligned to Right on Desktop */}
+          <div className="flex flex-wrap items-center gap-2.5 sm:self-center shrink-0">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#050B1A] border border-cyan-500/30 text-xs font-mono shadow-xs">
+              <span className="text-slate-400 font-medium">CCTV ID:</span>
+              <span className="text-cyan-400 font-bold tracking-wide">
+                {currentSubmission?.id || `CCTV-${storeId}-REC`}
+              </span>
+            </div>
+            {currentSubmission?.durationLabel && (
+              <div className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs font-mono text-slate-300">
+                <Clock className="h-3.5 w-3.5 text-cyan-400" />
+                <span>{currentSubmission.durationLabel}</span>
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Photos Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          {photos.map((photo) => (
+        {/* Photos Grid (4 cols wide desktop, 2 cols medium, 1 col mobile) */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          {photos.map((photo, idx) => (
             <div
               key={photo.id}
               onClick={() => setPreviewPhoto(photo)}
-              className="group rounded-2xl border border-white/10 bg-[#050B1A] overflow-hidden shadow-lg hover:border-[#4F46FF] transition-all cursor-pointer flex flex-col justify-between"
+              className="group rounded-2xl border border-slate-700/60 bg-[#0B1528] overflow-hidden shadow-lg hover:border-cyan-500/50 hover:shadow-cyan-500/10 transition-all duration-200 cursor-pointer flex flex-col justify-between"
             >
-              {/* Photo Image Preview */}
-              <div className="relative aspect-[16/10] bg-black overflow-hidden border-b border-white/10">
+              {/* Photo Image Preview (16:9 Aspect Ratio) */}
+              <div className="relative aspect-video w-full bg-slate-900 overflow-hidden border-b border-slate-700/60">
                 <img
                   src={photo.imageUrl}
-                  alt={photo.id}
+                  alt={`${photo.id} - ${photo.zone}`}
+                  loading="lazy"
+                  onError={(e) => {
+                    const fallback = generateCctvPhotoDataUrl(photo.timestamp, photo.zone, storeId, idx);
+                    (e.currentTarget as HTMLImageElement).src = fallback;
+                  }}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/70 backdrop-blur-md text-[10px] font-mono font-bold text-white border border-white/10">
-                  {photo.id}
-                </div>
-                <div className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-[#050B1A]/80 backdrop-blur-md text-[10px] font-mono font-bold text-[#10B981] border border-white/10">
-                  {photo.timestamp}
-                </div>
-              </div>
 
-              {/* Photo Meta & Status */}
-              <div className="p-3.5 space-y-2">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="font-mono font-semibold text-white">{photo.id}</span>
-                  <span className="font-mono text-[11px] text-slate-300 font-bold">
+                {/* Floating Top Left Badge: Photo ID & Cam Tag */}
+                <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                  <span className="px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-mono font-bold text-white border border-white/15 shadow-sm">
+                    {photo.id}
+                  </span>
+                  <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded-md bg-cyan-950/80 backdrop-blur-md text-[9px] font-mono font-semibold text-cyan-300 border border-cyan-500/30">
+                    CAM-0{((idx % 4) + 1)}
+                  </span>
+                </div>
+
+                {/* Floating Top Right Badge: Timestamp */}
+                <div className="absolute top-2.5 right-2.5">
+                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/85 backdrop-blur-md text-[10px] font-mono font-bold text-emerald-400 border border-emerald-500/30 shadow-sm">
+                    <Clock className="h-3 w-3 text-emerald-400" />
                     {photo.timestamp}
                   </span>
                 </div>
-                <div className="flex items-center justify-between pt-1 border-t border-white/5">
-                  <span className="text-[10px] text-slate-400 font-mono truncate max-w-[100px]">
-                    {photo.zone}
+
+                {/* Hover Quick Preview Action */}
+                <div className="absolute inset-0 bg-cyan-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                  <span className="px-3 py-1 rounded-full bg-black/85 backdrop-blur-md text-xs font-medium text-white border border-white/20 shadow-md flex items-center gap-1.5">
+                    <Maximize2 className="h-3.5 w-3.5 text-cyan-400" />
+                    Inspect Frame
+                  </span>
+                </div>
+              </div>
+
+              {/* Photo Meta & Review Status */}
+              <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-serif font-bold text-sm text-white tracking-tight flex items-center gap-1.5">
+                      <Camera className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+                      {photo.id}
+                    </span>
+                    <span className="font-mono text-xs text-slate-300 font-semibold bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-700/60">
+                      {photo.timestamp}
+                    </span>
+                  </div>
+
+                  {/* Category / Zone Label */}
+                  <div className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
+                    <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                    <span className="truncate text-slate-200" title={photo.zone}>
+                      {photo.zone}
+                    </span>
+                  </div>
+
+                  <div className="text-[11px] font-mono text-slate-400 truncate">
+                    {storeName} ({storeId})
+                  </div>
+                </div>
+
+                {/* Card Footer: Officer Review Status */}
+                <div className="pt-2.5 border-t border-slate-700/50 flex items-center justify-between">
+                  <span className="text-[10px] font-mono uppercase text-slate-400 tracking-wider font-semibold">
+                    Review Status
                   </span>
                   <div>{getStatusBadge(photo.status)}</div>
                 </div>
@@ -611,41 +691,66 @@ export default function EvidencePage() {
       </div>
 
       {/* ======================================================== */}
-      {/* 5. READ-ONLY PREVIEW MODAL                                */}
+      {/* 5. READ-ONLY PREVIEW LIGHTBOX MODAL                       */}
       {/* ======================================================== */}
       {previewPhoto && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in">
-          <div className="relative w-full max-w-2xl rounded-[28px] border border-white/10 bg-[#071126] p-6 shadow-2xl space-y-4 my-auto">
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <div>
-                <h3 className="font-serif text-xl font-bold text-white uppercase">
+        <div
+          role="dialog"
+          aria-modal="true"
+          aria-label="CCTV Evidence Frame Preview"
+          onClick={() => setPreviewPhoto(null)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-3xl rounded-[28px] border border-slate-700 bg-[#071126] p-6 shadow-2xl space-y-5 my-auto"
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-slate-700/70 pb-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-800/40 px-2.5 py-0.5 rounded-full font-semibold">
+                    CCTV EVIDENCE RECORD
+                  </span>
+                  <span className="text-xs font-mono text-slate-400">
+                    {previewPhoto.id}
+                  </span>
+                </div>
+                <h3 className="font-serif text-xl sm:text-2xl font-bold text-white uppercase tracking-tight">
                   {previewPhoto.id} · {previewPhoto.timestamp}
                 </h3>
-                <p className="text-xs text-slate-400 font-mono">
-                  {storeName} ({storeId}) · Extracted from CCTV video
+                <p className="text-xs text-slate-300 font-mono">
+                  {storeName} ({storeId}) · Extracted from {currentSubmission?.videoName || "CCTV footage"}
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setPreviewPhoto(null)}
-                className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 cursor-pointer border border-white/5"
+                aria-label="Close photo preview"
+                className="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 cursor-pointer border border-white/10 transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
-            <div className="rounded-2xl overflow-hidden border border-white/10 bg-black aspect-[16/10]">
+            {/* Modal 16:9 Image Frame */}
+            <div className="rounded-2xl overflow-hidden border border-slate-700 bg-black aspect-video w-full shadow-inner">
               <img
                 src={previewPhoto.imageUrl}
-                alt={previewPhoto.id}
+                alt={`${previewPhoto.id} - ${previewPhoto.zone}`}
+                onError={(e) => {
+                  const fallback = generateCctvPhotoDataUrl(previewPhoto.timestamp, previewPhoto.zone, storeId, 0);
+                  (e.currentTarget as HTMLImageElement).src = fallback;
+                }}
                 className="w-full h-full object-contain"
               />
             </div>
 
-            <div className="p-4 rounded-xl bg-[#050B1A] border border-white/10 flex items-center justify-between text-xs">
+            {/* Modal Evidence Telemetry Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-xl bg-[#050B1A] border border-slate-700/80 text-xs">
               <div>
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
-                  Timestamp
+                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-0.5">
+                  Capture Timestamp
                 </span>
                 <span className="font-mono text-sm text-white font-bold">
                   {previewPhoto.timestamp}
@@ -653,27 +758,48 @@ export default function EvidencePage() {
               </div>
 
               <div>
+                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-0.5">
+                  Evidence Zone
+                </span>
+                <span className="font-mono text-xs text-cyan-300 font-semibold truncate block">
+                  {previewPhoto.zone}
+                </span>
+              </div>
+
+              <div>
+                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-0.5">
+                  Surveillance Source
+                </span>
+                <span className="font-mono text-xs text-slate-200">
+                  {currentSubmission?.id || `CCTV-${storeId}`}
+                </span>
+              </div>
+
+              <div>
                 <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-1">
-                  Status
+                  Compliance Status
                 </span>
                 <div>{getStatusBadge(previewPhoto.status)}</div>
               </div>
             </div>
 
             {previewPhoto.officerComment && (
-              <div className="p-3.5 rounded-xl bg-white/5 border border-white/5 text-xs space-y-1">
-                <span className="text-[10px] font-mono uppercase text-[#10B981] font-bold block">
-                  Officer Comment:
+              <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 text-xs space-y-1">
+                <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold block">
+                  Officer Review Comment:
                 </span>
                 <p className="text-slate-200 italic">"{previewPhoto.officerComment}"</p>
               </div>
             )}
 
-            <div className="flex justify-end pt-2 border-t border-white/10">
+            <div className="flex justify-between items-center pt-3 border-t border-slate-700/70">
+              <span className="text-[11px] font-mono text-slate-400">
+                Press <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">Esc</kbd> to close
+              </span>
               <Button
                 type="button"
                 onClick={() => setPreviewPhoto(null)}
-                className="bg-white/5 hover:bg-white/10 text-white text-xs h-10 px-5 rounded-xl border border-white/10 cursor-pointer"
+                className="bg-white/10 hover:bg-white/20 text-white text-xs h-9 px-5 rounded-xl border border-white/15 cursor-pointer font-medium"
               >
                 Close Preview
               </Button>

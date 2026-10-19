@@ -151,7 +151,7 @@ export default function App() {
           <Route
             path="/complaints"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER", "OWNER"]}>
                 <ComplaintsPage />
               </ProtectedRoute>
             }
@@ -161,7 +161,7 @@ export default function App() {
           <Route
             path="/corrective-actions"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER", "FRANCHISE", "OWNER"]}>
                 <CorrectiveActionsPage />
               </ProtectedRoute>
             }
@@ -169,7 +169,7 @@ export default function App() {
           <Route
             path="/reports"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OFFICER", "OWNER"]}>
                 <ReportsPage />
               </ProtectedRoute>
             }

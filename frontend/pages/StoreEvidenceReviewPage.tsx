@@ -27,6 +27,7 @@ import {
   saveCctvSubmissions,
   loadPhotosForStore,
   savePhotosForStore,
+  generateCctvPhotoDataUrl,
 } from "@/services/cctvEvidenceStore";
 import { STORES_MAP } from "@/utils/stores-data";
 
@@ -511,10 +512,14 @@ export default function StoreEvidenceReviewPage() {
                 }`}
               >
                 {/* Photo Preview Container */}
-                <div className="relative aspect-[16/10] bg-black overflow-hidden border-b border-white/10">
+                <div className="relative aspect-video bg-black overflow-hidden border-b border-white/10">
                   <img
                     src={photo.imageUrl}
                     alt={photo.id}
+                    onError={(e) => {
+                      const fallback = generateCctvPhotoDataUrl(photo.timestamp, photo.zone, activeStoreId, 0);
+                      (e.currentTarget as HTMLImageElement).src = fallback;
+                    }}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
 

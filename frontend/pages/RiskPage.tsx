@@ -388,66 +388,87 @@ export default function RiskPage() {
             </span>
           </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 border-b border-slate-200 dark:border-slate-800">
-                <tr>
-                  <th className="py-3 px-3.5 font-semibold">Outlet ID</th>
-                  <th className="py-3 px-3.5 font-semibold">Risk Score</th>
-                  <th className="py-3 px-3.5 font-semibold">Risk Level</th>
-                  <th className="py-3 px-3.5 font-semibold text-right">Sales (30%)</th>
-                  <th className="py-3 px-3.5 font-semibold text-right">Compliance (20%)</th>
-                  <th className="py-3 px-3.5 font-semibold text-right">Complaints (20%)</th>
-                  <th className="py-3 px-3.5 font-semibold text-right">Evidence (15%)</th>
-                  <th className="py-3 px-3.5 font-semibold text-right">Operations (10%)</th>
-                  <th className="py-3 px-3.5 font-semibold text-right">Inventory (5%)</th>
-                  <th className="py-3 px-3.5 font-semibold text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-                {networkAssessments.map((item) => (
-                  <tr key={item.outletId} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                    <td className="py-3 px-3.5 font-mono font-bold text-indigo-600 dark:text-indigo-400">
+          <div className="flex flex-col gap-3.5 p-4 w-full max-w-full box-border">
+            {networkAssessments.map((item) => (
+              <div
+                key={item.outletId}
+                className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+              >
+                {/* Header: Outlet ID, Risk Level & Composite Score */}
+                <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <div className="flex items-center gap-2.5">
+                    <span className="font-mono text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-1 rounded-lg border border-indigo-200 dark:border-indigo-800">
                       {item.outletId}
-                    </td>
-                    <td className="py-3 px-3.5">
-                      <span className={`font-mono font-extrabold text-sm ${getScoreColor(item.score)}`}>
-                        {item.score}/100
+                    </span>
+                    {getRiskLevelBadge(item.level)}
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] font-medium text-slate-400 uppercase">Composite Risk</span>
+                    <span className={`font-mono font-extrabold text-base ${getScoreColor(item.score)}`}>
+                      {item.score}/100
+                    </span>
+                  </div>
+                </div>
+
+                {/* Factor Breakdown Rows in vertical/grid format */}
+                <div className="space-y-2 text-xs">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                    Weighted Deterministic Factor Realities:
+                  </span>
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-lg border border-slate-100 dark:border-slate-800">
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] text-slate-400 block font-medium">Sales (30%)</span>
+                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                        {item.factors.salesAnomalies.rawScore} pts
                       </span>
-                    </td>
-                    <td className="py-3 px-3.5">{getRiskLevelBadge(item.level)}</td>
-                    <td className="py-3 px-3.5 text-right font-mono">
-                      {item.factors.salesAnomalies.rawScore}
-                    </td>
-                    <td className="py-3 px-3.5 text-right font-mono">
-                      {item.factors.compliance.rawScore}
-                    </td>
-                    <td className="py-3 px-3.5 text-right font-mono">
-                      {item.factors.complaints.rawScore}
-                    </td>
-                    <td className="py-3 px-3.5 text-right font-mono">
-                      {item.factors.evidence.rawScore}
-                    </td>
-                    <td className="py-3 px-3.5 text-right font-mono">
-                      {item.factors.operational.rawScore}
-                    </td>
-                    <td className="py-3 px-3.5 text-right font-mono">
-                      {item.factors.inventory.rawScore}
-                    </td>
-                    <td className="py-3 px-3.5 text-right">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => setSelectedOutlet(item.outletId)}
-                        className="h-7 text-[11px] cursor-pointer"
-                      >
-                        Inspect Dossier
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] text-slate-400 block font-medium">Compliance (20%)</span>
+                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                        {item.factors.compliance.rawScore} pts
+                      </span>
+                    </div>
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] text-slate-400 block font-medium">Complaints (20%)</span>
+                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                        {item.factors.complaints.rawScore} pts
+                      </span>
+                    </div>
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] text-slate-400 block font-medium">Evidence (15%)</span>
+                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                        {item.factors.evidence.rawScore} pts
+                      </span>
+                    </div>
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] text-slate-400 block font-medium">Operations (10%)</span>
+                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                        {item.factors.operational.rawScore} pts
+                      </span>
+                    </div>
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] text-slate-400 block font-medium">Inventory (5%)</span>
+                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                        {item.factors.inventory.rawScore} pts
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Card Footer: Action */}
+                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setSelectedOutlet(item.outletId)}
+                    className="h-8 px-3 text-xs gap-1.5 cursor-pointer text-slate-700 dark:text-slate-200"
+                  >
+                    <Activity className="h-3.5 w-3.5 text-indigo-500" />
+                    <span>Inspect Risk Dossier</span>
+                  </Button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
       )}

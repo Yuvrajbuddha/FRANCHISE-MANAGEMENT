@@ -40,6 +40,8 @@ import {
   MapPin,
   Maximize2,
   XCircle,
+  AlertOctagon,
+  Upload,
 } from "lucide-react";
 import {
   Card,
@@ -1369,51 +1371,22 @@ export function ManagementDashboard() {
               </Link>
             </div>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-white/5 text-slate-400 border-y border-white/10">
-                  <tr>
-                    <th className="py-2.5 px-3 font-semibold">Store Outlet</th>
-                    <th className="py-2.5 px-3 font-semibold">City / Model</th>
-                    <th className="py-2.5 px-3 font-semibold">CCTV Recording</th>
-                    <th className="py-2.5 px-3 font-semibold">Duration</th>
-                    <th className="py-2.5 px-3 font-semibold">Review Status</th>
-                    <th className="py-2.5 px-3 font-semibold">Compliance Rating</th>
-                    <th className="py-2.5 px-3 font-semibold text-right">Officer Action</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {cctvSubmissions.map((sub) => {
-                    const storeInfo = STORES_MAP[sub.storeId];
-                    return (
-                      <tr key={sub.id} className="hover:bg-white/5 transition-colors">
-                        <td className="py-3 px-3">
-                          <span className="font-mono font-bold text-[#818CF8] block">
+          <CardContent className="p-4">
+            <div className="flex flex-col gap-3.5 w-full max-w-full box-border">
+              {cctvSubmissions.map((sub) => {
+                const storeInfo = STORES_MAP[sub.storeId];
+                return (
+                  <div
+                    key={sub.id}
+                    className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5 shadow-2xs w-full max-w-full box-border min-w-0 space-y-3"
+                  >
+                    {/* Header: Outlet Code, Name, Status & Review Action */}
+                    <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-white/10 pb-3">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-mono font-bold text-[#818CF8] text-sm">
                             {sub.storeId}
                           </span>
-                          <span className="text-[11px] text-slate-300 block truncate max-w-[150px]">
-                            {sub.storeName}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3 text-slate-300">
-                          <div>{storeInfo?.city || "Network"}</div>
-                          <span className="text-[10px] text-slate-500 font-mono">
-                            {storeInfo?.model || "FOCO"}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3">
-                          <span className="font-mono text-slate-200 block truncate max-w-[140px]">
-                            {sub.videoName}
-                          </span>
-                          <span className="text-[10px] text-slate-400 font-mono">
-                            {sub.uploadDate}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3 font-mono text-slate-300">
-                          {sub.durationLabel} ({sub.photosCount} Photos)
-                        </td>
-                        <td className="py-3 px-3">
                           <Badge
                             variant="outline"
                             className={`text-[10px] font-mono ${
@@ -1424,30 +1397,62 @@ export function ManagementDashboard() {
                           >
                             {sub.status === "Verified" ? "Verified" : "Pending Review"}
                           </Badge>
-                        </td>
-                        <td className="py-3 px-3 font-mono">
+                        </div>
+                        <h4 className="text-xs text-slate-200 font-semibold mt-1">
+                          {sub.storeName}
+                        </h4>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Link
+                          to={`/compliance/review/${sub.storeId}`}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                        >
+                          <span>Review Store Evidence</span>
+                          <ArrowRight className="h-3 w-3" />
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Vertical Label-Value rows */}
+                    <div className="space-y-2 text-xs divide-y divide-white/5">
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
+                        <span className="text-slate-400 font-medium shrink-0">Location & Model:</span>
+                        <span className="text-slate-300 sm:text-right">
+                          {storeInfo?.city || "Network"} · <span className="font-mono text-slate-400">{storeInfo?.model || "FOCO"}</span>
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                        <span className="text-slate-400 font-medium shrink-0">CCTV Video Recording:</span>
+                        <span className="font-mono text-slate-200 sm:text-right">
+                          {sub.videoName} <span className="text-slate-400 text-[11px]">({sub.uploadDate})</span>
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                        <span className="text-slate-400 font-medium shrink-0">Duration & Extraction:</span>
+                        <span className="font-mono text-slate-300 sm:text-right">
+                          {sub.durationLabel} ({sub.photosCount} Extracted Photos)
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                        <span className="text-slate-400 font-medium shrink-0">Statutory Compliance Rating:</span>
+                        <div className="sm:text-right">
                           {sub.finalRating ? (
-                            <span className="text-emerald-400 font-bold">
+                            <span className="text-emerald-400 font-bold font-mono">
                               {sub.finalRating} / 10
                             </span>
                           ) : (
                             <span className="text-slate-500 italic">Unrated</span>
                           )}
-                        </td>
-                        <td className="py-3 px-3 text-right">
-                          <Link
-                            to={`/compliance/review/${sub.storeId}`}
-                            className="inline-flex items-center gap-1 px-3 py-1 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
-                          >
-                            <span>Review Store Evidence</span>
-                            <ArrowRight className="h-3 w-3" />
-                          </Link>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -1478,46 +1483,27 @@ export function ManagementDashboard() {
               </Link>
             </div>
           </CardHeader>
-          <CardContent className="p-0">
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead className="bg-white/5 text-slate-400 border-y border-white/10">
-                  <tr>
-                    <th className="py-2.5 px-3 font-semibold">Store Outlet</th>
-                    <th className="py-2.5 px-3 font-semibold">City / Model</th>
-                    <th className="py-2.5 px-3 font-semibold">Monthly Turnover</th>
-                    <th className="py-2.5 px-3 font-semibold">CCTV Evidence Status</th>
-                    <th className="py-2.5 px-3 font-semibold">Extracted Photos</th>
-                    <th className="py-2.5 px-3 font-semibold">Compliance Rating</th>
-                    <th className="py-2.5 px-3 font-semibold text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-white/5">
-                  {ALL_NETWORK_STORES.map((s) => {
-                    const storeSub = cctvSubmissions.find(
-                      (sub) => sub.storeId.toUpperCase() === s.code.toUpperCase()
-                    );
-                    return (
-                      <tr key={s.code} className="hover:bg-white/5 transition-colors">
-                        <td className="py-3 px-3">
+          <CardContent className="p-4">
+            <div className="flex flex-col gap-3.5 w-full max-w-full box-border">
+              {ALL_NETWORK_STORES.map((s) => {
+                const storeSub = cctvSubmissions.find(
+                  (sub) => sub.storeId.toUpperCase() === s.code.toUpperCase()
+                );
+                return (
+                  <div
+                    key={s.code}
+                    className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5 shadow-2xs w-full max-w-full box-border min-w-0 space-y-3"
+                  >
+                    {/* Header: Code, Name, Status, Actions */}
+                    <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-white/10 pb-3">
+                      <div>
+                        <div className="flex items-center gap-2">
                           <Link
                             to={`/outlets/${s.code}`}
-                            className="font-mono font-bold text-[#818CF8] hover:underline block"
+                            className="font-mono font-bold text-[#818CF8] hover:underline text-sm"
                           >
                             {s.code}
                           </Link>
-                          <span className="text-[11px] text-slate-300 block truncate max-w-[150px]">
-                            {s.name}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3 text-slate-300">
-                          <div>{s.city}</div>
-                          <span className="text-[10px] text-slate-500 font-mono">{s.model}</span>
-                        </td>
-                        <td className="py-3 px-3 font-mono text-white font-medium">
-                          ₹6,48,000
-                        </td>
-                        <td className="py-3 px-3">
                           <Badge
                             variant="outline"
                             className={`text-[10px] font-mono ${
@@ -1528,40 +1514,67 @@ export function ManagementDashboard() {
                           >
                             {storeSub?.status === "Verified" ? "Verified" : "Pending Review"}
                           </Badge>
-                        </td>
-                        <td className="py-3 px-3 font-mono text-slate-300">
+                        </div>
+                        <h4 className="text-xs text-slate-200 font-semibold mt-1">
+                          {s.name}
+                        </h4>
+                      </div>
+
+                      <div className="flex items-center gap-2 shrink-0">
+                        <Link
+                          to="/evidence"
+                          className="text-xs text-indigo-400 hover:underline px-2.5 py-1 rounded bg-indigo-500/10 border border-indigo-500/20"
+                        >
+                          Evidence →
+                        </Link>
+                        <Link
+                          to={`/outlets/${s.code}`}
+                          className="text-xs text-slate-300 hover:text-white px-2.5 py-1 rounded bg-white/5 border border-white/10"
+                        >
+                          Profile →
+                        </Link>
+                      </div>
+                    </div>
+
+                    {/* Vertical Label-Value rows */}
+                    <div className="space-y-2 text-xs divide-y divide-white/5">
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
+                        <span className="text-slate-400 font-medium shrink-0">City & Operating Model:</span>
+                        <span className="text-slate-300 sm:text-right">
+                          {s.city} · <span className="font-mono text-slate-400">{s.model}</span>
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                        <span className="text-slate-400 font-medium shrink-0">Monthly Turnover:</span>
+                        <span className="font-mono text-white font-bold sm:text-right">
+                          ₹6,48,000
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                        <span className="text-slate-400 font-medium shrink-0">Extracted CCTV Photos:</span>
+                        <span className="font-mono text-slate-300 sm:text-right">
                           {storeSub?.photosCount || 8} Photos
-                        </td>
-                        <td className="py-3 px-3 font-mono">
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                        <span className="text-slate-400 font-medium shrink-0">Compliance Rating:</span>
+                        <div className="sm:text-right">
                           {storeSub?.finalRating ? (
-                            <span className="text-emerald-400 font-bold">
+                            <span className="text-emerald-400 font-bold font-mono">
                               {storeSub.finalRating} / 10
                             </span>
                           ) : (
-                            <span className="text-slate-400">88%</span>
+                            <span className="text-slate-400 font-mono">88%</span>
                           )}
-                        </td>
-                        <td className="py-3 px-3 text-right">
-                          <div className="flex items-center justify-end gap-2">
-                            <Link
-                              to="/evidence"
-                              className="text-xs text-indigo-400 hover:underline"
-                            >
-                              Evidence →
-                            </Link>
-                            <Link
-                              to={`/outlets/${s.code}`}
-                              className="text-xs text-slate-400 hover:text-white"
-                            >
-                              Profile →
-                            </Link>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </CardContent>
         </Card>
@@ -1757,38 +1770,181 @@ export function ManagementDashboard() {
                 </Link>
               </div>
             </CardHeader>
-            <CardContent className="p-0">
-              <div className="overflow-x-auto w-full">
-                <table className="w-full text-left text-xs min-w-[980px]">
-                  <thead className="bg-white/5 text-slate-400 border-b border-white/10">
-                    <tr>
-                      <th className="py-3 px-3.5 font-semibold min-w-[130px]">CAPA ID</th>
-                      <th className="py-3 px-3.5 font-semibold min-w-[85px]">Outlet</th>
-                      <th className="py-3 px-3.5 font-semibold min-w-[95px]">Priority</th>
-                      <th className="py-3 px-3.5 font-semibold min-w-[280px]">Action</th>
-                      <th className="py-3 px-3.5 font-semibold min-w-[175px]">Assigned Person / Manager / Lead</th>
-                      <th className="py-3 px-3.5 font-semibold min-w-[110px]">Due Date</th>
-                      <th className="py-3 px-3.5 font-semibold min-w-[95px]">Status</th>
-                      <th className="py-3 px-3.5 font-semibold text-right min-w-[100px]">Action</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-white/5 text-slate-200">
-                    {(data?.recentCapas || []).map((c: any) => (
-                      <tr key={c.id} className="hover:bg-white/5 transition-colors">
-                        <td className="py-3 px-3.5 whitespace-nowrap">
-                          <span className="font-mono font-bold text-teal-400 block text-xs">
+            <CardContent className={isFranchise ? "p-4 sm:p-5" : "p-0"}>
+              {isFranchise ? (
+                <div className="flex flex-col gap-4 w-full max-w-full box-border">
+                  {((data?.recentCapas || []) as any[]).map((c: any) => {
+                    const storeInfo = STORES_MAP[c.outletId];
+                    const outletDisplayName = storeInfo?.name || c.outletId;
+
+                    return (
+                      <div
+                        key={c.id}
+                        className="rounded-xl border border-white/10 bg-[#050B1A] p-5 shadow-sm w-full max-w-full box-border min-w-0 space-y-4"
+                      >
+                        {/* Header: Title & Status */}
+                        <div className="flex items-center justify-between border-b border-white/5 pb-3">
+                          <div className="flex items-center gap-2">
+                            <FileCheck2 className="h-4 w-4 text-teal-400" />
+                            <span className="text-xs font-bold uppercase tracking-wider text-slate-200">
+                              Corrective Action
+                            </span>
+                          </div>
+                          <div>
+                            <Badge
+                              variant="outline"
+                              className={`text-[10px] ${
+                                c.status === "CLOSED"
+                                  ? "border-emerald-500/40 text-emerald-300 bg-emerald-500/10"
+                                  : c.status === "OVERDUE"
+                                  ? "border-rose-500/40 text-rose-300 bg-rose-500/10"
+                                  : "border-teal-500/40 text-teal-300 bg-teal-500/10"
+                              }`}
+                            >
+                              {c.status}
+                            </Badge>
+                          </div>
+                        </div>
+
+                        {/* Vertical Fields */}
+                        <div className="space-y-3.5 text-xs divide-y divide-white/5">
+                          {/* 1. Issue / Requirement */}
+                          <div className="space-y-1">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                              Issue / Requirement:
+                            </span>
+                            <p className="text-sm font-semibold text-slate-100 leading-snug">
+                              {c.issue}
+                            </p>
+                          </div>
+
+                          {/* 2. Outlet Name */}
+                          <div className="pt-2.5 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 shrink-0">
+                              Outlet Name:
+                            </span>
+                            <span className="font-semibold text-slate-200 text-xs sm:text-right">
+                              {outletDisplayName}{" "}
+                              <span className="font-mono text-slate-400 font-normal">
+                                ({c.outletId})
+                              </span>
+                            </span>
+                          </div>
+
+                          {/* 3. Required Corrective Action */}
+                          {c.requiredAction && (
+                            <div className="pt-2.5 space-y-1">
+                              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                                Required Corrective Action:
+                              </span>
+                              <p className="text-xs text-slate-300 leading-relaxed bg-white/5 p-3 rounded-lg border border-white/5">
+                                {c.requiredAction}
+                              </p>
+                            </div>
+                          )}
+
+                          {/* 4. Due Date */}
+                          {c.deadline && (
+                            <div className="pt-2.5 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
+                              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 shrink-0">
+                                Due Date:
+                              </span>
+                              <div className="flex items-center gap-2 sm:justify-end">
+                                <span className="font-mono font-medium text-slate-200">
+                                  {c.deadline}
+                                </span>
+                                {c.isOverdue || c.status === "OVERDUE" ? (
+                                  <span className="inline-flex items-center gap-1 text-[11px] font-bold text-rose-400 bg-rose-950/40 px-2 py-0.5 rounded border border-rose-900">
+                                    <AlertOctagon className="h-3 w-3" />
+                                    Overdue
+                                  </span>
+                                ) : c.status === "CLOSED" ? (
+                                  <span className="text-[11px] text-emerald-400 font-medium">Resolved</span>
+                                ) : (
+                                  <span className="text-[11px] text-slate-400 font-medium">
+                                    Active SLA
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* 5. Current Status */}
+                          <div className="pt-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
+                            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 shrink-0">
+                              Current Status:
+                            </span>
+                            <div className="sm:self-end">
+                              <Badge
+                                variant="outline"
+                                className={`text-[10px] ${
+                                  c.status === "CLOSED"
+                                    ? "border-emerald-500/40 text-emerald-300 bg-emerald-500/10"
+                                    : c.status === "OVERDUE"
+                                    ? "border-rose-500/40 text-rose-300 bg-rose-500/10"
+                                    : "border-teal-500/40 text-teal-300 bg-teal-500/10"
+                                }`}
+                              >
+                                {c.status}
+                              </Badge>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* 6. Submit Evidence Button at Bottom */}
+                        <div className="pt-3 border-t border-white/5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+                          {c.status !== "CLOSED" ? (
+                            <Link
+                              to="/corrective-actions"
+                              className="w-full sm:w-auto bg-teal-600 hover:bg-teal-500 text-white font-semibold text-xs h-9 px-5 rounded-lg shadow-sm cursor-pointer gap-2 inline-flex items-center justify-center transition-colors"
+                            >
+                              <Upload className="h-3.5 w-3.5" />
+                              <span>Submit Evidence</span>
+                            </Link>
+                          ) : (
+                            <span className="text-xs text-emerald-400 font-semibold flex items-center gap-1.5 py-1.5">
+                              <CheckCircle2 className="h-4 w-4" />
+                              <span>Remediation Completed & Verified</span>
+                            </span>
+                          )}
+
+                          <Link
+                            to="/corrective-actions"
+                            className="w-full sm:w-auto text-xs text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 h-9 px-3.5 gap-1.5 inline-flex items-center justify-center rounded-lg transition-colors"
+                          >
+                            <Eye className="h-3.5 w-3.5 text-slate-400" />
+                            <span>View Details</span>
+                          </Link>
+                        </div>
+                      </div>
+                    );
+                  })}
+
+                  {(!data?.recentCapas || data.recentCapas.length === 0) && (
+                    <div className="p-8 text-center text-slate-400 text-xs">
+                      No active corrective actions recorded for this outlet.
+                    </div>
+                  )}
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3.5 p-4 w-full max-w-full box-border">
+                  {(data?.recentCapas || []).map((c: any) => (
+                    <div
+                      key={c.id}
+                      className="rounded-xl border border-white/10 bg-white/5 p-4 sm:p-5 shadow-2xs w-full max-w-full box-border min-w-0 space-y-3"
+                    >
+                      {/* Header: CAPA ID, Outlet, Priority, Status */}
+                      <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-white/10 pb-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="font-mono font-bold text-teal-400 text-xs">
                             {c.actionId}
                           </span>
-                        </td>
-                        <td className="py-3 px-3.5 whitespace-nowrap">
                           <Link
                             to={`/outlets/${c.outletId}`}
-                            className="font-mono text-[11px] bg-white/5 border border-white/10 px-2 py-0.5 rounded font-semibold text-slate-300 hover:text-teal-400 transition-colors inline-block"
+                            className="font-mono text-[11px] bg-white/10 border border-white/10 px-2 py-0.5 rounded font-semibold text-slate-300 hover:text-teal-400 transition-colors inline-block"
                           >
                             {c.outletId}
                           </Link>
-                        </td>
-                        <td className="py-3 px-3.5 whitespace-nowrap">
                           <Badge
                             className={`text-[9px] px-2 py-0.5 font-semibold ${
                               c.priority === "CRITICAL"
@@ -1802,40 +1958,9 @@ export function ManagementDashboard() {
                           >
                             {c.priority || "MEDIUM"}
                           </Badge>
-                        </td>
-                        <td className="py-3 px-3.5 min-w-[280px]">
-                          <p className="text-slate-100 font-medium whitespace-normal leading-relaxed text-xs">
-                            {c.issue}
-                          </p>
-                          {c.requiredAction && (
-                            <p className="text-[11px] text-slate-400 mt-1 whitespace-normal leading-relaxed">
-                              {c.requiredAction}
-                            </p>
-                          )}
-                        </td>
-                        <td className="py-3 px-3.5">
-                          <span className="text-slate-200 block font-medium whitespace-nowrap text-xs">
-                            {c.assignedPerson || "Unassigned"}
-                          </span>
-                          <span className="text-[10px] text-slate-400 block whitespace-nowrap mt-0.5">
-                            Stage: {c.currentStage}
-                          </span>
-                        </td>
-                        <td className="py-3 px-3.5 whitespace-nowrap">
-                          <span className="font-mono text-slate-200 block text-xs">
-                            {c.deadline}
-                          </span>
-                          {c.isOverdue || c.status === "OVERDUE" ? (
-                            <span className="text-[10px] font-bold text-rose-400 block mt-0.5">
-                              OVERDUE
-                            </span>
-                          ) : (
-                            <span className="text-[10px] text-slate-400 block mt-0.5">
-                              Active SLA
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 px-3.5 whitespace-nowrap">
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
                           <Badge
                             variant="outline"
                             className={`text-[10px] ${
@@ -1848,21 +1973,65 @@ export function ManagementDashboard() {
                           >
                             {c.status}
                           </Badge>
-                        </td>
-                        <td className="py-3 px-3.5 text-right whitespace-nowrap">
-                          <Link
-                            to="/corrective-actions"
-                            className="text-teal-400 hover:text-teal-300 hover:underline text-xs font-semibold inline-flex items-center gap-1 bg-teal-500/10 px-2.5 py-1 rounded border border-teal-500/20"
-                          >
-                            <span>Remediate</span>
-                            <ArrowRight className="h-3 w-3" />
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                        </div>
+                      </div>
+
+                      {/* Vertical Description & Metadata */}
+                      <div className="space-y-2 text-xs">
+                        <div>
+                          <p className="text-slate-100 font-semibold leading-snug">
+                            {c.issue}
+                          </p>
+                          {c.requiredAction && (
+                            <p className="text-[11px] text-slate-400 mt-1 leading-relaxed bg-white/5 p-2.5 rounded-lg border border-white/5">
+                              {c.requiredAction}
+                            </p>
+                          )}
+                        </div>
+
+                        <div className="pt-2 border-t border-white/10 flex flex-wrap items-center justify-between gap-2 text-xs">
+                          <div className="flex items-center gap-2">
+                            <span className="text-slate-400 font-medium">Assignee:</span>
+                            <span className="text-slate-200 font-medium">
+                              {c.assignedPerson || "Unassigned"}
+                            </span>
+                            <span className="text-[10px] text-slate-400">
+                              (Stage: {c.currentStage})
+                            </span>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <span className="text-slate-400 font-medium">Deadline:</span>
+                            <div className="flex items-center gap-1 font-mono">
+                              <span className="text-slate-200">{c.deadline}</span>
+                              {c.isOverdue || c.status === "OVERDUE" ? (
+                                <span className="text-[10px] font-bold text-rose-400 ml-1">
+                                  OVERDUE
+                                </span>
+                              ) : (
+                                <span className="text-[10px] text-slate-400 ml-1">
+                                  Active SLA
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action */}
+                      <div className="pt-2 border-t border-white/10 flex justify-end">
+                        <Link
+                          to="/corrective-actions"
+                          className="text-teal-400 hover:text-teal-300 hover:underline text-xs font-semibold inline-flex items-center gap-1.5 bg-teal-500/10 px-3 py-1.5 rounded-lg border border-teal-500/20"
+                        >
+                          <span>Remediate Dossier</span>
+                          <ArrowRight className="h-3 w-3" />
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

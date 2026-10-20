@@ -463,101 +463,96 @@ export default function ReportsPage() {
             </div>
           </div>
         ) : (
-          <div className="overflow-x-auto w-full">
-            <table className="w-full text-left text-xs border-collapse">
-              <thead>
-                <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/75 dark:bg-slate-800/40 text-slate-500 font-semibold">
-                  <th className="py-3 px-4 min-w-[125px]">Report ID</th>
-                  <th className="py-3 px-4 min-w-[220px]">Report Title & Classification</th>
-                  <th className="py-3 px-4 min-w-[150px]">Store Outlet / Scope</th>
-                  <th className="py-3 px-4 min-w-[110px]">Date</th>
-                  <th className="py-3 px-4 min-w-[160px]">Lead Auditor / Service</th>
-                  <th className="py-3 px-4 min-w-[90px]">Score</th>
-                  <th className="py-3 px-4 min-w-[130px]">Status</th>
-                  <th className="py-3 px-4 text-right min-w-[140px]">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
-                {reports.map((r) => (
-                  <tr
-                    key={r.id}
-                    className="hover:bg-slate-50/75 dark:hover:bg-slate-800/40 transition-colors"
-                  >
-                    <td className="py-3 px-4 font-mono font-bold text-blue-600 dark:text-blue-400">
-                      {r.id}
-                    </td>
-
-                    <td className="py-3 px-4">
-                      <div className="flex items-center gap-2">
-                        {getTypeIcon(r.reportType)}
-                        <span className="font-semibold text-slate-900 dark:text-white">
-                          {r.title}
-                        </span>
-                      </div>
-                      <div className="mt-1">{getTypeBadge(r.reportType)}</div>
-                    </td>
-
-                    <td className="py-3 px-4">
-                      <div className="font-medium text-slate-800 dark:text-slate-200">
-                        {r.outletName || r.outletId}
-                      </div>
-                      <div className="text-[11px] text-slate-400 font-mono">
-                        {r.outletId !== "ALL" ? r.outletId : "Network Wide"} · {r.outletCity}
-                      </div>
-                    </td>
-
-                    <td className="py-3 px-4 text-slate-500 whitespace-nowrap">
-                      <div className="flex items-center gap-1.5">
-                        <Calendar className="h-3 w-3 text-slate-400" />
-                        <span>{r.date}</span>
-                      </div>
-                    </td>
-
-                    <td className="py-3 px-4 text-slate-700 dark:text-slate-300">
-                      <span className="font-medium">{r.author}</span>
-                    </td>
-
-                    <td className="py-3 px-4">
-                      <span className="font-bold text-slate-900 dark:text-white">
-                        {r.score}%
+          <div className="flex flex-col gap-3.5 p-4 w-full max-w-full box-border">
+            {reports.map((r) => (
+              <div
+                key={r.id}
+                className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+              >
+                {/* Header: Report ID, Title, Status & Score */}
+                <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <div className="space-y-1">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span className="font-mono text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800">
+                        {r.id}
                       </span>
-                    </td>
-
-                    <td className="py-3 px-4">
+                      {getTypeBadge(r.reportType)}
                       <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/40">
                         <CheckCircle2 className="h-3 w-3" />
                         {r.status}
                       </span>
-                    </td>
+                    </div>
+                    <div className="flex items-center gap-2 pt-1">
+                      {getTypeIcon(r.reportType)}
+                      <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
+                        {r.title}
+                      </h4>
+                    </div>
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Audit Score</span>
+                    <span className="font-extrabold font-mono text-base text-slate-900 dark:text-white">
+                      {r.score}%
+                    </span>
+                  </div>
+                </div>
 
-                    <td className="py-3 px-4 text-right whitespace-nowrap">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => setViewingReport(r)}
-                          className="h-7 px-2 text-[11px] text-slate-600 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white cursor-pointer"
-                        >
-                          <Eye className="h-3 w-3 mr-1" />
-                          View
-                        </Button>
+                {/* Vertical Label-Value rows */}
+                <div className="space-y-2 text-xs divide-y divide-slate-100 dark:divide-slate-800/60">
+                  {/* Outlet Scope */}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
+                    <span className="text-slate-400 font-medium shrink-0">Store Outlet / Scope:</span>
+                    <span className="font-medium text-slate-800 dark:text-slate-200 sm:text-right">
+                      {r.outletName || r.outletId}{" "}
+                      <span className="text-[11px] text-slate-400 font-mono">
+                        ({r.outletId !== "ALL" ? r.outletId : "Network Wide"} · {r.outletCity})
+                      </span>
+                    </span>
+                  </div>
 
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleExportJson(r)}
-                          title="Download Dossier JSON"
-                          className="h-7 px-2 text-[11px] text-slate-600 hover:text-slate-900 dark:text-slate-300 cursor-pointer"
-                        >
-                          <Download className="h-3 w-3 mr-1" />
-                          Export
-                        </Button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                  {/* Date */}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                    <span className="text-slate-400 font-medium shrink-0">Execution Date:</span>
+                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 sm:justify-end">
+                      <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                      <span className="font-mono">{r.date}</span>
+                    </div>
+                  </div>
+
+                  {/* Auditor */}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                    <span className="text-slate-400 font-medium shrink-0">Lead Auditor / Service:</span>
+                    <span className="font-medium text-slate-700 dark:text-slate-300 sm:text-right">
+                      {r.author}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Footer Actions */}
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-end gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setViewingReport(r)}
+                    className="h-8 px-3 text-xs gap-1.5 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white cursor-pointer"
+                  >
+                    <Eye className="h-3.5 w-3.5" />
+                    <span>View Dossier</span>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleExportJson(r)}
+                    title="Download Dossier JSON"
+                    className="h-8 px-3 text-xs gap-1.5 text-slate-700 hover:text-slate-900 dark:text-slate-300 cursor-pointer"
+                  >
+                    <Download className="h-3.5 w-3.5" />
+                    <span>Export JSON</span>
+                  </Button>
+                </div>
+              </div>
+            ))}
           </div>
         )}
       </div>

@@ -367,104 +367,115 @@ export default function InventoryStockPage() {
         </CardContent>
       </Card>
 
-      {/* Main Stock Table */}
-      <Card className="rounded-2xl border-slate-200 shadow-xs bg-white overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full text-left border-collapse text-xs">
-            <thead>
-              <tr className="bg-slate-50/80 border-b border-slate-200 text-slate-600 font-medium">
-                <th className="py-3 px-4">Item & Category</th>
-                <th className="py-3 px-3">Store Outlet</th>
-                <th className="py-3 px-3 text-right">Physical On-Hand Stock</th>
-                <th className="py-3 px-3 text-right">Reorder Level</th>
-                <th className="py-3 px-3 text-right">Unit Cost</th>
-                <th className="py-3 px-3 text-right">Stock Valuation</th>
-                <th className="py-3 px-3 text-center">Status</th>
-                <th className="py-3 px-3 text-center">Last Physical Audit</th>
-                <th className="py-3 px-4 text-right">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100">
-              {loading ? (
-                <tr>
-                  <td colSpan={9} className="py-12 text-center text-slate-400">
-                    <RefreshCw className="h-6 w-6 animate-spin mx-auto text-blue-500 mb-2" />
-                    <span>Loading current inventory stock...</span>
-                  </td>
-                </tr>
-              ) : stockItems.length === 0 ? (
-                <tr>
-                  <td colSpan={9} className="py-12 text-center text-slate-500">
-                    <Boxes className="h-8 w-8 mx-auto text-slate-300 mb-2" />
-                    <p className="font-medium text-slate-700">No inventory stock items match your criteria.</p>
-                    <p className="text-[11px] text-slate-400 mt-1">Try resetting the outlet, category, or status filters.</p>
-                  </td>
-                </tr>
-              ) : (
-                stockItems.map((item) => {
-                  const qty = Number(item.stockQuantity);
-                  const reorder = Number(item.reorderLevel);
-                  const cost = Number(item.unitCost);
-                  const value = qty * cost;
+      {/* Main Stock - Responsive Vertical Card Layout */}
+      <div className="space-y-3 w-full max-w-full box-border">
+        {loading ? (
+          <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-slate-400 shadow-xs">
+            <RefreshCw className="h-6 w-6 animate-spin mx-auto text-blue-500 mb-2" />
+            <span>Loading current inventory stock...</span>
+          </div>
+        ) : stockItems.length === 0 ? (
+          <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-slate-500 shadow-xs">
+            <Boxes className="h-8 w-8 mx-auto text-slate-300 mb-2" />
+            <p className="font-medium text-slate-700">No inventory stock items match your criteria.</p>
+            <p className="text-[11px] text-slate-400 mt-1">Try resetting the outlet, category, or status filters.</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3 w-full max-w-full box-border">
+            {stockItems.map((item) => {
+              const qty = Number(item.stockQuantity);
+              const reorder = Number(item.reorderLevel);
+              const cost = Number(item.unitCost);
+              const value = qty * cost;
 
-                  return (
-                    <tr key={item.id} className="hover:bg-slate-50/60 transition-colors">
-                      <td className="py-3 px-4">
-                        <div className="font-semibold text-slate-900">{item.itemName}</div>
-                        <div className="text-[11px] text-slate-500">{item.category}</div>
-                      </td>
-                      <td className="py-3 px-3">
-                        <span className="font-mono font-medium text-slate-700">{item.outletId}</span>
-                      </td>
-                      <td className="py-3 px-3 text-right font-mono font-semibold text-slate-900">
-                        {qty} <span className="text-[10px] text-slate-500 font-sans">{item.unit}</span>
-                      </td>
-                      <td className="py-3 px-3 text-right font-mono text-slate-600">
-                        {reorder} <span className="text-[10px] text-slate-400 font-sans">{item.unit}</span>
-                      </td>
-                      <td className="py-3 px-3 text-right font-mono text-slate-700">
-                        ₹{cost.toFixed(2)}
-                      </td>
-                      <td className="py-3 px-3 text-right font-mono font-medium text-slate-900">
-                        ₹{value.toLocaleString()}
-                      </td>
-                      <td className="py-3 px-3 text-center">
-                        {item.status === "In Stock" ? (
-                          <Badge variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50 text-[10px] font-medium">
-                            In Stock
-                          </Badge>
-                        ) : item.status === "Low Stock" ? (
-                          <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 text-[10px] font-medium">
-                            Low Stock
-                          </Badge>
-                        ) : (
-                          <Badge variant="outline" className="border-rose-200 text-rose-700 bg-rose-50 text-[10px] font-semibold">
-                            Critical Shortage
-                          </Badge>
-                        )}
-                      </td>
-                      <td className="py-3 px-3 text-center text-slate-600 font-mono text-[11px]">
-                        {item.lastAudited || "Pending"}
-                      </td>
-                      <td className="py-3 px-4 text-right">
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => openAuditModal(item)}
-                          className="h-8 px-2.5 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 font-medium gap-1"
-                        >
-                          <Edit3 className="h-3.5 w-3.5" />
-                          <span>Audit Count</span>
-                        </Button>
-                      </td>
-                    </tr>
-                  );
-                })
-              )}
-            </tbody>
-          </table>
-        </div>
-      </Card>
+              return (
+                <div
+                  key={item.id}
+                  className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-xs w-full max-w-full box-border min-w-0 space-y-3"
+                >
+                  {/* Card Header: Item Name, Category & Status */}
+                  <div className="flex items-start justify-between gap-3 border-b border-slate-100 pb-3">
+                    <div>
+                      <h4 className="text-sm font-bold text-slate-900">
+                        {item.itemName}
+                      </h4>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        {item.category}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700 border border-slate-200">
+                        {item.outletId}
+                      </span>
+                      {item.status === "In Stock" ? (
+                        <Badge variant="outline" className="border-emerald-200 text-emerald-700 bg-emerald-50 text-[10px] font-medium">
+                          In Stock
+                        </Badge>
+                      ) : item.status === "Low Stock" ? (
+                        <Badge variant="outline" className="border-amber-200 text-amber-700 bg-amber-50 text-[10px] font-medium">
+                          Low Stock
+                        </Badge>
+                      ) : (
+                        <Badge variant="outline" className="border-rose-200 text-rose-700 bg-rose-50 text-[10px] font-semibold">
+                          Critical Shortage
+                        </Badge>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Vertical Label-Value rows */}
+                  <div className="space-y-2 text-xs divide-y divide-slate-100">
+                    {/* On-Hand Stock */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1 first:pt-0">
+                      <span className="text-slate-500 font-medium shrink-0">Physical On-Hand Stock:</span>
+                      <span className="font-mono font-bold text-slate-900 sm:text-right text-sm">
+                        {qty} <span className="text-xs font-sans font-normal text-slate-500">{item.unit}</span>
+                      </span>
+                    </div>
+
+                    {/* Reorder Level */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                      <span className="text-slate-500 font-medium shrink-0">Reorder Level:</span>
+                      <span className="font-mono text-slate-700 sm:text-right">
+                        {reorder} <span className="text-[11px] font-sans text-slate-500">{item.unit}</span>
+                      </span>
+                    </div>
+
+                    {/* Unit Cost & Stock Valuation */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                      <span className="text-slate-500 font-medium shrink-0">Unit Cost & Valuation:</span>
+                      <span className="font-mono sm:text-right text-slate-800">
+                        ₹{cost.toFixed(2)} / {item.unit} · <span className="font-bold text-slate-900">Total: ₹{value.toLocaleString()}</span>
+                      </span>
+                    </div>
+
+                    {/* Last Physical Audit */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                      <span className="text-slate-500 font-medium shrink-0">Last Physical Audit:</span>
+                      <span className="font-mono text-slate-600 sm:text-right">
+                        {item.lastAudited || "Pending initial audit"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Action Button at bottom */}
+                  <div className="pt-2 border-t border-slate-100 flex items-center justify-end">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => openAuditModal(item)}
+                      className="w-full sm:w-auto h-8 px-4 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200 font-medium gap-1.5 cursor-pointer justify-center"
+                    >
+                      <Edit3 className="h-3.5 w-3.5" />
+                      <span>Audit Physical Count</span>
+                    </Button>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
 
       {/* Audit Stock Modal */}
       {auditItem && (

@@ -435,89 +435,119 @@ export default function SalesPage() {
 
       {/* 4 Core Financial KPI Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-slate-200 dark:border-slate-800">
+        {/* 1. Total Net Revenue */}
+        <Card className="border border-white/10 bg-[#0B1020] text-slate-100 shadow-md">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300">
               Total Net Revenue
             </span>
           </CardHeader>
-          <CardContent className="pb-4">
+          <CardContent className="pb-4 space-y-2">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 font-mono">
+              <span className="text-2xl font-extrabold text-white font-mono tracking-tight">
                 ₹{Number(summary.totalNetRevenue || 0).toLocaleString()}
               </span>
-              <span className="text-xs text-emerald-600 font-semibold flex items-center">
-                <ArrowUpRight className="h-3 w-3" /> Live
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.5 rounded-full">
+                <ArrowUpRight className="h-3 w-3 text-emerald-400" />
+                <span>Live</span>
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
-              Gross: ₹{Number(summary.totalGrossRevenue || 0).toLocaleString()} (incl. taxes)
+            <p className="text-xs text-slate-300 font-medium">
+              Gross: <span className="text-white font-semibold">₹{Number(summary.totalGrossRevenue || 0).toLocaleString()}</span>{" "}
+              <span className="text-slate-400 font-normal">(incl. taxes)</span>
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800">
+        {/* 2. Total Volume & Orders */}
+        <Card className="border border-white/10 bg-[#0B1020] text-slate-100 shadow-md">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300">
               Total Volume & Orders
             </span>
           </CardHeader>
-          <CardContent className="pb-4">
+          <CardContent className="pb-4 space-y-2">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 font-mono">
+              <span className="text-2xl font-extrabold text-white font-mono tracking-tight">
                 {Number(summary.totalOrders || 0).toLocaleString()}
               </span>
-              <Badge variant="outline" className="text-[10px]">
-                {Number(summary.totalUnits || 0)} Units Sold
-              </Badge>
+              <span className="inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-md bg-white/10 text-white border border-white/15 font-mono shadow-2xs">
+                {Number(summary.totalUnits || 0).toLocaleString()} Units Sold
+              </span>
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
-              Recorded across {sales.length} verified transaction batches
+            <p className="text-xs text-slate-300 font-medium">
+              Recorded across <span className="text-white font-semibold">{sales.length}</span> verified transaction batches
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800">
+        {/* 3. Average Ticket Size */}
+        <Card className="border border-white/10 bg-[#0B1020] text-slate-100 shadow-md">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300">
               Average Ticket Size
             </span>
           </CardHeader>
-          <CardContent className="pb-4">
+          <CardContent className="pb-4 space-y-2">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">
+              <span className="text-2xl font-extrabold text-violet-400 font-mono tracking-tight">
                 ₹{Number(summary.avgTicket || 0).toLocaleString()}
               </span>
-              <span className="text-xs text-slate-400 font-medium">per order</span>
+              <span className="text-xs text-slate-300 font-medium bg-white/5 border border-white/10 px-2 py-0.5 rounded-md">
+                per order
+              </span>
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-xs text-slate-300 font-medium">
               Normalized benchmark across QSR categories
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800">
+        {/* 4. Payment Settlement Mix */}
+        <Card className="border border-white/10 bg-[#0B1020] text-slate-100 shadow-md">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-300">
               Payment Settlement Mix
             </span>
           </CardHeader>
-          <CardContent className="pb-4">
-            <div className="flex items-center gap-2 mt-1">
-              <div className="flex-1 space-y-1">
-                <div className="flex justify-between text-[11px]">
-                  <span className="text-indigo-400 font-semibold">UPI {summary.upiShare}%</span>
-                  <span className="text-emerald-400 font-semibold">Cash {summary.cashShare}%</span>
-                  <span className="text-slate-300 font-semibold">Card {summary.cardShare}%</span>
-                </div>
-                <div className="flex h-2 rounded-full overflow-hidden bg-slate-100 dark:bg-slate-800">
-                  <div style={{ width: `${summary.upiShare}%` }} className="bg-indigo-500" />
-                  <div style={{ width: `${summary.cashShare}%` }} className="bg-emerald-500" />
-                  <div style={{ width: `${summary.cardShare}%` }} className="bg-slate-500" />
-                </div>
+          <CardContent className="pb-4 space-y-2">
+            <div className="space-y-1.5 mt-0.5">
+              <div className="flex justify-between items-center text-xs font-semibold">
+                <span className="text-indigo-300 flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-indigo-400" />
+                  UPI {summary.upiShare}%
+                </span>
+                <span className="text-emerald-300 flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                  Cash {summary.cashShare}%
+                </span>
+                <span className="text-slate-200 flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-slate-400" />
+                  Card {summary.cardShare}%
+                </span>
+              </div>
+              <div className="flex h-2.5 rounded-full overflow-hidden bg-slate-900/90 border border-white/10 p-0.5 gap-0.5">
+                <div
+                  style={{ width: `${summary.upiShare}%` }}
+                  className="bg-indigo-500 rounded-full h-full transition-all"
+                  title={`UPI: ${summary.upiShare}%`}
+                />
+                <div
+                  style={{ width: `${summary.cashShare}%` }}
+                  className="bg-emerald-500 rounded-full h-full transition-all"
+                  title={`Cash: ${summary.cashShare}%`}
+                />
+                <div
+                  style={{ width: `${summary.cardShare}%` }}
+                  className="bg-slate-400 rounded-full h-full transition-all"
+                  title={`Card: ${summary.cardShare}%`}
+                />
               </div>
             </div>
-            <p className="text-[11px] text-slate-500 mt-2">100% daily POS reconciled</p>
+            <p className="text-xs text-slate-300 font-medium flex items-center gap-1.5 pt-0.5">
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+              <span>100% daily POS reconciled</span>
+            </p>
           </CardContent>
         </Card>
       </div>
@@ -725,26 +755,26 @@ export default function SalesPage() {
       </Card>
 
       {/* Search and Filters Bar */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3 w-full max-w-full box-border">
+        <div className="flex flex-wrap items-center gap-3 w-full max-w-full box-border">
           {/* Search input */}
-          <div className="relative">
+          <div className="relative flex-1 min-w-[220px] max-w-full">
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
             <Input
               placeholder="Search product, outlet, note..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 text-xs h-9"
+              className="pl-9 text-xs h-9 w-full min-w-0 box-border"
             />
           </div>
 
           {/* Filter by Outlet */}
           {!isFranchise && (
-            <div>
+            <div className="w-full sm:w-auto min-w-[170px] flex-1 sm:flex-initial max-w-full">
               <select
                 value={selectedOutlet}
                 onChange={(e) => setSelectedOutlet(e.target.value)}
-                className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+                className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer box-border"
               >
                 <option value="All Outlets">Filter by Outlet: All</option>
                 <option value="OUT-042">OUT-042 (Lucknow Flagship)</option>
@@ -758,11 +788,11 @@ export default function SalesPage() {
           )}
 
           {/* Filter by Product */}
-          <div>
+          <div className="w-full sm:w-auto min-w-[170px] flex-1 sm:flex-initial max-w-full">
             <select
               value={selectedProduct}
               onChange={(e) => setSelectedProduct(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer box-border"
             >
               <option value="All Products">Filter by Product: All</option>
               {PRESET_PRODUCTS.map((p) => (
@@ -774,11 +804,11 @@ export default function SalesPage() {
           </div>
 
           {/* Filter by Category */}
-          <div>
+          <div className="w-full sm:w-auto min-w-[160px] flex-1 sm:flex-initial max-w-full">
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer box-border"
             >
               <option value="All Categories">Filter by Category: All</option>
               {CATEGORIES.map((cat) => (
@@ -790,22 +820,30 @@ export default function SalesPage() {
           </div>
 
           {/* Filter by Date Range */}
-          <div className="flex gap-1.5 items-center">
-            <Input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-              className="text-[11px] h-9 px-2"
-              placeholder="Start"
-            />
-            <span className="text-slate-400 text-xs">to</span>
-            <Input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className="text-[11px] h-9 px-2"
-              placeholder="End"
-            />
+          <div className="flex items-center gap-2 w-full sm:w-auto flex-1 sm:flex-initial min-w-0 max-w-full box-border">
+            <div className="flex-1 sm:w-36 min-w-0">
+              <Input
+                type="date"
+                title="Starting Date"
+                aria-label="Starting Date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="text-[11px] sm:text-xs h-9 px-2 w-full min-w-0 box-border text-slate-700 dark:text-slate-200 cursor-pointer"
+                placeholder="Start"
+              />
+            </div>
+            <span className="text-slate-400 text-xs font-medium shrink-0 select-none">to</span>
+            <div className="flex-1 sm:w-36 min-w-0">
+              <Input
+                type="date"
+                title="Ending Date"
+                aria-label="Ending Date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="text-[11px] sm:text-xs h-9 px-2 w-full min-w-0 box-border text-slate-700 dark:text-slate-200 cursor-pointer"
+                placeholder="End"
+              />
+            </div>
           </div>
         </div>
 
@@ -835,13 +873,13 @@ export default function SalesPage() {
         </div>
       </div>
 
-      {/* Sales Transactions Ledger Table */}
-      <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-        <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+      {/* Sales Transactions Ledger - Responsive Vertical Card Layout */}
+      <div className="space-y-3 w-full max-w-full box-border">
+        <div className="flex items-center justify-between pb-1">
           <div className="flex items-center gap-2">
             <ShoppingBag className="h-4 w-4 text-indigo-600" />
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-              Verified Sales Ledger
+              Verified Sales Ledger ({displayedSales.length})
             </h3>
           </div>
           <span className="text-xs text-slate-400 font-mono">
@@ -849,98 +887,118 @@ export default function SalesPage() {
           </span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 border-b border-slate-200 dark:border-slate-800">
-              <tr>
-                <th className="py-3 px-3.5 font-semibold">Date</th>
-                <th className="py-3 px-3.5 font-semibold">Outlet</th>
-                <th className="py-3 px-3.5 font-semibold">Product Name</th>
-                <th className="py-3 px-3.5 font-semibold">Category</th>
-                <th className="py-3 px-3.5 font-semibold">Qty</th>
-                <th className="py-3 px-3.5 font-semibold">Unit Price</th>
-                <th className="py-3 px-3.5 font-semibold">Net Sales</th>
-                <th className="py-3 px-3.5 font-semibold">Payment</th>
-                <th className="py-3 px-3.5 font-semibold">Settled</th>
-                {!isReadOnly && <th className="py-3 px-3.5 font-semibold text-right">Actions</th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-              {displayedSales.map((sale) => (
-                <tr key={sale.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                  <td className="py-2.5 px-3.5 font-mono font-medium">{sale.date}</td>
-                  <td className="py-2.5 px-3.5">
-                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800">
+        {displayedSales.length === 0 ? (
+          <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-400 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+            <ShoppingBag className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+            <p className="font-medium text-slate-600 dark:text-slate-300">No sales records found</p>
+            <p className="text-xs text-slate-400 mt-1">No sales records match the active filters or search criteria.</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3 w-full max-w-full box-border">
+            {displayedSales.map((sale) => (
+              <div
+                key={sale.id}
+                className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+              >
+                {/* Header: Product Name + Net Sales Amount */}
+                <div className="flex items-start justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <div>
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block font-semibold">
+                      Sale #{sale.id} · {sale.date}
+                    </span>
+                    <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-0.5">
+                      {sale.productName}
+                    </h4>
+                    {sale.notes && (
+                      <p className="text-[11px] text-slate-500 italic mt-0.5">
+                        {sale.notes}
+                      </p>
+                    )}
+                  </div>
+                  <div className="text-right shrink-0">
+                    <span className="text-base font-extrabold font-mono text-slate-900 dark:text-slate-100 block">
+                      ₹{Number(sale.netSales).toLocaleString()}
+                    </span>
+                    <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                      <CheckCircle2 className="h-3 w-3" />
+                      POS Settled
+                    </span>
+                  </div>
+                </div>
+
+                {/* Vertical Label-Value rows */}
+                <div className="space-y-2 text-xs divide-y divide-slate-100 dark:divide-slate-800/60">
+                  {/* Outlet */}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1 first:pt-0">
+                    <span className="text-slate-400 font-medium shrink-0">Outlet:</span>
+                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 sm:self-end">
                       {sale.outletId}
                     </span>
-                  </td>
-                  <td className="py-2.5 px-3.5 font-semibold text-slate-900 dark:text-slate-100">
-                    {sale.productName}
-                    {sale.notes && (
-                      <span className="block text-[10px] text-slate-400 font-normal italic">
-                        {sale.notes}
-                      </span>
-                    )}
-                  </td>
-                  <td className="py-2.5 px-3.5 text-slate-500">{sale.category}</td>
-                  <td className="py-2.5 px-3.5 font-mono font-medium">{sale.quantity}</td>
-                  <td className="py-2.5 px-3.5 font-mono">₹{sale.unitPrice}</td>
-                  <td className="py-2.5 px-3.5 font-mono font-bold text-slate-900 dark:text-slate-100">
-                    ₹{Number(sale.netSales).toLocaleString()}
-                  </td>
-                  <td className="py-2.5 px-3.5">
-                    <Badge
-                      variant="outline"
-                      className={
-                        sale.paymentMode === "UPI"
-                          ? "text-indigo-600 border-indigo-500/30 text-[10px]"
-                          : sale.paymentMode === "Cash"
-                          ? "text-emerald-600 border-emerald-500/30 text-[10px]"
-                          : "text-slate-300 border-white/10 text-[10px]"
-                      }
-                    >
-                      {sale.paymentMode}
-                    </Badge>
-                  </td>
-                  <td className="py-2.5 px-3.5">
-                    <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
-                      <CheckCircle2 className="h-3.5 w-3.5" />
-                      POS
-                    </span>
-                  </td>
-                  {!isReadOnly && (
-                    <td className="py-2.5 px-3.5 text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        <button
-                          onClick={() => handleOpenEdit(sale)}
-                          className="p-1 rounded text-slate-400 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-                          title="Edit Sale"
-                        >
-                          <Edit3 className="h-3.5 w-3.5" />
-                        </button>
-                        <button
-                          onClick={() => handleDelete(sale)}
-                          className="p-1 rounded text-slate-400 hover:text-red-600 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-                          title="Delete Sale"
-                        >
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </td>
-                  )}
-                </tr>
-              ))}
+                  </div>
 
-              {displayedSales.length === 0 && (
-                <tr>
-                  <td colSpan={10} className="py-12 text-center text-slate-400">
-                    No sales records match the active criteria.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                  {/* Category */}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                    <span className="text-slate-400 font-medium shrink-0">Category:</span>
+                    <span className="text-slate-700 dark:text-slate-300 font-medium sm:text-right">
+                      {sale.category}
+                    </span>
+                  </div>
+
+                  {/* Quantity & Unit Price */}
+                  <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                    <span className="text-slate-400 font-medium shrink-0">Quantity & Price:</span>
+                    <span className="font-mono text-slate-800 dark:text-slate-200 sm:text-right">
+                      {sale.quantity} units @ ₹{sale.unitPrice}
+                    </span>
+                  </div>
+
+                  {/* Payment Mode */}
+                  <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 pt-2">
+                    <span className="text-slate-400 font-medium shrink-0">Payment Mode:</span>
+                    <div className="sm:self-end">
+                      <Badge
+                        variant="outline"
+                        className={
+                          sale.paymentMode === "UPI"
+                            ? "text-indigo-600 border-indigo-500/30 text-[10px]"
+                            : sale.paymentMode === "Cash"
+                            ? "text-emerald-600 border-emerald-500/30 text-[10px]"
+                            : "text-slate-300 border-white/10 text-[10px]"
+                        }
+                      >
+                        {sale.paymentMode}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Actions row if editable */}
+                {!isReadOnly && (
+                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2">
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleOpenEdit(sale)}
+                      className="h-8 text-xs gap-1.5 cursor-pointer text-slate-700 dark:text-slate-200"
+                    >
+                      <Edit3 className="h-3.5 w-3.5" />
+                      <span>Edit</span>
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => handleDelete(sale)}
+                      className="h-8 text-xs gap-1.5 cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 border-red-200 dark:border-red-900"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                      <span>Delete</span>
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Add / Edit Sale Modal Dialog (Validated with Zod) */}

@@ -547,13 +547,13 @@ export default function InventoryPage() {
         </div>
       </div>
 
-      {/* Professional Reconciliation Table */}
-      <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-        <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+      {/* Professional Reconciliation - Responsive Vertical Card Layout */}
+      <div className="space-y-3 w-full max-w-full box-border">
+        <div className="flex items-center justify-between pb-1">
           <div className="flex items-center gap-2">
             <Scale className="h-4 w-4 text-indigo-600" />
             <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-              Stock-Sales Reconciliation Matrix (PostgreSQL Stored)
+              Stock-Sales Reconciliation Matrix ({displayedRecords.length})
             </h3>
           </div>
           <span className="text-xs text-slate-400 font-mono">
@@ -561,130 +561,151 @@ export default function InventoryPage() {
           </span>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 border-b border-slate-200 dark:border-slate-800">
-              <tr>
-                <th className="py-3 px-3 font-semibold">Date & Outlet</th>
-                <th className="py-3 px-3 font-semibold">SKU / Item</th>
-                <th className="py-3 px-3 font-semibold text-right">Opening Stock</th>
-                <th className="py-3 px-3 font-semibold text-right">Received Stock</th>
-                <th className="py-3 px-3 font-semibold text-right">Sold Quantity</th>
-                <th className="py-3 px-3 font-semibold text-right text-indigo-600 dark:text-indigo-400">
-                  Expected Closing
-                </th>
-                <th className="py-3 px-3 font-semibold text-right">Actual Physical</th>
-                <th className="py-3 px-3 font-semibold text-right">Variance</th>
-                <th className="py-3 px-3 font-semibold text-right">Variance %</th>
-                <th className="py-3 px-3 font-semibold">Review Status</th>
-                {!isReadOnly && <th className="py-3 px-3 font-semibold text-right">Actions</th>}
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-              {displayedRecords.map((r) => {
-                const varNum = Number(r.variance);
-                return (
-                  <tr key={r.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/40">
-                    <td className="py-3 px-3">
-                      <span className="font-mono text-[11px] block">{r.periodDate}</span>
-                      <span className="font-mono text-[10px] text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-1.5 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
-                        {r.outletId}
-                      </span>
-                    </td>
-                    <td className="py-3 px-3">
-                      <span className="font-semibold text-slate-900 dark:text-slate-100 block">
+        {displayedRecords.length === 0 ? (
+          <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-400 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+            <Scale className="h-8 w-8 text-slate-300 mx-auto mb-2" />
+            <p className="font-medium text-slate-600 dark:text-slate-300">No reconciliation records found</p>
+            <p className="text-xs text-slate-400 mt-1">No reconciliation records match the active criteria.</p>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-3 w-full max-w-full box-border">
+            {displayedRecords.map((r) => {
+              const varNum = Number(r.variance);
+
+              return (
+                <div
+                  key={r.id}
+                  className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                >
+                  {/* Header: Item, Outlet & Review Status */}
+                  <div className="flex items-start justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                          {r.outletId}
+                        </span>
+                        <span className="font-mono text-[11px] text-slate-500">
+                          {r.periodDate}
+                        </span>
+                      </div>
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-1">
                         {r.itemName}
-                      </span>
-                      <span className="text-[10px] text-slate-400">
-                        {r.category} • {r.unit}
-                      </span>
-                    </td>
-                    {/* Opening Stock */}
-                    <td className="py-3 px-3 text-right font-mono font-medium">
-                      {Number(r.openingStock).toLocaleString()}
-                    </td>
-                    {/* Received Stock (Company Supply) */}
-                    <td className="py-3 px-3 text-right font-mono text-emerald-600 font-medium">
-                      +{Number(r.companySupply).toLocaleString()}
-                    </td>
-                    {/* Sold Quantity (Recorded Sales) */}
-                    <td className="py-3 px-3 text-right font-mono text-slate-500 font-medium">
-                      -{Number(r.recordedSales).toLocaleString()}
-                    </td>
-                    {/* Expected Closing Stock */}
-                    <td className="py-3 px-3 text-right font-mono font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50/30 dark:bg-indigo-950/20">
-                      {Number(r.expectedClosingStock).toLocaleString()}
-                    </td>
-                    {/* Actual Physical Stock */}
-                    <td className="py-3 px-3 text-right font-mono font-bold text-slate-900 dark:text-slate-100">
-                      {Number(r.actualPhysicalStock).toLocaleString()}
-                    </td>
-                    {/* Variance */}
-                    <td className={`py-3 px-3 text-right font-mono font-bold ${varNum !== 0 ? "text-amber-600 dark:text-amber-400" : "text-emerald-600"}`}>
-                      {varNum > 0 ? `+${varNum}` : varNum}
-                    </td>
-                    {/* Variance Percentage */}
-                    <td className={`py-3 px-3 text-right font-mono font-semibold ${Number(r.variancePercentage) >= 5 ? "text-amber-600" : "text-slate-500"}`}>
-                      {r.variancePercentage}%
-                    </td>
-                    {/* Review Status */}
-                    <td className="py-3 px-3">
+                      </h4>
+                      <p className="text-xs text-slate-500 mt-0.5">
+                        {r.category} · Unit: {r.unit}
+                      </p>
+                    </div>
+                    <div className="text-right shrink-0">
                       {r.hasDiscrepancy ? (
-                        <div className="space-y-0.5">
-                          <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30 text-[10px]">
-                            Discrepancy Detected — Requires Review
-                          </Badge>
-                          {r.notes && (
-                            <span className="block text-[10px] text-slate-400 truncate max-w-[160px]" title={r.notes}>
-                              {r.notes}
-                            </span>
-                          )}
-                        </div>
+                        <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30 text-[10px] font-semibold">
+                          Discrepancy Detected
+                        </Badge>
                       ) : (
-                        <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 text-[10px]">
+                        <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 text-[10px] font-semibold">
                           {r.reviewStatus}
                         </Badge>
                       )}
-                    </td>
-                    {/* Actions */}
-                    {!isReadOnly && (
-                      <td className="py-3 px-3 text-right">
-                        <div className="flex items-center justify-end gap-1.5">
-                          <button
-                            onClick={() => {
-                              setReviewModalRecord(r);
-                              setReviewStatusInput(r.reviewStatus);
-                              setResolutionNotesInput(r.notes || "");
-                            }}
-                            className="p-1 rounded text-slate-400 hover:text-indigo-600 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-                            title="Update Review Status / Add Notes"
-                          >
-                            <Edit2 className="h-3.5 w-3.5" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(r)}
-                            className="p-1 rounded text-slate-400 hover:text-red-600 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer"
-                            title="Delete Record"
-                          >
-                            <Trash2 className="h-3.5 w-3.5" />
-                          </button>
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                );
-              })}
+                    </div>
+                  </div>
 
-              {displayedRecords.length === 0 && (
-                <tr>
-                  <td colSpan={11} className="py-12 text-center text-slate-400">
-                    No reconciliation records found for the active criteria.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
+                  {/* Vertical Label-Value rows */}
+                  <div className="space-y-2 text-xs divide-y divide-slate-100 dark:divide-slate-800/60">
+                    {/* Opening Stock */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1 first:pt-0">
+                      <span className="text-slate-400 font-medium shrink-0">Opening Stock:</span>
+                      <span className="font-mono font-medium text-slate-800 dark:text-slate-200 sm:text-right">
+                        {Number(r.openingStock).toLocaleString()} {r.unit}
+                      </span>
+                    </div>
+
+                    {/* Received Stock (Company Supply) */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                      <span className="text-slate-400 font-medium shrink-0">Received (Company Supply):</span>
+                      <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400 sm:text-right">
+                        +{Number(r.companySupply).toLocaleString()} {r.unit}
+                      </span>
+                    </div>
+
+                    {/* Recorded Sales (Depletion) */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                      <span className="text-slate-400 font-medium shrink-0">Sold Quantity (Sales):</span>
+                      <span className="font-mono font-medium text-slate-600 dark:text-slate-400 sm:text-right">
+                        -{Number(r.recordedSales).toLocaleString()} {r.unit}
+                      </span>
+                    </div>
+
+                    {/* Expected Closing Stock */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                      <span className="text-slate-400 font-medium shrink-0">Expected Closing:</span>
+                      <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400 sm:text-right">
+                        {Number(r.expectedClosingStock).toLocaleString()} {r.unit}
+                      </span>
+                    </div>
+
+                    {/* Actual Physical Count */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                      <span className="text-slate-400 font-medium shrink-0">Actual Physical Stock:</span>
+                      <span className="font-mono font-bold text-slate-900 dark:text-slate-100 sm:text-right">
+                        {Number(r.actualPhysicalStock).toLocaleString()} {r.unit}
+                      </span>
+                    </div>
+
+                    {/* Variance & % */}
+                    <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                      <span className="text-slate-400 font-medium shrink-0">Variance & Deviation:</span>
+                      <div className="flex items-center gap-2 sm:justify-end">
+                        <span className={`font-mono font-bold ${varNum !== 0 ? "text-amber-600 dark:text-amber-400" : "text-emerald-600"}`}>
+                          {varNum > 0 ? `+${varNum}` : varNum} {r.unit}
+                        </span>
+                        <span className={`font-mono text-[11px] px-1.5 py-0.5 rounded ${Number(r.variancePercentage) >= 5 ? "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 font-bold" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"}`}>
+                          {r.variancePercentage}%
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Notes if present */}
+                    {r.notes && (
+                      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 pt-2">
+                        <span className="text-slate-400 font-medium shrink-0">Notes:</span>
+                        <span className="text-slate-600 dark:text-slate-300 italic text-[11px] sm:text-right sm:max-w-[70%]">
+                          {r.notes}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Actions */}
+                  {!isReadOnly && (
+                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => {
+                          setReviewModalRecord(r);
+                          setReviewStatusInput(r.reviewStatus);
+                          setResolutionNotesInput(r.notes || "");
+                        }}
+                        className="h-8 text-xs gap-1.5 cursor-pointer text-slate-700 dark:text-slate-200"
+                      >
+                        <Edit2 className="h-3.5 w-3.5" />
+                        <span>Update Review</span>
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleDelete(r)}
+                        className="h-8 text-xs gap-1.5 cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 border-red-200 dark:border-red-900"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                        <span>Delete</span>
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Interactive Calculation & Reconciliation Modal */}

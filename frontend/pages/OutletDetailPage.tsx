@@ -577,55 +577,74 @@ export default function OutletDetailPage() {
             )}
 
             {/* Sales Table */}
-            <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-              <div className="p-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+            <div className="space-y-3 w-full max-w-full box-border">
+              <div className="flex items-center justify-between pb-1">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   Recorded Sales Ledger ({sales.length} records in PostgreSQL)
                 </span>
+                <span className="text-xs text-slate-400 font-mono">
+                  Daily Settlements
+                </span>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 border-b border-slate-200 dark:border-slate-800">
-                    <tr>
-                      <th className="py-2.5 px-3 font-semibold">Date</th>
-                      <th className="py-2.5 px-3 font-semibold">Net Sales</th>
-                      <th className="py-2.5 px-3 font-semibold">Gross Sales</th>
-                      <th className="py-2.5 px-3 font-semibold">Orders</th>
-                      <th className="py-2.5 px-3 font-semibold">Avg Ticket</th>
-                      <th className="py-2.5 px-3 font-semibold">UPI vs Cash</th>
-                      <th className="py-2.5 px-3 font-semibold">POS Settled</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-                    {sales.map((s: any) => (
-                      <tr key={s.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                        <td className="py-2.5 px-3 font-mono font-medium">{s.date}</td>
-                        <td className="py-2.5 px-3 font-bold text-slate-900 dark:text-slate-100">
-                          ₹{Number(s.netSales).toLocaleString()}
-                        </td>
-                        <td className="py-2.5 px-3">₹{Number(s.grossSales).toLocaleString()}</td>
-                        <td className="py-2.5 px-3">{s.orderCount}</td>
-                        <td className="py-2.5 px-3">₹{Number(s.avgTicket).toFixed(1)}</td>
-                        <td className="py-2.5 px-3 font-mono text-[11px]">
-                          ₹{Number(s.upiCollection).toLocaleString()} / ₹{Number(s.cashCollection).toLocaleString()}
-                        </td>
-                        <td className="py-2.5 px-3">
+
+              {sales.length === 0 ? (
+                <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-400 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+                  No sales entries recorded yet for this outlet.
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3.5 w-full max-w-full box-border">
+                  {sales.map((s: any) => (
+                    <div
+                      key={s.id}
+                      className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                    >
+                      {/* Header: Date + Net Sales + Status */}
+                      <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <div>
+                          <span className="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                            {s.date}
+                          </span>
+                          <span className="text-xs text-slate-400 font-mono ml-2">
+                            {s.orderCount} total orders
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-sm font-extrabold font-mono text-slate-900 dark:text-slate-100">
+                            ₹{Number(s.netSales).toLocaleString()}
+                          </span>
                           <Badge variant="outline" className="text-emerald-600 border-emerald-500/30 text-[10px]">
                             Settled
                           </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                    {sales.length === 0 && (
-                      <tr>
-                        <td colSpan={7} className="py-6 text-center text-slate-400">
-                          No sales entries recorded yet for this outlet.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+                        </div>
+                      </div>
+
+                      {/* Vertical Label-Value rows */}
+                      <div className="space-y-2 text-xs divide-y divide-slate-100 dark:divide-slate-800/60">
+                        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
+                          <span className="text-slate-400 font-medium shrink-0">Gross Sales:</span>
+                          <span className="font-mono text-slate-700 dark:text-slate-300 sm:text-right">
+                            ₹{Number(s.grossSales).toLocaleString()}
+                          </span>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                          <span className="text-slate-400 font-medium shrink-0">Average Ticket Size:</span>
+                          <span className="font-mono text-slate-700 dark:text-slate-300 sm:text-right">
+                            ₹{Number(s.avgTicket).toFixed(1)} / order
+                          </span>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                          <span className="text-slate-400 font-medium shrink-0">Payment Settlement Mix:</span>
+                          <span className="font-mono text-slate-700 dark:text-slate-300 sm:text-right text-[11px]">
+                            ₹{Number(s.upiCollection).toLocaleString()} (UPI) · ₹{Number(s.cashCollection).toLocaleString()} (Cash)
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -635,68 +654,85 @@ export default function OutletDetailPage() {
         {/* ========================================= */}
         {activeTab === "Inventory" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-              <div className="p-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+            <div className="space-y-3 w-full max-w-full box-border">
+              <div className="flex items-center justify-between pb-1">
+                <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
                   Stock On-Hand & Par Levels ({inventory.length} SKUs in PostgreSQL)
                 </span>
+                <span className="text-xs text-slate-400 font-mono">
+                  Store Inventory
+                </span>
               </div>
-              <div className="overflow-x-auto">
-                <table className="w-full text-left text-xs">
-                  <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 border-b border-slate-200 dark:border-slate-800">
-                    <tr>
-                      <th className="py-2.5 px-3 font-semibold">SKU / Item</th>
-                      <th className="py-2.5 px-3 font-semibold">Category</th>
-                      <th className="py-2.5 px-3 font-semibold">Stock Qty</th>
-                      <th className="py-2.5 px-3 font-semibold">Reorder Level</th>
-                      <th className="py-2.5 px-3 font-semibold">Unit Cost</th>
-                      <th className="py-2.5 px-3 font-semibold">Variance</th>
-                      <th className="py-2.5 px-3 font-semibold">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-slate-700 dark:text-slate-300">
-                    {inventory.map((item: any) => (
-                      <tr key={item.id} className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
-                        <td className="py-2.5 px-3 font-medium text-slate-900 dark:text-slate-100">
-                          {item.itemName}
-                        </td>
-                        <td className="py-2.5 px-3 text-slate-500">{item.category}</td>
-                        <td className="py-2.5 px-3 font-bold font-mono">
-                          {item.stockQuantity} {item.unit}
-                        </td>
-                        <td className="py-2.5 px-3 text-slate-500">
-                          {item.reorderLevel} {item.unit}
-                        </td>
-                        <td className="py-2.5 px-3">₹{item.unitCost}</td>
-                        <td className={`py-2.5 px-3 font-mono ${Number(item.variancePct) < 0 ? "text-red-500" : "text-emerald-500"}`}>
-                          {item.variancePct}%
-                        </td>
-                        <td className="py-2.5 px-3">
-                          <Badge
-                            variant="outline"
-                            className={
-                              item.status === "In Stock"
-                                ? "text-emerald-600 border-emerald-500/30"
-                                : item.status === "Low Stock"
-                                ? "text-amber-600 border-amber-500/30"
-                                : "text-red-600 border-red-500/30"
-                            }
-                          >
-                            {item.status}
-                          </Badge>
-                        </td>
-                      </tr>
-                    ))}
-                    {inventory.length === 0 && (
-                      <tr>
-                        <td colSpan={7} className="py-6 text-center text-slate-400">
-                          No inventory records found.
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
+
+              {inventory.length === 0 ? (
+                <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-400 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+                  No inventory records found for this outlet.
+                </div>
+              ) : (
+                <div className="flex flex-col gap-3.5 w-full max-w-full box-border">
+                  {inventory.map((item: any) => (
+                    <div
+                      key={item.id}
+                      className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                    >
+                      {/* Header: Item Name, Category & Status */}
+                      <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <div>
+                          <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                            {item.itemName}
+                          </h4>
+                          <span className="text-xs text-slate-500 mt-0.5 block">
+                            {item.category}
+                          </span>
+                        </div>
+                        <Badge
+                          variant="outline"
+                          className={
+                            item.status === "In Stock"
+                              ? "text-emerald-600 border-emerald-500/30"
+                              : item.status === "Low Stock"
+                              ? "text-amber-600 border-amber-500/30"
+                              : "text-red-600 border-red-500/30"
+                          }
+                        >
+                          {item.status}
+                        </Badge>
+                      </div>
+
+                      {/* Vertical Label-Value rows */}
+                      <div className="space-y-2 text-xs divide-y divide-slate-100 dark:divide-slate-800/60">
+                        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
+                          <span className="text-slate-400 font-medium shrink-0">Current Stock Quantity:</span>
+                          <span className="font-bold font-mono text-slate-900 dark:text-slate-100 sm:text-right">
+                            {item.stockQuantity} {item.unit}
+                          </span>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                          <span className="text-slate-400 font-medium shrink-0">Par / Reorder Threshold:</span>
+                          <span className="font-mono text-slate-700 dark:text-slate-300 sm:text-right">
+                            {item.reorderLevel} {item.unit}
+                          </span>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                          <span className="text-slate-400 font-medium shrink-0">Unit Acquisition Cost:</span>
+                          <span className="font-mono text-slate-700 dark:text-slate-300 sm:text-right">
+                            ₹{item.unitCost}
+                          </span>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                          <span className="text-slate-400 font-medium shrink-0">Historical Audit Variance:</span>
+                          <span className={`font-mono font-bold sm:text-right ${Number(item.variancePct) < 0 ? "text-red-500" : "text-emerald-500"}`}>
+                            {item.variancePct}%
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         )}

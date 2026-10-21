@@ -23,6 +23,12 @@ import {
   Maximize2,
   MapPin,
   XCircle,
+  Loader2,
+  Sparkles,
+  RefreshCw,
+  HardDrive,
+  Film,
+  AlertCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -33,9 +39,14 @@ import {
   saveCctvSubmissions,
   loadPhotosForStore,
   savePhotosForStore,
-  createGeneratedPhotosForSubmission,
-  generateCctvPhotoDataUrl,
 } from "@/services/cctvEvidenceStore";
+import {
+  inspectVideoFile,
+  ClientVideoMetadata,
+  calculateTimestampsForDuration,
+  extractFramesWithBrowser,
+  formatHumanDuration,
+} from "@/services/videoFrameExtractor";
 import { STORES_MAP, ALL_NETWORK_STORES } from "@/utils/stores-data";
 
 export default function EvidencePage() {
@@ -55,7 +66,11 @@ export default function EvidencePage() {
   const storeId = isStoreRole ? (user?.assignedOutletId || "OUT-042") : selectedOutletId;
 
   const matchedStore = STORES_MAP[storeId];
-  const currentDate = "04 Oct 2026";
+  const currentDate = new Date().toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
 
   // CCTV Submissions state
   const [submissions, setSubmissions] = useState<CctvSubmission[]>(loadCctvSubmissions);
@@ -72,13 +87,25 @@ export default function EvidencePage() {
     user?.assignedOutletName ||
     (storeId === "OUT-042" ? "Lucknow Central" : `Store ${storeId}`);
 
-  // Upload Form State (STORE CAN ONLY UPLOAD VIDEOS)
+  // Upload Form & Video Processing State
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  const [videoName, setVideoName] = useState<string>("CCTV_DAILY_RECORDING_04OCT2026.mp4");
-  const [durationHours, setDurationHours] = useState<number>(8);
+  const [videoName, setVideoName] = useState<string>("CCTV_DAILY_RECORDING.mp4");
+  const [detectedMetadata, setDetectedMetadata] = useState<ClientVideoMetadata | null>(null);
+  const [isInspecting, setIsInspecting] = useState<boolean>(false);
+  const [inspectError, setInspectError] = useState<string | null>(null);
+
+  // Processing & Job Progress State
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [processingStep, setProcessingStep] = useState<string>("");
+  const [submissionStatus, setSubmissionStatus] = useState<
+    "IDLE" | "INSPECTING" | "UPLOADING" | "PROCESSING" | "SUBMITTED" | "FAILED"
+  >("IDLE");
   const [submissionSuccess, setSubmissionSuccess] = useState<boolean>(false);
-  const [submissionStatus, setSubmissionStatus] = useState<"IDLE" | "PROCESSING" | "SUBMITTED">("IDLE");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [activeJobId, setActiveJobId] = useState<string | null>(() => {
+    return sessionStorage.getItem(`active_cctv_job_${storeId}`);
+  });
 
   // Read-only Photo Viewer modal for Store / Owner
   const [previewPhoto, setPreviewPhoto] = useState<GeneratedPhoto | null>(null);
@@ -91,71 +118,303 @@ export default function EvidencePage() {
     setPhotos(storePhotos);
   }, [storeId]);
 
-  // Video Selection (Restricted strictly to Store role)
-  const handleVideoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Resume or monitor active background job if page was refreshed
+  useEffect(() => {
+    if (!activeJobId) return;
+
+    let isSubscribed = true;
+    setIsProcessing(true);
+    setSubmissionStatus("PROCESSING");
+
+    const pollInterval = setInterval(async () => {
+      try {
+        const token = localStorage.getItem("token") || "";
+        const res = await fetch(`/api/cctv/jobs/${activeJobId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        if (!res.ok) {
+          if (res.status === 404) {
+            clearInterval(pollInterval);
+            sessionStorage.removeItem(`active_cctv_job_${storeId}`);
+            setActiveJobId(null);
+            setIsProcessing(false);
+          }
+          return;
+        }
+
+        const data = await res.json();
+        if (!isSubscribed) return;
+
+        if (data.success && data.job) {
+          const job = data.job;
+          setUploadProgress(job.progressPct || 0);
+          setProcessingStep(job.currentStep || "Processing video...");
+
+          if (job.status === "COMPLETED") {
+            clearInterval(pollInterval);
+            sessionStorage.removeItem(`active_cctv_job_${storeId}`);
+            setActiveJobId(null);
+            setIsProcessing(false);
+            setSubmissionStatus("SUBMITTED");
+            setSubmissionSuccess(true);
+
+            if (job.frames && Array.isArray(job.frames) && job.frames.length > 0) {
+              const mappedPhotos: GeneratedPhoto[] = job.frames.map((f: any) => ({
+                id: f.id,
+                cctvId: f.cctvId,
+                storeId: f.storeId,
+                timestamp: f.timestamp,
+                offsetSeconds: f.offsetSeconds,
+                videoDurationSeconds: f.videoDurationSeconds,
+                sourceVideoName: f.sourceVideoName,
+                imageUrl: f.imageUrl,
+                dataUrl: f.dataUrl,
+                status: f.status || "Unreviewed",
+                zone: f.zone,
+                isAuthenticFrame: true,
+              }));
+
+              setPhotos(mappedPhotos);
+              savePhotosForStore(storeId, mappedPhotos);
+
+              const newSubmission: CctvSubmission = {
+                id: job.cctvId,
+                storeId,
+                storeName,
+                videoName: job.videoName,
+                videoPath: job.videoPath,
+                videoDurationSeconds: job.videoDurationSeconds,
+                durationLabel: job.durationLabel || formatHumanDuration(job.videoDurationSeconds || 10),
+                uploadDate: currentDate,
+                status: "Pending Review",
+                photosCount: mappedPhotos.length,
+              };
+
+              const updatedSubmissions = [
+                newSubmission,
+                ...loadCctvSubmissions().filter((s) => s.storeId !== storeId),
+              ];
+              saveCctvSubmissions(updatedSubmissions);
+              setSubmissions(updatedSubmissions);
+            }
+          } else if (job.status === "FAILED") {
+            clearInterval(pollInterval);
+            sessionStorage.removeItem(`active_cctv_job_${storeId}`);
+            setActiveJobId(null);
+            setIsProcessing(false);
+            setSubmissionStatus("FAILED");
+            setErrorMessage(job.error || "Video processing job failed on server.");
+          }
+        }
+      } catch (err) {
+        console.warn("Background job polling warning:", err);
+      }
+    }, 1200);
+
+    return () => {
+      isSubscribed = false;
+      clearInterval(pollInterval);
+    };
+  }, [activeJobId, storeId, storeName, currentDate]);
+
+  // Video Selection & Instant Duration Inspection
+  const handleVideoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (!isStoreRole) return;
     const file = e.target.files?.[0];
-    if (file) {
-      setSelectedFile(file);
-      setVideoName(file.name);
-      setSubmissionSuccess(false);
+    if (!file) return;
+
+    setSelectedFile(file);
+    setVideoName(file.name);
+    setSubmissionSuccess(false);
+    setErrorMessage(null);
+    setInspectError(null);
+    setIsInspecting(true);
+    setSubmissionStatus("INSPECTING");
+
+    try {
+      const meta = await inspectVideoFile(file);
+      setDetectedMetadata(meta);
+      setIsInspecting(false);
+      setSubmissionStatus("IDLE");
+    } catch (err: any) {
+      console.warn("Client video probe notice:", err);
+      setIsInspecting(false);
+      setInspectError(err.message || "Failed to inspect video duration. Please verify the video file.");
       setSubmissionStatus("IDLE");
     }
   };
 
-  // Submit CCTV Video (Restricted strictly to Store role)
-  const handleSubmitCctv = () => {
-    if (!isStoreRole) return;
+  // Submit CCTV Video (Dual-layer Architecture: FFmpeg Background Job + Browser Canvas Fallback)
+  const handleSubmitCctv = async () => {
+    if (!isStoreRole || !selectedFile) return;
 
     setIsProcessing(true);
-    setSubmissionStatus("PROCESSING");
     setSubmissionSuccess(false);
+    setErrorMessage(null);
+    setSubmissionStatus("UPLOADING");
+    setUploadProgress(15);
+    setProcessingStep("Uploading video to secure evidence vault...");
 
-    // Simulate system automatic frame extraction
-    setTimeout(() => {
-      const cctvId = `CCTV-${storeId}-${Date.now().toString().slice(-6)}`;
-      const durationLabel =
-        durationHours === 1
-          ? "1 hour"
-          : durationHours <= 5
-          ? `${durationHours} hours`
-          : "8 hours";
+    const cctvId = `CCTV-${storeId}-${Date.now().toString().slice(-6)}`;
+    const originalName = selectedFile.name;
+    const token = localStorage.getItem("token") || "";
 
-      // System automatically extracts random photos from different timestamps
-      const generatedPhotos = createGeneratedPhotosForSubmission(
-        cctvId,
-        storeId,
-        durationHours
-      );
+    try {
+      // 1. Attempt Server-side Upload & FFmpeg Extraction with Background Job
+      const formData = new FormData();
+      formData.append("video", selectedFile);
+      formData.append("storeId", storeId);
 
-      // Save to store
-      savePhotosForStore(storeId, generatedPhotos);
-      setPhotos(generatedPhotos);
+      setProcessingStep("Uploading video file to server...");
+      setUploadProgress(30);
 
-      const newSubmission: CctvSubmission = {
-        id: cctvId,
-        storeId,
-        storeName,
-        videoName,
-        durationLabel,
-        durationHours,
-        uploadDate: currentDate,
-        status: "Pending Review",
-        photosCount: generatedPhotos.length,
-      };
+      const res = await fetch("/api/cctv/upload-and-extract?async=true", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: formData,
+      });
 
-      const updatedSubmissions = [
-        newSubmission,
-        ...submissions.filter((s) => s.storeId !== storeId),
-      ];
-      saveCctvSubmissions(updatedSubmissions);
-      setSubmissions(updatedSubmissions);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && data.jobId) {
+          // Asynchronous job queued successfully!
+          setActiveJobId(data.jobId);
+          sessionStorage.setItem(`active_cctv_job_${storeId}`, data.jobId);
+          setSubmissionStatus("PROCESSING");
+          setProcessingStep("Video uploaded. Background frame extraction pipeline running...");
+          setUploadProgress(40);
+          return;
+        } else if (data.success && data.frames) {
+          // Synchronous completion fallback
+          handleExtractionSuccess(data.frames, data.videoDurationSeconds, data.durationLabel, cctvId, originalName);
+          return;
+        }
+      }
 
-      setIsProcessing(false);
-      setSubmissionStatus("SUBMITTED");
-      setSubmissionSuccess(true);
-      setSelectedFile(null);
-    }, 1200);
+      // If server returned error or upload failed (e.g. Vercel 4.5MB serverless limit)
+      console.warn("Server upload did not complete, switching to client-side authentic frame extraction...");
+      await executeClientSideExtractionFallback(selectedFile, storeId, cctvId, originalName, token);
+    } catch (err: any) {
+      console.warn("Server upload encountered error, executing client-side extraction fallback:", err);
+      try {
+        await executeClientSideExtractionFallback(selectedFile, storeId, cctvId, originalName, token);
+      } catch (fallbackErr: any) {
+        setIsProcessing(false);
+        setSubmissionStatus("FAILED");
+        setErrorMessage(
+          fallbackErr.message ||
+            "Failed to decode frames from the uploaded video. Please verify the video format and retry."
+        );
+      }
+    }
+  };
+
+  // Helper for successful frame extraction completion
+  const handleExtractionSuccess = (
+    frames: any[],
+    durationSeconds: number,
+    durationLabel: string,
+    cctvId: string,
+    originalName: string
+  ) => {
+    const mappedPhotos: GeneratedPhoto[] = frames.map((f: any) => ({
+      id: f.id,
+      cctvId: f.cctvId || cctvId,
+      storeId,
+      timestamp: f.timestamp,
+      offsetSeconds: f.offsetSeconds,
+      videoDurationSeconds: durationSeconds,
+      sourceVideoName: originalName,
+      imageUrl: f.imageUrl || f.dataUrl,
+      dataUrl: f.dataUrl,
+      status: "Unreviewed",
+      zone: f.zone,
+      isAuthenticFrame: true,
+    }));
+
+    setPhotos(mappedPhotos);
+    savePhotosForStore(storeId, mappedPhotos);
+
+    const newSubmission: CctvSubmission = {
+      id: cctvId,
+      storeId,
+      storeName,
+      videoName: originalName,
+      videoDurationSeconds: durationSeconds,
+      durationLabel: durationLabel || formatHumanDuration(durationSeconds),
+      uploadDate: currentDate,
+      status: "Pending Review",
+      photosCount: mappedPhotos.length,
+    };
+
+    const updatedSubmissions = [
+      newSubmission,
+      ...loadCctvSubmissions().filter((s) => s.storeId !== storeId),
+    ];
+    saveCctvSubmissions(updatedSubmissions);
+    setSubmissions(updatedSubmissions);
+
+    setIsProcessing(false);
+    setSubmissionStatus("SUBMITTED");
+    setSubmissionSuccess(true);
+    setSelectedFile(null);
+  };
+
+  // Resilient Browser-side extraction fallback (100% genuine frames via Canvas, compatible with Vercel)
+  const executeClientSideExtractionFallback = async (
+    file: File,
+    storeId: string,
+    cctvId: string,
+    originalName: string,
+    token: string
+  ) => {
+    setSubmissionStatus("PROCESSING");
+    setProcessingStep("Decoding video frames locally via browser video processor...");
+
+    const { metadata, frames } = await extractFramesWithBrowser(
+      file,
+      storeId,
+      cctvId,
+      (pct, curr, total, msg) => {
+        setUploadProgress(pct);
+        setProcessingStep(msg);
+      }
+    );
+
+    setProcessingStep("Synchronizing authentic frames to server storage...");
+
+    try {
+      // Sync authentic frames to server storage
+      await fetch("/api/cctv/sync-frames", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          storeId,
+          cctvId,
+          videoName: originalName,
+          durationSeconds: metadata.durationSeconds,
+          frames,
+        }),
+      });
+    } catch (syncErr) {
+      console.warn("Sync to backend warning (frames stored locally):", syncErr);
+    }
+
+    handleExtractionSuccess(
+      frames,
+      metadata.durationSeconds,
+      metadata.durationLabel,
+      cctvId,
+      originalName
+    );
   };
 
   // Keyboard Escape listener for lightbox preview modal
@@ -229,7 +488,7 @@ export default function EvidencePage() {
             </span>{" "}
             ·{" "}
             {isStoreRole
-              ? "Daily CCTV Surveillance Upload"
+              ? "Daily CCTV Surveillance Upload & Automatic Frame Extraction"
               : "Store Evidence & CCTV Compliance Monitoring"}
           </p>
         </div>
@@ -280,7 +539,7 @@ export default function EvidencePage() {
             <Lock className="h-3.5 w-3.5 text-amber-700" />
             <span>
               {isStoreRole
-                ? "Video Only · Photos Auto-Generated"
+                ? "Video Only · Real Frames Decoded"
                 : "CCTV Upload Restricted to Store Operators"}
             </span>
           </div>
@@ -338,14 +597,22 @@ export default function EvidencePage() {
       {isStoreRole && (
         <div className="rounded-[28px] border border-teal-500/25 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
           <div className="border-b border-white/10 pb-4">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
-              MANDATORY COMPLIANCE DISPATCH
-            </span>
-            <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">
-              DAILY CCTV UPLOAD
-            </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
-              The Store user can upload only CCTV video. Photos are automatically generated by the system across recording timestamps.
+            <div className="flex items-center justify-between">
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 block mb-1 font-semibold">
+                  MANDATORY COMPLIANCE DISPATCH
+                </span>
+                <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">
+                  DAILY CCTV UPLOAD & PHOTO EXTRACTION
+                </h2>
+              </div>
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-950/70 border border-cyan-800 text-xs font-mono text-cyan-300">
+                <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+                <span>100% Real Frame Decoding</span>
+              </span>
+            </div>
+            <p className="text-xs text-slate-300 mt-1">
+              Upload any CCTV video of any duration (10s, 30s, 1m, 10m, 1h, 8h, 10h). The system automatically inspects the actual video duration and extracts authentic photos directly from the footage.
             </p>
           </div>
 
@@ -355,15 +622,36 @@ export default function EvidencePage() {
               <div className="flex items-center gap-2.5">
                 <CheckCircle2 className="h-5 w-5 text-[#10B981] shrink-0" />
                 <div>
-                  <span className="font-bold text-sm block">✓ CCTV submitted successfully</span>
+                  <span className="font-bold text-sm block">✓ CCTV Processed Successfully</span>
                   <span className="text-[11px] text-slate-300">
-                    Status: <strong className="text-amber-400 font-mono">PROCESSING</strong> → System generated {photos.length} timestamped photos for Officer review.
+                    Status: <strong className="text-emerald-400 font-mono">EXTRACTED & READY</strong> → System extracted {photos.length} authentic timestamped photos from {currentSubmission?.durationLabel || "the uploaded video"} for officer review.
                   </span>
                 </div>
               </div>
               <button
+                type="button"
                 onClick={() => setSubmissionSuccess(false)}
-                className="text-slate-400 hover:text-white cursor-pointer"
+                className="text-slate-400 hover:text-white cursor-pointer p-1"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          )}
+
+          {/* Error Banner */}
+          {errorMessage && (
+            <div className="p-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-300 text-xs flex items-center justify-between shadow-lg">
+              <div className="flex items-center gap-2.5">
+                <AlertCircle className="h-5 w-5 text-rose-400 shrink-0" />
+                <div>
+                  <span className="font-bold text-sm block">Video Processing Error</span>
+                  <span className="text-[11px] text-rose-200">{errorMessage}</span>
+                </div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setErrorMessage(null)}
+                className="text-slate-400 hover:text-white cursor-pointer p-1"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -377,102 +665,165 @@ export default function EvidencePage() {
               <input
                 ref={fileInputRef}
                 type="file"
-                accept="video/mp4,video/webm,video/quicktime"
+                accept="video/mp4,video/webm,video/quicktime,video/x-msvideo,video/x-matroska,.mp4,.webm,.mov,.avi,.mkv"
                 className="hidden"
                 onChange={handleVideoSelect}
               />
 
               <button
                 type="button"
+                disabled={isProcessing}
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full border-2 border-dashed border-white/20 hover:border-[#4F46FF] bg-[#050B1A] hover:bg-white/[0.02] rounded-2xl p-8 text-center space-y-3 cursor-pointer transition-all group"
+                className={`w-full border-2 border-dashed ${
+                  selectedFile
+                    ? "border-teal-400/60 bg-teal-950/20"
+                    : "border-white/20 hover:border-[#4F46FF] bg-[#050B1A] hover:bg-white/[0.02]"
+                } rounded-2xl p-8 text-center space-y-3 cursor-pointer transition-all group`}
               >
                 <div className="h-14 w-14 rounded-2xl bg-[#4F46FF]/15 text-[#4F46FF] border border-[#4F46FF]/30 flex items-center justify-center mx-auto group-hover:scale-105 transition-transform">
                   <Video className="h-7 w-7" />
                 </div>
                 <div>
                   <span className="font-serif text-lg font-bold text-white block">
-                    [ Upload CCTV Video ]
+                    {selectedFile ? `Selected: ${selectedFile.name}` : "[ Upload CCTV Video ]"}
                   </span>
                   <span className="text-xs text-slate-400 mt-1 block">
-                    Select MP4 or WebM CCTV footage from store security recorder
+                    Supports any duration: 10s, 30s, 1m, 10m, 1h, 8h, 10h (MP4, WebM, MOV, AVI)
                   </span>
                 </div>
                 <span className="inline-block text-[11px] font-mono text-slate-300 bg-white/5 px-3 py-1 rounded-full border border-white/10">
-                  Click to browse file
+                  {selectedFile ? "Click to change video file" : "Click to browse local video file"}
                 </span>
               </button>
             </div>
 
-            {/* Selected Video Details */}
-            <div className="rounded-2xl bg-[#050B1A] border border-white/10 p-5 space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
-                {/* Video Name */}
-                <div className="space-y-1">
-                  <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
-                    Video Name
-                  </span>
-                  <div className="font-mono text-white font-medium truncate">
-                    {selectedFile ? selectedFile.name : videoName}
+            {/* Inspecting status indicator */}
+            {isInspecting && (
+              <div className="p-3.5 rounded-xl bg-cyan-950/40 border border-cyan-800/50 flex items-center gap-2 text-xs text-cyan-300">
+                <Loader2 className="h-4 w-4 animate-spin text-cyan-400" />
+                <span>Inspecting video file headers, codec, and actual duration...</span>
+              </div>
+            )}
+
+            {/* Inspection error */}
+            {inspectError && (
+              <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-800/50 flex items-center gap-2 text-xs text-amber-300">
+                <AlertTriangle className="h-4 w-4 text-amber-400 shrink-0" />
+                <span>{inspectError} (The system will inspect on server during upload)</span>
+              </div>
+            )}
+
+            {/* Selected Video Details & Real Duration Telemetry */}
+            {selectedFile && (
+              <div className="rounded-2xl bg-[#050B1A] border border-white/10 p-5 space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
+                  {/* Video Name */}
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                      Selected Video File
+                    </span>
+                    <div className="font-mono text-white font-medium truncate" title={selectedFile.name}>
+                      {selectedFile.name}
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 block">
+                      {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
+                    </span>
+                  </div>
+
+                  {/* Real Detected Duration */}
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-cyan-400" />
+                      <span>Actual Video Duration</span>
+                    </span>
+                    <div className="font-mono text-cyan-300 font-bold text-sm">
+                      {detectedMetadata ? detectedMetadata.durationLabel : "Detecting..."}
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 block">
+                      {detectedMetadata
+                        ? `${detectedMetadata.durationSeconds.toFixed(1)} seconds total`
+                        : "Probing video stream"}
+                    </span>
+                  </div>
+
+                  {/* Frame Extraction Plan */}
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1">
+                      <Camera className="h-3 w-3 text-emerald-400" />
+                      <span>Extraction Policy</span>
+                    </span>
+                    <div className="font-mono text-emerald-400 font-bold">
+                      {detectedMetadata
+                        ? `${calculateTimestampsForDuration(detectedMetadata.durationSeconds).length} authentic frames`
+                        : "Adaptive frame schedule"}
+                    </div>
+                    <span className="text-[10px] font-mono text-slate-400 block">
+                      {detectedMetadata?.durationSeconds && detectedMetadata.durationSeconds <= 15
+                        ? "Well-spaced within short clip"
+                        : "Distributed across full duration"}
+                    </span>
+                  </div>
+
+                  {/* Upload Date */}
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                      Upload Dispatch Date
+                    </span>
+                    <div className="flex items-center gap-1.5 font-mono text-slate-300">
+                      <Calendar className="h-3.5 w-3.5 text-slate-500" />
+                      <span>{currentDate}</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* Video Duration Selector */}
-                <div className="space-y-1">
-                  <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
-                    Video Duration
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    {[
-                      { label: "1 hr (3 photos)", hours: 1 },
-                      { label: "4-5 hrs (5 photos)", hours: 5 },
-                      { label: "8 hrs (8-10 photos)", hours: 8 },
-                    ].map((d) => (
-                      <button
-                        key={d.hours}
-                        type="button"
-                        onClick={() => setDurationHours(d.hours)}
-                        className={`px-2.5 py-1 rounded-lg text-[10px] font-mono cursor-pointer transition-all ${
-                          durationHours === d.hours
-                            ? "bg-[#4F46FF] text-white font-bold"
-                            : "bg-white/5 text-slate-400 hover:text-white border border-white/10"
-                        }`}
-                      >
-                        {d.label}
-                      </button>
-                    ))}
+                {/* Progress bar during upload / extraction */}
+                {isProcessing && (
+                  <div className="pt-2 space-y-2">
+                    <div className="flex items-center justify-between text-xs font-mono">
+                      <span className="text-cyan-300 flex items-center gap-2">
+                        <Loader2 className="h-3.5 w-3.5 animate-spin text-cyan-400" />
+                        <span>{processingStep}</span>
+                      </span>
+                      <span className="text-white font-bold">{uploadProgress}%</span>
+                    </div>
+                    <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-teal-500 to-cyan-400 transition-all duration-300"
+                        style={{ width: `${Math.max(5, uploadProgress)}%` }}
+                      />
+                    </div>
                   </div>
-                </div>
+                )}
 
-                {/* Upload Date */}
-                <div className="space-y-1">
-                  <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
-                    Upload Date
+                {/* Submit CCTV Button */}
+                <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <span className="text-[11px] text-slate-400">
+                    {detectedMetadata?.durationSeconds && detectedMetadata.durationSeconds <= 15
+                      ? `Short video detected (${detectedMetadata.durationLabel}): Frames will be extracted strictly within the recording.`
+                      : "System automatically extracts representative frames distributed across the recording duration."}
                   </span>
-                  <div className="flex items-center gap-1.5 font-mono text-slate-300">
-                    <Calendar className="h-3.5 w-3.5 text-slate-500" />
-                    <span>{currentDate}</span>
-                  </div>
+
+                  <Button
+                    type="button"
+                    onClick={handleSubmitCctv}
+                    disabled={isProcessing || isInspecting}
+                    className="bg-[#4F46FF] hover:bg-[#6366F1] text-white font-bold text-xs h-11 px-8 rounded-xl shadow-lg shadow-[#4F46FF]/30 cursor-pointer gap-2 transition-all uppercase tracking-wider"
+                  >
+                    {isProcessing ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <span>Processing Video...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="h-4 w-4" />
+                        <span>PROCESS CCTV VIDEO</span>
+                      </>
+                    )}
+                  </Button>
                 </div>
               </div>
-
-              {/* Submit CCTV Button */}
-              <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                <span className="text-[11px] text-slate-400">
-                  System automatically selects random frames across the entire duration.
-                </span>
-
-                <Button
-                  type="button"
-                  onClick={handleSubmitCctv}
-                  disabled={isProcessing}
-                  className="bg-[#4F46FF] hover:bg-[#6366F1] text-white font-bold text-xs h-11 px-8 rounded-xl shadow-lg shadow-[#4F46FF]/30 cursor-pointer gap-2 transition-all uppercase tracking-wider"
-                >
-                  <Upload className="h-4 w-4" />
-                  <span>{isProcessing ? "Processing Video..." : "SUBMIT CCTV"}</span>
-                </Button>
-              </div>
-            </div>
+            )}
           </div>
         </div>
       )}
@@ -511,7 +862,7 @@ export default function EvidencePage() {
             </div>
           </div>
 
-          {/* Submission Info Grid (No Upload Button, No File Picker) */}
+          {/* Submission Info Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
             <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
               <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
@@ -529,7 +880,7 @@ export default function EvidencePage() {
                 <span>Recorded Duration</span>
               </span>
               <div className="font-mono text-white font-medium">
-                {currentSubmission?.durationLabel || "8 hours"}
+                {currentSubmission?.durationLabel || "Surveillance Recording"}
               </div>
             </div>
 
@@ -549,7 +900,7 @@ export default function EvidencePage() {
                 <span>Extracted Frames</span>
               </span>
               <div className="font-mono text-white font-medium">
-                {photos.length} timestamped photos
+                {photos.length} authentic photos
               </div>
             </div>
           </div>
@@ -572,17 +923,18 @@ export default function EvidencePage() {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-800/50 px-2.5 py-0.5 rounded-full font-semibold">
-                AUTOMATED SURVEILLANCE TELEMETRY
+                AUTHENTIC SURVEILLANCE TELEMETRY
               </span>
-              <span className="text-[10px] font-mono text-slate-400 hidden sm:inline">
-                · 1080P HD Extractions
+              <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+                <Sparkles className="h-3 w-3" />
+                <span>100% Real Decoded Video Frames</span>
               </span>
             </div>
             <h2 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-white">
               Generated Photos ({photos.length})
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
-              Photos are automatically extracted across the CCTV recording duration for officer compliance review. Store operators have read-only access and cannot modify or verify frames.
+              Every photo in this gallery is an authentic frame decoded from the uploaded CCTV recording. Timestamps correspond to the exact second within the video.
             </p>
           </div>
 
@@ -603,91 +955,99 @@ export default function EvidencePage() {
           </div>
         </div>
 
-        {/* Photos Grid (4 cols wide desktop, 2 cols medium, 1 col mobile) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-          {photos.map((photo, idx) => (
-            <div
-              key={photo.id}
-              onClick={() => setPreviewPhoto(photo)}
-              className="group rounded-2xl border border-slate-700/60 bg-[#0B1528] overflow-hidden shadow-lg hover:border-cyan-500/50 hover:shadow-cyan-500/10 transition-all duration-200 cursor-pointer flex flex-col justify-between"
-            >
-              {/* Photo Image Preview (16:9 Aspect Ratio) */}
-              <div className="relative aspect-video w-full bg-slate-900 overflow-hidden border-b border-slate-700/60">
-                <img
-                  src={photo.imageUrl}
-                  alt={`${photo.id} - ${photo.zone}`}
-                  loading="lazy"
-                  onError={(e) => {
-                    const fallback = generateCctvPhotoDataUrl(photo.timestamp, photo.zone, storeId, idx);
-                    (e.currentTarget as HTMLImageElement).src = fallback;
-                  }}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
+        {/* Photos Grid */}
+        {photos.length === 0 ? (
+          <div className="p-12 text-center border-2 border-dashed border-slate-700/50 rounded-2xl space-y-3">
+            <Camera className="h-10 w-10 text-slate-500 mx-auto" />
+            <div className="text-sm font-semibold text-slate-300">No CCTV Photos Extracted Yet</div>
+            <p className="text-xs text-slate-400 max-w-md mx-auto">
+              {isStoreRole
+                ? "Select and upload a CCTV recording above. Frames will be extracted automatically from your video."
+                : "The store operator has not yet submitted CCTV surveillance footage for this date."}
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+            {photos.map((photo, idx) => (
+              <div
+                key={photo.id}
+                onClick={() => setPreviewPhoto(photo)}
+                className="group rounded-2xl border border-slate-700/60 bg-[#0B1528] overflow-hidden shadow-lg hover:border-cyan-500/50 hover:shadow-cyan-500/10 transition-all duration-200 cursor-pointer flex flex-col justify-between"
+              >
+                {/* Photo Image Preview (16:9 Aspect Ratio) */}
+                <div className="relative aspect-video w-full bg-slate-900 overflow-hidden border-b border-slate-700/60">
+                  <img
+                    src={photo.dataUrl || photo.imageUrl}
+                    alt={`${photo.id} - ${photo.zone}`}
+                    loading="lazy"
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
 
-                {/* Floating Top Left Badge: Photo ID & Cam Tag */}
-                <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-                  <span className="px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-mono font-bold text-white border border-white/15 shadow-sm">
-                    {photo.id}
-                  </span>
-                  <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded-md bg-cyan-950/80 backdrop-blur-md text-[9px] font-mono font-semibold text-cyan-300 border border-cyan-500/30">
-                    CAM-0{((idx % 4) + 1)}
-                  </span>
-                </div>
-
-                {/* Floating Top Right Badge: Timestamp */}
-                <div className="absolute top-2.5 right-2.5">
-                  <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/85 backdrop-blur-md text-[10px] font-mono font-bold text-emerald-400 border border-emerald-500/30 shadow-sm">
-                    <Clock className="h-3 w-3 text-emerald-400" />
-                    {photo.timestamp}
-                  </span>
-                </div>
-
-                {/* Hover Quick Preview Action */}
-                <div className="absolute inset-0 bg-cyan-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                  <span className="px-3 py-1 rounded-full bg-black/85 backdrop-blur-md text-xs font-medium text-white border border-white/20 shadow-md flex items-center gap-1.5">
-                    <Maximize2 className="h-3.5 w-3.5 text-cyan-400" />
-                    Inspect Frame
-                  </span>
-                </div>
-              </div>
-
-              {/* Photo Meta & Review Status */}
-              <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
-                <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-serif font-bold text-sm text-white tracking-tight flex items-center gap-1.5">
-                      <Camera className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+                  {/* Floating Top Left Badge: Photo ID & Cam Tag */}
+                  <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                    <span className="px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-mono font-bold text-white border border-white/15 shadow-sm">
                       {photo.id}
                     </span>
-                    <span className="font-mono text-xs text-slate-300 font-semibold bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-700/60">
+                    <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded-md bg-cyan-950/80 backdrop-blur-md text-[9px] font-mono font-semibold text-cyan-300 border border-cyan-500/30">
+                      CAM-0{((idx % 4) + 1)}
+                    </span>
+                  </div>
+
+                  {/* Floating Top Right Badge: Timestamp */}
+                  <div className="absolute top-2.5 right-2.5">
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/85 backdrop-blur-md text-[10px] font-mono font-bold text-emerald-400 border border-emerald-500/30 shadow-sm">
+                      <Clock className="h-3 w-3 text-emerald-400" />
                       {photo.timestamp}
                     </span>
                   </div>
 
-                  {/* Category / Zone Label */}
-                  <div className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
-                    <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                    <span className="truncate text-slate-200" title={photo.zone}>
-                      {photo.zone}
+                  {/* Hover Quick Preview Action */}
+                  <div className="absolute inset-0 bg-cyan-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                    <span className="px-3 py-1 rounded-full bg-black/85 backdrop-blur-md text-xs font-medium text-white border border-white/20 shadow-md flex items-center gap-1.5">
+                      <Maximize2 className="h-3.5 w-3.5 text-cyan-400" />
+                      Inspect Frame
                     </span>
                   </div>
+                </div>
 
-                  <div className="text-[11px] font-mono text-slate-400 truncate">
-                    {storeName} ({storeId})
+                {/* Photo Meta & Review Status */}
+                <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
+                  <div className="space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-serif font-bold text-sm text-white tracking-tight flex items-center gap-1.5">
+                        <Camera className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+                        {photo.id}
+                      </span>
+                      <span className="font-mono text-xs text-slate-300 font-semibold bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-700/60">
+                        {photo.timestamp}
+                      </span>
+                    </div>
+
+                    {/* Category / Zone Label */}
+                    <div className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
+                      <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                      <span className="truncate text-slate-200" title={photo.zone}>
+                        {photo.zone}
+                      </span>
+                    </div>
+
+                    <div className="text-[11px] font-mono text-slate-400 truncate">
+                      {storeName} ({storeId})
+                    </div>
+                  </div>
+
+                  {/* Card Footer: Officer Review Status */}
+                  <div className="pt-2.5 border-t border-slate-700/50 flex items-center justify-between">
+                    <span className="text-[10px] font-mono uppercase text-slate-400 tracking-wider font-semibold">
+                      Review Status
+                    </span>
+                    <div>{getStatusBadge(photo.status)}</div>
                   </div>
                 </div>
-
-                {/* Card Footer: Officer Review Status */}
-                <div className="pt-2.5 border-t border-slate-700/50 flex items-center justify-between">
-                  <span className="text-[10px] font-mono uppercase text-slate-400 tracking-wider font-semibold">
-                    Review Status
-                  </span>
-                  <div>{getStatusBadge(photo.status)}</div>
-                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* ======================================================== */}
@@ -710,17 +1070,17 @@ export default function EvidencePage() {
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-800/40 px-2.5 py-0.5 rounded-full font-semibold">
-                    CCTV EVIDENCE RECORD
+                    AUTHENTIC CCTV EVIDENCE FRAME
                   </span>
                   <span className="text-xs font-mono text-slate-400">
                     {previewPhoto.id}
                   </span>
                 </div>
                 <h3 className="font-serif text-xl sm:text-2xl font-bold text-white uppercase tracking-tight">
-                  {previewPhoto.id} · {previewPhoto.timestamp}
+                  {previewPhoto.id} · Timestamp {previewPhoto.timestamp}
                 </h3>
                 <p className="text-xs text-slate-300 font-mono">
-                  {storeName} ({storeId}) · Extracted from {currentSubmission?.videoName || "CCTV footage"}
+                  {storeName} ({storeId}) · Extracted from {previewPhoto.sourceVideoName || currentSubmission?.videoName || "CCTV footage"}
                 </p>
               </div>
               <button
@@ -736,12 +1096,8 @@ export default function EvidencePage() {
             {/* Modal 16:9 Image Frame */}
             <div className="rounded-2xl overflow-hidden border border-slate-700 bg-black aspect-video w-full shadow-inner">
               <img
-                src={previewPhoto.imageUrl}
+                src={previewPhoto.dataUrl || previewPhoto.imageUrl}
                 alt={`${previewPhoto.id} - ${previewPhoto.zone}`}
-                onError={(e) => {
-                  const fallback = generateCctvPhotoDataUrl(previewPhoto.timestamp, previewPhoto.zone, storeId, 0);
-                  (e.currentTarget as HTMLImageElement).src = fallback;
-                }}
                 className="w-full h-full object-contain"
               />
             </div>
@@ -749,61 +1105,50 @@ export default function EvidencePage() {
             {/* Modal Evidence Telemetry Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-xl bg-[#050B1A] border border-slate-700/80 text-xs">
               <div>
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-0.5">
-                  Capture Timestamp
+                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                  Timestamp In Video:
                 </span>
-                <span className="font-mono text-sm text-white font-bold">
+                <span className="font-mono text-cyan-300 font-bold text-sm">
                   {previewPhoto.timestamp}
                 </span>
               </div>
 
               <div>
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-0.5">
-                  Evidence Zone
+                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                  Monitored Zone:
                 </span>
-                <span className="font-mono text-xs text-cyan-300 font-semibold truncate block">
+                <span className="font-medium text-slate-200">
                   {previewPhoto.zone}
                 </span>
               </div>
 
               <div>
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-0.5">
-                  Surveillance Source
+                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                  Authenticity:
                 </span>
-                <span className="font-mono text-xs text-slate-200">
-                  {currentSubmission?.id || `CCTV-${storeId}`}
+                <span className="font-bold text-emerald-400 flex items-center gap-1">
+                  <CheckCircle2 className="h-3 w-3" />
+                  <span>Real Decoded Frame</span>
                 </span>
               </div>
 
               <div>
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold mb-1">
-                  Compliance Status
+                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                  Officer Review:
                 </span>
-                <div>{getStatusBadge(previewPhoto.status)}</div>
+                <div className="mt-0.5">{getStatusBadge(previewPhoto.status)}</div>
               </div>
             </div>
 
+            {/* Officer Comment if exists */}
             {previewPhoto.officerComment && (
-              <div className="p-4 rounded-xl bg-slate-800/60 border border-slate-700/80 text-xs space-y-1">
-                <span className="text-[10px] font-mono uppercase text-emerald-400 font-bold block">
-                  Officer Review Comment:
+              <div className="p-3.5 rounded-xl bg-blue-950/40 border border-blue-500/30 text-xs space-y-1">
+                <span className="text-[10px] font-mono uppercase text-blue-300 font-semibold block">
+                  Officer Evaluation Note:
                 </span>
                 <p className="text-slate-200 italic">"{previewPhoto.officerComment}"</p>
               </div>
             )}
-
-            <div className="flex justify-between items-center pt-3 border-t border-slate-700/70">
-              <span className="text-[11px] font-mono text-slate-400">
-                Press <kbd className="px-1.5 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 text-[10px]">Esc</kbd> to close
-              </span>
-              <Button
-                type="button"
-                onClick={() => setPreviewPhoto(null)}
-                className="bg-white/10 hover:bg-white/20 text-white text-xs h-9 px-5 rounded-xl border border-white/15 cursor-pointer font-medium"
-              >
-                Close Preview
-              </Button>
-            </div>
           </div>
         </div>
       )}

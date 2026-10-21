@@ -46,14 +46,16 @@ import {
   transitionCorrectiveAction,
 } from "./services/corrective-action-engine";
 import { CapaStatus } from "../frontend/types/corrective-action-types";
+import cctvRouter from "./routes/cctv";
 
 dotenv.config();
 
 const apiApp = express();
 
 apiApp.use(cors({ origin: true, credentials: true }));
-apiApp.use(express.json());
+apiApp.use(express.json({ limit: "50mb" }));
 apiApp.use(cookieParser());
+apiApp.use("/uploads", express.static("uploads"));
 
 // Mock outlet database for demonstration & authorization testing
 const OUTLETS_MOCK = [
@@ -3517,6 +3519,10 @@ apiRouter.post("/reports/generate", requireAuth, async (req: AuthenticatedReques
 apiRouter.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
+
+// Mount CCTV routes at both /api and root /
+apiApp.use("/api", cctvRouter);
+apiApp.use("/", cctvRouter);
 
 // Mount at both /api and root / so both Vercel rewritten and direct paths resolve!
 apiApp.use("/api", apiRouter);

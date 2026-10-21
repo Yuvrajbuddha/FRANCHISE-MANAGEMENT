@@ -3,7 +3,11 @@ import { createServer as createViteServer } from "vite";
 import apiApp from "./backend/server";
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+// Dev server must run on port 3000 per environment constraints
+const PORT = 3000;
+
+// Serve uploaded CCTV footage and extracted frames
+app.use("/uploads", express.static("uploads"));
 
 // Mount the clean API app
 app.use(apiApp);

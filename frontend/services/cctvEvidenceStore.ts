@@ -4,12 +4,17 @@ export interface GeneratedPhoto {
   id: string; // e.g. "Photo 01"
   cctvId: string;
   storeId: string;
-  timestamp: string; // e.g. "09:14 AM"
-  timeMinutes: number; // for chronological sorting
+  timestamp: string; // e.g. "00:00:03"
+  timeMinutes?: number; // for chronological sorting
+  offsetSeconds?: number; // exact seconds offset within video
+  videoDurationSeconds?: number;
+  sourceVideoName?: string;
   status: "Unreviewed" | "Correct" | "Incorrect" | "Needs Review";
   officerComment?: string;
   imageUrl: string;
+  dataUrl?: string;
   zone: string;
+  isAuthenticFrame?: boolean;
 }
 
 export interface CctvSubmission {
@@ -17,8 +22,10 @@ export interface CctvSubmission {
   storeId: string;
   storeName: string;
   videoName: string;
+  videoPath?: string;
+  videoDurationSeconds?: number;
   durationLabel: string;
-  durationHours: number;
+  durationHours?: number;
   uploadDate: string;
   status: "Processing" | "Pending Review" | "Verified";
   photosCount: number;
@@ -446,35 +453,8 @@ export function loadPhotosForStore(storeId: string): GeneratedPhoto[] {
     if (data) {
       const parsed: GeneratedPhoto[] = JSON.parse(data);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        let hasRepaired = false;
-        const healed = parsed.map((photo, idx) => {
-          // If imageUrl is missing, broken, empty, uses obsolete ;utf8, or has black floor
-          const isInvalid =
-            !photo.imageUrl ||
-            !photo.imageUrl.startsWith("data:image/svg+xml") ||
-            photo.imageUrl.includes(";utf8,") ||
-            photo.imageUrl.includes("viewBox=%220%200%20640%20400%22") ||
-            photo.imageUrl.includes("fill=%22%23000000%22");
-
-          if (isInvalid) {
-            hasRepaired = true;
-            return {
-              ...photo,
-              imageUrl: generateCctvPhotoDataUrl(
-                photo.timestamp || "09:15 AM",
-                photo.zone || ZONES[idx % ZONES.length],
-                storeId,
-                idx
-              ),
-            };
-          }
-          return photo;
-        });
-
-        if (hasRepaired) {
-          savePhotosForStore(storeId, healed);
-        }
-        return healed;
+        // Return stored authentic photos directly without clobbering!
+        return parsed;
       }
     }
   } catch {}

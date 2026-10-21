@@ -514,12 +514,8 @@ export default function StoreEvidenceReviewPage() {
                 {/* Photo Preview Container */}
                 <div className="relative aspect-video bg-black overflow-hidden border-b border-white/10">
                   <img
-                    src={photo.imageUrl}
+                    src={photo.dataUrl || photo.imageUrl}
                     alt={photo.id}
-                    onError={(e) => {
-                      const fallback = generateCctvPhotoDataUrl(photo.timestamp, photo.zone, activeStoreId, 0);
-                      (e.currentTarget as HTMLImageElement).src = fallback;
-                    }}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
 
@@ -711,7 +707,7 @@ export default function StoreEvidenceReviewPage() {
             {/* Large Photo Preview */}
             <div className="rounded-2xl overflow-hidden border border-white/10 bg-black aspect-[16/10] relative">
               <img
-                src={activePhoto.imageUrl}
+                src={activePhoto.dataUrl || activePhoto.imageUrl}
                 alt={activePhoto.id}
                 className="w-full h-full object-contain"
               />

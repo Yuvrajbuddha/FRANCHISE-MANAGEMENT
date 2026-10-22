@@ -27,7 +27,6 @@ import {
   saveCctvSubmissions,
   loadPhotosForStore,
   savePhotosForStore,
-  generateCctvPhotoDataUrl,
 } from "@/services/cctvEvidenceStore";
 import { STORES_MAP } from "@/utils/stores-data";
 
@@ -48,6 +47,34 @@ export default function StoreEvidenceReviewPage() {
   const cctvDate = currentSub?.uploadDate || "04 Oct 2026";
 
   const [photos, setPhotos] = useState<GeneratedPhoto[]>(() => loadPhotosForStore(activeStoreId));
+
+  // Sync authentic frames from server storage & database
+  useEffect(() => {
+    const cached = loadPhotosForStore(activeStoreId);
+    setPhotos(cached);
+
+    const fetchServerSubmissions = async () => {
+      try {
+        const token = localStorage.getItem("franchise_auth_token") || localStorage.getItem("token") || "";
+        const res = await fetch(`/api/cctv/submissions/${activeStoreId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.latestCompletedJob?.frames?.length > 0) {
+            const serverFrames: GeneratedPhoto[] = data.latestCompletedJob.frames;
+            setPhotos(serverFrames);
+            savePhotosForStore(activeStoreId, serverFrames);
+          }
+        }
+      } catch (err) {
+        console.warn("Could not query server for store evidence:", err);
+      }
+    };
+    fetchServerSubmissions();
+  }, [activeStoreId]);
 
   // Active Photo Selected for Review Modal
   const [activePhoto, setActivePhoto] = useState<GeneratedPhoto | null>(null);
@@ -494,30 +521,49 @@ export default function StoreEvidenceReviewPage() {
         </div>
 
         {/* Clean Photos Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
-          {photos.map((photo) => {
-            const isReviewed = photo.status !== "Unreviewed";
-            return (
-              <div
-                key={photo.id}
-                onClick={() => handleSelectPhoto(photo)}
-                className={`group rounded-2xl border transition-all duration-200 cursor-pointer overflow-hidden flex flex-col justify-between shadow-lg hover:scale-[1.02] ${
-                  photo.status === "Correct"
-                    ? "border-[#10B981]/50 bg-[#050B1A] ring-1 ring-[#10B981]/30"
-                    : photo.status === "Incorrect"
-                    ? "border-[#EF4444]/50 bg-[#050B1A] ring-1 ring-[#EF4444]/30"
-                    : photo.status === "Needs Review"
-                    ? "border-[#F59E0B]/50 bg-[#050B1A] ring-1 ring-[#F59E0B]/30"
-                    : "border-white/10 bg-[#050B1A] hover:border-[#4F46FF]"
-                }`}
-              >
-                {/* Photo Preview Container */}
-                <div className="relative aspect-video bg-black overflow-hidden border-b border-white/10">
-                  <img
-                    src={photo.dataUrl || photo.imageUrl}
-                    alt={photo.id}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
+        {photos.length === 0 ? (
+          <div className="p-12 text-center border-2 border-dashed border-white/10 rounded-2xl space-y-3 bg-[#050B1A]">
+            <Camera className="h-10 w-10 text-slate-500 mx-auto" />
+            <div className="text-sm font-semibold text-slate-300">No frames extracted yet.</div>
+            <p className="text-xs text-slate-400 max-w-md mx-auto">
+              The store operator has not yet uploaded CCTV surveillance footage for this date.
+            </p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+            {photos.map((photo) => {
+              const isReviewed = photo.status !== "Unreviewed";
+              return (
+                <div
+                  key={photo.id}
+                  onClick={() => handleSelectPhoto(photo)}
+                  className={`group rounded-2xl border transition-all duration-200 cursor-pointer overflow-hidden flex flex-col justify-between shadow-lg hover:scale-[1.02] ${
+                    photo.status === "Correct"
+                      ? "border-[#10B981]/50 bg-[#050B1A] ring-1 ring-[#10B981]/30"
+                      : photo.status === "Incorrect"
+                      ? "border-[#EF4444]/50 bg-[#050B1A] ring-1 ring-[#EF4444]/30"
+                      : photo.status === "Needs Review"
+                      ? "border-[#F59E0B]/50 bg-[#050B1A] ring-1 ring-[#F59E0B]/30"
+                      : "border-white/10 bg-[#050B1A] hover:border-[#4F46FF]"
+                  }`}
+                >
+                  {/* Photo Preview Container */}
+                  <div className="relative aspect-video bg-black overflow-hidden border-b border-white/10 flex items-center justify-center">
+                    <img
+                      src={photo.dataUrl || photo.imageUrl}
+                      alt={photo.id}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        e.currentTarget.style.display = "none";
+                        const parent = e.currentTarget.parentElement;
+                        if (parent && !parent.querySelector(".img-error-notice")) {
+                          const errNotice = document.createElement("div");
+                          errNotice.className = "img-error-notice flex items-center justify-center p-4 text-center text-xs text-rose-400 font-mono h-full w-full bg-slate-950";
+                          errNotice.innerText = "Frame unavailable — extraction or image loading failed.";
+                          parent.appendChild(errNotice);
+                        }
+                      }}
+                    />
 
                   {/* Photo Title Overlay */}
                   <div className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-black/75 backdrop-blur-md text-[10px] font-mono font-bold text-white border border-white/10">
@@ -570,6 +616,7 @@ export default function StoreEvidenceReviewPage() {
             );
           })}
         </div>
+        )}
       </div>
 
       {/* ======================================================== */}

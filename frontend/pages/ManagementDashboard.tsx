@@ -74,7 +74,6 @@ import {
   loadPhotosForStore,
   CctvSubmission,
   GeneratedPhoto,
-  generateCctvPhotoDataUrl,
 } from "@/services/cctvEvidenceStore";
 
 export function ManagementDashboard() {
@@ -1101,25 +1100,47 @@ export function ManagementDashboard() {
             </div>
 
             {/* Responsive 4-col wide / 2-col medium / 1-col mobile grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
-              {storePhotos.map((p, pIdx) => (
-                <div
-                  key={p.id}
-                  onClick={() => setDashboardPreviewPhoto(p)}
-                  className="rounded-2xl overflow-hidden border border-slate-700/60 bg-[#0B1528] group hover:border-cyan-500/50 hover:shadow-cyan-500/10 transition-all cursor-pointer flex flex-col justify-between"
+            {storePhotos.length === 0 ? (
+              <div className="p-8 text-center border-2 border-dashed border-slate-700/50 rounded-2xl space-y-2 bg-[#071126]/40">
+                <Camera className="h-8 w-8 text-slate-500 mx-auto" />
+                <div className="text-sm font-semibold text-slate-300">No frames extracted yet</div>
+                <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                  Upload a CCTV video to extract authentic evidence frames directly from your recording.
+                </p>
+                <Link
+                  to="/evidence"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-xs font-semibold text-white mt-2 transition-colors"
                 >
-                  {/* Thumbnail Frame (16:9 aspect ratio) */}
-                  <div className="relative aspect-video w-full bg-slate-900 overflow-hidden border-b border-slate-700/60">
-                    <img
-                      src={p.imageUrl}
-                      alt={`${p.id} - ${p.zone}`}
-                      loading="lazy"
-                      onError={(e) => {
-                        const fallback = generateCctvPhotoDataUrl(p.timestamp, p.zone, userOutlet, pIdx);
-                        (e.currentTarget as HTMLImageElement).src = fallback;
-                      }}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    />
+                  <span>Upload CCTV Video</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+                {storePhotos.map((p, pIdx) => (
+                  <div
+                    key={p.id}
+                    onClick={() => setDashboardPreviewPhoto(p)}
+                    className="rounded-2xl overflow-hidden border border-slate-700/60 bg-[#0B1528] group hover:border-cyan-500/50 hover:shadow-cyan-500/10 transition-all cursor-pointer flex flex-col justify-between"
+                  >
+                    {/* Thumbnail Frame (16:9 aspect ratio) */}
+                    <div className="relative aspect-video w-full bg-slate-900 overflow-hidden border-b border-slate-700/60 flex items-center justify-center">
+                      <img
+                        src={p.dataUrl || p.imageUrl}
+                        alt={`${p.id} - ${p.zone}`}
+                        loading="lazy"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        onError={(e) => {
+                          e.currentTarget.style.display = "none";
+                          const parent = e.currentTarget.parentElement;
+                          if (parent && !parent.querySelector(".img-error-fallback")) {
+                            const errDiv = document.createElement("div");
+                            errDiv.className = "img-error-fallback text-center p-3 text-xs text-rose-400 font-mono";
+                            errDiv.innerText = "Frame unavailable — extraction or image loading failed.";
+                            parent.appendChild(errDiv);
+                          }
+                        }}
+                      />
                     {/* Top Left Photo Tag */}
                     <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
                       <span className="px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-mono font-bold text-white border border-white/15 shadow-sm">
@@ -1199,6 +1220,7 @@ export function ManagementDashboard() {
                 </div>
               ))}
             </div>
+            )}
           </div>
 
           {/* Lightbox Modal for Dashboard Photo Preview */}
@@ -1243,13 +1265,19 @@ export function ManagementDashboard() {
                 </div>
 
                 {/* Modal 16:9 Image Frame */}
-                <div className="rounded-2xl overflow-hidden border border-slate-700 bg-black aspect-video w-full shadow-inner">
+                <div className="rounded-2xl overflow-hidden border border-slate-700 bg-black aspect-video w-full shadow-inner flex items-center justify-center">
                   <img
-                    src={dashboardPreviewPhoto.imageUrl}
+                    src={dashboardPreviewPhoto.dataUrl || dashboardPreviewPhoto.imageUrl}
                     alt={`${dashboardPreviewPhoto.id} - ${dashboardPreviewPhoto.zone}`}
                     onError={(e) => {
-                      const fallback = generateCctvPhotoDataUrl(dashboardPreviewPhoto.timestamp, dashboardPreviewPhoto.zone, userOutlet, 0);
-                      (e.currentTarget as HTMLImageElement).src = fallback;
+                      e.currentTarget.style.display = "none";
+                      const parent = e.currentTarget.parentElement;
+                      if (parent && !parent.querySelector(".modal-img-error")) {
+                        const errDiv = document.createElement("div");
+                        errDiv.className = "modal-img-error text-center p-6 text-sm text-rose-400 font-mono";
+                        errDiv.innerText = "Frame unavailable — extraction or image loading failed.";
+                        parent.appendChild(errDiv);
+                      }
                     }}
                     className="w-full h-full object-contain"
                   />

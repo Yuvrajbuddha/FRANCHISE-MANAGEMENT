@@ -110,12 +110,44 @@ export default function EvidencePage() {
   // Read-only Photo Viewer modal for Store / Owner
   const [previewPhoto, setPreviewPhoto] = useState<GeneratedPhoto | null>(null);
 
+  // Helper to reliably retrieve auth token
+  const getAuthToken = () => {
+    return (
+      localStorage.getItem("franchise_auth_token") ||
+      localStorage.getItem("token") ||
+      ""
+    );
+  };
+
   // Sync latest submission and photos when storeId changes
   useEffect(() => {
     const subs = loadCctvSubmissions();
     setSubmissions(subs);
     const storePhotos = loadPhotosForStore(storeId);
     setPhotos(storePhotos);
+
+    // Also synchronize from server storage
+    const fetchServerStoreEvidence = async () => {
+      try {
+        const token = getAuthToken();
+        const res = await fetch(`/api/cctv/submissions/${storeId}`, {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.success && data.latestCompletedJob?.frames?.length > 0) {
+            const serverFrames: GeneratedPhoto[] = data.latestCompletedJob.frames;
+            setPhotos(serverFrames);
+            savePhotosForStore(storeId, serverFrames);
+          }
+        }
+      } catch (err) {
+        console.warn("Notice: server store evidence query skipped:", err);
+      }
+    };
+    fetchServerStoreEvidence();
   }, [storeId]);
 
   // Resume or monitor active background job if page was refreshed
@@ -128,7 +160,7 @@ export default function EvidencePage() {
 
     const pollInterval = setInterval(async () => {
       try {
-        const token = localStorage.getItem("token") || "";
+        const token = getAuthToken();
         const res = await fetch(`/api/cctv/jobs/${activeJobId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -254,13 +286,14 @@ export default function EvidencePage() {
     setIsProcessing(true);
     setSubmissionSuccess(false);
     setErrorMessage(null);
+    setPhotos([]); // Clear previous photos immediately so new upload doesn't mix with older footage
     setSubmissionStatus("UPLOADING");
     setUploadProgress(15);
     setProcessingStep("Uploading video to secure evidence vault...");
 
     const cctvId = `CCTV-${storeId}-${Date.now().toString().slice(-6)}`;
     const originalName = selectedFile.name;
-    const token = localStorage.getItem("token") || "";
+    const token = getAuthToken();
 
     try {
       // 1. Attempt Server-side Upload & FFmpeg Extraction with Background Job
@@ -958,13 +991,25 @@ export default function EvidencePage() {
         {/* Photos Grid */}
         {photos.length === 0 ? (
           <div className="p-12 text-center border-2 border-dashed border-slate-700/50 rounded-2xl space-y-3">
-            <Camera className="h-10 w-10 text-slate-500 mx-auto" />
-            <div className="text-sm font-semibold text-slate-300">No CCTV Photos Extracted Yet</div>
-            <p className="text-xs text-slate-400 max-w-md mx-auto">
-              {isStoreRole
-                ? "Select and upload a CCTV recording above. Frames will be extracted automatically from your video."
-                : "The store operator has not yet submitted CCTV surveillance footage for this date."}
-            </p>
+            {isProcessing ? (
+              <>
+                <Loader2 className="h-10 w-10 text-cyan-400 mx-auto animate-spin" />
+                <div className="text-sm font-semibold text-white">Extracting frames from the uploaded CCTV video...</div>
+                <p className="text-xs text-slate-300 max-w-md mx-auto">
+                  Automatic frame extraction pipeline is currently decoding authentic frames from your video recording.
+                </p>
+              </>
+            ) : (
+              <>
+                <Camera className="h-10 w-10 text-slate-500 mx-auto" />
+                <div className="text-sm font-semibold text-slate-300">No frames extracted yet.</div>
+                <p className="text-xs text-slate-400 max-w-md mx-auto">
+                  {isStoreRole
+                    ? "Select and upload a CCTV recording above. Frames will be extracted automatically from your video."
+                    : "The store operator has not yet submitted CCTV surveillance footage for this date."}
+                </p>
+              </>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
@@ -975,12 +1020,22 @@ export default function EvidencePage() {
                 className="group rounded-2xl border border-slate-700/60 bg-[#0B1528] overflow-hidden shadow-lg hover:border-cyan-500/50 hover:shadow-cyan-500/10 transition-all duration-200 cursor-pointer flex flex-col justify-between"
               >
                 {/* Photo Image Preview (16:9 Aspect Ratio) */}
-                <div className="relative aspect-video w-full bg-slate-900 overflow-hidden border-b border-slate-700/60">
+                <div className="relative aspect-video w-full bg-slate-900 overflow-hidden border-b border-slate-700/60 flex items-center justify-center">
                   <img
                     src={photo.dataUrl || photo.imageUrl}
                     alt={`${photo.id} - ${photo.zone}`}
                     loading="lazy"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                      const parent = e.currentTarget.parentElement;
+                      if (parent && !parent.querySelector(".img-fail-msg")) {
+                        const failDiv = document.createElement("div");
+                        failDiv.className = "img-fail-msg flex items-center justify-center p-3 text-center text-xs text-rose-400 font-mono h-full w-full bg-slate-950";
+                        failDiv.innerText = "Frame unavailable — extraction or image loading failed.";
+                        parent.appendChild(failDiv);
+                      }
+                    }}
                   />
 
                   {/* Floating Top Left Badge: Photo ID & Cam Tag */}
@@ -1094,11 +1149,21 @@ export default function EvidencePage() {
             </div>
 
             {/* Modal 16:9 Image Frame */}
-            <div className="rounded-2xl overflow-hidden border border-slate-700 bg-black aspect-video w-full shadow-inner">
+            <div className="rounded-2xl overflow-hidden border border-slate-700 bg-black aspect-video w-full shadow-inner flex items-center justify-center">
               <img
                 src={previewPhoto.dataUrl || previewPhoto.imageUrl}
                 alt={`${previewPhoto.id} - ${previewPhoto.zone}`}
                 className="w-full h-full object-contain"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                  const parent = e.currentTarget.parentElement;
+                  if (parent && !parent.querySelector(".modal-img-error")) {
+                    const errNotice = document.createElement("div");
+                    errNotice.className = "modal-img-error flex items-center justify-center p-6 text-center text-sm text-rose-400 font-mono h-full w-full bg-slate-950";
+                    errNotice.innerText = "Frame unavailable — extraction or image loading failed.";
+                    parent.appendChild(errNotice);
+                  }
+                }}
               />
             </div>
 

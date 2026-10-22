@@ -401,6 +401,21 @@ router.post(
 );
 
 /**
+ * GET /api/cctv/frames/:filename
+ * Serves extracted authentic CCTV video frames directly from storage.
+ */
+router.get("/cctv/frames/:filename", (req: Request, res: Response) => {
+  const filename = path.basename(String(req.params.filename));
+  const filePath = path.join(CCTV_FRAMES_DIR, filename);
+  if (fs.existsSync(filePath)) {
+    res.setHeader("Content-Type", "image/jpeg");
+    res.setHeader("Cache-Control", "public, max-age=86400");
+    return res.sendFile(filePath);
+  }
+  return res.status(404).json({ error: "Frame image not found on server." });
+});
+
+/**
  * GET /api/cctv/health
  * Reports the status of the CCTV video processing subsystem.
  */

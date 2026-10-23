@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import {
   Boxes,
@@ -341,6 +342,24 @@ export default function InventoryPage() {
             </Button>
           )}
         </div>
+      </div>
+
+      {/* Navigation Sub-Tabs: Stock Levels vs Reconciliation Audits */}
+      <div className="flex items-center gap-3 border-b border-slate-200/80 pb-2">
+        <Link
+          to="/inventory"
+          className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors flex items-center gap-1.5"
+        >
+          <Boxes className="h-3.5 w-3.5" />
+          <span>On-Hand Physical Stock</span>
+        </Link>
+        <Link
+          to="/inventory/reconciliation"
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center gap-1.5"
+        >
+          <Scale className="h-3.5 w-3.5" />
+          <span>Reconciliation & Anomaly Audits</span>
+        </Link>
       </div>
 
       {/* Mandatory Human Review Ethics Policy Ribbon */}

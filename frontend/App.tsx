@@ -11,6 +11,7 @@ import OutletsPage from "@/pages/OutletsPage";
 import OutletDetailPage from "@/pages/OutletDetailPage";
 import SalesPage from "@/pages/SalesPage";
 import InventoryStockPage from "@/pages/InventoryStockPage";
+import InventoryPage from "@/pages/InventoryPage";
 import CompanySupplyPage from "@/pages/CompanySupplyPage";
 import CompliancePage from "@/pages/CompliancePage";
 import ComplianceDetailPage from "@/pages/ComplianceDetailPage";
@@ -79,6 +80,22 @@ export default function App() {
             element={
               <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
                 <InventoryStockPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inventory/reconciliation"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+                <InventoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/inventory/reconciliations"
+            element={
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+                <InventoryPage />
               </ProtectedRoute>
             }
           />

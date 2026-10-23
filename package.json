@@ -11,7 +11,8 @@
     "postinstall": "prisma generate || true",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "lint": "tsc --noEmit",
+    "test:cctv": "tsx scripts/test-cctv-pipeline.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",

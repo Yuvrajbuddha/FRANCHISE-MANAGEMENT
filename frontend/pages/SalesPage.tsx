@@ -45,6 +45,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { NetworkTrajectoryGraph } from "@/components/NetworkTrajectoryGraph";
 
 // Client-side Zod Schema matching server rules
 const SaleFormSchema = z.object({
@@ -147,7 +148,7 @@ export default function SalesPage() {
 
   // Active Chart View Tab
   const [activeChartTab, setActiveChartTab] = useState<
-    "daily" | "weekly" | "monthly" | "trend" | "products" | "outlets"
+    "daily" | "weekly" | "monthly" | "trend" | "products" | "outlets" | "trajectory"
   >("daily");
 
   const isFranchise = user?.role === "FRANCHISE";
@@ -618,16 +619,28 @@ export default function SalesPage() {
                 Product-Wise
               </button>
               {!isFranchise && (
-                <button
-                  onClick={() => setActiveChartTab("outlets")}
-                  className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                    activeChartTab === "outlets"
-                      ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-900 dark:text-indigo-400"
-                      : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
-                  }`}
-                >
-                  Outlet Comparison
-                </button>
+                <>
+                  <button
+                    onClick={() => setActiveChartTab("outlets")}
+                    className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                      activeChartTab === "outlets"
+                        ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-900 dark:text-indigo-400"
+                        : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                    }`}
+                  >
+                    Outlet Comparison
+                  </button>
+                  <button
+                    onClick={() => setActiveChartTab("trajectory")}
+                    className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                      activeChartTab === "trajectory"
+                        ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-900 dark:text-indigo-400"
+                        : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                    }`}
+                  >
+                    Network Trajectory
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -749,6 +762,13 @@ export default function SalesPage() {
                   <Bar dataKey="revenue" fill="#6366f1" radius={[4, 4, 0, 0]} name="Outlet Revenue" />
                 </BarChart>
               </ResponsiveContainer>
+            )}
+
+            {/* 7. Network Trajectory Graph */}
+            {activeChartTab === "trajectory" && !isFranchise && (
+              <div className="h-full w-full overflow-y-auto">
+                <NetworkTrajectoryGraph />
+              </div>
             )}
           </div>
         </CardContent>

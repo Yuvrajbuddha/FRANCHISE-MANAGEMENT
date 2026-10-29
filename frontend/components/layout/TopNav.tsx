@@ -22,7 +22,7 @@ export function TopNav({ onToggleSidebar }: TopNavProps) {
 
   const getBreadcrumbTitle = () => {
     const path = location.pathname;
-    if (path === "/") return "Executive Overview";
+    if (path === "/") return "System Overview";
     if (path.startsWith("/outlets/")) return "Outlet Dossier";
     if (path === "/outlets") return "Stores Directory";
     if (path === "/compliance") return "Officer Dashboard";

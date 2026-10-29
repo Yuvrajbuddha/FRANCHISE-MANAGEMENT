@@ -17,7 +17,6 @@ import {
   Lock,
   Layers,
   Store,
-  Building2,
   Clock,
   Sparkles,
   Search,
@@ -36,7 +35,7 @@ export default function LoginPage() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
-  const [activeModalRole, setActiveModalRole] = useState<"ADMIN" | "OFFICER" | "OWNER" | "FRANCHISE">("OFFICER");
+  const [activeModalRole, setActiveModalRole] = useState<"OFFICER" | "OWNER" | "FRANCHISE">("OFFICER");
 
   // Credentials form state
   const [emailInput, setEmailInput] = useState("officer@franchiseops.com");
@@ -60,6 +59,9 @@ export default function LoginPage() {
     const res = await login(targetDemo.email, targetDemo.passwordHash);
     setIsLoadingRole(null);
     if (res.success) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
       navigate(targetRoute || (roleKey === "FRANCHISE" ? "/evidence" : "/"));
     } else {
       setErrorMessage(res.error || "Authentication failed. Please retry.");
@@ -73,6 +75,9 @@ export default function LoginPage() {
     const res = await login(emailInput, passwordInput);
     setIsSubmittingCredentials(false);
     if (res.success) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
       setAuthModalOpen(false);
       navigate("/");
     } else {
@@ -80,7 +85,7 @@ export default function LoginPage() {
     }
   };
 
-  const openAuthWithRole = (role: "ADMIN" | "OFFICER" | "OWNER" | "FRANCHISE") => {
+  const openAuthWithRole = (role: "OFFICER" | "OWNER" | "FRANCHISE") => {
     setActiveModalRole(role);
     const matched = DEMO_USERS.find((u) => u.role === role);
     if (matched) {
@@ -557,34 +562,8 @@ export default function LoginPage() {
             </div>
           )}
 
-          {/* 4 Role Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {/* 1. Admin Executive */}
-            <div className="p-6 rounded-2xl bg-[#FAF7F0] border border-[#DDE5DC] hover:border-[#073B2A] transition-all flex flex-col justify-between space-y-5 shadow-2xs group">
-              <div className="space-y-3">
-                <div className="h-10 w-10 rounded-xl bg-[#073B2A] text-white flex items-center justify-center font-bold">
-                  <Building2 className="h-5 w-5" />
-                </div>
-                <div>
-                  <h3 className="font-serif text-lg font-bold text-[#073B2A]">
-                    Admin Executive
-                  </h3>
-                  <span className="text-[10px] font-mono text-[#738078] uppercase">Full Network Governance</span>
-                </div>
-                <p className="text-xs text-[#738078] leading-relaxed">
-                  Network-wide monitoring across all 10 outlets, system risk engines, and financial reconciliation.
-                </p>
-              </div>
-
-              <button
-                onClick={() => handleQuickLogin("ADMIN")}
-                disabled={isLoadingRole !== null}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] transition-all cursor-pointer flex items-center justify-center gap-1.5"
-              >
-                <span>{isLoadingRole === "ADMIN" ? "Signing In..." : "Open Executive Portal"}</span>
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
+          {/* 3 Role Workspaces */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
             {/* 2. Compliance Officer */}
             <div className="p-6 rounded-2xl bg-[#FAF7F0] border-2 border-[#13845B]/40 hover:border-[#13845B] transition-all flex flex-col justify-between space-y-5 shadow-xs group">
@@ -718,8 +697,8 @@ export default function LoginPage() {
               <span className="text-[10px] font-mono uppercase text-[#738078] font-semibold block">
                 Quick Preset:
               </span>
-              <div className="grid grid-cols-4 gap-1.5">
-                {(["OFFICER", "ADMIN", "OWNER", "FRANCHISE"] as const).map((r) => (
+              <div className="grid grid-cols-3 gap-1.5">
+                {(["OFFICER", "OWNER", "FRANCHISE"] as const).map((r) => (
                   <button
                     key={r}
                     type="button"

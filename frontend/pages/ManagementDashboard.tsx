@@ -119,6 +119,19 @@ export function ManagementDashboard() {
   const [alertModalItem, setAlertModalItem] = useState<any>(null);
   const [dashboardPreviewPhoto, setDashboardPreviewPhoto] = useState<GeneratedPhoto | null>(null);
 
+  // Ensure the dashboard always loads at the very top (scroll position 0) on mount / login
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+    if (document.documentElement) document.documentElement.scrollTop = 0;
+    if (document.body) document.body.scrollTop = 0;
+    const frameId = requestAnimationFrame(() => {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      if (document.documentElement) document.documentElement.scrollTop = 0;
+      if (document.body) document.body.scrollTop = 0;
+    });
+    return () => cancelAnimationFrame(frameId);
+  }, [role]);
+
   // Keyboard Escape listener for lightbox preview modal
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {

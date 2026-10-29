@@ -136,7 +136,7 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
           allowedRoles: ["ADMIN", "OFFICER", "FRANCHISE", "OWNER"],
         },
         {
-          title: "Executive Reports",
+          title: "Audit & Compliance Reports",
           href: "/reports",
           icon: FileBarChart,
           allowedRoles: ["ADMIN", "OFFICER", "OWNER"],

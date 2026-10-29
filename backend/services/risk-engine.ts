@@ -357,7 +357,10 @@ Write a 2 to 3 sentence objective explanation of why this outlet received its Ri
 Highlight the primary contributing factors.
 IMPORTANT ETHICAL RULE: Do NOT allege fraud or declare intentional misconduct. Frame everything as operational variance requiring supervisory verification.`;
 
-      const response = await aiClient.models.generateContent({
+      const timeoutPromise = new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error("AI explanation timeout")), 2000)
+      );
+      const aiPromise = aiClient.models.generateContent({
         model: "gemini-3.8-flash",
         config: {
           systemInstruction: "You are an explainable enterprise risk intelligence advisor. Explain numerical scores transparently without alarmism.",
@@ -366,6 +369,7 @@ IMPORTANT ETHICAL RULE: Do NOT allege fraud or declare intentional misconduct. F
         contents: prompt,
       });
 
+      const response = await Promise.race([aiPromise, timeoutPromise]);
       explanation = response.text?.trim() || "";
       if (explanation) {
         explanationCache.set(cacheKey, explanation);
@@ -476,10 +480,6 @@ IMPORTANT ETHICAL RULE: Do NOT allege fraud or declare intentional misconduct. F
  * Evaluates multiple outlets for network comparisons
  */
 export async function evaluateNetworkRisk(outletIds: string[]): Promise<RiskAssessmentResult[]> {
-  const results: RiskAssessmentResult[] = [];
-  for (const id of outletIds) {
-    const res = await calculateOutletRisk(id);
-    results.push(res);
-  }
+  const results = await Promise.all(outletIds.map((id) => calculateOutletRisk(id)));
   return results;
 }

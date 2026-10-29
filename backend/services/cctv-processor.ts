@@ -49,6 +49,9 @@ export interface CctvJob {
   error?: string;
   createdAt: string;
   completedAt?: string;
+  officerDecision?: string;
+  officerNotes?: string;
+  finalRating?: number;
 }
 
 const DEFAULT_ZONES = [

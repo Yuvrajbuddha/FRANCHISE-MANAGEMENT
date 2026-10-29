@@ -22,10 +22,12 @@ import AlertsPage from "@/pages/AlertsPage";
 import ComplaintsPage from "@/pages/ComplaintsPage";
 import CorrectiveActionsPage from "@/pages/CorrectiveActionsPage";
 import ReportsPage from "@/pages/ReportsPage";
+import ScrollToTop from "@/components/layout/ScrollToTop";
 
 export default function App() {
   return (
     <AuthProvider>
+      <ScrollToTop />
       <Routes>
         {/* Public Login Routes */}
         <Route path="/login" element={<LoginPage />} />

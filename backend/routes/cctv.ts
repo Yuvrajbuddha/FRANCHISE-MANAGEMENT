@@ -11,7 +11,14 @@ import {
   CctvJob,
 } from "../services/cctv-processor";
 import { db } from "../../database/connection";
-import { cctvEvidenceVerifications, outletEvidence } from "../../database/schema";
+import {
+  cctvEvidenceVerifications,
+  outletEvidence,
+  outlets,
+  complianceInspections,
+  complianceHistory,
+} from "../../database/schema";
+import { eq } from "drizzle-orm";
 import { requireAuth, AuthenticatedRequest } from "../middleware/auth";
 
 const router = Router();
@@ -429,5 +436,117 @@ router.get("/cctv/health", (_req: Request, res: Response) => {
     totalJobsRecorded: CctvJobQueue.getAllJobs().length,
   });
 });
+
+/**
+ * POST /api/cctv/review-submission
+ * Allows an authorized compliance officer to submit final review score (1-10),
+ * observation comments, and photo decisions for a store's CCTV submission.
+ * Persists the review in PostgreSQL (cctvEvidenceVerifications, complianceInspections, outlets).
+ */
+router.post(
+  "/cctv/review-submission",
+  requireAuth,
+  async (req: AuthenticatedRequest, res: Response) => {
+    const user = req.user!;
+    const {
+      storeId,
+      cctvId,
+      rating,
+      comment,
+      photoReviews,
+    } = req.body;
+
+    if (!storeId || rating === undefined) {
+      return res.status(400).json({ success: false, error: "storeId and rating (1-10) are required." });
+    }
+
+    const numRating = Math.max(1, Math.min(10, Number(rating) || 8));
+    const nowStr = new Date().toISOString().replace("T", " ").substring(0, 16);
+    const todayDate = new Date().toISOString().split("T")[0];
+    const reviewerName = user.name || "Compliance Officer";
+    const decision = numRating >= 7 ? "CONFIRMED" : numRating >= 5 ? "MODIFIED" : "REJECTED";
+    const severity = numRating >= 8 ? "LOW" : numRating >= 6 ? "MEDIUM" : "HIGH";
+
+    try {
+      // 1. Insert into cctvEvidenceVerifications
+      const verificationId = `VER-${Date.now().toString().slice(-6)}`;
+      const inspectionId = `INS-CCTV-${Date.now().toString().slice(-5)}`;
+
+      await db.insert(cctvEvidenceVerifications).values({
+        verificationId,
+        outletId: storeId.toUpperCase(),
+        videoName: cctvId || "CCTV Surveillance",
+        videoDurationSeconds: "60",
+        cameraLabel: "CCTV Store Review",
+        totalFramesExtracted: Array.isArray(photoReviews) ? photoReviews.length : 5,
+        timestampsJson: JSON.stringify([]),
+        framesJson: JSON.stringify(photoReviews || []),
+        aiObservationsJson: JSON.stringify([]),
+        officerDecision: decision,
+        officerNotes: `[Score: ${numRating}/10] ${comment || "Certified by Compliance Officer."}`,
+        complianceCategory: "Store CCTV Surveillance",
+        complianceSeverity: severity,
+        verifiedBy: `${reviewerName} (${user.email})`,
+        verifiedAt: nowStr,
+        inspectionId,
+      });
+
+      // 2. Insert into complianceInspections
+      await db.insert(complianceInspections).values({
+        inspectionId,
+        outletId: storeId.toUpperCase(),
+        title: `CCTV Certified Audit — ${storeId.toUpperCase()}`,
+        category: "CCTV Surveillance",
+        severity,
+        status: "VERIFIED",
+        observation: comment || `Officer reviewed CCTV frames and certified store operations with rating ${numRating}/10.`,
+        evidenceDescription: `Authentic CCTV frames audited and scored by ${reviewerName}.`,
+        evidenceAttachment: `cctv_verification_${verificationId}.jpg`,
+        evidenceType: "CCTV Evidence Review",
+        assignedReviewer: `${reviewerName} (${user.role})`,
+        assignedReviewerEmail: user.email,
+        inspectorName: `${reviewerName} (${user.email})`,
+        inspectionDate: todayDate,
+        resolutionNotes: `Certified Rating: ${numRating}/10. Reviewer Notes: ${comment || "Compliance standard verified."}`,
+        resolvedAt: nowStr,
+      });
+
+      // 3. Update outlet compliance score in database
+      const scoreInt = Math.round(numRating * 10);
+      const scorePct = `${scoreInt}%`;
+      await db
+        .update(outlets)
+        .set({ complianceScore: scoreInt })
+        .where(eq(outlets.outletId, storeId.toUpperCase()));
+
+      // 4. Update memory job queue if job exists
+      const latestJob = CctvJobQueue.getLatestCompletedJobForStore(storeId.toUpperCase());
+      if (latestJob) {
+        CctvJobQueue.updateJob(latestJob.jobId, {
+          officerDecision: decision,
+          officerNotes: comment,
+          status: "COMPLETED",
+        });
+      }
+
+      return res.status(200).json({
+        success: true,
+        message: `CCTV Audit successfully certified with rating ${numRating}/10.`,
+        verificationId,
+        inspectionId,
+        complianceScore: scorePct,
+        verifiedAt: nowStr,
+        officerName: reviewerName,
+      });
+    } catch (err: any) {
+      console.error("Error saving CCTV review submission:", err);
+      return res.status(500).json({
+        success: false,
+        error: "Failed to persist CCTV review to database.",
+        details: err.message,
+      });
+    }
+  }
+);
 
 export default router;

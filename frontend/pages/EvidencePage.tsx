@@ -892,6 +892,15 @@ export default function EvidencePage() {
                   ? "✓ Verified by Officer"
                   : "⏳ Pending Officer Review"}
               </Badge>
+              {(user?.role === "OFFICER" || user?.role === "ADMIN") && (
+                <Link
+                  to={`/compliance/review/${storeId}`}
+                  className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-lg bg-[#073B2A] text-[#72D6A0] hover:bg-[#05291F] transition-all"
+                >
+                  <ShieldCheck className="h-3.5 w-3.5" />
+                  <span>Review & Certify →</span>
+                </Link>
+              )}
             </div>
           </div>
 

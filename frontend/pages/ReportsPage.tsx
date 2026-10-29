@@ -246,17 +246,17 @@ export default function ReportsPage() {
   const getTypeIcon = (type: string) => {
     switch (type) {
       case "Audit Dossier":
-        return <Award className="h-4 w-4 text-emerald-500" />;
+        return <Award className="h-4 w-4 text-[#059669]" />;
       case "Compliance Inspection":
-        return <ShieldCheck className="h-4 w-4 text-blue-500" />;
+        return <ShieldCheck className="h-4 w-4 text-[#059669]" />;
       case "Financial & Royalty":
-        return <DollarSign className="h-4 w-4 text-indigo-500" />;
+        return <DollarSign className="h-4 w-4 text-[#059669]" />;
       case "Stock & Supply Variance":
-        return <Boxes className="h-4 w-4 text-amber-500" />;
+        return <Boxes className="h-4 w-4 text-[#059669]" />;
       case "CAPA & Risk Intelligence":
-        return <Flame className="h-4 w-4 text-rose-500" />;
+        return <Flame className="h-4 w-4 text-[#059669]" />;
       default:
-        return <FileText className="h-4 w-4 text-slate-400" />;
+        return <FileText className="h-4 w-4 text-[#059669]" />;
     }
   };
 
@@ -264,37 +264,37 @@ export default function ReportsPage() {
     switch (type) {
       case "Audit Dossier":
         return (
-          <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30 text-[10px] font-bold">
+          <Badge className="bg-[#ECFDF5] text-[#064E3B] border-[#A7F3D0] text-[10px] font-bold">
             Audit Dossier
           </Badge>
         );
       case "Compliance Inspection":
         return (
-          <Badge className="bg-blue-500/15 text-blue-700 dark:text-blue-400 border-blue-500/30 text-[10px] font-bold">
+          <Badge className="bg-[#F0FDF4] text-[#047857] border-[#D1FAE5] text-[10px] font-bold">
             Compliance Inspection
           </Badge>
         );
       case "Financial & Royalty":
         return (
-          <Badge className="bg-indigo-500/15 text-indigo-700 dark:text-indigo-400 border-indigo-500/30 text-[10px] font-bold">
+          <Badge className="bg-[#E6F4EA] text-[#064E3B] border-[#B7E1CD] text-[10px] font-bold">
             Financial & Royalty
           </Badge>
         );
       case "Stock & Supply Variance":
         return (
-          <Badge className="bg-amber-500/15 text-amber-800 dark:text-amber-300 border-amber-500/30 text-[10px] font-bold">
+          <Badge className="bg-[#F0FDF4] text-[#065F46] border-[#D1FAE5] text-[10px] font-bold">
             Stock & Supply
           </Badge>
         );
       case "CAPA & Risk Intelligence":
         return (
-          <Badge className="bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30 text-[10px] font-bold">
+          <Badge className="bg-[#FEF2F2] text-[#991B1B] border-[#FECACA] text-[10px] font-bold">
             CAPA & Risk
           </Badge>
         );
       default:
         return (
-          <Badge variant="outline" className="text-[10px]">
+          <Badge variant="outline" className="text-[10px] border-[#D1FAE5] text-[#064E3B] bg-white">
             {type}
           </Badge>
         );
@@ -305,27 +305,27 @@ export default function ReportsPage() {
     searchTerm.trim() !== "" || selectedType !== "All Types" || selectedOutlet !== "All Outlets";
 
   return (
-    <div className="space-y-6">
+    <div className="-m-4 sm:-m-6 lg:-m-8 p-4 sm:p-6 lg:p-8 min-h-[calc(100vh-4rem)] bg-[#F0FDF4] space-y-6">
       {/* Toast Notification */}
       {successToast && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl bg-slate-900 border border-slate-700 text-white px-4 py-3 shadow-xl text-xs animate-in fade-in slide-in-from-bottom-2">
-          <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl bg-[#064E3B] border border-[#0D4E39] text-white px-4 py-3 shadow-xl text-xs animate-in fade-in slide-in-from-bottom-2">
+          <CheckCircle2 className="h-4 w-4 text-[#72D6A0]" />
           <span>{successToast}</span>
         </div>
       )}
 
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#D1FAE5]">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/50 dark:border-blue-800">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-white text-[#059669] border border-[#D1FAE5] shadow-xs">
               <FileBarChart className="h-5 w-5" />
             </div>
-            <h1 className="font-serif text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-              Executive & Audit Reports Registry
+            <h1 className="font-serif text-2xl font-bold tracking-tight text-[#064E3B]">
+              Audit & Compliance Reports Registry
             </h1>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-xs text-[#64748B] mt-1">
             Certified walkthrough inspections, quarterly royalty reconciliation ledgers, and cold-chain compliance dossiers.
           </p>
         </div>
@@ -336,7 +336,7 @@ export default function ReportsPage() {
             size="sm"
             onClick={fetchReports}
             disabled={loading}
-            className="text-xs gap-1.5 cursor-pointer"
+            className="bg-white border-[#D1FAE5] text-[#064E3B] hover:bg-[#F0FDF4] hover:border-[#059669] text-xs gap-1.5 transition-colors cursor-pointer"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
             <span>Refresh</span>
@@ -345,7 +345,7 @@ export default function ReportsPage() {
           <Button
             size="sm"
             onClick={() => setGenerateModalOpen(true)}
-            className="bg-blue-600 hover:bg-blue-500 text-white text-xs gap-1.5 shadow-xs cursor-pointer"
+            className="bg-[#059669] hover:bg-[#047857] text-white text-xs gap-1.5 shadow-xs transition-colors cursor-pointer"
           >
             <Plus className="h-3.5 w-3.5" />
             <span>Generate Report</span>
@@ -355,63 +355,63 @@ export default function ReportsPage() {
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="rounded-2xl border border-[#D1FAE5] bg-white p-4 shadow-xs hover:border-[#A7F3D0] transition-colors">
+          <div className="flex items-center justify-between text-xs text-[#64748B]">
             <span>Total Reports</span>
-            <FileBarChart className="h-4 w-4 text-slate-400" />
+            <FileBarChart className="h-4 w-4 text-[#059669]" />
           </div>
-          <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
+          <div className="mt-2 text-2xl font-bold text-[#064E3B]">
             {summary.total}
           </div>
-          <p className="text-[11px] text-slate-500 mt-0.5">Executed audit records</p>
+          <p className="text-[11px] text-[#64748B] mt-0.5">Executed audit records</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="rounded-2xl border border-[#D1FAE5] bg-white p-4 shadow-xs hover:border-[#A7F3D0] transition-colors">
+          <div className="flex items-center justify-between text-xs text-[#64748B]">
             <span>Audit Walkthroughs</span>
-            <Award className="h-4 w-4 text-emerald-500" />
+            <Award className="h-4 w-4 text-[#059669]" />
           </div>
-          <div className="mt-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+          <div className="mt-2 text-2xl font-bold text-[#064E3B]">
             {summary.auditDossiers}
           </div>
-          <p className="text-[11px] text-emerald-600/80 mt-0.5">Certified store grades</p>
+          <p className="text-[11px] text-[#059669] font-medium mt-0.5">Certified store grades</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="rounded-2xl border border-[#D1FAE5] bg-white p-4 shadow-xs hover:border-[#A7F3D0] transition-colors">
+          <div className="flex items-center justify-between text-xs text-[#64748B]">
             <span>Quality Inspections</span>
-            <ShieldCheck className="h-4 w-4 text-blue-500" />
+            <ShieldCheck className="h-4 w-4 text-[#059669]" />
           </div>
-          <div className="mt-2 text-2xl font-bold text-blue-600 dark:text-blue-400">
+          <div className="mt-2 text-2xl font-bold text-[#064E3B]">
             {summary.inspections}
           </div>
-          <p className="text-[11px] text-blue-600/80 mt-0.5">Safety & observation logs</p>
+          <p className="text-[11px] text-[#059669] font-medium mt-0.5">Safety & observation logs</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="rounded-2xl border border-[#D1FAE5] bg-white p-4 shadow-xs hover:border-[#A7F3D0] transition-colors">
+          <div className="flex items-center justify-between text-xs text-[#64748B]">
             <span>Financial & Stock Ledgers</span>
-            <DollarSign className="h-4 w-4 text-indigo-500" />
+            <DollarSign className="h-4 w-4 text-[#059669]" />
           </div>
-          <div className="mt-2 text-2xl font-bold text-indigo-600 dark:text-indigo-400">
+          <div className="mt-2 text-2xl font-bold text-[#064E3B]">
             {summary.financial + summary.stockAndRisk}
           </div>
-          <p className="text-[11px] text-indigo-600/80 mt-0.5">Royalty & stock audits</p>
+          <p className="text-[11px] text-[#059669] font-medium mt-0.5">Royalty & stock audits</p>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
+      <div className="rounded-2xl border border-[#D1FAE5] bg-white p-4 shadow-xs space-y-3">
         <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
           {/* Search Form */}
           <form onSubmit={handleSearchSubmit} className="flex-1 relative">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#059669]" />
             <Input
               type="text"
               placeholder="Search reports by ID, title, auditor, or outlet..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 text-xs h-9 bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700"
+              className="pl-9 text-xs h-9 bg-white border-[#D1FAE5] text-[#1F2937] placeholder:text-[#64748B] focus-visible:ring-1 focus-visible:ring-[#059669] focus-visible:border-[#059669]"
             />
           </form>
 
@@ -421,7 +421,7 @@ export default function ReportsPage() {
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="h-9 px-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none"
+              className="h-9 px-2.5 text-xs rounded-xl border border-[#D1FAE5] bg-white text-[#1F2937] focus:outline-none focus:ring-1 focus:ring-[#059669] focus:border-[#059669] cursor-pointer"
             >
               {REPORT_TYPES.map((t) => (
                 <option key={t} value={t}>
@@ -434,7 +434,7 @@ export default function ReportsPage() {
             <select
               value={selectedOutlet}
               onChange={(e) => setSelectedOutlet(e.target.value)}
-              className="h-9 px-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none"
+              className="h-9 px-2.5 text-xs rounded-xl border border-[#D1FAE5] bg-white text-[#1F2937] focus:outline-none focus:ring-1 focus:ring-[#059669] focus:border-[#059669] cursor-pointer"
             >
               <option value="All Outlets">All Outlets</option>
               {ALL_NETWORK_STORES.map((s) => (
@@ -449,7 +449,7 @@ export default function ReportsPage() {
                 variant="ghost"
                 size="sm"
                 onClick={clearFilters}
-                className="text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white h-9 px-2.5 cursor-pointer"
+                className="text-xs text-[#64748B] hover:text-[#064E3B] h-9 px-2.5 cursor-pointer"
               >
                 <X className="h-3.5 w-3.5 mr-1" />
                 Clear
@@ -461,44 +461,44 @@ export default function ReportsPage() {
 
       {/* Error Banner */}
       {error && (
-        <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-xs text-red-700 dark:bg-red-950/40 dark:border-red-900/60 dark:text-red-300 flex items-center gap-2">
-          <AlertTriangle className="h-4 w-4 shrink-0 text-red-600" />
-          <span>{error}</span>
+        <div className="rounded-xl bg-[#FEF2F2] border border-[#FECACA] p-4 text-xs text-[#991B1B] flex items-center gap-2.5 shadow-2xs">
+          <AlertTriangle className="h-4 w-4 shrink-0 text-[#DC2626]" />
+          <span className="font-medium">{error}</span>
         </div>
       )}
 
       {/* Reports Table Container */}
-      <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-        <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+      <div className="rounded-2xl border border-[#D1FAE5] bg-white overflow-hidden shadow-xs">
+        <div className="p-4 border-b border-[#D1FAE5] bg-[#F0FDF4]/50 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#064E3B]">
               Executed Audit & Compliance Ledgers
             </span>
-            <Badge variant="outline" className="text-[10px] font-mono">
+            <Badge variant="outline" className="text-[10px] font-mono border-[#D1FAE5] text-[#064E3B] bg-white">
               {reports.length} available
             </Badge>
           </div>
-          <span className="text-[11px] text-slate-400 hidden sm:inline">
+          <span className="text-[11px] text-[#64748B] hidden sm:inline">
             Export or inspect full certified dossiers
           </span>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-xs text-slate-500 space-y-2">
-            <RefreshCw className="h-5 w-5 animate-spin mx-auto text-blue-500" />
+          <div className="p-12 text-center text-xs text-[#64748B] space-y-2">
+            <RefreshCw className="h-5 w-5 animate-spin mx-auto text-[#059669]" />
             <p>Loading reports registry from database...</p>
           </div>
         ) : reports.length === 0 ? (
           /* Empty State */
           <div className="p-12 text-center space-y-3">
-            <div className="h-12 w-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+            <div className="h-12 w-12 rounded-2xl bg-[#F0FDF4] border border-[#D1FAE5] text-[#059669] flex items-center justify-center mx-auto">
               <FileBarChart className="h-6 w-6" />
             </div>
             <div className="space-y-1">
-              <h3 className="font-serif text-base font-bold text-slate-900 dark:text-white">
+              <h3 className="font-serif text-base font-bold text-[#064E3B]">
                 No Reports Available
               </h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              <p className="text-xs text-[#64748B] max-w-sm mx-auto">
                 {hasActiveFilters
                   ? "No executed reports match your active filter criteria. Try adjusting your search."
                   : "Zero reports are currently stored in this registry."}
@@ -506,14 +506,14 @@ export default function ReportsPage() {
             </div>
             <div className="pt-2 flex items-center justify-center gap-2">
               {hasActiveFilters ? (
-                <Button size="sm" variant="outline" onClick={clearFilters} className="text-xs">
+                <Button size="sm" variant="outline" onClick={clearFilters} className="bg-white border-[#D1FAE5] text-[#064E3B] hover:bg-[#F0FDF4] text-xs">
                   Reset Filter Settings
                 </Button>
               ) : (
                 <Button
                   size="sm"
                   onClick={() => setGenerateModalOpen(true)}
-                  className="bg-blue-600 hover:bg-blue-500 text-white text-xs gap-1.5"
+                  className="bg-[#059669] hover:bg-[#047857] text-white text-xs gap-1.5 shadow-xs transition-colors"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   <span>Generate First Report</span>
@@ -526,44 +526,44 @@ export default function ReportsPage() {
             {reports.map((r) => (
               <div
                 key={r.id}
-                className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                className="rounded-xl border border-[#D1FAE5] bg-white p-4 sm:p-5 shadow-2xs hover:border-[#A7F3D0] transition-all w-full max-w-full box-border min-w-0 space-y-3"
               >
                 {/* Header: Report ID, Title, Status & Score */}
-                <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-[#D1FAE5] pb-3">
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-950/40 px-2 py-0.5 rounded border border-blue-200 dark:border-blue-800">
+                      <span className="font-mono text-xs font-bold text-[#064E3B] bg-[#F0FDF4] px-2.5 py-0.5 rounded-lg border border-[#D1FAE5]">
                         {r.id}
                       </span>
                       {getTypeBadge(r.reportType)}
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/40">
-                        <CheckCircle2 className="h-3 w-3" />
+                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#F0FDF4] text-[#064E3B] border border-[#D1FAE5]">
+                        <CheckCircle2 className="h-3 w-3 text-[#059669]" />
                         {r.status}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 pt-1">
                       {getTypeIcon(r.reportType)}
-                      <h4 className="font-semibold text-slate-900 dark:text-white text-sm">
+                      <h4 className="font-semibold text-[#064E3B] text-sm">
                         {r.title}
                       </h4>
                     </div>
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block">Audit Score</span>
-                    <span className="font-extrabold font-mono text-base text-slate-900 dark:text-white">
+                    <span className="text-[10px] uppercase font-bold text-[#64748B] block">Audit Score</span>
+                    <span className="font-extrabold font-mono text-base text-[#064E3B]">
                       {r.score}%
                     </span>
                   </div>
                 </div>
 
                 {/* Vertical Label-Value rows */}
-                <div className="space-y-2 text-xs divide-y divide-slate-100 dark:divide-slate-800/60">
+                <div className="space-y-2 text-xs divide-y divide-[#E6F4EA]">
                   {/* Outlet Scope */}
                   <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
-                    <span className="text-slate-400 font-medium shrink-0">Store Outlet / Scope:</span>
-                    <span className="font-medium text-slate-800 dark:text-slate-200 sm:text-right">
+                    <span className="text-[#64748B] font-medium shrink-0">Store Outlet / Scope:</span>
+                    <span className="font-medium text-[#1F2937] sm:text-right">
                       {r.outletName || r.outletId}{" "}
-                      <span className="text-[11px] text-slate-400 font-mono">
+                      <span className="text-[11px] text-[#64748B] font-mono">
                         ({r.outletId !== "ALL" ? r.outletId : "Network Wide"} · {r.outletCity})
                       </span>
                     </span>
@@ -571,31 +571,31 @@ export default function ReportsPage() {
 
                   {/* Date */}
                   <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                    <span className="text-slate-400 font-medium shrink-0">Execution Date:</span>
-                    <div className="flex items-center gap-1.5 text-slate-600 dark:text-slate-300 sm:justify-end">
-                      <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                    <span className="text-[#64748B] font-medium shrink-0">Execution Date:</span>
+                    <div className="flex items-center gap-1.5 text-[#1F2937] sm:justify-end">
+                      <Calendar className="h-3.5 w-3.5 text-[#059669]" />
                       <span className="font-mono">{r.date}</span>
                     </div>
                   </div>
 
                   {/* Auditor */}
                   <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                    <span className="text-slate-400 font-medium shrink-0">Lead Auditor / Service:</span>
-                    <span className="font-medium text-slate-700 dark:text-slate-300 sm:text-right">
+                    <span className="text-[#64748B] font-medium shrink-0">Lead Auditor / Service:</span>
+                    <span className="font-medium text-[#1F2937] sm:text-right">
                       {r.author}
                     </span>
                   </div>
                 </div>
 
                 {/* Footer Actions */}
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-end gap-2">
+                <div className="pt-3 border-t border-[#D1FAE5] flex flex-wrap items-center justify-end gap-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setViewingReport(r)}
-                    className="h-8 px-3 text-xs gap-1.5 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white cursor-pointer"
+                    className="h-8 px-3 text-xs gap-1.5 bg-white border border-[#D1FAE5] text-[#064E3B] hover:bg-[#F0FDF4] hover:border-[#059669] transition-colors cursor-pointer"
                   >
-                    <Eye className="h-3.5 w-3.5" />
+                    <Eye className="h-3.5 w-3.5 text-[#059669]" />
                     <span>View Dossier</span>
                   </Button>
 
@@ -604,9 +604,9 @@ export default function ReportsPage() {
                     size="sm"
                     onClick={() => handleExportJson(r)}
                     title="Download Dossier JSON"
-                    className="h-8 px-3 text-xs gap-1.5 text-slate-700 hover:text-slate-900 dark:text-slate-300 cursor-pointer"
+                    className="h-8 px-3 text-xs gap-1.5 bg-white border border-[#D1FAE5] text-[#064E3B] hover:bg-[#F0FDF4] hover:border-[#059669] transition-colors cursor-pointer"
                   >
-                    <Download className="h-3.5 w-3.5" />
+                    <Download className="h-3.5 w-3.5 text-[#059669]" />
                     <span>Export JSON</span>
                   </Button>
                 </div>
@@ -619,54 +619,54 @@ export default function ReportsPage() {
       {/* VIEW REPORT DOSSIER MODAL */}
       {viewingReport && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
+          <div className="bg-white border border-[#D1FAE5] rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6 animate-in fade-in zoom-in-95 max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+            <div className="flex items-start justify-between border-b border-[#D1FAE5] pb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-sm font-bold text-blue-600 dark:text-blue-400">
+                  <span className="font-mono text-sm font-bold text-[#064E3B] bg-[#F0FDF4] px-2 py-0.5 rounded-lg border border-[#D1FAE5]">
                     {viewingReport.id}
                   </span>
                   {getTypeBadge(viewingReport.reportType)}
                 </div>
-                <h3 className="font-serif text-xl font-bold text-slate-900 dark:text-white">
+                <h3 className="font-serif text-xl font-bold text-[#064E3B]">
                   {viewingReport.title}
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-[#64748B]">
                   {viewingReport.outletName} · {viewingReport.date} · Certified by {viewingReport.author}
                 </p>
               </div>
               <button
                 onClick={() => setViewingReport(null)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg"
+                className="text-[#64748B] hover:text-[#064E3B] hover:bg-[#F0FDF4] p-1.5 rounded-xl cursor-pointer transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             {/* Key Metrics Grid */}
-            <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-xs">
+            <div className="grid grid-cols-3 gap-3 p-4 rounded-2xl bg-[#F0FDF4] border border-[#D1FAE5] text-xs">
               <div>
-                <span className="text-[10px] font-mono text-slate-400 uppercase block">
+                <span className="text-[10px] font-mono text-[#64748B] uppercase block">
                   Benchmark Score
                 </span>
-                <span className="text-lg font-bold text-slate-900 dark:text-white">
+                <span className="text-lg font-bold text-[#064E3B]">
                   {viewingReport.score}%
                 </span>
               </div>
               <div>
-                <span className="text-[10px] font-mono text-slate-400 uppercase block">
+                <span className="text-[10px] font-mono text-[#64748B] uppercase block">
                   Certification Status
                 </span>
-                <span className="text-xs font-semibold text-emerald-600 dark:text-emerald-400">
+                <span className="text-xs font-semibold text-[#059669]">
                   {viewingReport.status}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] font-mono text-slate-400 uppercase block">
+                <span className="text-[10px] font-mono text-[#64748B] uppercase block">
                   Lead Auditor
                 </span>
-                <span className="text-xs font-semibold text-slate-800 dark:text-slate-200 truncate block">
+                <span className="text-xs font-semibold text-[#1F2937] truncate block">
                   {viewingReport.author}
                 </span>
               </div>
@@ -678,10 +678,10 @@ export default function ReportsPage() {
                 {viewingReport.keyMetrics.map((km, idx) => (
                   <div
                     key={idx}
-                    className="px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs flex items-center gap-1.5"
+                    className="px-3 py-1.5 rounded-xl bg-white border border-[#D1FAE5] text-xs flex items-center gap-1.5 shadow-2xs"
                   >
-                    <span className="text-slate-400">{km.label}:</span>
-                    <span className="font-bold text-slate-800 dark:text-slate-200">{km.value}</span>
+                    <span className="text-[#64748B]">{km.label}:</span>
+                    <span className="font-bold text-[#064E3B]">{km.value}</span>
                   </div>
                 ))}
               </div>
@@ -689,10 +689,10 @@ export default function ReportsPage() {
 
             {/* Summary Block */}
             <div className="space-y-1.5">
-              <label className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                Executive Audit Summary
+              <label className="text-xs font-bold text-[#064E3B] uppercase tracking-wider">
+                Audit Summary Dossier
               </label>
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 text-xs text-slate-800 dark:text-slate-200 leading-relaxed">
+              <div className="p-4 rounded-2xl bg-[#F0FDF4]/70 border border-[#D1FAE5] text-xs text-[#1F2937] leading-relaxed">
                 {viewingReport.summary}
               </div>
             </div>
@@ -703,10 +703,10 @@ export default function ReportsPage() {
                 {viewingReport.sections.map((sec, idx) => (
                   <div
                     key={idx}
-                    className="p-3.5 rounded-xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800/20 text-xs space-y-1"
+                    className="p-3.5 rounded-xl border border-[#D1FAE5] bg-white text-xs space-y-1 shadow-2xs"
                   >
-                    <span className="font-bold text-slate-900 dark:text-white">{sec.title}</span>
-                    <p className="text-slate-600 dark:text-slate-400 leading-relaxed">
+                    <span className="font-bold text-[#064E3B]">{sec.title}</span>
+                    <p className="text-[#1F2937] leading-relaxed">
                       {sec.content}
                     </p>
                   </div>
@@ -715,14 +715,14 @@ export default function ReportsPage() {
             )}
 
             {/* Footer Actions */}
-            <div className="flex items-center justify-between pt-4 border-t border-slate-100 dark:border-slate-800">
+            <div className="flex items-center justify-between pt-4 border-t border-[#D1FAE5]">
               <Button
                 variant="outline"
                 size="sm"
                 onClick={() => handleExportJson(viewingReport)}
-                className="text-xs gap-1.5 cursor-pointer"
+                className="bg-white border-[#D1FAE5] text-[#064E3B] hover:bg-[#F0FDF4] hover:border-[#059669] text-xs gap-1.5 cursor-pointer transition-colors"
               >
-                <Download className="h-3.5 w-3.5" />
+                <Download className="h-3.5 w-3.5 text-[#059669]" />
                 <span>Download JSON Dossier</span>
               </Button>
 
@@ -731,15 +731,15 @@ export default function ReportsPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => window.print()}
-                  className="text-xs gap-1.5 cursor-pointer"
+                  className="bg-white border-[#D1FAE5] text-[#064E3B] hover:bg-[#F0FDF4] hover:border-[#059669] text-xs gap-1.5 cursor-pointer transition-colors"
                 >
-                  <Printer className="h-3.5 w-3.5" />
+                  <Printer className="h-3.5 w-3.5 text-[#059669]" />
                   <span>Print Dossier</span>
                 </Button>
                 <Button
                   size="sm"
                   onClick={() => setViewingReport(null)}
-                  className="bg-slate-900 hover:bg-slate-800 text-white text-xs cursor-pointer"
+                  className="bg-[#064E3B] hover:bg-[#047857] text-white text-xs cursor-pointer transition-colors"
                 >
                   Close
                 </Button>
@@ -752,19 +752,19 @@ export default function ReportsPage() {
       {/* GENERATE REPORT MODAL */}
       {generateModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="bg-white border border-[#D1FAE5] rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-[#D1FAE5] pb-3">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider text-blue-600 dark:text-blue-400 font-bold">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#059669] font-bold">
                   On-Demand Audit Compiler
                 </span>
-                <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="font-serif text-lg font-bold text-[#064E3B]">
                   Generate Store Audit Report
                 </h3>
               </div>
               <button
                 onClick={() => setGenerateModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg"
+                className="text-[#64748B] hover:text-[#064E3B] hover:bg-[#F0FDF4] p-1.5 rounded-xl cursor-pointer transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -772,13 +772,13 @@ export default function ReportsPage() {
 
             <form onSubmit={handleGenerateReport} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                <label className="block text-[#064E3B] font-semibold mb-1">
                   Target Store Outlet
                 </label>
                 <select
                   value={genOutletId}
                   onChange={(e) => setGenOutletId(e.target.value)}
-                  className="w-full h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none"
+                  className="w-full h-9 px-3 rounded-xl border border-[#D1FAE5] bg-white text-[#1F2937] text-xs focus:outline-none focus:ring-1 focus:ring-[#059669] focus:border-[#059669] cursor-pointer"
                   required
                 >
                   {ALL_NETWORK_STORES.map((s) => (
@@ -790,7 +790,7 @@ export default function ReportsPage() {
               </div>
 
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                <label className="block text-[#064E3B] font-semibold mb-1">
                   Audit Summary & Focus Area (Optional)
                 </label>
                 <textarea
@@ -798,27 +798,27 @@ export default function ReportsPage() {
                   placeholder="e.g. Q4 comprehensive walkthrough inspection. Walk-in chiller and secondary line sanitation verified."
                   value={genSummary}
                   onChange={(e) => setGenSummary(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full p-3 rounded-xl border border-[#D1FAE5] bg-white text-[#1F2937] text-xs focus:outline-none focus:ring-1 focus:ring-[#059669] focus:border-[#059669]"
                 />
-                <span className="text-[10px] text-slate-400 mt-1 block">
+                <span className="text-[10px] text-[#64748B] mt-1 block">
                   Leave empty to compile standard operational and food safety audit summary.
                 </span>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D1FAE5]">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => setGenerateModalOpen(false)}
-                  className="text-xs"
+                  className="bg-white border-[#D1FAE5] text-[#64748B] hover:text-[#064E3B] hover:bg-[#F0FDF4] text-xs cursor-pointer"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   disabled={isGenerating}
-                  className="bg-blue-600 hover:bg-blue-500 text-white text-xs gap-1.5 shadow-xs"
+                  className="bg-[#059669] hover:bg-[#047857] text-white text-xs gap-1.5 shadow-xs transition-colors cursor-pointer"
                 >
                   {isGenerating ? (
                     <>

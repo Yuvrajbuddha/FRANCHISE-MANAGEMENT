@@ -283,6 +283,38 @@ export const outletRiskAssessments = pgTable("outlet_risk_assessments", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+// 14. Store Operator Accounts Table (Isolated credentials per store)
+export const storeAccounts = pgTable("store_accounts", {
+  id: serial("id").primaryKey(),
+  outletId: text("outlet_id").notNull().unique().references(() => outlets.outletId),
+  storeName: text("store_name").notNull(),
+  city: text("city").notNull(),
+  username: text("username").notNull().unique(), // e.g. 'store.lucknow'
+  passwordHash: text("password_hash").notNull(), // bcrypt hash
+  initialPassword: text("initial_password").notNull(), // secure initial password for authorized admin retrieval
+  createdAt: timestamp("created_at").defaultNow(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+// 15. Store Invoices Table (PDF, JPG, PNG, CSV, XLSX uploads)
+export const storeInvoices = pgTable("store_invoices", {
+  id: serial("id").primaryKey(),
+  invoiceId: text("invoice_id").notNull().unique(), // e.g. 'INV-OUT042-1793290...'
+  outletId: text("outlet_id").notNull().references(() => outlets.outletId),
+  filename: text("filename").notNull(),
+  originalName: text("original_name").notNull(),
+  fileUrl: text("file_url").notNull(),
+  fileSize: integer("file_size").notNull(),
+  fileType: text("file_type").notNull(), // 'PDF' | 'JPG' | 'PNG' | 'CSV' | 'XLSX'
+  invoiceNumber: text("invoice_number"),
+  invoiceDate: text("invoice_date").notNull(), // YYYY-MM-DD
+  totalAmount: numeric("total_amount").default("0"),
+  status: text("status").notNull().default("SUBMITTED"), // 'SUBMITTED' | 'VERIFIED' | 'FLAGGED'
+  notes: text("notes"),
+  uploadedBy: text("uploaded_by").notNull(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
 // Relations
 export const outletsRelations = relations(outlets, ({ many }) => ({
   sales: many(outletSales),
@@ -293,4 +325,13 @@ export const outletsRelations = relations(outlets, ({ many }) => ({
   correctiveActions: many(outletCorrectiveActions),
   history: many(outletHistory),
   inspections: many(complianceInspections),
+  invoices: many(storeInvoices),
 }));
+
+export const storeInvoicesRelations = relations(storeInvoices, ({ one }) => ({
+  outlet: one(outlets, {
+    fields: [storeInvoices.outletId],
+    references: [outlets.outletId],
+  }),
+}));
+

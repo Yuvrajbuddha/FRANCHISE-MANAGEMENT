@@ -629,19 +629,18 @@ export default function LoginPage() {
                   <h3 className="font-serif text-lg font-bold text-[#073B2A]">
                     Store Operations
                   </h3>
-                  <span className="text-[10px] font-mono text-[#738078] uppercase">Outlet OUT-042</span>
+                  <span className="text-[10px] font-mono text-[#738078] uppercase">10 Registered Stores</span>
                 </div>
                 <p className="text-xs text-[#738078] leading-relaxed">
-                  Upload daily CCTV surveillance recordings, log daily billing, and resolve open hygiene tickets.
+                  Select your specific outlet from all 10 registered stores, authenticate with store credentials, and manage sales invoices.
                 </p>
               </div>
 
               <button
-                onClick={() => handleQuickLogin("FRANCHISE", "/evidence")}
-                disabled={isLoadingRole !== null}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                onClick={() => navigate("/store-login")}
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-xs"
               >
-                <span>{isLoadingRole === "FRANCHISE" ? "Signing In..." : "Open Store Portal"}</span>
+                <span>Store Login (All 10 Stores)</span>
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>

@@ -28,6 +28,10 @@ import {
   BarChart3,
   Camera,
   Layers,
+  Upload,
+  FileSpreadsheet,
+  Download,
+  Paperclip,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,6 +40,7 @@ import { Input } from "@/components/ui/input";
 
 type TabKey =
   | "Overview"
+  | "Invoices & Uploads"
   | "Performance"
   | "Sales"
   | "Inventory"
@@ -49,6 +54,7 @@ type TabKey =
 
 const TABS: TabKey[] = [
   "Overview",
+  "Invoices & Uploads",
   "Performance",
   "Sales",
   "Inventory",
@@ -70,6 +76,20 @@ export default function OutletDetailPage() {
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Invoices & Uploads state
+  const [invoices, setInvoices] = useState<any[]>([]);
+  const [loadingInvoices, setLoadingInvoices] = useState(false);
+  const [uploadingInvoice, setUploadingInvoice] = useState(false);
+  const [invoiceUploadSuccess, setInvoiceUploadSuccess] = useState<string | null>(null);
+  const [invoiceUploadError, setInvoiceUploadError] = useState<string | null>(null);
+
+  // Form states for invoice upload
+  const [invoiceFile, setInvoiceFile] = useState<File | null>(null);
+  const [invoiceNumberInput, setInvoiceNumberInput] = useState("");
+  const [invoiceDateInput, setInvoiceDateInput] = useState(new Date().toISOString().split("T")[0]);
+  const [invoiceAmountInput, setInvoiceAmountInput] = useState("");
+  const [invoiceNotesInput, setInvoiceNotesInput] = useState("");
 
   // New sale form state
   const [newSaleNet, setNewSaleNet] = useState("45000");
@@ -106,11 +126,99 @@ export default function OutletDetailPage() {
     }
   };
 
+  const fetchInvoices = async () => {
+    setLoadingInvoices(true);
+    try {
+      const token = localStorage.getItem("franchise_auth_token");
+      const res = await fetch(`/api/store/invoices?outletId=${normalizedOutletId}`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (res.ok) {
+        const d = await res.json();
+        setInvoices(d.invoices || []);
+      }
+    } catch (e) {
+      console.error("Error loading store invoices:", e);
+    } finally {
+      setLoadingInvoices(false);
+    }
+  };
+
   useEffect(() => {
     if (isAuthorized) {
       fetchOutletData();
+      fetchInvoices();
     }
   }, [normalizedOutletId, isAuthorized]);
+
+  const handleUploadInvoice = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setInvoiceUploadError(null);
+    setInvoiceUploadSuccess(null);
+
+    if (!invoiceFile) {
+      setInvoiceUploadError("Please select a file to upload (PDF, JPG, PNG, CSV, or Excel).");
+      return;
+    }
+
+    setUploadingInvoice(true);
+    try {
+      const token = localStorage.getItem("franchise_auth_token");
+      const formData = new FormData();
+      formData.append("invoiceFile", invoiceFile);
+      formData.append("outletId", normalizedOutletId);
+      formData.append("invoiceNumber", invoiceNumberInput.trim() || `INV-${Date.now().toString().slice(-6)}`);
+      formData.append("invoiceDate", invoiceDateInput);
+      formData.append("totalAmount", invoiceAmountInput || "0");
+      formData.append("notes", invoiceNotesInput || "Store sales invoice uploaded.");
+
+      const res = await fetch("/api/store/invoices/upload", {
+        method: "POST",
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        body: formData,
+      });
+
+      const d = await res.json();
+      if (!res.ok) {
+        throw new Error(d.error || "Failed to upload invoice.");
+      }
+
+      setInvoiceUploadSuccess("Sales invoice uploaded and recorded in PostgreSQL successfully!");
+      setInvoiceFile(null);
+      setInvoiceNumberInput("");
+      setInvoiceAmountInput("");
+      setInvoiceNotesInput("");
+      fetchInvoices();
+    } catch (err: any) {
+      setInvoiceUploadError(err.message || "Failed to upload invoice.");
+    } finally {
+      setUploadingInvoice(false);
+    }
+  };
+
+  const handleDownloadInvoice = async (inv: any) => {
+    try {
+      const token = localStorage.getItem("franchise_auth_token");
+      const res = await fetch(`/api/store/invoices/${inv.invoiceId}/download`, {
+        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      });
+      if (!res.ok) {
+        const err = await res.json();
+        alert(err.error || "Failed to download invoice.");
+        return;
+      }
+      const blob = await res.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = inv.originalName || inv.filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    } catch (e) {
+      console.error("Download error:", e);
+    }
+  };
 
   const handleRecordSale = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -459,6 +567,326 @@ export default function OutletDetailPage() {
                   </div>
                 </CardContent>
               </Card>
+
+              {/* 4th Card: Invoices Dossier Summary */}
+              <Card className="border-[#DDE5DC] bg-[#FFFDF8]">
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-xs uppercase font-bold text-[#738078]">
+                    Sales Invoices Dossier
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-2 text-xs">
+                  <div className="flex justify-between py-1 border-b border-[#DDE5DC]">
+                    <span className="text-[#738078]">Uploaded Invoices:</span>
+                    <span className="font-bold text-[#073B2A] font-mono">{invoices.length} filed in DB</span>
+                  </div>
+                  <div className="flex justify-between py-1 border-b border-[#DDE5DC]">
+                    <span className="text-[#738078]">Latest Invoice:</span>
+                    <span className="font-mono text-[#18251F]">{invoices[0]?.invoiceDate || "None filed"}</span>
+                  </div>
+                  <div className="pt-2">
+                    <Button
+                      size="sm"
+                      onClick={() => setActiveTab("Invoices & Uploads")}
+                      className="w-full bg-[#073B2A] hover:bg-[#05291F] text-white text-xs gap-1.5 h-8 cursor-pointer"
+                    >
+                      <Upload className="h-3.5 w-3.5" />
+                      <span>Upload & View Invoices</span>
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        )}
+
+        {/* ========================================= */}
+        {/* TAB: INVOICES & UPLOADS                   */}
+        {/* ========================================= */}
+        {activeTab === "Invoices & Uploads" && (
+          <div className="space-y-6">
+            {/* Header info banner */}
+            <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 shadow-xs space-y-2">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="space-y-1">
+                  <span className="text-[10px] font-mono uppercase text-[#13845B] font-bold block">
+                    Store Sales Document Repository
+                  </span>
+                  <h3 className="font-serif text-xl font-bold text-[#073B2A]">
+                    Sales Invoices Dossier — {outlet.name}
+                  </h3>
+                  <p className="text-xs text-[#738078]">
+                    Upload official shift sales invoices, vendor delivery receipts, and CSV/Excel ledgers. Compatible formats: <span className="font-mono font-semibold text-[#18251F]">PDF, JPG, PNG, CSV, XLSX, XLS</span>.
+                  </p>
+                </div>
+                <Badge variant="outline" className="border-[#DDE5DC] text-[#073B2A] bg-[#FAF7F0] text-xs font-mono">
+                  {invoices.length} Verified Records
+                </Badge>
+              </div>
+
+              {/* Isolation Banner */}
+              <div className="p-3 rounded-lg bg-[#E6F8EF] border border-[#C7F1DC] text-xs text-[#073B2A] flex items-center gap-2">
+                <ShieldCheck className="h-4 w-4 text-[#13845B] shrink-0" />
+                <span>
+                  <strong>Strict Store Isolation Active:</strong> Invoices uploaded here are permanently bound to Store ID <strong className="font-mono">{outlet.outletId}</strong> in PostgreSQL. Other store operators cannot access or download these records.
+                </span>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+              {/* Left Column: Upload New Sales Invoice Form */}
+              <div className="lg:col-span-5 rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 sm:p-6 shadow-xs space-y-5">
+                <div className="space-y-1 border-b border-[#DDE5DC] pb-3">
+                  <h4 className="font-serif text-base font-bold text-[#073B2A] flex items-center gap-2">
+                    <Upload className="h-4 w-4 text-[#13845B]" />
+                    <span>Upload Sales Invoice</span>
+                  </h4>
+                  <p className="text-xs text-[#738078]">
+                    Attach official invoice file and register billing details.
+                  </p>
+                </div>
+
+                {invoiceUploadSuccess && (
+                  <div className="p-3 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-800 flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-emerald-600 shrink-0" />
+                    <span>{invoiceUploadSuccess}</span>
+                  </div>
+                )}
+
+                {invoiceUploadError && (
+                  <div className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-800 flex items-center gap-2">
+                    <ShieldAlert className="h-4 w-4 text-rose-600 shrink-0" />
+                    <span>{invoiceUploadError}</span>
+                  </div>
+                )}
+
+                <form onSubmit={handleUploadInvoice} className="space-y-4 text-xs">
+                  {/* File Selector */}
+                  <div className="space-y-1.5">
+                    <label className="block text-[#073B2A] font-semibold">
+                      Invoice Document File <span className="text-rose-600">*</span>
+                    </label>
+                    <div className="border-2 border-dashed border-[#DDE5DC] hover:border-[#13845B] rounded-xl p-4 text-center bg-[#FAF7F0] transition-colors relative cursor-pointer">
+                      <input
+                        type="file"
+                        accept=".pdf,.jpg,.jpeg,.png,.csv,.xlsx,.xls"
+                        onChange={(e) => setInvoiceFile(e.target.files?.[0] || null)}
+                        className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
+                        required
+                      />
+                      <div className="space-y-1 pointer-events-none">
+                        <Upload className="h-6 w-6 text-[#13845B] mx-auto" />
+                        <p className="text-xs font-semibold text-[#073B2A]">
+                          {invoiceFile ? invoiceFile.name : "Click to select or drag invoice file"}
+                        </p>
+                        <p className="text-[10px] text-[#738078]">
+                          {invoiceFile
+                            ? `${(invoiceFile.size / 1024).toFixed(1)} KB · Ready to submit`
+                            : "Supports PDF, JPG, PNG, CSV, and Excel (up to 25MB)"}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Invoice Number */}
+                  <div className="space-y-1.5">
+                    <label className="block text-[#073B2A] font-semibold">
+                      Invoice / Bill Number
+                    </label>
+                    <Input
+                      type="text"
+                      placeholder="e.g. INV-2026-9042"
+                      value={invoiceNumberInput}
+                      onChange={(e) => setInvoiceNumberInput(e.target.value)}
+                      className="h-9 bg-white border-[#DDE5DC] text-xs"
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    {/* Invoice Date */}
+                    <div className="space-y-1.5">
+                      <label className="block text-[#073B2A] font-semibold">
+                        Invoice Date
+                      </label>
+                      <Input
+                        type="date"
+                        value={invoiceDateInput}
+                        onChange={(e) => setInvoiceDateInput(e.target.value)}
+                        className="h-9 bg-white border-[#DDE5DC] text-xs font-mono"
+                        required
+                      />
+                    </div>
+
+                    {/* Total Amount */}
+                    <div className="space-y-1.5">
+                      <label className="block text-[#073B2A] font-semibold">
+                        Total Amount (₹)
+                      </label>
+                      <Input
+                        type="number"
+                        placeholder="e.g. 185000"
+                        value={invoiceAmountInput}
+                        onChange={(e) => setInvoiceAmountInput(e.target.value)}
+                        className="h-9 bg-white border-[#DDE5DC] text-xs font-mono"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Notes */}
+                  <div className="space-y-1.5">
+                    <label className="block text-[#073B2A] font-semibold">
+                      Description / Reconciliation Notes
+                    </label>
+                    <textarea
+                      rows={2}
+                      placeholder="e.g. Consolidated POS billing for second weekly shift."
+                      value={invoiceNotesInput}
+                      onChange={(e) => setInvoiceNotesInput(e.target.value)}
+                      className="w-full p-2.5 rounded-lg border border-[#DDE5DC] bg-white text-xs focus:outline-none focus:ring-1 focus:ring-[#13845B]"
+                    />
+                  </div>
+
+                  <Button
+                    type="submit"
+                    disabled={uploadingInvoice || !invoiceFile}
+                    className="w-full h-10 bg-[#073B2A] hover:bg-[#05291F] text-white text-xs font-semibold gap-2 cursor-pointer shadow-xs"
+                  >
+                    {uploadingInvoice ? (
+                      <>
+                        <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                        <span>Uploading & Recording in Database...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Upload className="h-3.5 w-3.5" />
+                        <span>Submit Invoice to Store Dossier</span>
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </div>
+
+              {/* Right Column: Invoices Registry Table */}
+              <div className="lg:col-span-7 rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] overflow-hidden shadow-xs flex flex-col justify-between">
+                <div>
+                  <div className="p-4 sm:p-5 border-b border-[#DDE5DC] flex items-center justify-between">
+                    <div>
+                      <h4 className="font-serif text-base font-bold text-[#073B2A]">
+                        Uploaded Invoices History
+                      </h4>
+                      <p className="text-xs text-[#738078]">
+                        Permanent record of all invoices saved against {outlet.name} ({outlet.outletId}).
+                      </p>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={fetchInvoices}
+                      disabled={loadingInvoices}
+                      className="text-xs h-8 gap-1.5"
+                    >
+                      <RefreshCw className={`h-3 w-3 ${loadingInvoices ? "animate-spin" : ""}`} />
+                      <span>Refresh</span>
+                    </Button>
+                  </div>
+
+                  {loadingInvoices ? (
+                    <div className="p-8 text-center text-xs text-[#738078] space-y-2">
+                      <RefreshCw className="h-5 w-5 animate-spin mx-auto text-[#13845B]" />
+                      <p>Loading invoices from database...</p>
+                    </div>
+                  ) : invoices.length === 0 ? (
+                    <div className="p-8 text-center space-y-2">
+                      <FileText className="h-8 w-8 text-[#738078] mx-auto opacity-50" />
+                      <h5 className="font-serif text-sm font-bold text-[#073B2A]">No Invoices Uploaded Yet</h5>
+                      <p className="text-xs text-[#738078] max-w-sm mx-auto">
+                        Upload your first shift invoice or commissary delivery receipt using the form on the left.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-xs text-left">
+                        <thead className="bg-[#FAF7F0] text-[#073B2A] font-mono text-[11px] border-b border-[#DDE5DC]">
+                          <tr>
+                            <th className="p-3">Invoice Details</th>
+                            <th className="p-3">File / Format</th>
+                            <th className="p-3">Amount</th>
+                            <th className="p-3">Status</th>
+                            <th className="p-3 text-right">Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-[#DDE5DC]/60">
+                          {invoices.map((inv) => (
+                            <tr key={inv.invoiceId} className="hover:bg-[#FAF7F0]/50 transition-colors">
+                              <td className="p-3">
+                                <span className="font-mono text-xs font-bold text-[#073B2A] block">
+                                  {inv.invoiceNumber || inv.invoiceId}
+                                </span>
+                                <span className="text-[10px] text-[#738078] flex items-center gap-1 mt-0.5">
+                                  <Calendar className="h-3 w-3" />
+                                  <span>{inv.invoiceDate}</span>
+                                  <span>·</span>
+                                  <span>{inv.uploadedBy}</span>
+                                </span>
+                              </td>
+                              <td className="p-3">
+                                <div className="space-y-1">
+                                  <Badge variant="outline" className="text-[10px] font-mono border-[#DDE5DC] text-[#073B2A]">
+                                    {inv.fileType || "PDF"}
+                                  </Badge>
+                                  <p className="text-[10px] text-[#738078] truncate max-w-[140px]" title={inv.originalName}>
+                                    {inv.originalName}
+                                  </p>
+                                </div>
+                              </td>
+                              <td className="p-3 font-mono font-bold text-[#073B2A]">
+                                {inv.totalAmount && Number(inv.totalAmount) > 0
+                                  ? `₹${Number(inv.totalAmount).toLocaleString()}`
+                                  : "—"}
+                              </td>
+                              <td className="p-3">
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold bg-[#E6F8EF] text-[#13845B] border border-[#C7F1DC]">
+                                  <CheckCircle2 className="h-3 w-3" />
+                                  <span>{inv.status || "SUBMITTED"}</span>
+                                </span>
+                              </td>
+                              <td className="p-3 text-right">
+                                <div className="flex items-center justify-end gap-1.5">
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => handleDownloadInvoice(inv)}
+                                    title="Download original invoice file"
+                                    className="h-7 px-2 text-[11px] text-[#073B2A] border-[#DDE5DC] hover:bg-[#FAF7F0] cursor-pointer"
+                                  >
+                                    <Download className="h-3 w-3 mr-1 text-[#13845B]" />
+                                    <span>Download</span>
+                                  </Button>
+                                  {inv.fileUrl && (
+                                    <a
+                                      href={inv.fileUrl}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                      className="inline-flex items-center h-7 px-2 text-[11px] rounded-md border border-[#DDE5DC] text-[#738078] hover:text-[#073B2A] hover:bg-[#FAF7F0]"
+                                    >
+                                      View
+                                    </a>
+                                  )}
+                                </div>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                <div className="p-3.5 bg-[#FAF7F0] border-t border-[#DDE5DC] text-[11px] text-[#738078] flex items-center justify-between">
+                  <span>Store ID: <strong className="font-mono text-[#073B2A]">{outlet.outletId}</strong></span>
+                  <span>Data stored in PostgreSQL Cloud SQL</span>
+                </div>
+              </div>
             </div>
           </div>
         )}

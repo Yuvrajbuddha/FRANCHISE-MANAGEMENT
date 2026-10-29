@@ -21,7 +21,17 @@ import {
   cctvEvidenceVerifications,
   correctiveActionHistory,
   outletRiskAssessments,
+  storeAccounts,
+  storeInvoices,
 } from "../database/schema.ts";
+import multer from "multer";
+import path from "path";
+import fs from "fs";
+import {
+  initStoreAccountsAndTables,
+  authenticateStoreAccount,
+  getStoreAccountsForAdmin,
+} from "./services/store-accounts-engine";
 import { eq, desc, and } from "drizzle-orm";
 import { z } from "zod";
 import {
@@ -56,6 +66,41 @@ apiApp.use(cors({ origin: true, credentials: true }));
 apiApp.use(express.json({ limit: "50mb" }));
 apiApp.use(cookieParser());
 apiApp.use("/uploads", express.static("uploads"));
+
+// Initialize store accounts and tables asynchronously
+initStoreAccountsAndTables().catch((e) =>
+  console.error("Store accounts initialization failed:", e)
+);
+
+// Configure multer for sales invoices upload (PDF, JPG, PNG, CSV, XLSX)
+const invoiceStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    const dir = path.join(process.cwd(), "uploads", "invoices");
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    cb(null, dir);
+  },
+  filename: (req, file, cb) => {
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    const ext = path.extname(file.originalname);
+    cb(null, `invoice-${uniqueSuffix}${ext}`);
+  },
+});
+
+const invoiceUpload = multer({
+  storage: invoiceStorage,
+  limits: { fileSize: 25 * 1024 * 1024 }, // 25 MB max
+  fileFilter: (req, file, cb) => {
+    const allowed = /pdf|jpg|jpeg|png|csv|xlsx|xls/i;
+    const ext = path.extname(file.originalname).slice(1);
+    if (allowed.test(ext)) {
+      cb(null, true);
+    } else {
+      cb(new Error("Unsupported file type. Please upload a PDF, JPG, PNG, CSV, or Excel file."));
+    }
+  },
+});
 
 // Mock outlet database for demonstration & authorization testing
 const OUTLETS_MOCK = [
@@ -189,50 +234,302 @@ apiRouter.post("/auth/login", (req, res) => {
   });
 });
 
-// POST /auth/store-login (Single-Store Isolated Authentication)
-apiRouter.post("/auth/store-login", (req, res) => {
-  const { outletId, email, password } = req.body;
-
-  if (!outletId) {
-    return res.status(400).json({ error: "Store/Outlet code is required." });
+// GET /store/outlets-list (Returns list of all 10 registered stores from database for store selection)
+apiRouter.get("/store/outlets-list", async (req, res) => {
+  try {
+    const allOutlets = await db.select().from(outlets);
+    const mapped = allOutlets.map((o) => ({
+      outletId: o.outletId,
+      name: o.name,
+      city: o.city,
+      state: o.state,
+      address: o.address,
+      operatingModel: o.operatingModel,
+      status: o.status,
+      complianceScore: o.complianceScore,
+      riskScore: o.riskScore,
+      manager: o.manager,
+    }));
+    return res.json({ outlets: mapped });
+  } catch (err: any) {
+    return res.status(500).json({ error: "Failed to load registered stores from database." });
   }
+});
 
-  const normalizedOutletId = outletId.toUpperCase().trim();
-  const matchedOutlet = OUTLETS_MOCK.find(
-    (o) => o.outletId.toUpperCase() === normalizedOutletId
-  );
+// POST /auth/store-login (Single-Store Isolated Authentication with Credential Validation)
+apiRouter.post("/auth/store-login", async (req, res) => {
+  try {
+    const { outletId, username, password } = req.body;
 
-  const targetOutletId = matchedOutlet ? matchedOutlet.outletId : normalizedOutletId;
-  const targetOutletName = matchedOutlet ? matchedOutlet.name : `Store ${targetOutletId}`;
-  const storeManager = (matchedOutlet && matchedOutlet.manager) || "Store Operator";
-  const storeEmail = email || `store.${targetOutletId.toLowerCase()}@franchiseops.com`;
+    if (!outletId) {
+      return res.status(400).json({ error: "Please select a store outlet." });
+    }
+    if (!username || !password) {
+      return res.status(400).json({ error: "Store username and password are required." });
+    }
 
-  const storeUser = {
-    id: `usr-store-${targetOutletId.toLowerCase()}`,
-    email: storeEmail,
-    name: storeManager,
-    role: "FRANCHISE" as const,
-    assignedOutletId: targetOutletId,
-    assignedOutletName: `${targetOutletName} (${matchedOutlet?.city || "Station"})`,
-    companyId: "cmp-universal-01",
-  };
+    const authResult = await authenticateStoreAccount(outletId, username, password);
+    if (!authResult.success || !authResult.account) {
+      return res.status(401).json({
+        error: authResult.error || "Authentication failed. Invalid store credentials.",
+      });
+    }
 
-  const token = signAuthToken(storeUser);
+    const acc = authResult.account;
+    const storeUser = {
+      id: `usr-store-${acc.outletId.toLowerCase()}`,
+      email: `${acc.username}@franchiseops.com`,
+      name: `${acc.storeName} Operator`,
+      role: "FRANCHISE" as const,
+      assignedOutletId: acc.outletId,
+      assignedOutletName: `${acc.storeName} (${acc.city})`,
+      companyId: "cmp-universal-01",
+    };
 
-  res.cookie("auth_token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: 7 * 24 * 60 * 60 * 1000,
-  });
+    const token = signAuthToken(storeUser);
 
-  return res.json({
-    token,
-    user: {
-      ...storeUser,
-      permissions: ROLE_PERMISSIONS.FRANCHISE,
-    },
-  });
+    res.cookie("auth_token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+    });
+
+    return res.json({
+      token,
+      user: {
+        ...storeUser,
+        permissions: ROLE_PERMISSIONS.FRANCHISE,
+      },
+      redirectUrl: `/outlets/${acc.outletId}`,
+    });
+  } catch (err: any) {
+    console.error("Store login error:", err);
+    return res.status(500).json({ error: "Internal server error during store login." });
+  }
+});
+
+// GET /admin/store-credentials (Secure retrieval of all 10 store credentials for authorized Administrator)
+apiRouter.get(
+  "/admin/store-credentials",
+  requireAuth,
+  requireRole("ADMIN", "OFFICER"),
+  async (req: AuthenticatedRequest, res) => {
+    try {
+      const credentials = await getStoreAccountsForAdmin();
+      return res.json({ credentials });
+    } catch (err: any) {
+      return res.status(500).json({ error: "Failed to retrieve store credentials." });
+    }
+  }
+);
+
+// GET /store/dashboard-overview (Store-isolated overview metrics)
+apiRouter.get("/store/dashboard-overview", requireAuth, async (req: AuthenticatedRequest, res) => {
+  try {
+    const userRole = req.user?.role;
+    let targetOutletId = req.user?.assignedOutletId || "OUT-042";
+
+    if (req.query.outletId) {
+      const requestedOutlet = (req.query.outletId as string).toUpperCase();
+      if (userRole === "FRANCHISE" && req.user?.assignedOutletId && requestedOutlet !== req.user.assignedOutletId) {
+        return res.status(403).json({
+          error: "Access Denied: You cannot access dashboard metrics for another store.",
+        });
+      }
+      if (userRole === "ADMIN" || userRole === "OFFICER" || userRole === "OWNER") {
+        targetOutletId = requestedOutlet;
+      }
+    }
+
+    const [matchedOutlet] = await db
+      .select()
+      .from(outlets)
+      .where(eq(outlets.outletId, targetOutletId))
+      .limit(1);
+
+    const invoices = await db
+      .select()
+      .from(storeInvoices)
+      .where(eq(storeInvoices.outletId, targetOutletId))
+      .orderBy(desc(storeInvoices.createdAt));
+
+    const totalInvoiceAmount = invoices.reduce(
+      (sum, inv) => sum + parseFloat(inv.totalAmount || "0"),
+      0
+    );
+
+    const inspections = await db
+      .select()
+      .from(complianceInspections)
+      .where(eq(complianceInspections.outletId, targetOutletId))
+      .orderBy(desc(complianceInspections.id))
+      .limit(5);
+
+    const capActions = await db
+      .select()
+      .from(outletCorrectiveActions)
+      .where(eq(outletCorrectiveActions.outletId, targetOutletId))
+      .orderBy(desc(outletCorrectiveActions.id))
+      .limit(5);
+
+    return res.json({
+      outlet: matchedOutlet || {
+        outletId: targetOutletId,
+        name: `Store ${targetOutletId}`,
+        city: "Station",
+        complianceScore: 85,
+        riskScore: 20,
+      },
+      invoicesCount: invoices.length,
+      totalInvoiceAmount,
+      recentInvoices: invoices.slice(0, 5),
+      recentInspections: inspections,
+      recentCapa: capActions,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ error: "Failed to retrieve store dashboard overview." });
+  }
+});
+
+// GET /store/invoices (Store-isolated invoices list)
+apiRouter.get("/store/invoices", requireAuth, async (req: AuthenticatedRequest, res) => {
+  try {
+    const userRole = req.user?.role;
+    let targetOutletId = req.user?.assignedOutletId;
+
+    if (req.query.outletId) {
+      const requestedOutlet = (req.query.outletId as string).toUpperCase();
+      if (userRole === "FRANCHISE" && req.user?.assignedOutletId && requestedOutlet !== req.user.assignedOutletId) {
+        return res.status(403).json({
+          error: "Access Denied: You cannot view invoices belonging to another store.",
+        });
+      }
+      if (userRole === "ADMIN" || userRole === "OFFICER" || userRole === "OWNER") {
+        targetOutletId = requestedOutlet;
+      }
+    }
+
+    if (!targetOutletId) {
+      return res.status(400).json({ error: "Target outlet ID is required." });
+    }
+
+    const invoices = await db
+      .select()
+      .from(storeInvoices)
+      .where(eq(storeInvoices.outletId, targetOutletId))
+      .orderBy(desc(storeInvoices.createdAt));
+
+    return res.json({
+      outletId: targetOutletId,
+      invoices,
+      totalCount: invoices.length,
+    });
+  } catch (err: any) {
+    return res.status(500).json({ error: "Failed to load store invoices." });
+  }
+});
+
+// POST /store/invoices/upload (Upload PDF, JPG, PNG, CSV, XLSX sales invoices)
+apiRouter.post(
+  "/store/invoices/upload",
+  requireAuth,
+  invoiceUpload.single("invoiceFile"),
+  async (req: AuthenticatedRequest, res) => {
+    try {
+      if (!req.file) {
+        return res.status(400).json({ error: "No invoice file uploaded." });
+      }
+
+      const userRole = req.user?.role;
+      let targetOutletId = req.user?.assignedOutletId;
+
+      if (userRole === "ADMIN" || userRole === "OFFICER" || userRole === "OWNER") {
+        if (req.body.outletId) {
+          targetOutletId = (req.body.outletId as string).toUpperCase();
+        }
+      }
+
+      if (!targetOutletId) {
+        return res.status(400).json({ error: "Target outlet ID is required." });
+      }
+
+      // MANDATORY STORE ISOLATION CHECK:
+      if (userRole === "FRANCHISE" && req.user?.assignedOutletId !== targetOutletId) {
+        return res.status(403).json({
+          error: "Access Denied: You cannot upload invoices for another store.",
+        });
+      }
+
+      const ext = path.extname(req.file.originalname).slice(1).toUpperCase();
+      const invoiceId = `INV-${targetOutletId}-${Date.now()}`;
+      const fileUrl = `/uploads/invoices/${req.file.filename}`;
+
+      const inserted = await db
+        .insert(storeInvoices)
+        .values({
+          invoiceId,
+          outletId: targetOutletId,
+          filename: req.file.filename,
+          originalName: req.file.originalname,
+          fileUrl,
+          fileSize: req.file.size,
+          fileType: ext || "PDF",
+          invoiceNumber: req.body.invoiceNumber || `INV-${Date.now().toString().slice(-6)}`,
+          invoiceDate: req.body.invoiceDate || new Date().toISOString().split("T")[0],
+          totalAmount: req.body.totalAmount || "0",
+          status: "SUBMITTED",
+          notes: req.body.notes || "Store operator uploaded sales invoice dossier.",
+          uploadedBy: req.user?.name || `Store Operator (${targetOutletId})`,
+        })
+        .returning();
+
+      return res.status(201).json({
+        success: true,
+        message: "Invoice uploaded and registered successfully.",
+        invoice: inserted[0],
+      });
+    } catch (err: any) {
+      return res.status(500).json({ error: err.message || "Failed to upload invoice." });
+    }
+  }
+);
+
+// GET /store/invoices/:invoiceId/download (Download uploaded sales invoice with store isolation check)
+apiRouter.get("/store/invoices/:invoiceId/download", requireAuth, async (req: AuthenticatedRequest, res) => {
+  try {
+    const invoiceParam = req.params.invoiceId;
+    if (!invoiceParam) {
+      return res.status(400).json({ error: "Invoice ID is required." });
+    }
+    const inv = await db
+      .select()
+      .from(storeInvoices)
+      .where(eq(storeInvoices.invoiceId, String(invoiceParam)))
+      .limit(1);
+
+    if (inv.length === 0) {
+      return res.status(404).json({ error: "Invoice record not found." });
+    }
+
+    const record = inv[0];
+
+    // MANDATORY STORE ISOLATION CHECK:
+    if (req.user?.role === "FRANCHISE" && record.outletId !== req.user?.assignedOutletId) {
+      return res.status(403).json({
+        error: "Access Denied: You cannot download invoices belonging to another store.",
+      });
+    }
+
+    const filePath = path.join(process.cwd(), "uploads", "invoices", record.filename);
+    if (!fs.existsSync(filePath)) {
+      return res.status(404).json({ error: "Physical invoice file not found on server." });
+    }
+
+    return res.download(filePath, record.originalName);
+  } catch (err: any) {
+    return res.status(500).json({ error: "Failed to download invoice." });
+  }
 });
 
 // POST /auth/logout

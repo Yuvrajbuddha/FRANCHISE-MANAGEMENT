@@ -10,10 +10,9 @@ interface AuthContextType {
   login: (email: string, password: string) => Promise<{ success: boolean; error?: string }>;
   loginStore: (
     outletId: string,
-    outletName?: string,
-    email?: string,
+    username: string,
     password?: string
-  ) => Promise<{ success: boolean; error?: string }>;
+  ) => Promise<{ success: boolean; error?: string; redirectUrl?: string }>;
   logout: () => void;
   switchDemoRole: (role: UserRole) => Promise<void>;
   canAccessOutlet: (outletId: string) => boolean;
@@ -108,46 +107,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const loginStore = async (
     outletId: string,
-    outletName?: string,
-    email?: string,
+    username: string,
     password?: string
-  ): Promise<{ success: boolean; error?: string }> => {
+  ): Promise<{ success: boolean; error?: string; redirectUrl?: string }> => {
     try {
       const response = await fetch("/api/auth/store-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ outletId, email, password }),
+        body: JSON.stringify({ outletId, username, password }),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Store authentication failed");
+        return { success: false, error: data.error || "Store authentication failed" };
       }
 
       setToken(data.token);
       setUser(data.user);
       localStorage.setItem("franchise_auth_token", data.token);
       localStorage.setItem("franchise_auth_user", JSON.stringify(data.user));
-      return { success: true };
-    } catch {
-      // Graceful fallback for offline / mock sessions
-      const normalizedOutletId = outletId.toUpperCase().trim();
-      const storeUser: AuthUser = {
-        id: `usr-store-${normalizedOutletId.toLowerCase()}`,
-        email: email || `store.${normalizedOutletId.toLowerCase()}@franchiseops.com`,
-        name: `Store Operator (${normalizedOutletId})`,
-        role: "FRANCHISE",
-        assignedOutletId: normalizedOutletId,
-        assignedOutletName: outletName || `Store ${normalizedOutletId}`,
-        companyId: "cmp-universal-01",
-      };
-      const mockToken = `store-token-${normalizedOutletId}-${Date.now()}`;
-      setToken(mockToken);
-      setUser(storeUser);
-      localStorage.setItem("franchise_auth_token", mockToken);
-      localStorage.setItem("franchise_auth_user", JSON.stringify(storeUser));
-      return { success: true };
+      return { success: true, redirectUrl: data.redirectUrl || `/outlets/${outletId}` };
+    } catch (err: any) {
+      return { success: false, error: err.message || "Network error. Could not reach authentication server." };
     }
   };
 

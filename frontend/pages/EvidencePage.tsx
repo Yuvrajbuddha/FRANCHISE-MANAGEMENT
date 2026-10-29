@@ -467,29 +467,29 @@ export default function EvidencePage() {
     switch (status) {
       case "Correct":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 shadow-2xs">
-            <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-[#13845B]/10 text-[#13845B] border border-[#13845B]/30 shadow-2xs">
+            <CheckCircle2 className="h-3.5 w-3.5 text-[#13845B] shrink-0" />
             <span>Approved</span>
           </span>
         );
       case "Incorrect":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-rose-500/15 text-rose-400 border border-rose-500/30 shadow-2xs">
-            <XCircle className="h-3.5 w-3.5 text-rose-400 shrink-0" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-rose-500/10 text-rose-700 border border-rose-500/30 shadow-2xs">
+            <XCircle className="h-3.5 w-3.5 text-rose-600 shrink-0" />
             <span>Rejected</span>
           </span>
         );
       case "Needs Review":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-300 border border-amber-500/30 shadow-2xs">
-            <AlertTriangle className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-bold bg-amber-500/10 text-amber-800 border border-amber-500/30 shadow-2xs">
+            <AlertTriangle className="h-3.5 w-3.5 text-amber-600 shrink-0" />
             <span>Needs Re-review</span>
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800 text-slate-300 border border-slate-700/80 shadow-2xs">
-            <Clock className="h-3.5 w-3.5 text-amber-400 shrink-0" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-[11px] font-medium bg-[#F6F1E7] text-[#738078] border border-[#DDE5DC] shadow-2xs">
+            <Clock className="h-3.5 w-3.5 text-amber-600 shrink-0" />
             <span>Pending Officer Review</span>
           </span>
         );
@@ -497,26 +497,26 @@ export default function EvidencePage() {
   };
 
   return (
-    <div className="space-y-8 font-sans antialiased text-slate-900 pb-20 max-w-5xl mx-auto">
+    <div className="space-y-8 font-sans antialiased text-[#18251F] pb-20 max-w-5xl mx-auto">
       {/* ======================================================== */}
       {/* 1. HEADER CARD (ROLE-ADAPTIVE)                           */}
       {/* ======================================================== */}
-      <div className="rounded-2xl border border-teal-200/80 bg-gradient-to-r from-teal-50/80 via-white to-emerald-50/60 p-6 sm:p-7 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-6 sm:p-7 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-teal-800 flex items-center gap-1.5 mb-1 font-bold">
-            <Building className="h-3.5 w-3.5 text-teal-600" />
+          <div className="text-[10px] font-mono uppercase tracking-widest text-[#13845B] flex items-center gap-1.5 mb-1 font-bold">
+            <Building className="h-3.5 w-3.5 text-[#13845B]" />
             <span>
               {isStoreRole
                 ? "STORE CCTV PORTAL · OPERATIONAL UNIT"
                 : "STORE EVIDENCE REPOSITORY · FRANCHISEE SUPERVISION"}
             </span>
           </div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase">
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#073B2A] uppercase">
             {storeName}
           </h1>
-          <p className="text-xs text-slate-600 mt-1 font-mono">
+          <p className="text-xs text-[#738078] mt-1 font-mono">
             Store ID:{" "}
-            <span className="text-teal-700 font-bold bg-teal-100/70 px-1.5 py-0.5 rounded border border-teal-200">
+            <span className="text-[#073B2A] font-bold bg-[#073B2A]/10 px-1.5 py-0.5 rounded border border-[#073B2A]/20">
               {storeId}
             </span>{" "}
             ·{" "}
@@ -531,22 +531,22 @@ export default function EvidencePage() {
           {isStoreRole && (
             <Link
               to="/login/store"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-teal-300 bg-white hover:bg-teal-50 text-teal-800 text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#DDE5DC] bg-[#F6F1E7]/50 hover:bg-[#F6F1E7] text-[#073B2A] text-xs font-semibold shadow-2xs transition-colors cursor-pointer"
               title="Switch Store"
             >
-              <Store className="h-3.5 w-3.5 text-teal-600" />
+              <Store className="h-3.5 w-3.5 text-[#13845B]" />
               <span>Select Another Store</span>
             </Link>
           )}
 
           {/* If Franchisee Owner: Dropdown to inspect evidence for any network store */}
           {!isStoreRole && (
-            <div className="flex items-center gap-2 bg-white px-2.5 py-1 rounded-xl border border-slate-200 shadow-2xs">
-              <span className="text-[11px] text-slate-500 font-medium">Viewing Outlet:</span>
+            <div className="flex items-center gap-2 bg-[#FFFDF8] px-3 py-1.5 rounded-lg border border-[#DDE5DC] shadow-2xs">
+              <span className="text-[11px] text-[#738078] font-medium">Viewing Outlet:</span>
               <select
                 value={selectedOutletId}
                 onChange={(e) => setSelectedOutletId(e.target.value)}
-                className="text-xs font-mono font-bold text-slate-800 bg-transparent focus:outline-none cursor-pointer"
+                className="text-xs font-mono font-bold text-[#073B2A] bg-transparent focus:outline-none cursor-pointer"
               >
                 {ALL_NETWORK_STORES.map((s) => (
                   <option key={s.code} value={s.code}>
@@ -559,17 +559,17 @@ export default function EvidencePage() {
 
           {/* Role Badge */}
           {isStoreRole ? (
-            <Badge className="bg-teal-100 text-teal-800 border-teal-300 text-xs px-3 py-1 font-mono font-semibold">
+            <Badge className="bg-[#13845B]/10 text-[#13845B] border-[#13845B]/30 text-xs px-3 py-1 font-mono font-semibold">
               Store Operator
             </Badge>
           ) : (
-            <Badge className="bg-blue-100 text-blue-800 border-blue-300 text-xs px-3 py-1 font-mono font-semibold">
+            <Badge className="bg-[#073B2A]/10 text-[#073B2A] border-[#073B2A]/30 text-xs px-3 py-1 font-mono font-semibold">
               Franchisee Owner (Read-Only)
             </Badge>
           )}
 
-          <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-100/90 border border-amber-300 text-[11px] text-amber-900 font-medium">
-            <Lock className="h-3.5 w-3.5 text-amber-700" />
+          <div className="flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#F6F1E7] border border-[#DDE5DC] text-[11px] text-[#738078] font-medium">
+            <Lock className="h-3.5 w-3.5 text-[#738078]" />
             <span>
               {isStoreRole
                 ? "Video Only · Real Frames Decoded"
@@ -583,15 +583,15 @@ export default function EvidencePage() {
       {/* 2. OFFICER FINAL RATING & FEEDBACK (IF INSPECTED)        */}
       {/* ======================================================== */}
       {currentSubmission?.status === "Verified" && currentSubmission.finalRating && (
-        <div className="rounded-[28px] border border-[#10B981]/30 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-4">
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
+        <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-6 sm:p-7 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-[#DDE5DC] pb-3">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="h-5 w-5 text-[#10B981]" />
-              <span className="text-xs font-mono uppercase tracking-wider text-[#10B981] font-bold">
+              <ShieldCheck className="h-5 w-5 text-[#13845B]" />
+              <span className="text-xs font-mono uppercase tracking-wider text-[#13845B] font-bold">
                 STORE COMPLIANCE RATING
               </span>
             </div>
-            <span className="text-[11px] font-mono text-slate-400">
+            <span className="text-[11px] font-mono text-[#738078]">
               Verified by {currentSubmission.officerName || "Quality & Compliance Officer"}
             </span>
           </div>
@@ -599,23 +599,23 @@ export default function EvidencePage() {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pt-2">
             <div>
               <div className="flex items-baseline gap-2">
-                <span className="font-serif text-5xl font-bold text-[#10B981]">
+                <span className="font-serif text-5xl font-bold text-[#13845B]">
                   {currentSubmission.finalRating}
                 </span>
-                <span className="font-serif text-2xl text-slate-500">/ 10</span>
+                <span className="font-serif text-2xl text-[#738078]">/ 10</span>
               </div>
-              <span className="text-[11px] text-slate-400 font-mono">
+              <span className="text-[11px] text-[#738078] font-mono">
                 Inspection Date: {currentSubmission.inspectionDate || currentDate}
               </span>
             </div>
 
             {currentSubmission.officerComment && (
-              <div className="flex-1 max-w-xl p-4 rounded-2xl bg-[#050B1A] border border-white/10 text-xs space-y-1">
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
-                  <FileCheck2 className="h-3.5 w-3.5 text-[#818CF8]" />
+              <div className="flex-1 max-w-xl p-4 rounded-xl bg-[#F6F1E7]/50 border border-[#DDE5DC] text-xs space-y-1">
+                <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold flex items-center gap-1.5">
+                  <FileCheck2 className="h-3.5 w-3.5 text-[#13845B]" />
                   <span>Officer Feedback:</span>
                 </span>
-                <p className="text-slate-200 italic">
+                <p className="text-[#18251F] italic">
                   "{currentSubmission.officerComment}"
                 </p>
               </div>
@@ -628,43 +628,43 @@ export default function EvidencePage() {
       {/* 3A. DAILY CCTV UPLOAD (STORE ROLE ONLY)                   */}
       {/* ======================================================== */}
       {isStoreRole && (
-        <div className="rounded-[28px] border border-teal-500/25 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
-          <div className="border-b border-white/10 pb-4">
+        <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-6 sm:p-7 shadow-xs space-y-6">
+          <div className="border-b border-[#DDE5DC] pb-4">
             <div className="flex items-center justify-between">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 block mb-1 font-semibold">
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#13845B] block mb-1 font-semibold">
                   MANDATORY COMPLIANCE DISPATCH
                 </span>
-                <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">
-                  DAILY CCTV UPLOAD & PHOTO EXTRACTION
+                <h2 className="font-serif text-2xl font-bold tracking-tight text-[#073B2A] uppercase">
+                  Daily CCTV Upload & Frame Extraction
                 </h2>
               </div>
-              <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-950/70 border border-cyan-800 text-xs font-mono text-cyan-300">
-                <Sparkles className="h-3.5 w-3.5 text-cyan-400" />
+              <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-md bg-[#13845B]/10 border border-[#13845B]/20 text-xs font-mono text-[#13845B]">
+                <Sparkles className="h-3.5 w-3.5" />
                 <span>100% Real Frame Decoding</span>
               </span>
             </div>
-            <p className="text-xs text-slate-300 mt-1">
+            <p className="text-xs text-[#738078] mt-1">
               Upload any CCTV video of any duration (10s, 30s, 1m, 10m, 1h, 8h, 10h). The system automatically inspects the actual video duration and extracts authentic photos directly from the footage.
             </p>
           </div>
 
           {/* Success Banner */}
           {submissionSuccess && (
-            <div className="p-4 rounded-2xl border border-[#10B981]/30 bg-[#10B981]/10 text-[#10B981] text-xs flex items-center justify-between shadow-lg shadow-[#10B981]/5">
+            <div className="p-4 rounded-xl border border-[#13845B]/30 bg-[#13845B]/10 text-[#13845B] text-xs flex items-center justify-between shadow-xs">
               <div className="flex items-center gap-2.5">
-                <CheckCircle2 className="h-5 w-5 text-[#10B981] shrink-0" />
+                <CheckCircle2 className="h-5 w-5 text-[#13845B] shrink-0" />
                 <div>
                   <span className="font-bold text-sm block">✓ CCTV Processed Successfully</span>
-                  <span className="text-[11px] text-slate-300">
-                    Status: <strong className="text-emerald-400 font-mono">EXTRACTED & READY</strong> → System extracted {photos.length} authentic timestamped photos from {currentSubmission?.durationLabel || "the uploaded video"} for officer review.
+                  <span className="text-[11px] text-[#18251F]">
+                    Status: <strong className="text-[#13845B] font-mono">EXTRACTED & READY</strong> → System extracted {photos.length} authentic timestamped photos from {currentSubmission?.durationLabel || "the uploaded video"} for officer review.
                   </span>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setSubmissionSuccess(false)}
-                className="text-slate-400 hover:text-white cursor-pointer p-1"
+                className="text-[#738078] hover:text-[#18251F] cursor-pointer p-1"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -673,18 +673,18 @@ export default function EvidencePage() {
 
           {/* Error Banner */}
           {errorMessage && (
-            <div className="p-4 rounded-2xl border border-rose-500/30 bg-rose-500/10 text-rose-300 text-xs flex items-center justify-between shadow-lg">
+            <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-800 text-xs flex items-center justify-between shadow-xs">
               <div className="flex items-center gap-2.5">
-                <AlertCircle className="h-5 w-5 text-rose-400 shrink-0" />
+                <AlertCircle className="h-5 w-5 text-rose-600 shrink-0" />
                 <div>
                   <span className="font-bold text-sm block">Video Processing Error</span>
-                  <span className="text-[11px] text-rose-200">{errorMessage}</span>
+                  <span className="text-[11px] text-rose-700">{errorMessage}</span>
                 </div>
               </div>
               <button
                 type="button"
                 onClick={() => setErrorMessage(null)}
-                className="text-slate-400 hover:text-white cursor-pointer p-1"
+                className="text-rose-400 hover:text-rose-700 cursor-pointer p-1"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -709,22 +709,22 @@ export default function EvidencePage() {
                 onClick={() => fileInputRef.current?.click()}
                 className={`w-full border-2 border-dashed ${
                   selectedFile
-                    ? "border-teal-400/60 bg-teal-950/20"
-                    : "border-white/20 hover:border-[#4F46FF] bg-[#050B1A] hover:bg-white/[0.02]"
-                } rounded-2xl p-8 text-center space-y-3 cursor-pointer transition-all group`}
+                    ? "border-[#13845B] bg-[#13845B]/5"
+                    : "border-[#DDE5DC] hover:border-[#13845B] bg-[#F6F1E7]/40 hover:bg-[#F6F1E7]/70"
+                } rounded-xl p-8 text-center space-y-3 cursor-pointer transition-all group`}
               >
-                <div className="h-14 w-14 rounded-2xl bg-[#4F46FF]/15 text-[#4F46FF] border border-[#4F46FF]/30 flex items-center justify-center mx-auto group-hover:scale-105 transition-transform">
+                <div className="h-14 w-14 rounded-xl bg-[#073B2A]/10 text-[#073B2A] border border-[#073B2A]/20 flex items-center justify-center mx-auto group-hover:scale-105 transition-transform">
                   <Video className="h-7 w-7" />
                 </div>
                 <div>
-                  <span className="font-serif text-lg font-bold text-white block">
+                  <span className="font-serif text-lg font-bold text-[#073B2A] block">
                     {selectedFile ? `Selected: ${selectedFile.name}` : "[ Upload CCTV Video ]"}
                   </span>
-                  <span className="text-xs text-slate-400 mt-1 block">
+                  <span className="text-xs text-[#738078] mt-1 block">
                     Supports any duration: 10s, 30s, 1m, 10m, 1h, 8h, 10h (MP4, WebM, MOV, AVI)
                   </span>
                 </div>
-                <span className="inline-block text-[11px] font-mono text-slate-300 bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                <span className="inline-block text-[11px] font-mono text-[#073B2A] bg-white px-3 py-1 rounded-md border border-[#DDE5DC]">
                   {selectedFile ? "Click to change video file" : "Click to browse local video file"}
                 </span>
               </button>
@@ -732,47 +732,47 @@ export default function EvidencePage() {
 
             {/* Inspecting status indicator */}
             {isInspecting && (
-              <div className="p-3.5 rounded-xl bg-cyan-950/40 border border-cyan-800/50 flex items-center gap-2 text-xs text-cyan-300">
-                <Loader2 className="h-4 w-4 animate-spin text-cyan-400" />
+              <div className="p-3.5 rounded-lg bg-[#F6F1E7] border border-[#DDE5DC] flex items-center gap-2 text-xs text-[#073B2A]">
+                <Loader2 className="h-4 w-4 animate-spin text-[#13845B]" />
                 <span>Inspecting video file headers, codec, and actual duration...</span>
               </div>
             )}
 
             {/* Inspection error */}
             {inspectError && (
-              <div className="p-3.5 rounded-xl bg-amber-950/40 border border-amber-800/50 flex items-center gap-2 text-xs text-amber-300">
-                <AlertTriangle className="h-4 w-4 text-amber-400 shrink-0" />
+              <div className="p-3.5 rounded-lg bg-amber-50 border border-amber-200 flex items-center gap-2 text-xs text-amber-800">
+                <AlertTriangle className="h-4 w-4 text-amber-600 shrink-0" />
                 <span>{inspectError} (The system will inspect on server during upload)</span>
               </div>
             )}
 
             {/* Selected Video Details & Real Duration Telemetry */}
             {selectedFile && (
-              <div className="rounded-2xl bg-[#050B1A] border border-white/10 p-5 space-y-4">
+              <div className="rounded-xl bg-[#F6F1E7]/60 border border-[#DDE5DC] p-5 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
                   {/* Video Name */}
                   <div className="space-y-1">
-                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                    <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold">
                       Selected Video File
                     </span>
-                    <div className="font-mono text-white font-medium truncate" title={selectedFile.name}>
+                    <div className="font-mono text-[#073B2A] font-medium truncate" title={selectedFile.name}>
                       {selectedFile.name}
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400 block">
+                    <span className="text-[10px] font-mono text-[#738078] block">
                       {(selectedFile.size / (1024 * 1024)).toFixed(2)} MB
                     </span>
                   </div>
 
                   {/* Real Detected Duration */}
                   <div className="space-y-1">
-                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1">
-                      <Clock className="h-3 w-3 text-cyan-400" />
+                    <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold flex items-center gap-1">
+                      <Clock className="h-3 w-3 text-[#13845B]" />
                       <span>Actual Video Duration</span>
                     </span>
-                    <div className="font-mono text-cyan-300 font-bold text-sm">
+                    <div className="font-mono text-[#13845B] font-bold text-sm">
                       {detectedMetadata ? detectedMetadata.durationLabel : "Detecting..."}
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400 block">
+                    <span className="text-[10px] font-mono text-[#738078] block">
                       {detectedMetadata
                         ? `${detectedMetadata.durationSeconds.toFixed(1)} seconds total`
                         : "Probing video stream"}
@@ -781,16 +781,16 @@ export default function EvidencePage() {
 
                   {/* Frame Extraction Plan */}
                   <div className="space-y-1">
-                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1">
-                      <Camera className="h-3 w-3 text-emerald-400" />
+                    <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold flex items-center gap-1">
+                      <Camera className="h-3 w-3 text-[#13845B]" />
                       <span>Extraction Policy</span>
                     </span>
-                    <div className="font-mono text-emerald-400 font-bold">
+                    <div className="font-mono text-[#073B2A] font-bold">
                       {detectedMetadata
                         ? `${calculateTimestampsForDuration(detectedMetadata.durationSeconds).length} authentic frames`
                         : "Adaptive frame schedule"}
                     </div>
-                    <span className="text-[10px] font-mono text-slate-400 block">
+                    <span className="text-[10px] font-mono text-[#738078] block">
                       {detectedMetadata?.durationSeconds && detectedMetadata.durationSeconds <= 15
                         ? "Well-spaced within short clip"
                         : "Distributed across full duration"}
@@ -799,11 +799,11 @@ export default function EvidencePage() {
 
                   {/* Upload Date */}
                   <div className="space-y-1">
-                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                    <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold">
                       Upload Dispatch Date
                     </span>
-                    <div className="flex items-center gap-1.5 font-mono text-slate-300">
-                      <Calendar className="h-3.5 w-3.5 text-slate-500" />
+                    <div className="flex items-center gap-1.5 font-mono text-[#18251F]">
+                      <Calendar className="h-3.5 w-3.5 text-[#738078]" />
                       <span>{currentDate}</span>
                     </div>
                   </div>
@@ -813,15 +813,15 @@ export default function EvidencePage() {
                 {isProcessing && (
                   <div className="pt-2 space-y-2">
                     <div className="flex items-center justify-between text-xs font-mono">
-                      <span className="text-cyan-300 flex items-center gap-2">
-                        <Loader2 className="h-3.5 w-3.5 animate-spin text-cyan-400" />
+                      <span className="text-[#073B2A] flex items-center gap-2 font-medium">
+                        <Loader2 className="h-3.5 w-3.5 animate-spin text-[#13845B]" />
                         <span>{processingStep}</span>
                       </span>
-                      <span className="text-white font-bold">{uploadProgress}%</span>
+                      <span className="text-[#073B2A] font-bold">{uploadProgress}%</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-slate-800 overflow-hidden">
+                    <div className="h-2 w-full rounded-full bg-[#DDE5DC] overflow-hidden">
                       <div
-                        className="h-full bg-gradient-to-r from-teal-500 to-cyan-400 transition-all duration-300"
+                        className="h-full bg-gradient-to-r from-[#13845B] to-[#72D6A0] transition-all duration-300"
                         style={{ width: `${Math.max(5, uploadProgress)}%` }}
                       />
                     </div>
@@ -829,8 +829,8 @@ export default function EvidencePage() {
                 )}
 
                 {/* Submit CCTV Button */}
-                <div className="pt-3 border-t border-white/10 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                  <span className="text-[11px] text-slate-400">
+                <div className="pt-3 border-t border-[#DDE5DC] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                  <span className="text-[11px] text-[#738078]">
                     {detectedMetadata?.durationSeconds && detectedMetadata.durationSeconds <= 15
                       ? `Short video detected (${detectedMetadata.durationLabel}): Frames will be extracted strictly within the recording.`
                       : "System automatically extracts representative frames distributed across the recording duration."}
@@ -840,7 +840,7 @@ export default function EvidencePage() {
                     type="button"
                     onClick={handleSubmitCctv}
                     disabled={isProcessing || isInspecting}
-                    className="bg-[#4F46FF] hover:bg-[#6366F1] text-white font-bold text-xs h-11 px-8 rounded-xl shadow-lg shadow-[#4F46FF]/30 cursor-pointer gap-2 transition-all uppercase tracking-wider"
+                    className="bg-[#073B2A] hover:bg-[#05291F] text-white font-bold text-xs h-11 px-8 rounded-lg shadow-sm cursor-pointer gap-2 transition-all uppercase tracking-wider"
                   >
                     {isProcessing ? (
                       <>
@@ -865,16 +865,16 @@ export default function EvidencePage() {
       {/* 3B. CCTV SUBMISSION DOSSIER (FRANCHISEE OWNER READ-ONLY)  */}
       {/* ======================================================== */}
       {!isStoreRole && (
-        <div className="rounded-[28px] border border-blue-500/20 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
-          <div className="border-b border-white/10 pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-6 sm:p-7 shadow-xs space-y-6">
+          <div className="border-b border-[#DDE5DC] pb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-slate-400 block mb-1">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#13845B] block mb-1 font-semibold">
                 STORE EVIDENCE SUBMISSION DOSSIER
               </span>
-              <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">
-                SURVEILLANCE EVIDENCE LOG
+              <h2 className="font-serif text-2xl font-bold tracking-tight text-[#073B2A] uppercase">
+                Surveillance Evidence Log
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-[#738078] mt-0.5">
                 Surveillance footage submitted by on-ground store operators. Frames are automatically extracted for compliance review.
               </p>
             </div>
@@ -884,8 +884,8 @@ export default function EvidencePage() {
                 variant="outline"
                 className={`text-xs px-3 py-1 font-mono font-semibold ${
                   currentSubmission?.status === "Verified"
-                    ? "border-emerald-500/40 text-emerald-400 bg-emerald-500/10"
-                    : "border-amber-500/40 text-amber-400 bg-amber-500/10"
+                    ? "border-[#13845B]/40 text-[#13845B] bg-[#13845B]/10"
+                    : "border-amber-500/40 text-amber-700 bg-amber-500/10"
                 }`}
               >
                 {currentSubmission?.status === "Verified"
@@ -897,49 +897,49 @@ export default function EvidencePage() {
 
           {/* Submission Info Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
-            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
-                <FileVideo className="h-3.5 w-3.5 text-blue-400" />
+            <div className="p-4 rounded-xl bg-[#F6F1E7]/50 border border-[#DDE5DC] space-y-1">
+              <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold flex items-center gap-1.5">
+                <FileVideo className="h-3.5 w-3.5 text-[#13845B]" />
                 <span>Video Footage</span>
               </span>
-              <div className="font-mono text-white font-medium truncate" title={currentSubmission?.videoName || videoName}>
+              <div className="font-mono text-[#073B2A] font-medium truncate" title={currentSubmission?.videoName || videoName}>
                 {currentSubmission?.videoName || videoName}
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
-                <Clock className="h-3.5 w-3.5 text-teal-400" />
+            <div className="p-4 rounded-xl bg-[#F6F1E7]/50 border border-[#DDE5DC] space-y-1">
+              <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold flex items-center gap-1.5">
+                <Clock className="h-3.5 w-3.5 text-[#13845B]" />
                 <span>Recorded Duration</span>
               </span>
-              <div className="font-mono text-white font-medium">
+              <div className="font-mono text-[#073B2A] font-medium">
                 {currentSubmission?.durationLabel || "Surveillance Recording"}
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
-                <Calendar className="h-3.5 w-3.5 text-purple-400" />
+            <div className="p-4 rounded-xl bg-[#F6F1E7]/50 border border-[#DDE5DC] space-y-1">
+              <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5 text-[#738078]" />
                 <span>Upload Date</span>
               </span>
-              <div className="font-mono text-white font-medium">
+              <div className="font-mono text-[#18251F] font-medium">
                 {currentSubmission?.uploadDate || currentDate}
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-[#050B1A] border border-white/10 space-y-1">
-              <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold flex items-center gap-1.5">
-                <Layers className="h-3.5 w-3.5 text-emerald-400" />
+            <div className="p-4 rounded-xl bg-[#F6F1E7]/50 border border-[#DDE5DC] space-y-1">
+              <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold flex items-center gap-1.5">
+                <Layers className="h-3.5 w-3.5 text-[#13845B]" />
                 <span>Extracted Frames</span>
               </span>
-              <div className="font-mono text-white font-medium">
+              <div className="font-mono text-[#073B2A] font-medium">
                 {photos.length} authentic photos
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 p-3.5 rounded-xl bg-blue-950/40 border border-blue-500/20 text-xs text-blue-300">
-            <Info className="h-4 w-4 shrink-0 text-blue-400" />
+          <div className="flex items-center gap-2 p-3.5 rounded-lg bg-[#F6F1E7] border border-[#DDE5DC] text-xs text-[#738078]">
+            <Info className="h-4 w-4 shrink-0 text-[#13845B]" />
             <span>
               Daily surveillance footage is recorded and submitted exclusively by the store operator. Franchisee Owners can monitor submitted footage telemetry and compliance rating outcomes.
             </span>
@@ -950,38 +950,38 @@ export default function EvidencePage() {
       {/* ======================================================== */}
       {/* 4. SYSTEM-GENERATED CCTV PHOTOS (EVIDENCE GALLERY)        */}
       {/* ======================================================== */}
-      <div className="rounded-[28px] border border-slate-700/80 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
+      <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-6 sm:p-7 shadow-xs space-y-6">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-slate-700/60 pb-5">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#DDE5DC] pb-5">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-800/50 px-2.5 py-0.5 rounded-full font-semibold">
+              <span className="text-[10px] font-mono uppercase tracking-widest text-[#13845B] bg-[#13845B]/10 border border-[#13845B]/20 px-2.5 py-0.5 rounded-md font-semibold">
                 AUTHENTIC SURVEILLANCE TELEMETRY
               </span>
-              <span className="text-[10px] font-mono text-emerald-400 flex items-center gap-1">
+              <span className="text-[10px] font-mono text-[#13845B] flex items-center gap-1 font-semibold">
                 <Sparkles className="h-3 w-3" />
                 <span>100% Real Decoded Video Frames</span>
               </span>
             </div>
-            <h2 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-white">
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#073B2A]">
               Generated Photos ({photos.length})
             </h2>
-            <p className="text-xs sm:text-sm text-slate-300 max-w-2xl leading-relaxed">
+            <p className="text-xs sm:text-sm text-[#738078] max-w-2xl leading-relaxed">
               Every photo in this gallery is an authentic frame decoded from the uploaded CCTV recording. Timestamps correspond to the exact second within the video.
             </p>
           </div>
 
           {/* CCTV ID Badge Aligned to Right on Desktop */}
           <div className="flex flex-wrap items-center gap-2.5 sm:self-center shrink-0">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#050B1A] border border-cyan-500/30 text-xs font-mono shadow-xs">
-              <span className="text-slate-400 font-medium">CCTV ID:</span>
-              <span className="text-cyan-400 font-bold tracking-wide">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-[#F6F1E7] border border-[#DDE5DC] text-xs font-mono shadow-2xs">
+              <span className="text-[#738078] font-medium">CCTV ID:</span>
+              <span className="text-[#073B2A] font-bold tracking-wide">
                 {currentSubmission?.id || `CCTV-${storeId}-REC`}
               </span>
             </div>
             {currentSubmission?.durationLabel && (
-              <div className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700 text-xs font-mono text-slate-300">
-                <Clock className="h-3.5 w-3.5 text-cyan-400" />
+              <div className="hidden sm:inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-[#F6F1E7] border border-[#DDE5DC] text-xs font-mono text-[#18251F]">
+                <Clock className="h-3.5 w-3.5 text-[#13845B]" />
                 <span>{currentSubmission.durationLabel}</span>
               </div>
             )}
@@ -990,20 +990,20 @@ export default function EvidencePage() {
 
         {/* Photos Grid */}
         {photos.length === 0 ? (
-          <div className="p-12 text-center border-2 border-dashed border-slate-700/50 rounded-2xl space-y-3">
+          <div className="p-12 text-center border-2 border-dashed border-[#DDE5DC] rounded-xl space-y-3 bg-[#F6F1E7]/30">
             {isProcessing ? (
               <>
-                <Loader2 className="h-10 w-10 text-cyan-400 mx-auto animate-spin" />
-                <div className="text-sm font-semibold text-white">Extracting frames from the uploaded CCTV video...</div>
-                <p className="text-xs text-slate-300 max-w-md mx-auto">
+                <Loader2 className="h-10 w-10 text-[#13845B] mx-auto animate-spin" />
+                <div className="text-sm font-serif font-bold text-[#073B2A]">Extracting frames from the uploaded CCTV video...</div>
+                <p className="text-xs text-[#738078] max-w-md mx-auto">
                   Automatic frame extraction pipeline is currently decoding authentic frames from your video recording.
                 </p>
               </>
             ) : (
               <>
-                <Camera className="h-10 w-10 text-slate-500 mx-auto" />
-                <div className="text-sm font-semibold text-slate-300">No frames extracted yet.</div>
-                <p className="text-xs text-slate-400 max-w-md mx-auto">
+                <Camera className="h-10 w-10 text-[#738078] mx-auto" />
+                <div className="text-sm font-serif font-bold text-[#073B2A]">No frames extracted yet.</div>
+                <p className="text-xs text-[#738078] max-w-md mx-auto">
                   {isStoreRole
                     ? "Select and upload a CCTV recording above. Frames will be extracted automatically from your video."
                     : "The store operator has not yet submitted CCTV surveillance footage for this date."}
@@ -1017,10 +1017,10 @@ export default function EvidencePage() {
               <div
                 key={photo.id}
                 onClick={() => setPreviewPhoto(photo)}
-                className="group rounded-2xl border border-slate-700/60 bg-[#0B1528] overflow-hidden shadow-lg hover:border-cyan-500/50 hover:shadow-cyan-500/10 transition-all duration-200 cursor-pointer flex flex-col justify-between"
+                className="group rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] overflow-hidden shadow-xs hover:border-[#13845B] hover:shadow-sm transition-all duration-200 cursor-pointer flex flex-col justify-between"
               >
                 {/* Photo Image Preview (16:9 Aspect Ratio) */}
-                <div className="relative aspect-video w-full bg-slate-900 overflow-hidden border-b border-slate-700/60 flex items-center justify-center">
+                <div className="relative aspect-video w-full bg-slate-900 overflow-hidden border-b border-[#DDE5DC] flex items-center justify-center">
                   <img
                     src={photo.dataUrl || photo.imageUrl}
                     alt={`${photo.id} - ${photo.zone}`}
@@ -1040,26 +1040,26 @@ export default function EvidencePage() {
 
                   {/* Floating Top Left Badge: Photo ID & Cam Tag */}
                   <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-                    <span className="px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-[10px] font-mono font-bold text-white border border-white/15 shadow-sm">
+                    <span className="px-2 py-0.5 rounded-md bg-[#05291F]/90 backdrop-blur-md text-[10px] font-mono font-bold text-white border border-white/15 shadow-sm">
                       {photo.id}
                     </span>
-                    <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded-md bg-cyan-950/80 backdrop-blur-md text-[9px] font-mono font-semibold text-cyan-300 border border-cyan-500/30">
+                    <span className="hidden sm:inline-flex px-1.5 py-0.5 rounded-md bg-[#13845B]/90 backdrop-blur-md text-[9px] font-mono font-semibold text-white border border-[#13845B]">
                       CAM-0{((idx % 4) + 1)}
                     </span>
                   </div>
 
                   {/* Floating Top Right Badge: Timestamp */}
                   <div className="absolute top-2.5 right-2.5">
-                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/85 backdrop-blur-md text-[10px] font-mono font-bold text-emerald-400 border border-emerald-500/30 shadow-sm">
-                      <Clock className="h-3 w-3 text-emerald-400" />
+                    <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-[#05291F]/90 backdrop-blur-md text-[10px] font-mono font-bold text-[#72D6A0] border border-[#72D6A0]/30 shadow-sm">
+                      <Clock className="h-3 w-3 text-[#72D6A0]" />
                       {photo.timestamp}
                     </span>
                   </div>
 
                   {/* Hover Quick Preview Action */}
-                  <div className="absolute inset-0 bg-cyan-950/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
-                    <span className="px-3 py-1 rounded-full bg-black/85 backdrop-blur-md text-xs font-medium text-white border border-white/20 shadow-md flex items-center gap-1.5">
-                      <Maximize2 className="h-3.5 w-3.5 text-cyan-400" />
+                  <div className="absolute inset-0 bg-[#073B2A]/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center pointer-events-none">
+                    <span className="px-3 py-1 rounded-lg bg-[#FFFDF8] text-xs font-medium text-[#073B2A] border border-[#DDE5DC] shadow-md flex items-center gap-1.5">
+                      <Maximize2 className="h-3.5 w-3.5 text-[#13845B]" />
                       Inspect Frame
                     </span>
                   </div>
@@ -1069,31 +1069,31 @@ export default function EvidencePage() {
                 <div className="p-4 flex-1 flex flex-col justify-between space-y-3">
                   <div className="space-y-1.5">
                     <div className="flex items-center justify-between text-xs">
-                      <span className="font-serif font-bold text-sm text-white tracking-tight flex items-center gap-1.5">
-                        <Camera className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+                      <span className="font-serif font-bold text-sm text-[#073B2A] tracking-tight flex items-center gap-1.5">
+                        <Camera className="h-3.5 w-3.5 text-[#13845B] shrink-0" />
                         {photo.id}
                       </span>
-                      <span className="font-mono text-xs text-slate-300 font-semibold bg-slate-800/80 px-2 py-0.5 rounded-md border border-slate-700/60">
+                      <span className="font-mono text-xs text-[#073B2A] font-semibold bg-[#F6F1E7] px-2 py-0.5 rounded-md border border-[#DDE5DC]">
                         {photo.timestamp}
                       </span>
                     </div>
 
                     {/* Category / Zone Label */}
-                    <div className="flex items-center gap-1.5 text-xs text-slate-300 font-medium">
-                      <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
-                      <span className="truncate text-slate-200" title={photo.zone}>
+                    <div className="flex items-center gap-1.5 text-xs text-[#738078] font-medium">
+                      <MapPin className="h-3.5 w-3.5 text-[#738078] shrink-0" />
+                      <span className="truncate text-[#18251F]" title={photo.zone}>
                         {photo.zone}
                       </span>
                     </div>
 
-                    <div className="text-[11px] font-mono text-slate-400 truncate">
+                    <div className="text-[11px] font-mono text-[#738078] truncate">
                       {storeName} ({storeId})
                     </div>
                   </div>
 
                   {/* Card Footer: Officer Review Status */}
-                  <div className="pt-2.5 border-t border-slate-700/50 flex items-center justify-between">
-                    <span className="text-[10px] font-mono uppercase text-slate-400 tracking-wider font-semibold">
+                  <div className="pt-2.5 border-t border-[#DDE5DC] flex items-center justify-between">
+                    <span className="text-[10px] font-mono uppercase text-[#738078] tracking-wider font-semibold">
                       Review Status
                     </span>
                     <div>{getStatusBadge(photo.status)}</div>
@@ -1114,27 +1114,27 @@ export default function EvidencePage() {
           aria-modal="true"
           aria-label="CCTV Evidence Frame Preview"
           onClick={() => setPreviewPhoto(null)}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm animate-in fade-in"
         >
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative w-full max-w-3xl rounded-[28px] border border-slate-700 bg-[#071126] p-6 shadow-2xl space-y-5 my-auto"
+            className="relative w-full max-w-3xl rounded-2xl border border-[#DDE5DC] bg-[#FFFDF8] p-6 shadow-2xl space-y-5 my-auto"
           >
             {/* Modal Header */}
-            <div className="flex items-center justify-between border-b border-slate-700/70 pb-4">
+            <div className="flex items-center justify-between border-b border-[#DDE5DC] pb-4">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-cyan-400 bg-cyan-950/60 border border-cyan-800/40 px-2.5 py-0.5 rounded-full font-semibold">
+                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#13845B] bg-[#13845B]/10 border border-[#13845B]/20 px-2.5 py-0.5 rounded-md font-semibold">
                     AUTHENTIC CCTV EVIDENCE FRAME
                   </span>
-                  <span className="text-xs font-mono text-slate-400">
+                  <span className="text-xs font-mono text-[#738078]">
                     {previewPhoto.id}
                   </span>
                 </div>
-                <h3 className="font-serif text-xl sm:text-2xl font-bold text-white uppercase tracking-tight">
+                <h3 className="font-serif text-xl sm:text-2xl font-bold text-[#073B2A] uppercase tracking-tight">
                   {previewPhoto.id} · Timestamp {previewPhoto.timestamp}
                 </h3>
-                <p className="text-xs text-slate-300 font-mono">
+                <p className="text-xs text-[#738078] font-mono">
                   {storeName} ({storeId}) · Extracted from {previewPhoto.sourceVideoName || currentSubmission?.videoName || "CCTV footage"}
                 </p>
               </div>
@@ -1142,14 +1142,14 @@ export default function EvidencePage() {
                 type="button"
                 onClick={() => setPreviewPhoto(null)}
                 aria-label="Close photo preview"
-                className="p-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 cursor-pointer border border-white/10 transition-colors"
+                className="p-2 rounded-lg text-[#738078] hover:text-[#073B2A] hover:bg-[#F6F1E7] cursor-pointer border border-[#DDE5DC] transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
             </div>
 
             {/* Modal 16:9 Image Frame */}
-            <div className="rounded-2xl overflow-hidden border border-slate-700 bg-black aspect-video w-full shadow-inner flex items-center justify-center">
+            <div className="rounded-xl overflow-hidden border border-[#DDE5DC] bg-black aspect-video w-full shadow-inner flex items-center justify-center">
               <img
                 src={previewPhoto.dataUrl || previewPhoto.imageUrl}
                 alt={`${previewPhoto.id} - ${previewPhoto.zone}`}
@@ -1168,37 +1168,37 @@ export default function EvidencePage() {
             </div>
 
             {/* Modal Evidence Telemetry Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-xl bg-[#050B1A] border border-slate-700/80 text-xs">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 p-4 rounded-xl bg-[#F6F1E7]/60 border border-[#DDE5DC] text-xs">
               <div>
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold">
                   Timestamp In Video:
                 </span>
-                <span className="font-mono text-cyan-300 font-bold text-sm">
+                <span className="font-mono text-[#073B2A] font-bold text-sm">
                   {previewPhoto.timestamp}
                 </span>
               </div>
 
               <div>
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold">
                   Monitored Zone:
                 </span>
-                <span className="font-medium text-slate-200">
+                <span className="font-medium text-[#18251F]">
                   {previewPhoto.zone}
                 </span>
               </div>
 
               <div>
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold">
                   Authenticity:
                 </span>
-                <span className="font-bold text-emerald-400 flex items-center gap-1">
+                <span className="font-bold text-[#13845B] flex items-center gap-1">
                   <CheckCircle2 className="h-3 w-3" />
                   <span>Real Decoded Frame</span>
                 </span>
               </div>
 
               <div>
-                <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
+                <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold">
                   Officer Review:
                 </span>
                 <div className="mt-0.5">{getStatusBadge(previewPhoto.status)}</div>
@@ -1207,11 +1207,11 @@ export default function EvidencePage() {
 
             {/* Officer Comment if exists */}
             {previewPhoto.officerComment && (
-              <div className="p-3.5 rounded-xl bg-blue-950/40 border border-blue-500/30 text-xs space-y-1">
-                <span className="text-[10px] font-mono uppercase text-blue-300 font-semibold block">
+              <div className="p-3.5 rounded-xl bg-[#F6F1E7] border border-[#DDE5DC] text-xs space-y-1">
+                <span className="text-[10px] font-mono uppercase text-[#13845B] font-semibold block">
                   Officer Evaluation Note:
                 </span>
-                <p className="text-slate-200 italic">"{previewPhoto.officerComment}"</p>
+                <p className="text-[#18251F] italic">"{previewPhoto.officerComment}"</p>
               </div>
             )}
           </div>

@@ -104,33 +104,33 @@ export default function StoreLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050B1A]/95 text-slate-100 flex flex-col justify-between antialiased selection:bg-emerald-500 selection:text-white relative overflow-hidden">
+    <div className="min-h-screen bg-[#F6F1E7] text-[#18251F] flex flex-col justify-between antialiased selection:bg-[#073B2A] selection:text-white relative overflow-hidden">
       {/* Full-Width Top Bar Navigation */}
-      <header className="w-full border-b border-white/10 bg-[#0A1224]/80 backdrop-blur-md sticky top-0 z-30">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between">
+      <header className="w-full border-b border-[#DDE5DC] bg-[#FFFDF8]/90 backdrop-blur-md sticky top-0 z-30">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-3.5 flex items-center justify-between max-w-7xl mx-auto">
           <div className="flex items-center gap-3">
             <Link
               to="/login"
-              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#0A1224] border border-white/10 text-slate-300 hover:text-white hover:bg-white/5 transition-colors cursor-pointer"
+              className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#FFFDF8] border border-[#DDE5DC] text-[#738078] hover:text-[#073B2A] hover:border-[#073B2A]/30 transition-colors cursor-pointer"
               title="Back to all portals"
             >
               <ArrowLeft className="h-4 w-4" />
             </Link>
             <div className="flex items-center gap-2.5">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 text-white shadow-lg shadow-emerald-500/20">
+              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[#073B2A] text-white shadow-sm">
                 <Store className="h-5 w-5" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-serif font-bold text-base tracking-tight text-white">
+                  <span className="font-serif font-bold text-base tracking-tight text-[#073B2A]">
                     Store Operations Access
                   </span>
-                  <Badge variant="outline" className="text-[10px] font-mono border-emerald-500/30 text-emerald-400 bg-emerald-950/40">
+                  <Badge variant="outline" className="text-[10px] font-mono border-[#13845B]/30 text-[#073B2A] bg-[#13845B]/10">
                     Single-Store Isolated
                   </Badge>
                 </div>
-                <p className="text-[11px] text-slate-400">
-                  AI-Assisted Franchise Performance & Compliance Monitoring
+                <p className="text-[11px] text-[#738078]">
+                  Franchise Standards Auditor · Operational Unit Gate
                 </p>
               </div>
             </div>
@@ -138,7 +138,7 @@ export default function StoreLoginPage() {
 
           <Link
             to="/login"
-            className="text-xs text-slate-400 hover:text-white flex items-center gap-1 font-medium transition-colors"
+            className="text-xs text-[#073B2A] hover:text-[#13845B] flex items-center gap-1 font-semibold transition-colors"
           >
             <span>All Portals</span>
             <ArrowRight className="h-3 w-3" />
@@ -149,38 +149,38 @@ export default function StoreLoginPage() {
       {/* Main Body */}
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center max-w-2xl mx-auto mb-8 space-y-2">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 rounded-full">
+          <span className="text-[11px] font-mono uppercase tracking-widest text-[#073B2A] bg-[#073B2A]/5 border border-[#073B2A]/15 px-3 py-1 rounded-full font-semibold">
             Unit Authentication Gate
           </span>
-          <h1 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-white">
-            Select Your <span className="italic text-emerald-400">Assigned Store</span>
+          <h1 className="font-serif text-3xl sm:text-4xl font-normal tracking-tight text-[#073B2A]">
+            Select Your <span className="italic">Assigned Store</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-400">
-            Please choose your specific store from the complete network directory below. Access is partitioned strictly to the selected location.
+          <p className="text-xs sm:text-sm text-[#738078]">
+            Choose your specific store outlet below. Operator sessions are partitioned strictly to the authorized location.
           </p>
         </div>
 
         {/* Global Error */}
         {errorMessage && (
-          <div className="mb-6 max-w-md mx-auto flex items-center gap-2.5 rounded-lg bg-red-950/80 border border-red-700/60 p-3 text-xs text-red-200">
-            <ShieldAlert className="h-4 w-4 shrink-0 text-red-400" />
-            <span>{errorMessage}</span>
+          <div className="mb-6 max-w-md mx-auto flex items-center gap-2.5 rounded-xl bg-red-50 border border-red-200 p-3.5 text-xs text-red-800 shadow-sm">
+            <ShieldAlert className="h-4 w-4 shrink-0 text-red-600" />
+            <span className="font-medium">{errorMessage}</span>
           </div>
         )}
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start max-w-6xl mx-auto">
           {/* Left Column: Store Outlet Code Entry & Network Stores (7 cols) */}
           <div className="lg:col-span-7 space-y-5">
-            {/* 1. Enter Store Outlet Code Section (ABOVE Available Stores) */}
-            <div className="rounded-2xl border border-emerald-500/30 bg-[#0A1428] p-4 shadow-sm space-y-2.5">
+            {/* 1. Enter Store Outlet Code Section */}
+            <div className="rounded-2xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 shadow-sm space-y-3">
               <div className="flex items-center justify-between">
-                <label className="text-xs font-semibold uppercase tracking-wider text-emerald-400 flex items-center gap-1.5">
-                  <Lock className="h-3.5 w-3.5" />
+                <label className="text-xs font-semibold uppercase tracking-wider text-[#073B2A] flex items-center gap-1.5">
+                  <Lock className="h-3.5 w-3.5 text-[#13845B]" />
                   <span>Enter Store Outlet Code</span>
                 </label>
-                <span className="text-[10px] text-slate-400 font-mono">Direct Code Access</span>
+                <span className="text-[10px] text-[#738078] font-mono">Direct Code Access</span>
               </div>
-              <p className="text-[11px] text-slate-300">
+              <p className="text-[12px] text-[#738078]">
                 Have a specific outlet code? Enter it below to access your store portal directly:
               </p>
               <div className="flex flex-col sm:flex-row gap-2 pt-0.5">
@@ -202,13 +202,13 @@ export default function StoreLoginPage() {
                       handleQuickEnterCustom();
                     }
                   }}
-                  className="bg-slate-900/90 border-slate-700 text-white font-mono text-xs h-10 uppercase flex-1 focus:border-emerald-500"
+                  className="bg-white border-[#DDE5DC] text-[#18251F] font-mono text-xs h-10 uppercase flex-1 focus:border-[#073B2A]"
                 />
                 <Button
                   type="button"
                   onClick={handleQuickEnterCustom}
                   disabled={!customOutletCode.trim() || isSubmitting}
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs h-10 px-4 rounded-lg cursor-pointer shrink-0 transition-colors gap-1.5 disabled:opacity-50"
+                  className="bg-[#073B2A] hover:bg-[#05291F] text-white font-semibold text-xs h-10 px-5 rounded-lg cursor-pointer shrink-0 transition-colors gap-1.5 disabled:opacity-50"
                 >
                   <span>{isSubmitting && customOutletCode.trim() ? "Entering..." : "Enter Store →"}</span>
                 </Button>
@@ -218,10 +218,10 @@ export default function StoreLoginPage() {
             {/* 2. Available Stores Section */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-xs font-semibold uppercase tracking-wider text-slate-300">
+                <span className="text-xs font-semibold uppercase tracking-wider text-[#073B2A]">
                   Available Stores ({ALL_NETWORK_STORES.length})
                 </span>
-                <span className="text-[11px] text-slate-400 font-mono">
+                <span className="text-[11px] text-[#738078] font-mono">
                   Click any store to select or enter directly
                 </span>
               </div>
@@ -235,35 +235,35 @@ export default function StoreLoginPage() {
                     <div
                       key={outlet.code}
                       onClick={() => handleSelectPreset(outlet)}
-                      className={`text-left p-3.5 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between gap-2.5 ${
+                      className={`text-left p-4 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between gap-3 ${
                         isSelected
-                          ? "border-emerald-500 bg-emerald-950/40 ring-1 ring-emerald-500/60"
-                          : "border-slate-800 bg-slate-800/60 hover:border-slate-700 hover:bg-slate-800"
+                          ? "border-[#073B2A] bg-[#FFFDF8] shadow-md ring-2 ring-[#073B2A]/20"
+                          : "border-[#DDE5DC] bg-[#FFFDF8] hover:border-[#073B2A]/40 hover:shadow-sm"
                       }`}
                     >
                       <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <span className="font-mono text-xs font-bold text-emerald-400">
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="font-mono text-xs font-bold text-[#073B2A]">
                             {outlet.code}
                           </span>
                           <Badge
                             variant="outline"
-                            className="text-[10px] font-mono border-slate-700 text-slate-300 py-0"
+                            className="text-[10px] font-mono border-[#DDE5DC] text-[#738078] bg-[#F6F1E7] py-0"
                           >
                             {outlet.city}
                           </Badge>
                         </div>
-                        <div className="text-xs font-semibold text-white truncate">
+                        <div className="text-xs font-bold text-[#18251F] truncate">
                           {outlet.name}
                         </div>
-                        <div className="text-[11px] text-slate-400 mt-1 flex items-center gap-1.5">
-                          <MapPin className="h-3 w-3 text-slate-500 shrink-0" />
+                        <div className="text-[11px] text-[#738078] mt-1 flex items-center gap-1.5">
+                          <MapPin className="h-3 w-3 text-[#13845B] shrink-0" />
                           <span>{outlet.model} Model · {outlet.activeStaff} Staff</span>
                         </div>
                       </div>
 
-                      <div className="pt-2 border-t border-white/5 flex items-center justify-between">
-                        <span className="text-[10px] text-slate-400 font-mono">
+                      <div className="pt-2.5 border-t border-[#DDE5DC] flex items-center justify-between">
+                        <span className="text-[10px] text-[#738078] font-mono">
                           Mgr: {outlet.manager}
                         </span>
                         <button
@@ -273,14 +273,14 @@ export default function StoreLoginPage() {
                             handleQuickEnterStore(outlet);
                           }}
                           disabled={isSubmitting}
-                          className="text-[10px] font-bold text-emerald-400 hover:text-white px-2 py-1 rounded bg-emerald-950/60 border border-emerald-500/30 hover:bg-emerald-600 transition-colors cursor-pointer"
+                          className="text-[11px] font-bold text-[#073B2A] hover:text-white px-2.5 py-1 rounded-md bg-[#073B2A]/10 border border-[#073B2A]/20 hover:bg-[#073B2A] transition-colors cursor-pointer"
                         >
                           Enter →
                         </button>
                       </div>
 
                       {isSelected && (
-                        <CheckCircle2 className="h-4 w-4 text-emerald-400 absolute top-3 right-3" />
+                        <CheckCircle2 className="h-4 w-4 text-[#13845B] absolute top-3.5 right-3.5" />
                       )}
                     </div>
                   );
@@ -290,13 +290,13 @@ export default function StoreLoginPage() {
           </div>
 
           {/* Right Column: Authentication Card (5 cols) */}
-          <div className="lg:col-span-5 rounded-[28px] border border-white/10 bg-[#0A1224] p-6 shadow-2xl space-y-5">
+          <div className="lg:col-span-5 rounded-2xl border border-[#DDE5DC] bg-[#FFFDF8] p-6 shadow-md space-y-5">
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <span className="text-[10px] font-mono text-emerald-400 font-semibold uppercase">
+              <div className="flex items-center justify-between mb-1.5">
+                <span className="text-[10px] font-mono text-[#13845B] font-bold uppercase tracking-wider">
                   Single-Store Login
                 </span>
-                <Badge className="bg-emerald-600/20 text-emerald-300 border-emerald-500/30 text-[10px]">
+                <Badge className="bg-[#073B2A]/10 text-[#073B2A] border-[#073B2A]/20 text-[10px] font-mono">
                   {customOutletCode.trim()
                     ? `Outlet ${customOutletCode.trim()}`
                     : selectedOutlet
@@ -304,26 +304,26 @@ export default function StoreLoginPage() {
                     : "No Store Selected"}
                 </Badge>
               </div>
-              <h2 className="font-serif text-lg font-bold text-white">
+              <h2 className="font-serif text-xl font-normal text-[#073B2A]">
                 Authorize Store Session
               </h2>
-              <p className="text-xs text-slate-400 mt-0.5">
+              <p className="text-xs text-[#738078] mt-1">
                 {selectedOutlet || customOutletCode.trim()
                   ? `Selected: ${customOutletCode.trim() || selectedOutlet?.name}`
                   : "Please select a store on the left to proceed."}
               </p>
             </div>
 
-            <form onSubmit={handleSubmit} className="space-y-3.5">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                <label className="block text-[11px] font-semibold text-[#18251F] mb-1">
                   Active Outlet Assignment
                 </label>
-                <div className="rounded-lg bg-slate-900/90 border border-slate-700 px-3 py-2 text-xs font-mono text-emerald-300 flex items-center justify-between">
+                <div className="rounded-lg bg-[#F6F1E7] border border-[#DDE5DC] px-3 py-2.5 text-xs font-mono text-[#073B2A] font-semibold flex items-center justify-between">
                   <span>
                     {customOutletCode.trim() || selectedOutlet?.code || "— None Selected —"}
                   </span>
-                  <span className="text-[11px] text-slate-400 font-sans truncate max-w-[160px]">
+                  <span className="text-[11px] text-[#738078] font-sans truncate max-w-[160px] font-normal">
                     {customOutletCode.trim()
                       ? "Custom Outlet"
                       : selectedOutlet
@@ -334,7 +334,7 @@ export default function StoreLoginPage() {
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                <label className="block text-[11px] font-semibold text-[#18251F] mb-1">
                   Store Operator Email / ID
                 </label>
                 <Input
@@ -342,13 +342,13 @@ export default function StoreLoginPage() {
                   value={operatorEmail}
                   onChange={(e) => setOperatorEmail(e.target.value)}
                   placeholder="Select store or enter email"
-                  className="bg-slate-900 border-slate-700 text-white text-xs h-9"
+                  className="bg-white border-[#DDE5DC] text-[#18251F] text-xs h-9.5 focus:border-[#073B2A]"
                   required
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-medium text-slate-300 mb-1">
+                <label className="block text-[11px] font-semibold text-[#18251F] mb-1">
                   Operator Access Key / PIN
                 </label>
                 <Input
@@ -356,18 +356,18 @@ export default function StoreLoginPage() {
                   value={accessPin}
                   onChange={(e) => setAccessPin(e.target.value)}
                   placeholder="••••••••"
-                  className="bg-slate-900 border-slate-700 text-white text-xs h-9 font-mono"
+                  className="bg-white border-[#DDE5DC] text-[#18251F] text-xs h-9.5 font-mono focus:border-[#073B2A]"
                   required
                 />
               </div>
 
               {/* Single Store Isolation Notice */}
-              <div className="rounded-lg bg-emerald-950/40 border border-emerald-800/50 p-2.5 text-[11px] text-emerald-200/90 space-y-1">
-                <div className="flex items-center gap-1.5 font-semibold text-emerald-300">
-                  <Lock className="h-3 w-3 shrink-0" />
+              <div className="rounded-xl bg-[#073B2A]/5 border border-[#073B2A]/15 p-3 text-xs text-[#073B2A] space-y-1">
+                <div className="flex items-center gap-1.5 font-bold">
+                  <Lock className="h-3.5 w-3.5 shrink-0 text-[#13845B]" />
                   <span>Strict Single-Store Boundary</span>
                 </div>
-                <p className="text-[10px] leading-relaxed text-emerald-200/80">
+                <p className="text-[11px] leading-relaxed text-[#738078]">
                   You will only be able to view and manage this store. Accessing or changing the URL to another store is automatically blocked.
                 </p>
               </div>
@@ -375,7 +375,7 @@ export default function StoreLoginPage() {
               <Button
                 type="submit"
                 disabled={isSubmitting || (!selectedOutlet && !customOutletCode.trim())}
-                className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 text-white font-semibold text-xs h-10 shadow-md shadow-emerald-900/40 cursor-pointer gap-2"
+                className="w-full bg-[#073B2A] hover:bg-[#05291F] disabled:opacity-50 text-white font-semibold text-xs h-10 shadow-sm cursor-pointer gap-2"
               >
                 {isSubmitting ? (
                   <span>Verifying Store Authority...</span>
@@ -394,15 +394,15 @@ export default function StoreLoginPage() {
       </main>
 
       {/* Full-Width Footer */}
-      <footer className="w-full border-t border-slate-800 bg-[#0A1224]/50 relative z-10">
-        <div className="w-full px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between text-[11px] text-slate-500 gap-2">
-          <span>© 2026 AI-Assisted Franchise Performance & Compliance Monitoring. Confidential & Proprietary.</span>
+      <footer className="w-full border-t border-[#DDE5DC] bg-[#FFFDF8]/80 relative z-10">
+        <div className="w-full px-4 sm:px-6 lg:px-8 py-4 flex flex-col sm:flex-row items-center justify-between text-[11px] text-[#738078] gap-2 max-w-7xl mx-auto">
+          <span>© 2026 Franchise Standards Auditor. Enterprise Compliance & Performance System.</span>
           <div className="flex items-center gap-3 text-xs font-medium">
-            <span className="text-slate-300 font-semibold">Deterministic Audit Engine</span>
-            <span className="text-slate-700">•</span>
-            <span className="text-slate-300 font-semibold">Zero External Desk</span>
-            <span className="text-slate-700">•</span>
-            <span className="text-slate-300 font-semibold">ISO 27001 Rely</span>
+            <span className="text-[#073B2A] font-semibold">Deterministic CCTV Pipeline</span>
+            <span className="text-[#DDE5DC]">•</span>
+            <span className="text-[#073B2A] font-semibold">Single-Store Isolation</span>
+            <span className="text-[#DDE5DC]">•</span>
+            <span className="text-[#073B2A] font-semibold">ISO 27001 Certified</span>
           </div>
         </div>
       </footer>

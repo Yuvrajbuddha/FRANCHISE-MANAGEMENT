@@ -153,42 +153,42 @@ export default function OutletsPage() {
     switch (status) {
       case "Active":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#13845B]/10 text-[#073B2A] border border-[#13845B]/30">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#13845B]" />
             Active
           </span>
         );
       case "Under Audit":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-800">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-amber-50 text-amber-800 border border-amber-200">
             <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
             Under Audit
           </span>
         );
       case "Grace Period":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#073B2A]/5 text-[#073B2A] border border-[#073B2A]/20">
+            <span className="h-1.5 w-1.5 rounded-full bg-[#073B2A]" />
             Grace Period
           </span>
         );
       case "Notice Issued":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-50 text-orange-800 border border-orange-200 dark:bg-orange-950/40 dark:text-orange-300 dark:border-orange-800">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-orange-50 text-orange-800 border border-orange-200">
             <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
             Notice Issued
           </span>
         );
       case "Critical Escalation":
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-800">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-rose-50 text-rose-700 border border-rose-200">
             <span className="h-1.5 w-1.5 rounded-full bg-rose-500" />
             Critical Escalation
           </span>
         );
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
+          <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#F6F1E7] text-[#18251F] border border-[#DDE5DC]">
             {status}
           </span>
         );
@@ -200,25 +200,27 @@ export default function OutletsPage() {
       {/* ======================================================== */}
       {/* 1. PROFESSIONAL PAGE HEADER                              */}
       {/* ======================================================== */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#DDE5DC]">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200 dark:bg-blue-950/50 dark:border-blue-800">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#073B2A] text-white shadow-xs">
               <Store className="h-5 w-5" />
             </div>
-            <h1 className="font-serif text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
-              Outlet Registry & Operations
-            </h1>
+            <div>
+              <h1 className="font-serif text-2xl sm:text-3xl font-normal tracking-tight text-[#073B2A]">
+                Outlet Directory & Operations
+              </h1>
+            </div>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-xs sm:text-sm text-[#738078] mt-1.5">
             Real-time multi-unit franchise monitoring, operating models (COCO/FOCO), and deterministic compliance auditing across network stores.
           </p>
         </div>
 
         {/* Quick summary indicators */}
         <div className="flex items-center gap-2.5">
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800/80 text-xs font-medium text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-            <Building2 className="h-3.5 w-3.5 text-blue-600 dark:text-blue-400" />
+          <div className="hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#FFFDF8] text-xs font-semibold text-[#073B2A] border border-[#DDE5DC] shadow-xs">
+            <Building2 className="h-3.5 w-3.5 text-[#13845B]" />
             <span>
               {outlets.length} {outlets.length === 1 ? "Outlet" : "Outlets"} Network Total
             </span>
@@ -229,7 +231,7 @@ export default function OutletsPage() {
             size="sm"
             onClick={fetchOutlets}
             disabled={loading}
-            className="text-xs gap-1.5 h-9 cursor-pointer"
+            className="text-xs gap-1.5 h-9 cursor-pointer border-[#DDE5DC] bg-[#FFFDF8] text-[#18251F] hover:bg-[#F6F1E7]"
             title="Refresh outlet list"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
@@ -240,15 +242,15 @@ export default function OutletsPage() {
 
       {/* Franchise User Scope Notice (When logged in as FRANCHISE role) */}
       {isFranchiseRole && (
-        <div className="flex items-start gap-3 rounded-2xl border border-emerald-300 bg-emerald-50/80 dark:bg-emerald-950/30 dark:border-emerald-800 p-4 text-emerald-900 dark:text-emerald-200 text-xs shadow-2xs">
-          <Lock className="h-5 w-5 shrink-0 text-emerald-600 dark:text-emerald-400 mt-0.5" />
+        <div className="flex items-start gap-3 rounded-2xl border border-[#13845B]/30 bg-[#FFFDF8] p-4 text-[#18251F] text-xs shadow-xs">
+          <Lock className="h-5 w-5 shrink-0 text-[#13845B] mt-0.5" />
           <div className="space-y-1">
-            <span className="font-bold text-sm block">
+            <span className="font-bold text-sm block text-[#073B2A]">
               Single-Store Partition Active
             </span>
-            <p className="text-emerald-800 dark:text-emerald-300/90 leading-relaxed">
+            <p className="text-[#738078] leading-relaxed">
               Your account access is isolated strictly to designated location{" "}
-              <strong>{user?.assignedOutletId}</strong> ({user?.assignedOutletName || "Assigned Store"}). In accordance with enterprise RBAC privacy controls, other network stores are restricted.
+              <strong className="text-[#073B2A]">{user?.assignedOutletId}</strong> ({user?.assignedOutletName || "Assigned Store"}). In accordance with enterprise RBAC privacy controls, other network stores are restricted.
             </p>
           </div>
         </div>
@@ -258,24 +260,24 @@ export default function OutletsPage() {
       {/* 2. SEARCH & FILTER PANEL (RESPONSIVE SINGLE ROW ON DESKTOP) */}
       {/* ======================================================== */}
       {!isFranchiseRole && (
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
+        <div className="rounded-2xl border border-[#DDE5DC] bg-[#FFFDF8] p-4 shadow-sm space-y-3">
           <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
             {/* Search Input Field */}
             <div className="relative flex-1 min-w-[260px]">
-              <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400 pointer-events-none" />
+              <Search className="absolute left-3.5 top-3 h-4 w-4 text-[#738078] pointer-events-none" />
               <Input
                 type="text"
                 placeholder="Search by outlet name, code, city, or manager..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 text-xs h-10 bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-900 dark:text-white placeholder:text-slate-400 rounded-xl focus:border-blue-500 focus:ring-1 focus:ring-blue-500"
+                className="pl-10 text-xs h-10 bg-white border-[#DDE5DC] text-[#18251F] placeholder:text-[#738078] rounded-xl focus:border-[#073B2A]"
                 aria-label="Search by outlet name, code, city, or manager"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
+                  className="absolute right-3 top-3 text-[#738078] hover:text-[#18251F]"
                 >
                   <X className="h-4 w-4" />
                 </button>
@@ -288,7 +290,7 @@ export default function OutletsPage() {
               <select
                 value={selectedCity}
                 onChange={(e) => setSelectedCity(e.target.value)}
-                className="h-10 px-3 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                className="h-10 px-3 text-xs rounded-xl border border-[#DDE5DC] bg-white text-[#18251F] font-medium focus:border-[#073B2A] cursor-pointer"
                 aria-label="Filter by City"
               >
                 {CITIES.map((c) => (
@@ -302,7 +304,7 @@ export default function OutletsPage() {
               <select
                 value={selectedModel}
                 onChange={(e) => setSelectedModel(e.target.value)}
-                className="h-10 px-3 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                className="h-10 px-3 text-xs rounded-xl border border-[#DDE5DC] bg-white text-[#18251F] font-medium focus:border-[#073B2A] cursor-pointer"
                 aria-label="Filter by Operating Model"
               >
                 {MODELS.map((m) => (
@@ -316,7 +318,7 @@ export default function OutletsPage() {
               <select
                 value={selectedStatus}
                 onChange={(e) => setSelectedStatus(e.target.value)}
-                className="h-10 px-3 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 font-medium focus:outline-none focus:ring-1 focus:ring-blue-500 cursor-pointer"
+                className="h-10 px-3 text-xs rounded-xl border border-[#DDE5DC] bg-white text-[#18251F] font-medium focus:border-[#073B2A] cursor-pointer"
                 aria-label="Filter by Status"
               >
                 {STATUSES.map((s) => (
@@ -329,19 +331,19 @@ export default function OutletsPage() {
           </div>
 
           {/* Active indicator & Clear filters row */}
-          <div className="flex items-center justify-between text-xs text-slate-500 pt-2 border-t border-slate-100 dark:border-slate-800">
-            <span className="font-medium text-slate-700 dark:text-slate-300">
+          <div className="flex items-center justify-between text-xs text-[#738078] pt-2 border-t border-[#DDE5DC]">
+            <span className="font-medium text-[#18251F]">
               Showing{" "}
-              <strong className="text-slate-900 dark:text-white">
+              <strong className="text-[#073B2A]">
                 {filteredOutlets.length}
               </strong>{" "}
               of{" "}
-              <strong className="text-slate-900 dark:text-white">
+              <strong className="text-[#073B2A]">
                 {outlets.length}
               </strong>{" "}
               outlets
               {hasActiveFilters && (
-                <span className="text-slate-400 ml-1.5 hidden sm:inline">
+                <span className="text-[#738078] ml-1.5 hidden sm:inline">
                   (filtered from network directory)
                 </span>
               )}
@@ -351,7 +353,7 @@ export default function OutletsPage() {
               <button
                 type="button"
                 onClick={clearAllFilters}
-                className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-800 font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                className="text-xs text-[#073B2A] hover:text-[#13845B] font-semibold flex items-center gap-1 cursor-pointer transition-colors"
               >
                 <X className="h-3.5 w-3.5" />
                 <span>Clear all filters</span>
@@ -363,15 +365,15 @@ export default function OutletsPage() {
 
       {/* Loading state */}
       {loading && (
-        <div className="flex flex-col items-center justify-center py-20 text-slate-500 gap-3">
-          <RefreshCw className="h-6 w-6 animate-spin text-blue-600" />
+        <div className="flex flex-col items-center justify-center py-20 text-[#738078] gap-3">
+          <RefreshCw className="h-6 w-6 animate-spin text-[#073B2A]" />
           <span className="text-xs font-medium">Loading verified franchise outlets...</span>
         </div>
       )}
 
       {/* Error state */}
       {error && !loading && (
-        <div className="rounded-2xl border border-red-200 bg-red-50/80 p-4 text-xs text-red-700 dark:border-red-900/60 dark:bg-red-950/40 dark:text-red-300 flex items-center gap-3">
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-xs text-red-800 flex items-center gap-3">
           <AlertOctagon className="h-5 w-5 shrink-0 text-red-600" />
           <div>
             <span className="font-bold block text-sm">Database Connection Error</span>
@@ -382,15 +384,15 @@ export default function OutletsPage() {
 
       {/* Empty results state */}
       {!loading && !error && filteredOutlets.length === 0 && (
-        <div className="rounded-2xl border border-dashed border-slate-300 dark:border-slate-800 p-12 text-center space-y-3 bg-white dark:bg-slate-900 shadow-2xs">
-          <div className="h-12 w-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+        <div className="rounded-2xl border border-dashed border-[#DDE5DC] p-12 text-center space-y-3 bg-[#FFFDF8] shadow-xs">
+          <div className="h-12 w-12 rounded-2xl bg-[#F6F1E7] text-[#738078] flex items-center justify-center mx-auto">
             <Store className="h-6 w-6" />
           </div>
           <div className="space-y-1">
-            <h3 className="font-serif text-base font-bold text-slate-900 dark:text-white">
+            <h3 className="font-serif text-base font-normal text-[#073B2A]">
               No Outlets Match the Selected Criteria
             </h3>
-            <p className="text-xs text-slate-500 max-w-sm mx-auto">
+            <p className="text-xs text-[#738078] max-w-sm mx-auto">
               {hasActiveFilters
                 ? "No franchise outlets match your search and filter parameters. Try clearing or relaxing your filters."
                 : "Zero outlet records found in the system registry."}
@@ -402,7 +404,7 @@ export default function OutletsPage() {
                 size="sm"
                 variant="outline"
                 onClick={clearAllFilters}
-                className="text-xs cursor-pointer"
+                className="text-xs cursor-pointer border-[#DDE5DC] bg-white text-[#18251F]"
               >
                 Reset Filter Settings
               </Button>
@@ -426,17 +428,17 @@ export default function OutletsPage() {
             return (
               <div
                 key={outlet.outletId}
-                className="bg-white dark:bg-slate-900 border border-slate-200/90 dark:border-slate-800 rounded-2xl p-5 shadow-xs hover:border-blue-400 dark:hover:border-blue-500/50 hover:shadow-md transition-all flex flex-col justify-between gap-4 group"
+                className="bg-[#FFFDF8] border border-[#DDE5DC] rounded-2xl p-5 shadow-xs hover:border-[#073B2A]/40 hover:shadow-md transition-all flex flex-col justify-between gap-4 group"
               >
                 {/* Card Top: Code, Model, Status & Name */}
                 <div className="space-y-3">
                   {/* Top Badges Row */}
                   <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-blue-700 bg-blue-50 border border-blue-200 dark:bg-blue-950/60 dark:text-blue-300 dark:border-blue-800 px-2.5 py-0.5 rounded-lg shadow-2xs">
+                      <span className="font-mono text-xs font-bold text-[#073B2A] bg-[#073B2A]/10 border border-[#073B2A]/20 px-2.5 py-0.5 rounded-lg shadow-2xs">
                         {outlet.outletId}
                       </span>
-                      <span className="text-[11px] font-semibold text-slate-700 bg-slate-100 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 px-2 py-0.5 rounded-lg">
+                      <span className="text-[11px] font-semibold text-[#18251F] bg-[#F6F1E7] border border-[#DDE5DC] px-2 py-0.5 rounded-lg">
                         {outlet.operatingModel} Model
                       </span>
                     </div>
@@ -447,18 +449,18 @@ export default function OutletsPage() {
                   {/* Outlet Prominent Name & Location */}
                   <div>
                     <h3
-                      className="text-base sm:text-lg font-bold text-slate-900 dark:text-white leading-snug truncate"
+                      className="text-base sm:text-lg font-bold text-[#18251F] leading-snug truncate group-hover:text-[#073B2A] transition-colors"
                       title={outlet.name}
                     >
                       {outlet.name}
                     </h3>
-                    <div className="flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400 mt-1 font-medium truncate">
-                      <MapPin className="h-3.5 w-3.5 text-slate-400 shrink-0" />
+                    <div className="flex items-center gap-1.5 text-xs text-[#738078] mt-1 font-medium truncate">
+                      <MapPin className="h-3.5 w-3.5 text-[#13845B] shrink-0" />
                       <span className="truncate">
                         {outlet.city}, {outlet.state}
                       </span>
                       {outlet.address && (
-                        <span className="text-slate-400 truncate hidden sm:inline">
+                        <span className="text-[#738078] truncate hidden sm:inline">
                           · {outlet.address}
                         </span>
                       )}
@@ -466,15 +468,15 @@ export default function OutletsPage() {
                   </div>
 
                   {/* Operational & Contact Info Box */}
-                  <div className="rounded-xl bg-slate-50/90 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-3 space-y-2 text-xs">
+                  <div className="rounded-xl bg-[#F6F1E7]/60 border border-[#DDE5DC] p-3 space-y-2 text-xs">
                     {/* Assigned Franchisee */}
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] text-slate-500 flex items-center gap-1.5 shrink-0">
-                        <Building className="h-3 w-3 text-slate-400" />
+                      <span className="text-[11px] text-[#738078] flex items-center gap-1.5 shrink-0">
+                        <Building className="h-3 w-3 text-[#13845B]" />
                         <span>Franchisee:</span>
                       </span>
                       <span
-                        className="font-medium text-slate-900 dark:text-slate-100 truncate text-right"
+                        className="font-medium text-[#18251F] truncate text-right"
                         title={outlet.assignedFranchiseUser}
                       >
                         {outlet.assignedFranchiseUser}
@@ -483,22 +485,22 @@ export default function OutletsPage() {
 
                     {/* Store Manager */}
                     <div className="flex items-center justify-between gap-2">
-                      <span className="text-[11px] text-slate-500 flex items-center gap-1.5 shrink-0">
-                        <User className="h-3 w-3 text-slate-400" />
+                      <span className="text-[11px] text-[#738078] flex items-center gap-1.5 shrink-0">
+                        <User className="h-3 w-3 text-[#13845B]" />
                         <span>Store Manager:</span>
                       </span>
-                      <span className="font-semibold text-slate-900 dark:text-slate-100 truncate text-right">
+                      <span className="font-semibold text-[#18251F] truncate text-right">
                         {outlet.manager}
                       </span>
                     </div>
 
                     {/* Contact Phone & Email */}
-                    <div className="flex items-center justify-between gap-2 pt-1 border-t border-slate-200/60 dark:border-slate-700/60 text-[11px] text-slate-600 dark:text-slate-300">
-                      <span className="flex items-center gap-1 text-slate-500 shrink-0">
-                        <Phone className="h-3 w-3 text-slate-400" />
+                    <div className="flex items-center justify-between gap-2 pt-1 border-t border-[#DDE5DC] text-[11px] text-[#738078]">
+                      <span className="flex items-center gap-1 shrink-0">
+                        <Phone className="h-3 w-3 text-[#13845B]" />
                         <span>Contact:</span>
                       </span>
-                      <span className="font-mono text-slate-800 dark:text-slate-200 truncate">
+                      <span className="font-mono text-[#18251F] truncate">
                         {outlet.contactPhone || outlet.contactEmail || "N/A"}
                       </span>
                     </div>
@@ -510,27 +512,27 @@ export default function OutletsPage() {
                   {/* Compliance & Risk Indicators (Separated Sections with Progress Bars) */}
                   <div className="grid grid-cols-2 gap-2.5">
                     {/* 1. Compliance Indicator */}
-                    <div className="rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/30 p-2.5 space-y-1.5">
+                    <div className="rounded-xl border border-[#DDE5DC] bg-white p-2.5 space-y-1.5">
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-slate-500 font-medium">Compliance</span>
+                        <span className="text-[#738078] font-medium">Compliance</span>
                         <span
-                          className={`font-bold ${
+                          className={`font-bold font-mono ${
                             isHighCompliance
-                              ? "text-emerald-600 dark:text-emerald-400"
+                              ? "text-[#13845B]"
                               : isMidCompliance
-                              ? "text-amber-600 dark:text-amber-400"
-                              : "text-rose-600 dark:text-rose-400"
+                              ? "text-amber-600"
+                              : "text-rose-600"
                           }`}
                         >
                           {outlet.complianceScore}%
                         </span>
                       </div>
                       {/* Compact Progress Bar */}
-                      <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                      <div className="w-full bg-[#F6F1E7] h-1.5 rounded-full overflow-hidden border border-[#DDE5DC]">
                         <div
                           className={`h-full rounded-full transition-all duration-300 ${
                             isHighCompliance
-                              ? "bg-emerald-500"
+                              ? "bg-[#13845B]"
                               : isMidCompliance
                               ? "bg-amber-500"
                               : "bg-rose-500"
@@ -538,7 +540,7 @@ export default function OutletsPage() {
                           style={{ width: `${Math.min(outlet.complianceScore, 100)}%` }}
                         />
                       </div>
-                      <span className="text-[10px] text-slate-400 block text-right font-medium">
+                      <span className="text-[10px] text-[#738078] block text-right font-medium">
                         {isHighCompliance
                           ? "Audit Compliant"
                           : isMidCompliance
@@ -548,27 +550,27 @@ export default function OutletsPage() {
                     </div>
 
                     {/* 2. Deterministic Risk Score Indicator */}
-                    <div className="rounded-xl border border-slate-100 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-800/30 p-2.5 space-y-1.5">
+                    <div className="rounded-xl border border-[#DDE5DC] bg-white p-2.5 space-y-1.5">
                       <div className="flex items-center justify-between text-[11px]">
-                        <span className="text-slate-500 font-medium">Risk Score</span>
+                        <span className="text-[#738078] font-medium">Risk Score</span>
                         <span
-                          className={`font-bold ${
+                          className={`font-bold font-mono ${
                             isLowRisk
-                              ? "text-emerald-600 dark:text-emerald-400"
+                              ? "text-[#13845B]"
                               : isMidRisk
-                              ? "text-amber-600 dark:text-amber-400"
-                              : "text-rose-600 dark:text-rose-400"
+                              ? "text-amber-600"
+                              : "text-rose-600"
                           }`}
                         >
                           {outlet.riskScore}/100
                         </span>
                       </div>
                       {/* Compact Progress Bar */}
-                      <div className="w-full bg-slate-200 dark:bg-slate-700 h-1.5 rounded-full overflow-hidden">
+                      <div className="w-full bg-[#F6F1E7] h-1.5 rounded-full overflow-hidden border border-[#DDE5DC]">
                         <div
                           className={`h-full rounded-full transition-all duration-300 ${
                             isLowRisk
-                              ? "bg-emerald-500"
+                              ? "bg-[#13845B]"
                               : isMidRisk
                               ? "bg-amber-500"
                               : "bg-rose-500"
@@ -576,7 +578,7 @@ export default function OutletsPage() {
                           style={{ width: `${Math.min(Math.max(outlet.riskScore, 5), 100)}%` }}
                         />
                       </div>
-                      <span className="text-[10px] text-slate-400 block text-right font-medium">
+                      <span className="text-[10px] text-[#738078] block text-right font-medium">
                         {isLowRisk ? "Low Risk" : isMidRisk ? "Moderate Risk" : "Elevated Risk"}
                       </span>
                     </div>
@@ -585,7 +587,7 @@ export default function OutletsPage() {
                   {/* Action Button: View Outlet Dossier */}
                   <Button
                     onClick={() => navigate(`/outlets/${outlet.outletId}`)}
-                    className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs h-9.5 rounded-xl shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                    className="w-full bg-[#073B2A] hover:bg-[#05291F] text-white font-semibold text-xs h-9.5 rounded-xl shadow-xs transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
                   >
                     <span>View Outlet Dossier</span>
                     <ArrowRight className="h-3.5 w-3.5 group-hover:translate-x-0.5 transition-transform" />

@@ -169,13 +169,13 @@ export default function RiskPage() {
       {/* Header & Controls */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-amber-700 block mb-1 font-semibold">
-            0–100 Deterministic Calculation
+          <span className="text-[11px] font-mono uppercase tracking-widest text-[#13845B] block mb-1 font-semibold">
+            0–100 Deterministic Risk Framework
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            Explainable <span className="italic text-amber-600">Risk Intelligence Engine</span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#073B2A]">
+            Explainable Risk Intelligence Engine
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1">
+          <p className="text-xs sm:text-sm text-[#738078] mt-1">
             Mathematically transparent multi-factor risk scoring with deterministic weighting and explanatory synthesis.
           </p>
         </div>
@@ -185,7 +185,7 @@ export default function RiskPage() {
             <select
               value={selectedOutlet}
               onChange={(e) => setSelectedOutlet(e.target.value)}
-              className="h-8 rounded-md border border-slate-200 bg-white px-2.5 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800 cursor-pointer"
+              className="h-9 rounded-lg border border-[#DDE5DC] bg-white px-3 text-xs font-semibold text-[#18251F] cursor-pointer"
             >
               {OUTLETS_LIST.map((o) => (
                 <option key={o.id} value={o.id}>
@@ -199,7 +199,7 @@ export default function RiskPage() {
             size="sm"
             onClick={handleRecalculate}
             disabled={recalculating}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white gap-1.5 cursor-pointer text-xs shadow-sm h-8"
+            className="bg-[#073B2A] hover:bg-[#05291F] text-[#72D6A0] font-semibold gap-1.5 cursor-pointer text-xs shadow-xs h-9 px-4 rounded-lg"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${recalculating ? "animate-spin" : ""}`} />
             <span>Recalculate Score</span>
@@ -208,17 +208,17 @@ export default function RiskPage() {
       </div>
 
       {/* Deterministic Mathematical Formula Banner */}
-      <div className="rounded-xl border border-indigo-200 bg-indigo-50/60 dark:border-indigo-900/60 dark:bg-indigo-950/30 p-4 space-y-2 text-xs">
+      <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-4 space-y-2 text-xs shadow-xs">
         <div className="flex items-center justify-between">
-          <span className="font-bold text-indigo-900 dark:text-indigo-200 flex items-center gap-1.5 text-sm">
-            <Scale className="h-4 w-4 text-indigo-600" />
+          <span className="font-bold text-[#073B2A] flex items-center gap-1.5 text-sm">
+            <Scale className="h-4 w-4 text-[#13845B]" />
             <span>Deterministic Scoring Algorithm (Zero LLM Numerical Hallucination)</span>
           </span>
-          <span className="text-[11px] font-mono text-indigo-600 dark:text-indigo-400 font-semibold">
+          <span className="text-[11px] font-mono text-[#13845B] font-semibold">
             Normalized Range: 0–100
           </span>
         </div>
-        <p className="text-slate-700 dark:text-slate-300 font-mono text-[11px] bg-white/70 dark:bg-slate-900/60 p-2.5 rounded-lg border border-indigo-100 dark:border-indigo-900/40">
+        <p className="text-[#18251F] font-mono text-[11px] bg-[#F6F1E7] p-2.5 rounded-lg border border-[#DDE5DC]">
           Score = (Factor 1 [Sales] × 30%) + (Factor 2 [Compliance] × 20%) + (Factor 3 [Complaints] × 20%) + (Factor 4 [Evidence] × 15%) + (Factor 5 [Operations] × 10%) + (Factor 6 [Inventory] × 5%)
         </p>
       </div>
@@ -227,40 +227,40 @@ export default function RiskPage() {
       {assessment && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Risk Gauge Card */}
-          <Card className="border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-xs flex flex-col justify-between">
             <CardHeader className="pb-2">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#738078]">
                 Composite Deterministic Risk
               </span>
               <div className="flex items-center justify-between pt-1">
-                <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100">
+                <CardTitle className="text-base font-bold text-[#073B2A]">
                   {assessment.outletId}
                 </CardTitle>
                 {getRiskLevelBadge(assessment.level)}
               </div>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="text-center py-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800">
+              <div className="text-center py-4 bg-[#F6F1E7] rounded-xl border border-[#DDE5DC]">
                 <span className={`text-6xl font-black font-mono tracking-tight ${getScoreColor(assessment.score)}`}>
                   {assessment.score}
                 </span>
-                <span className="text-2xl font-bold text-slate-400">/100</span>
-                <span className="block text-xs font-semibold text-slate-500 uppercase tracking-wider mt-1">
+                <span className="text-2xl font-bold text-[#738078]">/100</span>
+                <span className="block text-xs font-semibold text-[#738078] uppercase tracking-wider mt-1">
                   Risk Tier: {assessment.level}
                 </span>
               </div>
 
               {/* Range Legend */}
               <div className="space-y-1.5 text-[10px]">
-                <div className="flex justify-between font-semibold text-slate-500">
+                <div className="flex justify-between font-semibold text-[#738078]">
                   <span>0–20 Low</span>
-                  <span>21–40 Moderate</span>
-                  <span>41–60 Elevated</span>
+                  <span>21–40 Mod</span>
+                  <span>41–60 Elev</span>
                   <span>61–80 High</span>
-                  <span>81–100 Critical</span>
+                  <span>81–100 Crit</span>
                 </div>
-                <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden flex">
-                  <div className="w-[20%] bg-emerald-500" title="Low (0-20)" />
+                <div className="w-full bg-[#E8EFE8] h-2 rounded-full overflow-hidden flex">
+                  <div className="w-[20%] bg-[#13845B]" title="Low (0-20)" />
                   <div className="w-[20%] bg-teal-500" title="Moderate (21-40)" />
                   <div className="w-[20%] bg-amber-500" title="Elevated (41-60)" />
                   <div className="w-[20%] bg-orange-500" title="High (61-80)" />
@@ -268,7 +268,7 @@ export default function RiskPage() {
                 </div>
               </div>
 
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+              <div className="pt-2 border-t border-[#DDE5DC] text-[11px] text-[#738078] flex items-center justify-between">
                 <span>Assessment ID: {assessment.assessmentId}</span>
                 <span>{assessment.assessedAt}</span>
               </div>
@@ -276,39 +276,39 @@ export default function RiskPage() {
           </Card>
 
           {/* Explainable AI Narrative Card: "Why this outlet received its score" */}
-          <Card className="lg:col-span-2 border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+          <Card className="lg:col-span-2 border-[#DDE5DC] bg-[#FFFDF8] shadow-xs flex flex-col justify-between">
             <CardHeader className="pb-2">
               <div className="flex items-center justify-between">
-                <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Sparkles className="h-4 w-4 text-indigo-600" />
+                <CardTitle className="text-base font-bold text-[#073B2A] flex items-center gap-2">
+                  <Sparkles className="h-4 w-4 text-[#13845B]" />
                   <span>Explainability Synthesis: Why {assessment.outletId} Received {assessment.score}/100</span>
                 </CardTitle>
-                <Badge className="bg-indigo-500/10 text-indigo-700 dark:text-indigo-300 border-indigo-500/30 text-[10px]">
-                  Gemini Narrative Synthesis
+                <Badge className="bg-[#13845B]/10 text-[#13845B] border-[#13845B]/30 text-[10px]">
+                  Narrative Synthesis
                 </Badge>
               </div>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-xs text-[#738078]">
                 Objective natural-language breakdown based on the deterministic mathematical calculation.
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 text-xs">
               {/* Natural Language Explanation */}
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200/80 dark:border-slate-800 text-slate-800 dark:text-slate-200 text-sm leading-relaxed">
+              <div className="p-4 rounded-xl bg-[#F6F1E7] border border-[#DDE5DC] text-[#18251F] text-sm leading-relaxed">
                 {assessment.explanation}
               </div>
 
               {/* Primary Contributing Factors List */}
               <div className="space-y-2">
-                <span className="font-bold text-slate-900 dark:text-slate-100 text-xs uppercase tracking-wider block">
+                <span className="font-bold text-[#073B2A] text-xs uppercase tracking-wider block">
                   Contributing Factors:
                 </span>
                 <ul className="space-y-1.5">
                   {assessment.contributingFactors.map((factor, idx) => (
                     <li
                       key={idx}
-                      className="flex items-start gap-2 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800"
+                      className="flex items-start gap-2 text-[#18251F] bg-white p-2.5 rounded-lg border border-[#DDE5DC]"
                     >
-                      <div className="h-2 w-2 rounded-full bg-indigo-600 mt-1.5 shrink-0" />
+                      <div className="h-2 w-2 rounded-full bg-[#13845B] mt-1.5 shrink-0" />
                       <span className="font-medium text-xs">{factor}</span>
                     </li>
                   ))}
@@ -323,47 +323,47 @@ export default function RiskPage() {
       {assessment && (
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <h3 className="text-sm font-bold uppercase tracking-wider text-[#073B2A]">
               Deterministic Weighted Component Matrix (Weights Sum = 100%)
             </h3>
-            <span className="text-xs text-slate-400">All factors normalized to 0–100 scale</span>
+            <span className="text-xs text-[#738078]">All factors normalized to 0–100 scale</span>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
             {Object.entries(assessment.factors).map(([key, f]) => (
-              <Card key={key} className="border-slate-200 dark:border-slate-800 shadow-2xs">
+              <Card key={key} className="border-[#DDE5DC] bg-[#FFFDF8] shadow-xs">
                 <CardHeader className="pb-2 pt-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#738078]">
                       Weight: {Math.round(f.weight * 100)}%
                     </span>
-                    <Badge variant="outline" className="font-mono text-[10px]">
+                    <Badge variant="outline" className="font-mono text-[10px] border-[#DDE5DC] bg-[#F6F1E7] text-[#073B2A]">
                       +{f.weightedScore} pts
                     </Badge>
                   </div>
-                  <CardTitle className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  <CardTitle className="text-sm font-bold text-[#073B2A]">
                     {f.name}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-xs">
                   <div className="flex items-baseline justify-between">
-                    <span className="text-2xl font-black font-mono text-slate-900 dark:text-slate-100">
+                    <span className="text-2xl font-black font-mono text-[#073B2A]">
                       {f.rawScore}
-                      <span className="text-xs font-normal text-slate-400">/100</span>
+                      <span className="text-xs font-normal text-[#738078]">/100</span>
                     </span>
-                    <span className="text-[11px] text-slate-500 font-mono">
+                    <span className="text-[11px] text-[#738078] font-mono">
                       Contributes {f.weightedScore} to final score
                     </span>
                   </div>
 
-                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden">
+                  <div className="w-full bg-[#E8EFE8] h-1.5 rounded-full overflow-hidden">
                     <div
                       style={{ width: `${f.rawScore}%` }}
                       className={`h-full rounded-full ${getProgressColor(f.rawScore)}`}
                     />
                   </div>
 
-                  <p className="text-slate-600 dark:text-slate-300 text-[11px] leading-relaxed pt-1">
+                  <p className="text-[#738078] text-[11px] leading-relaxed pt-1">
                     {f.description}
                   </p>
                 </CardContent>
@@ -375,15 +375,15 @@ export default function RiskPage() {
 
       {/* Network Risk Comparison Table (Multi-Outlet Scenarios) */}
       {!isFranchise && networkAssessments.length > 0 && (
-        <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+        <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] overflow-hidden shadow-xs">
+          <div className="p-4 border-b border-[#DDE5DC] flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <Activity className="h-4 w-4 text-indigo-600" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <Activity className="h-4 w-4 text-[#13845B]" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#073B2A]">
                 Network Outlet Deterministic Risk Benchmark ({networkAssessments.length} Outlets)
               </h3>
             </div>
-            <span className="text-xs text-slate-400 font-mono">
+            <span className="text-xs text-[#738078] font-mono">
               Calculated Across Multi-Table PostgreSQL Realities
             </span>
           </div>
@@ -392,18 +392,18 @@ export default function RiskPage() {
             {networkAssessments.map((item) => (
               <div
                 key={item.outletId}
-                className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-4 sm:p-5 shadow-xs w-full max-w-full box-border min-w-0 space-y-3"
               >
                 {/* Header: Outlet ID, Risk Level & Composite Score */}
-                <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div className="flex flex-wrap items-center justify-between gap-2.5 border-b border-[#DDE5DC] pb-3">
                   <div className="flex items-center gap-2.5">
-                    <span className="font-mono text-sm font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2.5 py-1 rounded-lg border border-indigo-200 dark:border-indigo-800">
+                    <span className="font-mono text-sm font-bold text-[#073B2A] bg-[#F6F1E7] px-2.5 py-1 rounded-lg border border-[#DDE5DC]">
                       {item.outletId}
                     </span>
                     {getRiskLevelBadge(item.level)}
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-[11px] font-medium text-slate-400 uppercase">Composite Risk</span>
+                    <span className="text-[11px] font-medium text-[#738078] uppercase">Composite Risk</span>
                     <span className={`font-mono font-extrabold text-base ${getScoreColor(item.score)}`}>
                       {item.score}/100
                     </span>
@@ -412,43 +412,43 @@ export default function RiskPage() {
 
                 {/* Factor Breakdown Rows in vertical/grid format */}
                 <div className="space-y-2 text-xs">
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#738078] block">
                     Weighted Deterministic Factor Realities:
                   </span>
-                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 bg-slate-50 dark:bg-slate-800/40 p-3 rounded-lg border border-slate-100 dark:border-slate-800">
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2 bg-[#F6F1E7] p-3 rounded-lg border border-[#DDE5DC]">
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-400 block font-medium">Sales (30%)</span>
-                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                      <span className="text-[10px] text-[#738078] block font-medium">Sales (30%)</span>
+                      <span className="font-mono font-bold text-[#18251F] text-xs">
                         {item.factors.salesAnomalies.rawScore} pts
                       </span>
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-400 block font-medium">Compliance (20%)</span>
-                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                      <span className="text-[10px] text-[#738078] block font-medium">Compliance (20%)</span>
+                      <span className="font-mono font-bold text-[#18251F] text-xs">
                         {item.factors.compliance.rawScore} pts
                       </span>
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-400 block font-medium">Complaints (20%)</span>
-                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                      <span className="text-[10px] text-[#738078] block font-medium">Complaints (20%)</span>
+                      <span className="font-mono font-bold text-[#18251F] text-xs">
                         {item.factors.complaints.rawScore} pts
                       </span>
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-400 block font-medium">Evidence (15%)</span>
-                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                      <span className="text-[10px] text-[#738078] block font-medium">Evidence (15%)</span>
+                      <span className="font-mono font-bold text-[#18251F] text-xs">
                         {item.factors.evidence.rawScore} pts
                       </span>
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-400 block font-medium">Operations (10%)</span>
-                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                      <span className="text-[10px] text-[#738078] block font-medium">Operations (10%)</span>
+                      <span className="font-mono font-bold text-[#18251F] text-xs">
                         {item.factors.operational.rawScore} pts
                       </span>
                     </div>
                     <div className="space-y-0.5">
-                      <span className="text-[10px] text-slate-400 block font-medium">Inventory (5%)</span>
-                      <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-xs">
+                      <span className="text-[10px] text-[#738078] block font-medium">Inventory (5%)</span>
+                      <span className="font-mono font-bold text-[#18251F] text-xs">
                         {item.factors.inventory.rawScore} pts
                       </span>
                     </div>
@@ -456,14 +456,14 @@ export default function RiskPage() {
                 </div>
 
                 {/* Card Footer: Action */}
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                <div className="pt-2 border-t border-[#DDE5DC] flex justify-end">
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => setSelectedOutlet(item.outletId)}
-                    className="h-8 px-3 text-xs gap-1.5 cursor-pointer text-slate-700 dark:text-slate-200"
+                    className="h-8 px-3 text-xs gap-1.5 cursor-pointer text-[#073B2A] border-[#DDE5DC] hover:bg-[#F6F1E7]"
                   >
-                    <Activity className="h-3.5 w-3.5 text-indigo-500" />
+                    <Activity className="h-3.5 w-3.5 text-[#13845B]" />
                     <span>Inspect Risk Dossier</span>
                   </Button>
                 </div>

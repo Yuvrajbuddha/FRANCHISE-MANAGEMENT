@@ -1,88 +1,62 @@
 @import "tailwindcss";
 
 @theme {
-  --color-border: hsl(var(--border));
-  --color-input: hsl(var(--input));
-  --color-ring: hsl(var(--ring));
-  --color-background: hsl(var(--background));
-  --color-foreground: hsl(var(--foreground));
+  --color-border: #DDE5DC;
+  --color-input: #DDE5DC;
+  --color-ring: #073B2A;
+  --color-background: #F6F1E7;
+  --color-foreground: #18251F;
 
-  --color-primary: hsl(var(--primary));
-  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-primary: #073B2A;
+  --color-primary-foreground: #FFFFFF;
 
-  --color-secondary: hsl(var(--secondary));
-  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-secondary: #EAE3D2;
+  --color-secondary-foreground: #073B2A;
 
-  --color-destructive: hsl(var(--destructive));
-  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-destructive: #DC2626;
+  --color-destructive-foreground: #FFFFFF;
 
-  --color-muted: hsl(var(--muted));
-  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-muted: #EFE9DC;
+  --color-muted-foreground: #738078;
 
-  --color-accent: hsl(var(--accent));
-  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-accent: #13845B;
+  --color-accent-foreground: #FFFFFF;
 
-  --color-popover: hsl(var(--popover));
-  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-card: #FFFDF8;
+  --color-card-foreground: #18251F;
 
-  --color-card: hsl(var(--card));
-  --color-card-foreground: hsl(var(--card-foreground));
-
-  /* Enterprise Surface Colors */
-  --color-dark-bg: #F8FAFC;
-  --color-dark-surface: #FFFFFF;
-  --color-dark-card: #FFFFFF;
-  --color-dark-card-lighter: #F1F5F9;
-  --color-dark-border: rgba(0, 0, 0, 0.08);
-
-  --color-accent-indigo: #4F46FF;
-  --color-accent-purple: #6366F1;
-  --color-accent-green: #00B894;
-  --color-accent-emerald: #10B981;
-  --color-accent-orange: #F59E0B;
-  --color-accent-teal: #0D9488;
+  /* Franchise Standards Auditor Palette */
+  --color-forest-950: #031D15;
+  --color-forest-900: #05291F;
+  --color-forest-800: #073B2A;
+  --color-forest-700: #0D4E39;
+  --color-forest-600: #10684C;
+  --color-emerald-600: #13845B;
+  --color-emerald-500: #16A34A;
+  --color-mint-400: #72D6A0;
+  --color-mint-300: #9CE3BE;
+  --color-mint-200: #C7F1DC;
+  --color-mint-100: #E6F8EF;
+  --color-cream-100: #F6F1E7;
+  --color-cream-50: #FAF7F0;
+  --color-offwhite: #FFFDF8;
+  --color-dark-text: #18251F;
+  --color-muted-text: #738078;
+  --color-forest-border: #DDE5DC;
 
   --font-serif: "Newsreader", Georgia, Cambria, "Times New Roman", Times, serif;
   --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-
-  --radius-lg: var(--radius);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-sm: calc(var(--radius) - 4px);
-}
-
-@layer base {
-  :root {
-    --background: 214 32% 95%; /* #EEF2F6 */
-    --foreground: 222 47% 11%; /* #0F172A */
-    --card: 0 0% 100%; /* #FFFFFF */
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 221 83% 53%; /* #2563EB */
-    --primary-foreground: 0 0% 100%;
-    --secondary: 210 40% 96%; /* #F1F5F9 */
-    --secondary-foreground: 222 47% 11%;
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%; /* #64748B */
-    --accent: 210 40% 96%;
-    --accent-foreground: 222 47% 11%;
-    --destructive: 0 84% 60%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 214 32% 91%; /* #E2E8F0 */
-    --input: 214 32% 91%;
-    --ring: 221 83% 53%;
-    --radius: 1rem;
-  }
 }
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: #DDE5DC;
   }
   body {
-    background-color: #EEF2F6;
-    color: #0F172A;
+    background-color: #F6F1E7;
+    color: #18251F;
     font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
   }
   .font-serif {
     font-family: var(--font-serif);
@@ -90,4 +64,20 @@
   .font-sans {
     font-family: var(--font-sans);
   }
+}
+
+/* Custom scrollbars matching the brand */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #F6F1E7;
+}
+::-webkit-scrollbar-thumb {
+  background: #CAD5C9;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #9DB09D;
 }

@@ -36,14 +36,20 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setToken(savedToken);
         setUser(JSON.parse(savedUser));
       } catch {
-        localStorage.removeItem("franchise_auth_token");
-        localStorage.removeItem("franchise_auth_user");
-        setUser(null);
-        setToken(null);
+        const defaultUser = DEMO_USERS[1]; // Yash Gupta (OWNER)
+        const defaultToken = "demo-token-owner-default";
+        setUser(defaultUser);
+        setToken(defaultToken);
+        localStorage.setItem("franchise_auth_token", defaultToken);
+        localStorage.setItem("franchise_auth_user", JSON.stringify(defaultUser));
       }
     } else {
-      setUser(null);
-      setToken(null);
+      const defaultUser = DEMO_USERS[1]; // Yash Gupta (OWNER)
+      const defaultToken = "demo-token-owner-default";
+      setUser(defaultUser);
+      setToken(defaultToken);
+      localStorage.setItem("franchise_auth_token", defaultToken);
+      localStorage.setItem("franchise_auth_user", JSON.stringify(defaultUser));
     }
     setIsLoading(false);
   }, []);

@@ -312,13 +312,13 @@ export default function AlertsPage() {
       {/* Header and Scan Trigger */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-amber-700 block mb-1 font-semibold">
+          <span className="text-[11px] font-mono uppercase tracking-widest text-[#13845B] block mb-1 font-semibold">
             Operational Prioritization
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            Alerts & <span className="italic text-amber-600">Prioritization Matrix</span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#073B2A]">
+            Alerts & Prioritization Matrix
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1">
+          <p className="text-xs sm:text-sm text-[#738078] mt-1">
             Automated anomaly detection across 8 operational streams with tiered priority escalation.
           </p>
         </div>
@@ -329,7 +329,7 @@ export default function AlertsPage() {
             size="sm"
             onClick={fetchAlerts}
             disabled={loading}
-            className="gap-1.5 cursor-pointer text-xs"
+            className="gap-1.5 cursor-pointer text-xs border-[#DDE5DC] bg-[#FFFDF8] text-[#073B2A] hover:bg-[#F6F1E7] h-9 px-3.5 rounded-lg"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
             <span>Refresh</span>
@@ -340,7 +340,7 @@ export default function AlertsPage() {
               size="sm"
               onClick={handleGenerateFreshAlerts}
               disabled={isGenerating}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white gap-1.5 cursor-pointer text-xs shadow-sm"
+              className="bg-[#073B2A] hover:bg-[#05291F] text-[#72D6A0] gap-1.5 cursor-pointer text-xs shadow-xs h-9 px-4 rounded-lg font-semibold"
             >
               <Zap className={`h-4 w-4 ${isGenerating ? "animate-spin" : ""}`} />
               <span>{isGenerating ? "Scanning Triggers..." : "Scan & Generate Alerts"}</span>
@@ -351,46 +351,46 @@ export default function AlertsPage() {
 
       {/* Role notice if franchise */}
       {isFranchise && (
-        <div className="rounded-lg border border-emerald-500/30 bg-emerald-50/60 dark:bg-emerald-950/20 px-3.5 py-2.5 text-xs text-emerald-900 dark:text-emerald-300">
+        <div className="rounded-lg border border-[#DDE5DC] bg-[#F6F1E7] px-3.5 py-2.5 text-xs text-[#073B2A]">
           Store Isolation Active: Viewing operational threshold alerts strictly for your assigned outlet (<strong>{userOutlet}</strong>).
         </div>
       )}
 
       {/* Priority Escalation Guide Ribbon */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-2 text-xs">
-        <span className="font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider text-[11px] block">
+      <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-4 shadow-xs space-y-2 text-xs">
+        <span className="font-bold text-[#073B2A] uppercase tracking-wider text-[11px] block">
           Tiered Priority Escalation Framework:
         </span>
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-1">
-          <div className="p-2.5 rounded-lg border border-red-200 bg-red-50/50 dark:border-red-950 dark:bg-red-950/20 space-y-1">
-            <span className="font-bold text-red-700 dark:text-red-400 block text-xs">
+          <div className="p-2.5 rounded-lg border border-red-200 bg-red-50/50 space-y-1">
+            <span className="font-bold text-red-700 block text-xs">
               CRITICAL: Immediate Escalation
             </span>
-            <p className="text-[11px] text-slate-600 dark:text-slate-300">
+            <p className="text-[11px] text-[#738078]">
               Foreign body complaint, cash ratio {">"} 65%, or critical hygiene failure.
             </p>
           </div>
-          <div className="p-2.5 rounded-lg border border-orange-200 bg-orange-50/50 dark:border-orange-950 dark:bg-orange-950/20 space-y-1">
-            <span className="font-bold text-orange-700 dark:text-orange-400 block text-xs">
+          <div className="p-2.5 rounded-lg border border-orange-200 bg-orange-50/50 space-y-1">
+            <span className="font-bold text-orange-700 block text-xs">
               ELEVATED/HIGH: Priority Review
             </span>
-            <p className="text-[11px] text-slate-600 dark:text-slate-300">
+            <p className="text-[11px] text-[#738078]">
               Multiple inventory variances, unverified CCTV, or overdue CAPA milestones.
             </p>
           </div>
-          <div className="p-2.5 rounded-lg border border-slate-200 dark:border-white/10 bg-slate-50/50 dark:bg-[#0A1224] space-y-1">
-            <span className="font-bold text-teal-600 dark:text-teal-400 block text-xs">
+          <div className="p-2.5 rounded-lg border border-[#DDE5DC] bg-[#F6F1E7] space-y-1">
+            <span className="font-bold text-teal-700 block text-xs">
               MODERATE: Periodic Review
             </span>
-            <p className="text-[11px] text-slate-600 dark:text-slate-300">
+            <p className="text-[11px] text-[#738078]">
               Telemetry drift, non-critical inventory delta, or customer wait time peak.
             </p>
           </div>
-          <div className="p-2.5 rounded-lg border border-slate-200 bg-slate-50/50 dark:border-slate-800 dark:bg-slate-800/40 space-y-1">
-            <span className="font-bold text-slate-700 dark:text-slate-300 block text-xs">
+          <div className="p-2.5 rounded-lg border border-[#DDE5DC] bg-[#F6F1E7] space-y-1">
+            <span className="font-bold text-[#073B2A] block text-xs">
               LOW: Routine Monitoring
             </span>
-            <p className="text-[11px] text-slate-600 dark:text-slate-300">
+            <p className="text-[11px] text-[#738078]">
               Baseline telemetry checks within par tolerance.
             </p>
           </div>
@@ -399,81 +399,81 @@ export default function AlertsPage() {
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-xs">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#738078]">
               Total Active Alerts
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 font-mono">
+              <span className="text-2xl font-extrabold text-[#073B2A] font-mono">
                 {summary.total}
               </span>
-              <Badge variant="outline" className="text-[10px]">
+              <Badge variant="outline" className="text-[10px] border-[#DDE5DC] bg-[#F6F1E7] text-[#073B2A]">
                 {summary.newCount} New Unreviewed
               </Badge>
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-[11px] text-[#738078] mt-1">
               Active operational queue in PostgreSQL
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-xs">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-red-500">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-red-600">
               Critical Escalations
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-red-600 dark:text-red-400 font-mono">
+              <span className="text-2xl font-extrabold text-red-600 font-mono">
                 {summary.critical}
               </span>
               <span className="text-xs text-red-600 font-semibold">Immediate Action</span>
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-[11px] text-[#738078] mt-1">
               Immediate officer attention mandatory
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-xs">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-orange-500">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-orange-600">
               High / Elevated Queue
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-orange-600 dark:text-orange-400 font-mono">
+              <span className="text-2xl font-extrabold text-orange-600 font-mono">
                 {summary.highOrElevated}
               </span>
-              <span className="text-xs text-slate-400">Prioritized Review</span>
+              <span className="text-xs text-[#738078]">Prioritized Review</span>
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-[11px] text-[#738078] mt-1">
               Prioritized supervisory inspection
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-xs">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-500">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#13845B]">
               Reviewed & Cleared
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-emerald-600 dark:text-emerald-400 font-mono">
+              <span className="text-2xl font-extrabold text-[#13845B] font-mono">
                 {summary.reviewed + summary.resolved}
               </span>
-              <span className="text-xs text-emerald-600 font-medium font-mono">
+              <span className="text-xs text-[#13845B] font-medium font-mono">
                 {summary.resolved} Resolved
               </span>
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-[11px] text-[#738078] mt-1">
               Audited by compliance officers
             </p>
           </CardContent>
@@ -481,16 +481,16 @@ export default function AlertsPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
+      <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-4 shadow-xs space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
           {/* Search Input */}
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#738078]" />
             <Input
               placeholder="Search alert message, ID, outlet..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 text-xs h-9"
+              className="pl-9 text-xs h-9 border-[#DDE5DC] bg-white rounded-lg"
             />
           </div>
 
@@ -500,7 +500,7 @@ export default function AlertsPage() {
               <select
                 value={selectedOutlet}
                 onChange={(e) => setSelectedOutlet(e.target.value)}
-                className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+                className="w-full h-9 rounded-lg border border-[#DDE5DC] bg-white px-3 text-xs font-medium text-[#18251F] focus:outline-none cursor-pointer"
               >
                 <option value="All Outlets">Filter Outlet: All</option>
                 <option value="OUT-042">OUT-042 (Lucknow Flagship)</option>
@@ -516,7 +516,7 @@ export default function AlertsPage() {
             <select
               value={selectedType}
               onChange={(e) => setSelectedType(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+              className="w-full h-9 rounded-lg border border-[#DDE5DC] bg-white px-3 text-xs font-medium text-[#18251F] focus:outline-none cursor-pointer"
             >
               <option value="All Types">Filter Trigger: All 8 Types</option>
               {ALERT_TYPES.map((t) => (
@@ -532,7 +532,7 @@ export default function AlertsPage() {
             <select
               value={selectedSeverity}
               onChange={(e) => setSelectedSeverity(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+              className="w-full h-9 rounded-lg border border-[#DDE5DC] bg-white px-3 text-xs font-medium text-[#18251F] focus:outline-none cursor-pointer"
             >
               <option value="All Severities">Filter Severity: All</option>
               {ALERT_SEVERITIES.map((s) => (
@@ -548,7 +548,7 @@ export default function AlertsPage() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+              className="w-full h-9 rounded-lg border border-[#DDE5DC] bg-white px-3 text-xs font-medium text-[#18251F] focus:outline-none cursor-pointer"
             >
               <option value="All Statuses">Filter Status: All</option>
               <option value="NEW">NEW (Unreviewed)</option>
@@ -559,7 +559,7 @@ export default function AlertsPage() {
           </div>
         </div>
 
-        <div className="flex items-center justify-between text-xs text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between text-xs text-[#738078] pt-1 border-t border-[#DDE5DC]">
           <span>Showing {displayedAlerts.length} operational alerts</span>
           {(selectedOutlet !== "All Outlets" ||
             selectedType !== "All Types" ||
@@ -574,7 +574,7 @@ export default function AlertsPage() {
                 setSelectedStatus("All Statuses");
                 setSearchQuery("");
               }}
-              className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium cursor-pointer"
+              className="text-[#13845B] hover:underline font-semibold cursor-pointer"
             >
               Reset all filters
             </button>
@@ -583,21 +583,21 @@ export default function AlertsPage() {
       </div>
 
       {/* Alerts Table */}
-      <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-        <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+      <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] overflow-hidden shadow-xs">
+        <div className="p-4 border-b border-[#DDE5DC] flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Bell className="h-4 w-4 text-indigo-600" />
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <Bell className="h-4 w-4 text-[#073B2A]" />
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#073B2A]">
               Prioritized Alert Queue ({displayedAlerts.length} items)
             </h3>
           </div>
-          <span className="text-xs text-slate-400 font-mono">
+          <span className="text-xs text-[#738078] font-mono">
             Table: outlet_alerts (PostgreSQL)
           </span>
         </div>
 
         {displayedAlerts.length === 0 ? (
-          <div className="p-12 text-center text-slate-400 text-xs">
+          <div className="p-12 text-center text-[#738078] text-xs">
             No operational alerts match the selected criteria.
           </div>
         ) : (
@@ -605,28 +605,28 @@ export default function AlertsPage() {
             {displayedAlerts.map((item) => (
               <div
                 key={item.id}
-                className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-4 sm:p-5 shadow-xs w-full max-w-full box-border min-w-0 space-y-3 hover:border-[#073B2A] transition-all"
               >
                 {/* Header: Alert ID, Outlet, Type & Status */}
-                <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-[#DDE5DC] pb-3">
                   <div className="space-y-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                      <span className="font-mono text-xs font-bold text-[#073B2A] bg-[#F6F1E7] px-2 py-0.5 rounded border border-[#DDE5DC]">
                         {item.alertId}
                       </span>
                       <Link
                         to={`/outlets/${item.outletId}`}
-                        className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 hover:text-indigo-700 dark:hover:bg-indigo-900 transition-colors inline-flex items-center gap-1 text-slate-700 dark:text-slate-200"
+                        className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-[#F6F1E7] hover:bg-[#DDE5DC] transition-colors inline-flex items-center gap-1 text-[#073B2A]"
                       >
                         <Building className="h-3 w-3" />
                         <span>{item.outletId}</span>
                       </Link>
-                      <div className="flex items-center gap-1.5 font-medium text-xs text-slate-700 dark:text-slate-300">
+                      <div className="flex items-center gap-1.5 font-medium text-xs text-[#18251F]">
                         {getTypeIcon(item.type)}
                         <span>{item.type}</span>
                       </div>
                     </div>
-                    <span className="block text-[11px] text-slate-400 font-mono">
+                    <span className="block text-[11px] text-[#738078] font-mono">
                       Logged: {item.createdDate}
                     </span>
                   </div>
@@ -639,52 +639,52 @@ export default function AlertsPage() {
                 {/* Vertical Message & Metadata */}
                 <div className="space-y-2 text-xs">
                   <div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#738078] block mb-1">
                       Operational Signal Message:
                     </span>
-                    <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                    <p className="text-xs text-[#18251F] leading-relaxed bg-[#F6F1E7] p-2.5 rounded-lg border border-[#DDE5DC]">
                       {item.message}
                     </p>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <div className="pt-2 border-t border-[#DDE5DC] flex flex-wrap items-center justify-between gap-2 text-xs">
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-400 font-medium">Priority Protocol:</span>
-                      <span className="font-semibold text-slate-700 dark:text-slate-300">
+                      <span className="text-[#738078] font-medium">Priority Protocol:</span>
+                      <span className="font-semibold text-[#18251F]">
                         {item.priority}
                       </span>
                     </div>
 
                     <div className="flex items-center gap-2">
-                      <span className="text-slate-400 font-medium">Impact Risk Score:</span>
+                      <span className="text-[#738078] font-medium">Impact Risk Score:</span>
                       {item.riskScore !== undefined && item.riskScore !== null ? (
                         <span
                           className={`font-mono text-xs font-bold px-2 py-0.5 rounded ${
                             item.riskScore > 60
-                              ? "bg-red-50 text-red-700 dark:bg-red-950/40 dark:text-red-400"
+                              ? "bg-red-50 text-red-700"
                               : item.riskScore > 40
-                              ? "bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400"
-                              : "bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400"
+                              ? "bg-amber-50 text-amber-700"
+                              : "bg-emerald-50 text-[#13845B]"
                           }`}
                         >
                           {item.riskScore}/100
                         </span>
                       ) : (
-                        <span className="text-slate-400 font-mono">—</span>
+                        <span className="text-[#738078] font-mono">—</span>
                       )}
                     </div>
                   </div>
                 </div>
 
                 {/* Footer Action */}
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+                <div className="pt-2 border-t border-[#DDE5DC] flex justify-end">
                   <Button
                     size="sm"
                     variant="outline"
                     onClick={() => handleOpenDetailModal(item)}
-                    className="h-8 px-3 text-xs gap-1.5 cursor-pointer text-slate-700 dark:text-slate-200"
+                    className="h-8 px-3 text-xs gap-1.5 cursor-pointer text-[#073B2A] border-[#DDE5DC] hover:bg-[#F6F1E7]"
                   >
-                    <Eye className="h-3.5 w-3.5 text-slate-500" />
+                    <Eye className="h-3.5 w-3.5 text-[#13845B]" />
                     <span>Review Alert Dossier</span>
                   </Button>
                 </div>
@@ -697,53 +697,53 @@ export default function AlertsPage() {
       {/* Alert Detail & Review Modal Dialog */}
       {activeAlert && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+          <div className="bg-[#FFFDF8] border border-[#DDE5DC] rounded-xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
             {/* Modal Header */}
-            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+            <div className="flex items-start justify-between border-b border-[#DDE5DC] pb-3">
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                  <span className="font-mono text-xs font-bold text-[#073B2A] bg-[#F6F1E7] px-2 py-0.5 rounded border border-[#DDE5DC]">
                     {activeAlert.alertId}
                   </span>
                   {getAlertSeverityBadge(activeAlert.severity)}
                   {getStatusBadge(activeAlert.status)}
                 </div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2 pt-1">
+                <h3 className="text-base font-bold text-[#073B2A] flex items-center gap-2 pt-1 font-serif">
                   {getTypeIcon(activeAlert.type)}
                   <span>{activeAlert.type}</span>
                 </h3>
               </div>
               <button
                 onClick={() => setActiveAlert(null)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                className="text-[#738078] hover:text-[#073B2A] p-1 cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             {/* Alert Message Box */}
-            <div className="p-3.5 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800 space-y-1 text-xs">
-              <span className="font-bold text-slate-400 uppercase text-[10px] block">
+            <div className="p-3.5 bg-[#F6F1E7] rounded-xl border border-[#DDE5DC] space-y-1 text-xs">
+              <span className="font-bold text-[#738078] uppercase text-[10px] block">
                 Operational Alert Description
               </span>
-              <p className="text-slate-800 dark:text-slate-200 text-sm leading-relaxed font-medium">
+              <p className="text-[#18251F] text-sm leading-relaxed font-medium">
                 {activeAlert.message}
               </p>
             </div>
 
             {/* Metadata Grid */}
             <div className="grid grid-cols-2 gap-3 text-xs">
-              <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase block font-semibold">
+              <div className="p-3 rounded-lg border border-[#DDE5DC] bg-white space-y-1">
+                <span className="text-[10px] text-[#738078] uppercase block font-semibold">
                   Linked Store Outlet
                 </span>
                 <div className="flex items-center justify-between">
-                  <span className="font-mono font-bold text-slate-900 dark:text-slate-100 text-sm">
+                  <span className="font-mono font-bold text-[#073B2A] text-sm">
                     {activeAlert.outletId}
                   </span>
                   <Link
                     to={`/outlets/${activeAlert.outletId}`}
-                    className="text-indigo-600 hover:underline inline-flex items-center gap-1 font-medium text-[11px]"
+                    className="text-[#13845B] hover:underline inline-flex items-center gap-1 font-semibold text-[11px]"
                   >
                     <span>View Store</span>
                     <ArrowRight className="h-3 w-3" />
@@ -751,29 +751,29 @@ export default function AlertsPage() {
                 </div>
               </div>
 
-              <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase block font-semibold">
+              <div className="p-3 rounded-lg border border-[#DDE5DC] bg-white space-y-1">
+                <span className="text-[10px] text-[#738078] uppercase block font-semibold">
                   Priority Directive
                 </span>
-                <span className="font-bold text-slate-800 dark:text-slate-200 block text-xs">
+                <span className="font-bold text-[#18251F] block text-xs">
                   {activeAlert.priority}
                 </span>
               </div>
 
-              <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase block font-semibold">
+              <div className="p-3 rounded-lg border border-[#DDE5DC] bg-white space-y-1">
+                <span className="text-[10px] text-[#738078] uppercase block font-semibold">
                   Composite Risk Score
                 </span>
-                <span className="font-mono font-bold text-sm text-slate-900 dark:text-slate-100">
+                <span className="font-mono font-bold text-sm text-[#073B2A]">
                   {activeAlert.riskScore !== undefined && activeAlert.riskScore !== null ? `${activeAlert.riskScore}/100` : "Baseline Par"}
                 </span>
               </div>
 
-              <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
-                <span className="text-[10px] text-slate-400 uppercase block font-semibold">
+              <div className="p-3 rounded-lg border border-[#DDE5DC] bg-white space-y-1">
+                <span className="text-[10px] text-[#738078] uppercase block font-semibold">
                   Detection Date & Time
                 </span>
-                <span className="font-mono text-slate-700 dark:text-slate-300 block text-xs">
+                <span className="font-mono text-[#738078] block text-xs">
                   {activeAlert.timestamp || activeAlert.createdDate}
                 </span>
               </div>
@@ -781,20 +781,20 @@ export default function AlertsPage() {
 
             {/* Previous Review Log if exists */}
             {activeAlert.reviewedBy && (
-              <div className="p-3 rounded-lg bg-indigo-50/50 dark:bg-indigo-950/20 border border-indigo-100 dark:border-indigo-900/40 text-xs space-y-1">
-                <div className="flex justify-between font-bold text-indigo-950 dark:text-indigo-200">
+              <div className="p-3 rounded-lg bg-[#F6F1E7] border border-[#DDE5DC] text-xs space-y-1">
+                <div className="flex justify-between font-bold text-[#073B2A]">
                   <span>Last Reviewed By: {activeAlert.reviewedBy}</span>
                   <span className="font-mono text-[10px]">{activeAlert.reviewedAt}</span>
                 </div>
                 {activeAlert.reviewNotes && (
-                  <p className="text-slate-600 dark:text-slate-300 pt-0.5">{activeAlert.reviewNotes}</p>
+                  <p className="text-[#18251F] pt-0.5">{activeAlert.reviewNotes}</p>
                 )}
               </div>
             )}
 
             {/* Officer Review Form: Mark as Reviewed */}
-            <form onSubmit={handleSubmitReview} className="space-y-3 pt-2 border-t border-slate-100 dark:border-slate-800 text-xs">
-              <span className="font-bold text-slate-900 dark:text-slate-100 block">
+            <form onSubmit={handleSubmitReview} className="space-y-3 pt-2 border-t border-[#DDE5DC] text-xs">
+              <span className="font-bold text-[#073B2A] block">
                 Officer Action: Update Alert Status & Log Remarks
               </span>
 
@@ -807,11 +807,11 @@ export default function AlertsPage() {
                     className={`py-2 rounded-lg border font-bold text-xs cursor-pointer ${
                       reviewStatusInput === st
                         ? st === "RESOLVED"
-                          ? "bg-emerald-600 text-white border-emerald-600"
+                          ? "bg-[#13845B] text-white border-[#13845B]"
                           : st === "IN_PROGRESS"
                           ? "bg-amber-600 text-white border-amber-600"
-                          : "bg-indigo-600 text-white border-indigo-600"
-                        : "border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400"
+                          : "bg-[#073B2A] text-[#72D6A0] border-[#073B2A]"
+                        : "border-[#DDE5DC] text-[#738078] hover:bg-[#F6F1E7]"
                     }`}
                   >
                     {st.replace("_", " ")}
@@ -820,7 +820,7 @@ export default function AlertsPage() {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="font-medium text-[#18251F] block mb-1">
                   Review & Mitigation Notes
                 </label>
                 <textarea
@@ -828,7 +828,7 @@ export default function AlertsPage() {
                   value={reviewNotesInput}
                   onChange={(e) => setReviewNotesInput(e.target.value)}
                   placeholder="Enter supervisory verification, store manager instruction, or corrective resolution..."
-                  className="w-full rounded-md border border-slate-200 p-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  className="w-full rounded-lg border border-[#DDE5DC] bg-white p-2.5 text-xs text-[#18251F] focus:border-[#073B2A] outline-none"
                   required
                 />
               </div>
@@ -839,6 +839,7 @@ export default function AlertsPage() {
                   variant="outline"
                   size="sm"
                   onClick={() => setActiveAlert(null)}
+                  className="border-[#DDE5DC] bg-white text-[#738078] hover:text-[#073B2A] h-9 px-4 rounded-lg cursor-pointer"
                 >
                   Cancel
                 </Button>
@@ -846,7 +847,7 @@ export default function AlertsPage() {
                   type="submit"
                   size="sm"
                   disabled={isSubmittingReview}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer"
+                  className="bg-[#073B2A] hover:bg-[#05291F] text-[#72D6A0] font-semibold cursor-pointer h-9 px-4 rounded-lg"
                 >
                   {isSubmittingReview ? "Saving..." : "Commit Alert Status to PostgreSQL"}
                 </Button>

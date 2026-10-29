@@ -263,31 +263,31 @@ export default function OutletDetailPage() {
       )}
 
       {/* Header Banner with Mandatory Outlet Fields */}
-      <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-4">
+      <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 sm:p-6 shadow-xs space-y-4">
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2">
-              <span className="font-mono text-xs font-bold text-indigo-700 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/60 px-2.5 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+              <span className="font-mono text-xs font-bold text-[#073B2A] bg-[#073B2A]/10 px-2.5 py-0.5 rounded border border-[#073B2A]/20">
                 {outlet.outletId}
               </span>
-              <Badge variant="outline" className="font-semibold text-xs">
+              <Badge variant="outline" className="font-semibold text-xs border-[#DDE5DC] text-[#18251F]">
                 {outlet.operatingModel} Model
               </Badge>
               {getStatusBadge(outlet.status)}
             </div>
 
-            <h1 className="text-2xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#073B2A]">
               {outlet.name}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-500 dark:text-slate-400 pt-1">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-[#738078] pt-1">
               <span className="flex items-center gap-1">
-                <MapPin className="h-3.5 w-3.5 text-slate-400" />
+                <MapPin className="h-3.5 w-3.5 text-[#738078]" />
                 {outlet.address}, {outlet.city}, {outlet.state}
               </span>
-              <span>•</span>
+              <span>·</span>
               <span className="flex items-center gap-1">
-                <Calendar className="h-3.5 w-3.5 text-slate-400" />
+                <Calendar className="h-3.5 w-3.5 text-[#738078]" />
                 Commissioned: {outlet.openedDate}
               </span>
             </div>
@@ -295,29 +295,29 @@ export default function OutletDetailPage() {
 
           {/* Quick Metrics Badge Ribbon */}
           <div className="flex items-center gap-2 sm:gap-3 self-start">
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-center">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+            <div className="rounded-lg border border-[#DDE5DC] bg-[#F6F1E7]/60 px-3.5 py-2 text-center">
+              <span className="text-[10px] uppercase font-bold text-[#738078] block">
                 Compliance
               </span>
-              <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="text-sm font-bold text-[#13845B] font-mono">
                 {outlet.complianceScore}%
               </span>
             </div>
 
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-center">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+            <div className="rounded-lg border border-[#DDE5DC] bg-[#F6F1E7]/60 px-3.5 py-2 text-center">
+              <span className="text-[10px] uppercase font-bold text-[#738078] block">
                 Risk Score
               </span>
-              <span className="text-sm font-bold text-amber-600 dark:text-amber-400">
+              <span className="text-sm font-bold text-amber-600 font-mono">
                 {outlet.riskScore}
               </span>
             </div>
 
-            <div className="rounded-lg border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 px-3 py-2 text-center">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">
+            <div className="rounded-lg border border-[#DDE5DC] bg-[#F6F1E7]/60 px-3.5 py-2 text-center">
+              <span className="text-[10px] uppercase font-bold text-[#738078] block">
                 Revenue
               </span>
-              <span className="text-sm font-bold text-slate-800 dark:text-slate-200 font-mono">
+              <span className="text-sm font-bold text-[#073B2A] font-mono">
                 ₹{(Number(outlet.revenueMonthly) / 100000).toFixed(1)}L
               </span>
             </div>
@@ -325,35 +325,35 @@ export default function OutletDetailPage() {
         </div>
 
         {/* Assigned Franchise User & Operational Contacts Strip */}
-        <div className="pt-3 border-t border-slate-100 dark:border-slate-800 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-            <UserCheck className="h-4 w-4 text-indigo-500 shrink-0" />
+        <div className="pt-3 border-t border-[#DDE5DC] grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div className="flex items-center gap-2 text-[#18251F]">
+            <UserCheck className="h-4 w-4 text-[#13845B] shrink-0" />
             <div>
-              <span className="text-[10px] text-slate-400 block font-medium">Assigned Franchise User</span>
-              <span className="font-semibold">{outlet.assignedFranchiseUser}</span>
+              <span className="text-[10px] text-[#738078] block font-medium">Assigned Franchise User</span>
+              <span className="font-semibold text-[#073B2A]">{outlet.assignedFranchiseUser}</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-            <Store className="h-4 w-4 text-emerald-500 shrink-0" />
+          <div className="flex items-center gap-2 text-[#18251F]">
+            <Store className="h-4 w-4 text-[#13845B] shrink-0" />
             <div>
-              <span className="text-[10px] text-slate-400 block font-medium">Store Operations Manager</span>
-              <span className="font-semibold">{outlet.manager}</span>
+              <span className="text-[10px] text-[#738078] block font-medium">Store Operations Manager</span>
+              <span className="font-semibold text-[#073B2A]">{outlet.manager}</span>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 text-slate-600 dark:text-slate-300">
-            <Phone className="h-4 w-4 text-slate-400 shrink-0" />
+          <div className="flex items-center gap-2 text-[#18251F]">
+            <Phone className="h-4 w-4 text-[#738078] shrink-0" />
             <div>
-              <span className="text-[10px] text-slate-400 block font-medium">Contact & Support</span>
-              <span>{outlet.contactPhone}</span>
+              <span className="text-[10px] text-[#738078] block font-medium">Contact & Support</span>
+              <span className="font-mono text-[#18251F]">{outlet.contactPhone}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* 11 Mandatory Sections/Tabs Navigation Bar */}
-      <div className="border-b border-slate-200 dark:border-slate-800 overflow-x-auto scrollbar-none">
+      <div className="border-b border-[#DDE5DC] overflow-x-auto scrollbar-none">
         <nav className="flex space-x-1 min-w-max pb-px" aria-label="Outlet Tabs">
           {TABS.map((tab) => {
             const isActive = activeTab === tab;
@@ -363,8 +363,8 @@ export default function OutletDetailPage() {
                 onClick={() => setActiveTab(tab)}
                 className={`px-3.5 py-2 text-xs font-semibold rounded-t-lg transition-all cursor-pointer border-b-2 ${
                   isActive
-                    ? "border-indigo-600 text-indigo-600 dark:border-indigo-400 dark:text-indigo-400 bg-indigo-50/50 dark:bg-indigo-950/20"
-                    : "border-transparent text-slate-500 hover:text-slate-900 hover:border-slate-300 dark:text-slate-400 dark:hover:text-slate-200"
+                    ? "border-[#073B2A] text-[#073B2A] bg-[#073B2A]/5"
+                    : "border-transparent text-[#738078] hover:text-[#073B2A] hover:border-[#DDE5DC]"
                 }`}
               >
                 {tab}
@@ -382,80 +382,80 @@ export default function OutletDetailPage() {
         {activeTab === "Overview" && (
           <div className="space-y-5">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Card className="border-slate-200 dark:border-slate-800">
+              <Card className="border-[#DDE5DC] bg-[#FFFDF8]">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-xs uppercase font-bold text-slate-400">
+                  <CardTitle className="text-xs uppercase font-bold text-[#738078]">
                     Station Profile
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-xs">
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-slate-400">Outlet Code:</span>
-                    <span className="font-mono font-bold">{outlet.outletId}</span>
+                  <div className="flex justify-between py-1 border-b border-[#DDE5DC]">
+                    <span className="text-[#738078]">Outlet Code:</span>
+                    <span className="font-mono font-bold text-[#073B2A]">{outlet.outletId}</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-slate-400">Operating Model:</span>
-                    <Badge variant="outline">{outlet.operatingModel}</Badge>
+                  <div className="flex justify-between py-1 border-b border-[#DDE5DC]">
+                    <span className="text-[#738078]">Operating Model:</span>
+                    <Badge variant="outline" className="border-[#DDE5DC] text-[#18251F]">{outlet.operatingModel}</Badge>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-slate-400">Territory:</span>
-                    <span>{outlet.city}, {outlet.state}</span>
+                  <div className="flex justify-between py-1 border-b border-[#DDE5DC]">
+                    <span className="text-[#738078]">Territory:</span>
+                    <span className="text-[#18251F]">{outlet.city}, {outlet.state}</span>
                   </div>
                   <div className="flex justify-between py-1">
-                    <span className="text-slate-400">Audit Status:</span>
-                    <span className="font-medium text-emerald-600">{outlet.status}</span>
+                    <span className="text-[#738078]">Audit Status:</span>
+                    <span className="font-medium text-[#13845B]">{outlet.status}</span>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-slate-200 dark:border-slate-800">
+              <Card className="border-[#DDE5DC] bg-[#FFFDF8]">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-xs uppercase font-bold text-slate-400">
+                  <CardTitle className="text-xs uppercase font-bold text-[#738078]">
                     Financial Performance
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-xs">
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-slate-400">Monthly Run-Rate:</span>
-                    <span className="font-mono font-bold">₹{Number(outlet.revenueMonthly).toLocaleString()}</span>
+                  <div className="flex justify-between py-1 border-b border-[#DDE5DC]">
+                    <span className="text-[#738078]">Monthly Run-Rate:</span>
+                    <span className="font-mono font-bold text-[#073B2A]">₹{Number(outlet.revenueMonthly).toLocaleString()}</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-slate-400">EBITDA Margin:</span>
-                    <span className="font-bold text-indigo-600">{outlet.ebitdaMargin}%</span>
+                  <div className="flex justify-between py-1 border-b border-[#DDE5DC]">
+                    <span className="text-[#738078]">EBITDA Margin:</span>
+                    <span className="font-bold text-[#13845B] font-mono">{outlet.ebitdaMargin}%</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-slate-400">Daily Sales Recorded:</span>
-                    <span>{sales.length} logs in DB</span>
+                  <div className="flex justify-between py-1 border-b border-[#DDE5DC]">
+                    <span className="text-[#738078]">Daily Sales Recorded:</span>
+                    <span className="text-[#18251F]">{sales.length} logs in DB</span>
                   </div>
                   <div className="flex justify-between py-1">
-                    <span className="text-slate-400">Inventory Items:</span>
-                    <span>{inventory.length} tracked items</span>
+                    <span className="text-[#738078]">Inventory Items:</span>
+                    <span className="text-[#18251F]">{inventory.length} tracked items</span>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="border-slate-200 dark:border-slate-800">
+              <Card className="border-[#DDE5DC] bg-[#FFFDF8]">
                 <CardHeader className="pb-2">
-                  <CardTitle className="text-xs uppercase font-bold text-slate-400">
+                  <CardTitle className="text-xs uppercase font-bold text-[#738078]">
                     Quality & Compliance
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-2 text-xs">
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-slate-400">Deterministic Score:</span>
-                    <span className="font-bold text-emerald-600">{outlet.complianceScore} / 100</span>
+                  <div className="flex justify-between py-1 border-b border-[#DDE5DC]">
+                    <span className="text-[#738078]">Deterministic Score:</span>
+                    <span className="font-bold text-[#13845B] font-mono">{outlet.complianceScore} / 100</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-slate-400">Risk Coefficient:</span>
-                    <span className="font-bold text-amber-600">{outlet.riskScore} (Low/Nominal)</span>
+                  <div className="flex justify-between py-1 border-b border-[#DDE5DC]">
+                    <span className="text-[#738078]">Risk Coefficient:</span>
+                    <span className="font-bold text-amber-600 font-mono">{outlet.riskScore} (Low/Nominal)</span>
                   </div>
-                  <div className="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800">
-                    <span className="text-slate-400">Open Complaints:</span>
-                    <span>{complaints.filter((c: any) => c.status !== "Resolved").length} open</span>
+                  <div className="flex justify-between py-1 border-b border-[#DDE5DC]">
+                    <span className="text-[#738078]">Open Complaints:</span>
+                    <span className="text-[#18251F]">{complaints.filter((c: any) => c.status !== "Resolved").length} open</span>
                   </div>
                   <div className="flex justify-between py-1">
-                    <span className="text-slate-400">Active CAPA Items:</span>
-                    <span>{correctiveActions.filter((a: any) => a.status !== "Verified & Closed").length} pending</span>
+                    <span className="text-[#738078]">Active CAPA Items:</span>
+                    <span className="text-[#18251F]">{correctiveActions.filter((a: any) => a.status !== "Verified & Closed").length} pending</span>
                   </div>
                 </CardContent>
               </Card>
@@ -468,26 +468,26 @@ export default function OutletDetailPage() {
         {/* ========================================= */}
         {activeTab === "Performance" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 space-y-3">
-              <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+            <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 space-y-3 shadow-xs">
+              <h3 className="text-sm font-serif font-bold text-[#073B2A]">
                 Financial & P&L Performance (Real PostgreSQL Aggregation)
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase block">Monthly Gross Revenue</span>
-                  <span className="text-lg font-bold text-slate-900 dark:text-slate-100 font-mono">
+                <div className="p-3.5 rounded-lg bg-[#F6F1E7]/60 border border-[#DDE5DC]">
+                  <span className="text-[10px] text-[#738078] font-bold uppercase block">Monthly Gross Revenue</span>
+                  <span className="text-lg font-bold text-[#073B2A] font-mono">
                     ₹{Number(outlet.revenueMonthly).toLocaleString()}
                   </span>
                 </div>
-                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase block">Store EBITDA Margin</span>
-                  <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400 font-mono">
+                <div className="p-3.5 rounded-lg bg-[#F6F1E7]/60 border border-[#DDE5DC]">
+                  <span className="text-[10px] text-[#738078] font-bold uppercase block">Store EBITDA Margin</span>
+                  <span className="text-lg font-bold text-[#13845B] font-mono">
                     {outlet.ebitdaMargin}%
                   </span>
                 </div>
-                <div className="p-3 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-400 font-bold uppercase block">City Benchmark Rank</span>
-                  <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400 font-mono">
+                <div className="p-3.5 rounded-lg bg-[#F6F1E7]/60 border border-[#DDE5DC]">
+                  <span className="text-[10px] text-[#738078] font-bold uppercase block">City Benchmark Rank</span>
+                  <span className="text-lg font-bold text-[#073B2A] font-mono">
                     #1 in {outlet.city}
                   </span>
                 </div>
@@ -503,13 +503,13 @@ export default function OutletDetailPage() {
           <div className="space-y-4">
             {/* Sales Submission Form for Authorized Store Operator */}
             {user?.role !== "OWNER" && user?.role !== "OFFICER" && (
-              <div className="rounded-xl border border-indigo-200 bg-indigo-50/40 p-4 dark:border-indigo-900 dark:bg-indigo-950/20 space-y-3">
+              <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 space-y-3 shadow-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-indigo-900 dark:text-indigo-200">
+                  <span className="text-xs font-serif font-bold text-[#073B2A]">
                     Record Daily Sales Batch (PostgreSQL Insert)
                   </span>
                   {saleSuccessMessage && (
-                    <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400 flex items-center gap-1">
+                    <span className="text-xs font-medium text-[#13845B] flex items-center gap-1">
                       <CheckCircle2 className="h-3.5 w-3.5" />
                       {saleSuccessMessage}
                     </span>
@@ -518,57 +518,57 @@ export default function OutletDetailPage() {
 
                 <form onSubmit={handleRecordSale} className="grid grid-cols-1 sm:grid-cols-5 gap-3 items-end">
                   <div>
-                    <label className="text-[11px] font-medium text-slate-600 dark:text-slate-300 block mb-1">
+                    <label className="text-[11px] font-medium text-[#738078] block mb-1">
                       Net Sales (₹)
                     </label>
                     <Input
                       type="number"
                       value={newSaleNet}
                       onChange={(e) => setNewSaleNet(e.target.value)}
-                      className="h-8 text-xs bg-white dark:bg-slate-900"
+                      className="h-8 text-xs bg-white border-[#DDE5DC] text-[#18251F]"
                       required
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-medium text-slate-600 dark:text-slate-300 block mb-1">
+                    <label className="text-[11px] font-medium text-[#738078] block mb-1">
                       Order Count
                     </label>
                     <Input
                       type="number"
                       value={newSaleOrders}
                       onChange={(e) => setNewSaleOrders(e.target.value)}
-                      className="h-8 text-xs bg-white dark:bg-slate-900"
+                      className="h-8 text-xs bg-white border-[#DDE5DC] text-[#18251F]"
                       required
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-medium text-slate-600 dark:text-slate-300 block mb-1">
+                    <label className="text-[11px] font-medium text-[#738078] block mb-1">
                       UPI Collection (₹)
                     </label>
                     <Input
                       type="number"
                       value={newSaleUpi}
                       onChange={(e) => setNewSaleUpi(e.target.value)}
-                      className="h-8 text-xs bg-white dark:bg-slate-900"
+                      className="h-8 text-xs bg-white border-[#DDE5DC] text-[#18251F]"
                       required
                     />
                   </div>
                   <div>
-                    <label className="text-[11px] font-medium text-slate-600 dark:text-slate-300 block mb-1">
+                    <label className="text-[11px] font-medium text-[#738078] block mb-1">
                       Cash Collection (₹)
                     </label>
                     <Input
                       type="number"
                       value={newSaleCash}
                       onChange={(e) => setNewSaleCash(e.target.value)}
-                      className="h-8 text-xs bg-white dark:bg-slate-900"
+                      className="h-8 text-xs bg-white border-[#DDE5DC] text-[#18251F]"
                       required
                     />
                   </div>
                   <Button
                     type="submit"
                     disabled={isSubmittingSale}
-                    className="h-8 text-xs bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer"
+                    className="h-8 text-xs bg-[#073B2A] hover:bg-[#05291F] text-white font-semibold cursor-pointer"
                   >
                     {isSubmittingSale ? "Recording..." : "Save Sales Batch"}
                   </Button>
@@ -596,47 +596,47 @@ export default function OutletDetailPage() {
                   {sales.map((s: any) => (
                     <div
                       key={s.id}
-                      className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                      className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-4 sm:p-5 shadow-xs w-full max-w-full box-border min-w-0 space-y-3"
                     >
                       {/* Header: Date + Net Sales + Status */}
-                      <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3">
+                      <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-[#DDE5DC] pb-3">
                         <div>
-                          <span className="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                          <span className="font-mono text-xs font-bold text-[#073B2A] bg-[#073B2A]/10 px-2 py-0.5 rounded border border-[#073B2A]/20">
                             {s.date}
                           </span>
-                          <span className="text-xs text-slate-400 font-mono ml-2">
+                          <span className="text-xs text-[#738078] font-mono ml-2">
                             {s.orderCount} total orders
                           </span>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className="text-sm font-extrabold font-mono text-slate-900 dark:text-slate-100">
+                          <span className="text-sm font-extrabold font-mono text-[#073B2A]">
                             ₹{Number(s.netSales).toLocaleString()}
                           </span>
-                          <Badge variant="outline" className="text-emerald-600 border-emerald-500/30 text-[10px]">
+                          <Badge variant="outline" className="text-[#13845B] border-[#13845B]/30 text-[10px]">
                             Settled
                           </Badge>
                         </div>
                       </div>
 
                       {/* Vertical Label-Value rows */}
-                      <div className="space-y-2 text-xs divide-y divide-slate-100 dark:divide-slate-800/60">
+                      <div className="space-y-2 text-xs divide-y divide-[#DDE5DC]/60">
                         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
-                          <span className="text-slate-400 font-medium shrink-0">Gross Sales:</span>
-                          <span className="font-mono text-slate-700 dark:text-slate-300 sm:text-right">
+                          <span className="text-[#738078] font-medium shrink-0">Gross Sales:</span>
+                          <span className="font-mono text-[#18251F] sm:text-right">
                             ₹{Number(s.grossSales).toLocaleString()}
                           </span>
                         </div>
 
                         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                          <span className="text-slate-400 font-medium shrink-0">Average Ticket Size:</span>
-                          <span className="font-mono text-slate-700 dark:text-slate-300 sm:text-right">
+                          <span className="text-[#738078] font-medium shrink-0">Average Ticket Size:</span>
+                          <span className="font-mono text-[#18251F] sm:text-right">
                             ₹{Number(s.avgTicket).toFixed(1)} / order
                           </span>
                         </div>
 
                         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                          <span className="text-slate-400 font-medium shrink-0">Payment Settlement Mix:</span>
-                          <span className="font-mono text-slate-700 dark:text-slate-300 sm:text-right text-[11px]">
+                          <span className="text-[#738078] font-medium shrink-0">Payment Settlement Mix:</span>
+                          <span className="font-mono text-[#18251F] sm:text-right text-[11px]">
                             ₹{Number(s.upiCollection).toLocaleString()} (UPI) · ₹{Number(s.cashCollection).toLocaleString()} (Cash)
                           </span>
                         </div>
@@ -656,16 +656,16 @@ export default function OutletDetailPage() {
           <div className="space-y-4">
             <div className="space-y-3 w-full max-w-full box-border">
               <div className="flex items-center justify-between pb-1">
-                <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+                <span className="text-xs font-serif font-bold uppercase tracking-wider text-[#073B2A]">
                   Stock On-Hand & Par Levels ({inventory.length} SKUs in PostgreSQL)
                 </span>
-                <span className="text-xs text-slate-400 font-mono">
+                <span className="text-xs text-[#738078] font-mono">
                   Store Inventory
                 </span>
               </div>
 
               {inventory.length === 0 ? (
-                <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-400 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+                <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-12 text-center text-[#738078] shadow-xs">
                   No inventory records found for this outlet.
                 </div>
               ) : (
@@ -673,15 +673,15 @@ export default function OutletDetailPage() {
                   {inventory.map((item: any) => (
                     <div
                       key={item.id}
-                      className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                      className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-4 sm:p-5 shadow-xs w-full max-w-full box-border min-w-0 space-y-3"
                     >
                       {/* Header: Item Name, Category & Status */}
-                      <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3">
+                      <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-[#DDE5DC] pb-3">
                         <div>
-                          <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                          <h4 className="text-sm font-serif font-bold text-[#073B2A]">
                             {item.itemName}
                           </h4>
-                          <span className="text-xs text-slate-500 mt-0.5 block">
+                          <span className="text-xs text-[#738078] mt-0.5 block">
                             {item.category}
                           </span>
                         </div>
@@ -689,7 +689,7 @@ export default function OutletDetailPage() {
                           variant="outline"
                           className={
                             item.status === "In Stock"
-                              ? "text-emerald-600 border-emerald-500/30"
+                              ? "text-[#13845B] border-[#13845B]/30"
                               : item.status === "Low Stock"
                               ? "text-amber-600 border-amber-500/30"
                               : "text-red-600 border-red-500/30"
@@ -700,31 +700,31 @@ export default function OutletDetailPage() {
                       </div>
 
                       {/* Vertical Label-Value rows */}
-                      <div className="space-y-2 text-xs divide-y divide-slate-100 dark:divide-slate-800/60">
+                      <div className="space-y-2 text-xs divide-y divide-[#DDE5DC]/60">
                         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
-                          <span className="text-slate-400 font-medium shrink-0">Current Stock Quantity:</span>
-                          <span className="font-bold font-mono text-slate-900 dark:text-slate-100 sm:text-right">
+                          <span className="text-[#738078] font-medium shrink-0">Current Stock Quantity:</span>
+                          <span className="font-bold font-mono text-[#073B2A] sm:text-right">
                             {item.stockQuantity} {item.unit}
                           </span>
                         </div>
 
                         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                          <span className="text-slate-400 font-medium shrink-0">Par / Reorder Threshold:</span>
-                          <span className="font-mono text-slate-700 dark:text-slate-300 sm:text-right">
+                          <span className="text-[#738078] font-medium shrink-0">Par / Reorder Threshold:</span>
+                          <span className="font-mono text-[#18251F] sm:text-right">
                             {item.reorderLevel} {item.unit}
                           </span>
                         </div>
 
                         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                          <span className="text-slate-400 font-medium shrink-0">Unit Acquisition Cost:</span>
-                          <span className="font-mono text-slate-700 dark:text-slate-300 sm:text-right">
+                          <span className="text-[#738078] font-medium shrink-0">Unit Acquisition Cost:</span>
+                          <span className="font-mono text-[#18251F] sm:text-right">
                             ₹{item.unitCost}
                           </span>
                         </div>
 
                         <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                          <span className="text-slate-400 font-medium shrink-0">Historical Audit Variance:</span>
-                          <span className={`font-mono font-bold sm:text-right ${Number(item.variancePct) < 0 ? "text-red-500" : "text-emerald-500"}`}>
+                          <span className="text-[#738078] font-medium shrink-0">Historical Audit Variance:</span>
+                          <span className={`font-mono font-bold sm:text-right ${Number(item.variancePct) < 0 ? "text-red-500" : "text-[#13845B]"}`}>
                             {item.variancePct}%
                           </span>
                         </div>
@@ -742,37 +742,37 @@ export default function OutletDetailPage() {
         {/* ========================================= */}
         {activeTab === "Compliance" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 space-y-4">
+            <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 space-y-4 shadow-xs">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  <h3 className="text-sm font-serif font-bold text-[#073B2A]">
                     Deterministic Compliance Audit Posture
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-[#738078]">
                     Strict mathematical weighted index across kitchen hygiene, cold chain, pest prevention, and SOP adherence.
                   </p>
                 </div>
-                <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 text-xs">
+                <Badge className="bg-[#13845B]/10 text-[#13845B] border-[#13845B]/30 text-xs font-mono">
                   Score: {outlet.complianceScore}%
                 </Badge>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-3 pt-2">
-                <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 text-center">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Food Safety & Temps</span>
-                  <span className="text-lg font-bold text-emerald-600">98%</span>
+                <div className="p-3 rounded-lg border border-[#DDE5DC] bg-[#F6F1E7]/40 text-center">
+                  <span className="text-[10px] uppercase font-bold text-[#738078] block">Food Safety & Temps</span>
+                  <span className="text-lg font-bold text-[#13845B] font-mono">98%</span>
                 </div>
-                <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 text-center">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Staff Hygiene & PPE</span>
-                  <span className="text-lg font-bold text-emerald-600">94%</span>
+                <div className="p-3 rounded-lg border border-[#DDE5DC] bg-[#F6F1E7]/40 text-center">
+                  <span className="text-[10px] uppercase font-bold text-[#738078] block">Staff Hygiene & PPE</span>
+                  <span className="text-lg font-bold text-[#13845B] font-mono">94%</span>
                 </div>
-                <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 text-center">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">FSSAI Storage Labels</span>
-                  <span className="text-lg font-bold text-emerald-600">92%</span>
+                <div className="p-3 rounded-lg border border-[#DDE5DC] bg-[#F6F1E7]/40 text-center">
+                  <span className="text-[10px] uppercase font-bold text-[#738078] block">FSSAI Storage Labels</span>
+                  <span className="text-lg font-bold text-[#13845B] font-mono">92%</span>
                 </div>
-                <div className="p-3 rounded-lg border border-slate-200 dark:border-slate-800 text-center">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 block">Pest Control Records</span>
-                  <span className="text-lg font-bold text-emerald-600">100%</span>
+                <div className="p-3 rounded-lg border border-[#DDE5DC] bg-[#F6F1E7]/40 text-center">
+                  <span className="text-[10px] uppercase font-bold text-[#738078] block">Pest Control Records</span>
+                  <span className="text-lg font-bold text-[#13845B] font-mono">100%</span>
                 </div>
               </div>
             </div>
@@ -784,42 +784,42 @@ export default function OutletDetailPage() {
         {/* ========================================= */}
         {activeTab === "Complaints" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-              <div className="p-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+            <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] overflow-hidden shadow-xs">
+              <div className="p-4 border-b border-[#DDE5DC] flex items-center justify-between">
+                <span className="text-xs font-serif font-bold text-[#073B2A]">
                   Customer Grievances & Service Logs ({complaints.length} records in PostgreSQL)
                 </span>
               </div>
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+              <div className="divide-y divide-[#DDE5DC]/60 text-xs">
                 {complaints.map((c: any) => (
-                  <div key={c.id} className="p-4 space-y-1 hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                  <div key={c.id} className="p-4 space-y-1.5 hover:bg-[#F6F1E7]/30 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-indigo-600">{c.complaintId}</span>
-                        <Badge variant="outline">{c.category}</Badge>
+                        <span className="font-mono font-bold text-[#073B2A]">{c.complaintId}</span>
+                        <Badge variant="outline" className="border-[#DDE5DC] text-[#738078]">{c.category}</Badge>
                         <Badge
                           className={
                             c.severity === "Critical"
                               ? "bg-red-500/10 text-red-600 border-red-500/30"
                               : c.severity === "High"
                               ? "bg-orange-500/10 text-orange-600 border-orange-500/30"
-                              : "bg-slate-500/10 text-slate-400 border-slate-500/30"
+                              : "bg-slate-500/10 text-[#738078] border-slate-500/30"
                           }
                         >
                           {c.severity}
                         </Badge>
                       </div>
-                      <span className="text-slate-400 text-[11px]">{c.reportedAt}</span>
+                      <span className="text-[#738078] text-[11px] font-mono">{c.reportedAt}</span>
                     </div>
-                    <p className="text-slate-800 dark:text-slate-200 pt-1 font-medium">{c.description}</p>
-                    <div className="flex items-center justify-between text-[11px] text-slate-500 pt-1">
-                      <span>Reported by: <strong>{c.customerName}</strong></span>
-                      <span className="text-emerald-600 font-semibold">{c.status}</span>
+                    <p className="text-[#18251F] pt-1 font-medium">{c.description}</p>
+                    <div className="flex items-center justify-between text-[11px] text-[#738078] pt-1">
+                      <span>Reported by: <strong className="text-[#073B2A]">{c.customerName}</strong></span>
+                      <span className="text-[#13845B] font-semibold">{c.status}</span>
                     </div>
                   </div>
                 ))}
                 {complaints.length === 0 && (
-                  <div className="p-6 text-center text-slate-400">
+                  <div className="p-8 text-center text-[#738078]">
                     Zero customer complaints logged for this outlet.
                   </div>
                 )}
@@ -833,33 +833,33 @@ export default function OutletDetailPage() {
         {/* ========================================= */}
         {activeTab === "Evidence" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-              <div className="p-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+            <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] overflow-hidden shadow-xs">
+              <div className="p-4 border-b border-[#DDE5DC] flex items-center justify-between">
+                <span className="text-xs font-serif font-bold text-[#073B2A]">
                   Audit Photo & Telemetry Evidence ({evidence.length} items in PostgreSQL)
                 </span>
               </div>
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+              <div className="divide-y divide-[#DDE5DC]/60 text-xs">
                 {evidence.map((ev: any) => (
-                  <div key={ev.id} className="p-4 space-y-1.5 hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                  <div key={ev.id} className="p-4 space-y-1.5 hover:bg-[#F6F1E7]/30 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-indigo-600">{ev.evidenceId}</span>
-                        <Badge variant="outline">{ev.category}</Badge>
-                        <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/30">
+                        <span className="font-mono font-bold text-[#073B2A]">{ev.evidenceId}</span>
+                        <Badge variant="outline" className="border-[#DDE5DC] text-[#738078]">{ev.category}</Badge>
+                        <Badge className="bg-[#13845B]/10 text-[#13845B] border-[#13845B]/30">
                           {ev.aiFlag || "Verified"}
                         </Badge>
                       </div>
-                      <span className="text-slate-400 text-[11px]">{ev.timestamp}</span>
+                      <span className="text-[#738078] text-[11px] font-mono">{ev.timestamp}</span>
                     </div>
-                    <h4 className="font-semibold text-slate-900 dark:text-slate-100">{ev.title}</h4>
-                    <p className="text-slate-600 dark:text-slate-400 text-[11px] bg-slate-50 dark:bg-slate-800/50 p-2 rounded border border-slate-100 dark:border-slate-800">
+                    <h4 className="font-serif font-semibold text-[#073B2A]">{ev.title}</h4>
+                    <p className="text-[#18251F] text-[11px] bg-[#F6F1E7]/50 p-2.5 rounded-lg border border-[#DDE5DC]">
                       Officer Verification Notes: {ev.officerNotes || "Inspected and verified during scheduled field check."}
                     </p>
                   </div>
                 ))}
                 {evidence.length === 0 && (
-                  <div className="p-6 text-center text-slate-400">
+                  <div className="p-8 text-center text-[#738078]">
                     No evidence records uploaded.
                   </div>
                 )}
@@ -873,49 +873,49 @@ export default function OutletDetailPage() {
         {/* ========================================= */}
         {activeTab === "Risk" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-slate-200 bg-white p-5 dark:border-slate-800 dark:bg-slate-900 space-y-4">
+            <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 space-y-4 shadow-xs">
               <div className="flex items-center justify-between">
                 <div>
-                  <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
+                  <h3 className="text-sm font-serif font-bold text-[#073B2A]">
                     Deterministic Risk Scoring Breakdown
                   </h3>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-[#738078]">
                     Multi-factor anomaly calculation without speculative heuristics.
                   </p>
                 </div>
                 <div className="text-right">
-                  <span className="text-xs font-bold text-slate-400 uppercase block">Composite Risk</span>
-                  <span className="text-xl font-bold text-emerald-600">{outlet.riskScore} / 100</span>
+                  <span className="text-xs font-bold text-[#738078] uppercase block">Composite Risk</span>
+                  <span className="text-xl font-bold text-[#13845B] font-mono">{outlet.riskScore} / 100</span>
                 </div>
               </div>
 
               <div className="space-y-3 pt-2 text-xs">
                 <div>
                   <div className="flex justify-between font-medium mb-1">
-                    <span>Cold Chain & Thermometer Drift</span>
-                    <span className="text-emerald-600">Low Risk (3%)</span>
+                    <span className="text-[#18251F]">Cold Chain & Thermometer Drift</span>
+                    <span className="text-[#13845B] font-mono">Low Risk (3%)</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div className="bg-emerald-500 h-full w-[3%]" />
-                  </div>
-                </div>
-
-                <div>
-                  <div className="flex justify-between font-medium mb-1">
-                    <span>Inventory Shrinkage & Waste Variance</span>
-                    <span className="text-emerald-600">Low Risk (5%)</span>
-                  </div>
-                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                    <div className="bg-emerald-500 h-full w-[5%]" />
+                  <div className="w-full bg-[#DDE5DC]/50 h-2 rounded-full overflow-hidden">
+                    <div className="bg-[#13845B] h-full w-[3%]" />
                   </div>
                 </div>
 
                 <div>
                   <div className="flex justify-between font-medium mb-1">
-                    <span>Customer Repeat Complaint Ratio</span>
-                    <span className="text-amber-600">Moderate (12%)</span>
+                    <span className="text-[#18251F]">Inventory Shrinkage & Waste Variance</span>
+                    <span className="text-[#13845B] font-mono">Low Risk (5%)</span>
                   </div>
-                  <div className="w-full bg-slate-100 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
+                  <div className="w-full bg-[#DDE5DC]/50 h-2 rounded-full overflow-hidden">
+                    <div className="bg-[#13845B] h-full w-[5%]" />
+                  </div>
+                </div>
+
+                <div>
+                  <div className="flex justify-between font-medium mb-1">
+                    <span className="text-[#18251F]">Customer Repeat Complaint Ratio</span>
+                    <span className="text-amber-600 font-mono">Moderate (12%)</span>
+                  </div>
+                  <div className="w-full bg-[#DDE5DC]/50 h-2 rounded-full overflow-hidden">
                     <div className="bg-amber-500 h-full w-[12%]" />
                   </div>
                 </div>
@@ -929,15 +929,15 @@ export default function OutletDetailPage() {
         {/* ========================================= */}
         {activeTab === "Alerts" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-              <div className="p-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+            <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] overflow-hidden shadow-xs">
+              <div className="p-4 border-b border-[#DDE5DC] flex items-center justify-between">
+                <span className="text-xs font-serif font-bold text-[#073B2A]">
                   Active Station Warnings & Notifications ({alerts.length} in PostgreSQL)
                 </span>
               </div>
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+              <div className="divide-y divide-[#DDE5DC]/60 text-xs">
                 {alerts.map((alt: any) => (
-                  <div key={alt.id} className="p-4 flex items-start gap-3 hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                  <div key={alt.id} className="p-4 flex items-start gap-3 hover:bg-[#F6F1E7]/30 transition-colors">
                     <AlertTriangle
                       className={`h-4 w-4 shrink-0 mt-0.5 ${
                         alt.severity === "CRITICAL"
@@ -950,8 +950,8 @@ export default function OutletDetailPage() {
                     <div className="space-y-1 flex-1">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
-                          <span className="font-mono font-bold text-slate-800 dark:text-slate-200">{alt.alertId}</span>
-                          <Badge variant="outline">{alt.category}</Badge>
+                          <span className="font-mono font-bold text-[#073B2A]">{alt.alertId}</span>
+                          <Badge variant="outline" className="border-[#DDE5DC] text-[#738078]">{alt.category}</Badge>
                           <Badge
                             className={
                               alt.severity === "CRITICAL"
@@ -962,14 +962,14 @@ export default function OutletDetailPage() {
                             {alt.severity}
                           </Badge>
                         </div>
-                        <span className="text-slate-400 text-[11px]">{alt.timestamp}</span>
+                        <span className="text-[#738078] text-[11px] font-mono">{alt.timestamp}</span>
                       </div>
-                      <p className="text-slate-700 dark:text-slate-300 font-medium">{alt.message}</p>
+                      <p className="text-[#18251F] font-medium">{alt.message}</p>
                     </div>
                   </div>
                 ))}
                 {alerts.length === 0 && (
-                  <div className="p-6 text-center text-slate-400">
+                  <div className="p-8 text-center text-[#738078]">
                     No active warnings or alerts for this location.
                   </div>
                 )}
@@ -983,46 +983,46 @@ export default function OutletDetailPage() {
         {/* ========================================= */}
         {activeTab === "Corrective Actions" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-              <div className="p-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+            <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] overflow-hidden shadow-xs">
+              <div className="p-4 border-b border-[#DDE5DC] flex items-center justify-between">
+                <span className="text-xs font-serif font-bold text-[#073B2A]">
                   CAPA Remediation Pipeline ({correctiveActions.length} cases in PostgreSQL)
                 </span>
               </div>
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+              <div className="divide-y divide-[#DDE5DC]/60 text-xs">
                 {correctiveActions.map((act: any) => (
-                  <div key={act.id} className="p-4 space-y-2 hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                  <div key={act.id} className="p-4 space-y-2 hover:bg-[#F6F1E7]/30 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-indigo-600">{act.actionId}</span>
+                        <span className="font-mono font-bold text-[#073B2A]">{act.actionId}</span>
                         <Badge
                           className={
                             act.status === "Verified & Closed"
-                              ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/30"
+                              ? "bg-[#13845B]/10 text-[#13845B] border-[#13845B]/30"
                               : "bg-amber-500/10 text-amber-600 border-amber-500/30"
                           }
                         >
                           {act.status}
                         </Badge>
-                        <Badge variant="outline">{act.priority} Priority</Badge>
+                        <Badge variant="outline" className="border-[#DDE5DC] text-[#738078]">{act.priority} Priority</Badge>
                       </div>
-                      <span className="text-slate-400 text-[11px]">Due: {act.dueDate}</span>
+                      <span className="text-[#738078] text-[11px] font-mono">Due: {act.dueDate}</span>
                     </div>
 
-                    <h4 className="font-semibold text-slate-900 dark:text-slate-100">{act.title}</h4>
-                    <div className="flex items-center justify-between text-[11px] text-slate-500">
-                      <span>Assigned to: <strong>{act.assignedTo}</strong></span>
+                    <h4 className="font-serif font-semibold text-[#073B2A]">{act.title}</h4>
+                    <div className="flex items-center justify-between text-[11px] text-[#738078]">
+                      <span>Assigned to: <strong className="text-[#073B2A]">{act.assignedTo}</strong></span>
                     </div>
 
                     {act.resolutionNotes && (
-                      <div className="rounded bg-slate-50 dark:bg-slate-800/50 p-2 text-[11px] text-slate-600 dark:text-slate-400 border border-slate-100 dark:border-slate-800">
+                      <div className="rounded-lg bg-[#F6F1E7]/50 p-2.5 text-[11px] text-[#18251F] border border-[#DDE5DC]">
                         Resolution Notes: {act.resolutionNotes}
                       </div>
                     )}
                   </div>
                 ))}
                 {correctiveActions.length === 0 && (
-                  <div className="p-6 text-center text-slate-400">
+                  <div className="p-8 text-center text-[#738078]">
                     Zero open corrective action requirements.
                   </div>
                 )}
@@ -1036,33 +1036,33 @@ export default function OutletDetailPage() {
         {/* ========================================= */}
         {activeTab === "History" && (
           <div className="space-y-4">
-            <div className="rounded-xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-              <div className="p-3.5 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
-                <span className="text-xs font-bold text-slate-900 dark:text-slate-100">
+            <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] overflow-hidden shadow-xs">
+              <div className="p-4 border-b border-[#DDE5DC] flex items-center justify-between">
+                <span className="text-xs font-serif font-bold text-[#073B2A]">
                   Historical Inspection Log & Audit Registry ({history.length} records in PostgreSQL)
                 </span>
               </div>
-              <div className="divide-y divide-slate-100 dark:divide-slate-800 text-xs">
+              <div className="divide-y divide-[#DDE5DC]/60 text-xs">
                 {history.map((h: any) => (
-                  <div key={h.id} className="p-4 space-y-2 hover:bg-slate-50/50 dark:hover:bg-slate-800/30">
+                  <div key={h.id} className="p-4 space-y-2 hover:bg-[#F6F1E7]/30 transition-colors">
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-medium text-slate-700 dark:text-slate-300">{h.auditDate}</span>
-                        <Badge className="bg-emerald-500/10 text-emerald-600 border-emerald-500/30">
+                        <span className="font-mono font-medium text-[#073B2A]">{h.auditDate}</span>
+                        <Badge className="bg-[#13845B]/10 text-[#13845B] border-[#13845B]/30">
                           {h.status}
                         </Badge>
                       </div>
-                      <span className="font-bold text-emerald-600">Audit Score: {h.score}%</span>
+                      <span className="font-mono font-bold text-[#13845B]">Audit Score: {h.score}%</span>
                     </div>
 
-                    <p className="text-slate-800 dark:text-slate-200 font-medium">{h.summary}</p>
-                    <div className="text-[11px] text-slate-400">
-                      Inspecting Quality Officer: <span className="text-slate-600 dark:text-slate-300 font-medium">{h.auditorName}</span>
+                    <p className="text-[#18251F] font-medium">{h.summary}</p>
+                    <div className="text-[11px] text-[#738078]">
+                      Inspecting Quality Officer: <span className="text-[#073B2A] font-medium">{h.auditorName}</span>
                     </div>
                   </div>
                 ))}
                 {history.length === 0 && (
-                  <div className="p-6 text-center text-slate-400">
+                  <div className="p-8 text-center text-[#738078]">
                     No historical audits archived yet.
                   </div>
                 )}

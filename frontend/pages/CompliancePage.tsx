@@ -108,28 +108,28 @@ export default function CompliancePage() {
   }, [submissions, searchQuery, statusFilter]);
 
   return (
-    <div className="space-y-8 font-sans antialiased text-slate-900 pb-20 max-w-5xl mx-auto">
+    <div className="space-y-6 font-sans antialiased text-[#18251F] pb-20 max-w-6xl mx-auto">
       {/* ======================================================== */}
       {/* 1. OFFICER DASHBOARD HEADER                              */}
       {/* ======================================================== */}
-      <div className="rounded-2xl border border-blue-200/80 bg-gradient-to-r from-blue-50/80 via-white to-indigo-50/60 p-6 sm:p-7 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+      <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-6 sm:p-7 shadow-xs flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <div className="text-[10px] font-mono uppercase tracking-widest text-blue-800 flex items-center gap-1.5 mb-1 font-bold">
-            <ShieldCheck className="h-3.5 w-3.5 text-blue-600" />
-            <span>QUALITY & COMPLIANCE DESK · REGULATORY AUDIT</span>
+          <div className="text-[11px] font-mono uppercase tracking-wider text-[#13845B] flex items-center gap-1.5 mb-1 font-bold">
+            <ShieldCheck className="h-4 w-4 text-[#13845B]" />
+            <span>Quality & Standards Desk · Regulatory Audit</span>
           </div>
-          <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-slate-900 uppercase">
-            OFFICER DASHBOARD
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#073B2A]">
+            Officer Compliance Queue
           </h1>
-          <p className="text-xs text-slate-600 mt-1">
-            Review stores that have submitted CCTV surveillance recordings and assign statutory ratings.
+          <p className="text-xs text-[#738078] mt-1">
+            Review store CCTV surveillance submissions, verify extracted evidence frames, and certify compliance ratings.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-          <div className="flex items-center gap-2 rounded-xl border border-blue-200 bg-white/90 px-3.5 py-2 text-xs shadow-2xs">
-            <UserCheck className="h-4 w-4 text-emerald-600" />
-            <span className="font-semibold text-slate-800">
+          <div className="flex items-center gap-2 rounded-lg border border-[#DDE5DC] bg-[#F6F1E7] px-3.5 py-2 text-xs">
+            <UserCheck className="h-4 w-4 text-[#13845B]" />
+            <span className="font-semibold text-[#073B2A]">
               {user?.name || "Officer Yuvraj Buddha"}
             </span>
           </div>
@@ -137,7 +137,7 @@ export default function CompliancePage() {
             variant="outline"
             size="sm"
             onClick={refreshList}
-            className="gap-1.5 cursor-pointer text-xs border-slate-300 bg-white text-slate-700 hover:text-slate-900 hover:bg-slate-50 rounded-xl h-10 px-3.5 shadow-2xs"
+            className="gap-1.5 cursor-pointer text-xs border-[#DDE5DC] bg-[#FFFDF8] text-[#073B2A] hover:bg-[#F6F1E7] rounded-lg h-9 px-3.5"
           >
             <RefreshCw className="h-3.5 w-3.5" />
             <span>Refresh</span>
@@ -150,44 +150,44 @@ export default function CompliancePage() {
       {/* ======================================================== */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {/* Pending Reviews */}
-        <div className="rounded-2xl border border-amber-500/30 bg-[#081226] p-5 space-y-1 shadow-sm">
-          <div className="flex items-center justify-between text-[11px] font-mono uppercase text-slate-400">
-            <span>PENDING REVIEWS</span>
-            <Clock className="h-4 w-4 text-[#F59E0B]" />
+        <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 space-y-1 shadow-xs">
+          <div className="flex items-center justify-between text-[11px] font-mono uppercase text-[#738078]">
+            <span>Pending Reviews</span>
+            <Clock className="h-4 w-4 text-amber-600" />
           </div>
-          <div className="font-serif text-3xl font-bold text-white">
+          <div className="font-serif text-3xl font-bold text-[#073B2A]">
             {summaryMetrics.pending}
           </div>
-          <p className="text-[11px] text-[#F59E0B] font-mono">
+          <p className="text-[11px] text-amber-700 font-mono font-medium">
             Awaiting Officer Verification
           </p>
         </div>
 
         {/* Verified Stores */}
-        <div className="rounded-2xl border border-emerald-500/30 bg-[#081226] p-5 space-y-1 shadow-sm">
-          <div className="flex items-center justify-between text-[11px] font-mono uppercase text-slate-400">
-            <span>VERIFIED STORES</span>
-            <CheckCircle2 className="h-4 w-4 text-[#10B981]" />
+        <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 space-y-1 shadow-xs">
+          <div className="flex items-center justify-between text-[11px] font-mono uppercase text-[#738078]">
+            <span>Verified Outlets</span>
+            <CheckCircle2 className="h-4 w-4 text-[#13845B]" />
           </div>
-          <div className="font-serif text-3xl font-bold text-white">
+          <div className="font-serif text-3xl font-bold text-[#073B2A]">
             {summaryMetrics.verified}
           </div>
-          <p className="text-[11px] text-[#10B981] font-mono">
+          <p className="text-[11px] text-[#13845B] font-mono font-medium">
             Inspection Certified
           </p>
         </div>
 
         {/* Total CCTV Submissions */}
-        <div className="rounded-2xl border border-blue-500/30 bg-[#081226] p-5 space-y-1 shadow-sm">
-          <div className="flex items-center justify-between text-[11px] font-mono uppercase text-slate-400">
-            <span>TOTAL CCTV SUBMISSIONS</span>
-            <Camera className="h-4 w-4 text-blue-400" />
+        <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 space-y-1 shadow-xs">
+          <div className="flex items-center justify-between text-[11px] font-mono uppercase text-[#738078]">
+            <span>Total CCTV Submissions</span>
+            <Camera className="h-4 w-4 text-[#073B2A]" />
           </div>
-          <div className="font-serif text-3xl font-bold text-white">
+          <div className="font-serif text-3xl font-bold text-[#073B2A]">
             {summaryMetrics.total}
           </div>
-          <p className="text-[11px] text-slate-400 font-mono">
-            Store Network Recordings
+          <p className="text-[11px] text-[#738078] font-mono">
+            Network Recordings Logged
           </p>
         </div>
       </div>
@@ -195,13 +195,13 @@ export default function CompliancePage() {
       {/* ======================================================== */}
       {/* 3. STORES SUBMITTED CCTV LIST                            */}
       {/* ======================================================== */}
-      <div className="rounded-[28px] border border-blue-500/25 bg-[#071126] p-6 sm:p-8 shadow-2xl space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-white/10 pb-4">
+      <div className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-6 sm:p-7 shadow-xs space-y-6">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-[#DDE5DC] pb-4">
           <div>
-            <h2 className="font-serif text-2xl font-normal tracking-tight text-white uppercase">
-              CCTV SUBMISSIONS QUEUE
+            <h2 className="font-serif text-2xl font-bold tracking-tight text-[#073B2A]">
+              CCTV Submissions Queue
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-[#738078] mt-0.5">
               Stores that have uploaded daily CCTV footage. Photos have been automatically extracted for review.
             </p>
           </div>
@@ -209,25 +209,25 @@ export default function CompliancePage() {
           {/* Search & Filter */}
           <div className="flex items-center gap-3">
             <div className="relative min-w-[200px]">
-              <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-400" />
+              <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-[#738078]" />
               <Input
                 placeholder="Search store name or ID..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-9 h-9 text-xs border-white/10 bg-[#050B1A] text-white rounded-xl placeholder:text-slate-500"
+                className="pl-9 h-9 text-xs border-[#DDE5DC] bg-white text-[#18251F] rounded-lg placeholder:text-[#738078] focus:border-[#073B2A]"
               />
             </div>
 
-            <div className="flex items-center gap-1 p-1 rounded-xl bg-[#050B1A] border border-white/10 text-xs font-mono">
+            <div className="flex items-center gap-1 p-1 rounded-lg bg-[#F6F1E7] border border-[#DDE5DC] text-xs font-mono">
               {["ALL", "Pending Review", "Verified"].map((st) => (
                 <button
                   key={st}
                   type="button"
                   onClick={() => setStatusFilter(st)}
-                  className={`px-3 py-1 rounded-lg text-[11px] cursor-pointer transition-all ${
+                  className={`px-3 py-1 rounded text-[11px] cursor-pointer transition-all ${
                     statusFilter === st
-                      ? "bg-[#4F46FF] text-white font-bold"
-                      : "text-slate-400 hover:text-white"
+                      ? "bg-[#073B2A] text-[#72D6A0] font-bold"
+                      : "text-[#738078] hover:text-[#073B2A]"
                   }`}
                 >
                   {st === "ALL" ? "All" : st}
@@ -242,25 +242,25 @@ export default function CompliancePage() {
           {filteredSubmissions.map((store) => (
             <div
               key={store.id}
-              className="rounded-2xl border border-white/10 bg-[#050B1A] p-5 shadow-lg space-y-4 hover:border-[#4F46FF] transition-all flex flex-col justify-between"
+              className="rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] p-5 shadow-xs space-y-4 hover:border-[#073B2A] transition-all flex flex-col justify-between"
             >
               <div className="space-y-3">
                 {/* Store Name Header */}
                 <div className="flex items-start justify-between">
                   <div>
-                    <h3 className="font-serif text-xl font-bold text-white uppercase tracking-tight">
+                    <h3 className="font-serif text-xl font-bold text-[#073B2A] tracking-tight">
                       {store.storeName}
                     </h3>
-                    <div className="text-xs font-mono text-[#10B981] font-semibold mt-0.5">
+                    <div className="text-xs font-mono text-[#13845B] font-semibold mt-0.5">
                       Store ID: {store.storeId}
                     </div>
                   </div>
 
                   <span
-                    className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold font-mono ${
+                    className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded text-xs font-bold font-mono ${
                       store.status === "Verified"
-                        ? "bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30"
-                        : "bg-[#F59E0B]/15 text-[#F59E0B] border border-[#F59E0B]/30"
+                        ? "bg-[#13845B]/15 text-[#13845B] border border-[#13845B]/30"
+                        : "bg-amber-500/15 text-amber-700 border border-amber-500/30"
                     }`}
                   >
                     {store.status === "Verified" ? "Verified" : "Pending Review"}
@@ -268,33 +268,33 @@ export default function CompliancePage() {
                 </div>
 
                 {/* Information Grid: CCTV Date, Photos Generated, Duration */}
-                <div className="grid grid-cols-2 gap-3 text-xs pt-2 border-t border-white/5">
+                <div className="grid grid-cols-2 gap-3 text-xs pt-2 border-t border-[#DDE5DC]">
                   <div>
-                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
-                      CCTV:
+                    <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold">
+                      Recorded Date:
                     </span>
-                    <div className="flex items-center gap-1.5 font-mono text-slate-200 mt-0.5">
-                      <Calendar className="h-3.5 w-3.5 text-slate-500" />
+                    <div className="flex items-center gap-1.5 font-mono text-[#18251F] mt-0.5">
+                      <Calendar className="h-3.5 w-3.5 text-[#738078]" />
                       <span>{store.uploadDate}</span>
                     </div>
                   </div>
 
                   <div>
-                    <span className="text-[10px] font-mono uppercase text-slate-400 block font-semibold">
-                      Photos Generated:
+                    <span className="text-[10px] font-mono uppercase text-[#738078] block font-semibold">
+                      Extracted Frames:
                     </span>
-                    <div className="flex items-center gap-1.5 font-mono text-slate-200 font-bold mt-0.5">
-                      <Camera className="h-3.5 w-3.5 text-slate-400" />
-                      <span className="text-slate-200">{store.photosCount}</span>
+                    <div className="flex items-center gap-1.5 font-mono text-[#18251F] font-bold mt-0.5">
+                      <Camera className="h-3.5 w-3.5 text-[#13845B]" />
+                      <span>{store.photosCount} Evidence Photos</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Score if verified */}
                 {store.finalRating && (
-                  <div className="p-3 rounded-xl bg-white/5 border border-white/5 text-xs flex items-center justify-between">
-                    <span className="text-slate-400">Assigned Rating:</span>
-                    <span className="font-serif text-base font-bold text-[#10B981]">
+                  <div className="p-3 rounded-lg bg-[#F6F1E7] border border-[#DDE5DC] text-xs flex items-center justify-between">
+                    <span className="text-[#738078]">Assigned Compliance Rating:</span>
+                    <span className="font-serif text-base font-bold text-[#073B2A]">
                       {store.finalRating} / 10
                     </span>
                   </div>
@@ -302,13 +302,13 @@ export default function CompliancePage() {
               </div>
 
               {/* Action Button: [ REVIEW STORE → ] */}
-              <div className="pt-3 border-t border-white/5">
+              <div className="pt-3 border-t border-[#DDE5DC]">
                 <Button
                   type="button"
                   onClick={() => navigate(`/compliance/review/${store.storeId}`)}
-                  className="w-full bg-[#4F46FF] hover:bg-[#6366F1] text-white font-bold text-xs h-11 rounded-xl shadow-md cursor-pointer gap-2 transition-all uppercase tracking-wider"
+                  className="w-full bg-[#073B2A] hover:bg-[#05291F] text-[#72D6A0] font-bold text-xs h-10 rounded-lg shadow-xs cursor-pointer gap-2 transition-all uppercase tracking-wider"
                 >
-                  <span>REVIEW STORE →</span>
+                  <span>Review Store Footage →</span>
                 </Button>
               </div>
             </div>

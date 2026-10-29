@@ -3,34 +3,30 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { DEMO_USERS } from "@/utils/auth-constants";
 import {
-  Building2,
-  Store,
+  Shield,
   ShieldCheck,
-  ArrowRight,
-  CheckCircle2,
-  Sparkles,
-  ShieldAlert,
-  Video,
-  BarChart3,
-  Scale,
-  Activity,
-  Layers,
-  Check,
-  Eye,
-  AlertTriangle,
-  Clock,
-  Cpu,
-  Lock,
-  Menu,
-  X,
-  FileCheck,
-  Search,
-  Sliders,
-  DollarSign,
+  Camera,
   TrendingUp,
+  MessageSquare,
+  Flame,
+  ArrowRight,
+  Play,
+  CheckCircle2,
+  Video,
+  FileCheck2,
+  Lock,
+  Layers,
+  Store,
+  Building2,
+  Clock,
+  Sparkles,
+  Search,
+  Check,
+  ChevronRight,
+  X,
+  Menu,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { PortalNetworkBackground } from "@/components/PortalNetworkBackground";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -39,6 +35,13 @@ export default function LoginPage() {
   const [isLoadingRole, setIsLoadingRole] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [authModalOpen, setAuthModalOpen] = useState(false);
+  const [activeModalRole, setActiveModalRole] = useState<"ADMIN" | "OFFICER" | "OWNER" | "FRANCHISE">("OFFICER");
+
+  // Credentials form state
+  const [emailInput, setEmailInput] = useState("officer@franchiseops.com");
+  const [passwordInput, setPasswordInput] = useState("officer123");
+  const [isSubmittingCredentials, setIsSubmittingCredentials] = useState(false);
 
   // 1-Click Fast Role Sign-In
   const handleQuickLogin = async (
@@ -47,7 +50,6 @@ export default function LoginPage() {
   ) => {
     setErrorMessage(null);
     setIsLoadingRole(roleKey);
-
     const targetDemo = DEMO_USERS.find((u) => u.role === roleKey);
     if (!targetDemo) {
       setErrorMessage(`Demo user profile for ${roleKey} not found.`);
@@ -57,539 +59,294 @@ export default function LoginPage() {
 
     const res = await login(targetDemo.email, targetDemo.passwordHash);
     setIsLoadingRole(null);
-
     if (res.success) {
-      navigate(targetRoute || "/");
+      navigate(targetRoute || (roleKey === "FRANCHISE" ? "/evidence" : "/"));
     } else {
       setErrorMessage(res.error || "Authentication failed. Please retry.");
     }
   };
 
-  const scrollToPortals = () => {
-    const el = document.getElementById("portals-section");
+  const handleManualLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrorMessage(null);
+    setIsSubmittingCredentials(true);
+    const res = await login(emailInput, passwordInput);
+    setIsSubmittingCredentials(false);
+    if (res.success) {
+      setAuthModalOpen(false);
+      navigate("/");
+    } else {
+      setErrorMessage(res.error || "Invalid email or password. Please use pre-filled demo accounts.");
+    }
+  };
+
+  const openAuthWithRole = (role: "ADMIN" | "OFFICER" | "OWNER" | "FRANCHISE") => {
+    setActiveModalRole(role);
+    const matched = DEMO_USERS.find((u) => u.role === role);
+    if (matched) {
+      setEmailInput(matched.email);
+      setPasswordInput(matched.passwordHash);
+    }
+    setAuthModalOpen(true);
+  };
+
+  const scrollToSection = (id: string) => {
+    const el = document.getElementById(id);
     if (el) {
       el.scrollIntoView({ behavior: "smooth" });
     }
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-slate-900 antialiased selection:bg-blue-600 selection:text-white font-sans relative">
-      <div className="relative z-10">
-        {/* ======================================================== */}
-        {/* 1. DARK NAVY ENTERPRISE NAVIGATION BAR                   */}
-        {/* ======================================================== */}
-        <header className="sticky top-0 z-50 w-full bg-[#0D1F3C] backdrop-blur-md border-b border-[#1E3A66] transition-colors shadow-sm text-white">
-          <div className="w-full px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
-            {/* Left: Project logo & name */}
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#152E56] text-blue-300 border border-[#244A82] font-bold shadow-xs">
-                <Building2 className="h-5 w-5" />
-              </div>
-              <div>
-                <span className="font-serif text-lg font-bold text-white block leading-tight">
-                  FranchiseIQ
-                </span>
-                <span className="text-[11px] text-slate-300 hidden sm:block">
-                  Performance & Compliance Monitoring
-                </span>
-              </div>
+    <div className="min-h-screen bg-[#F6F1E7] text-[#18251F] font-sans antialiased selection:bg-[#073B2A] selection:text-white">
+      {/* ======================================================== */}
+      {/* 1. TOP NAVIGATION BAR (Light Theme)                      */}
+      {/* ======================================================== */}
+      <header className="sticky top-0 z-40 w-full bg-[#F6F1E7]/90 backdrop-blur-md border-b border-[#DDE5DC] transition-colors">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+          {/* Brand Logo & Name */}
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#073B2A] text-[#72D6A0] shadow-sm">
+              <Shield className="h-5 w-5" />
             </div>
-
-            {/* Center: Simplified quiet navigation links */}
-            <nav className="hidden lg:flex items-center gap-7 text-xs text-slate-200 font-medium">
-              <a href="#overview" className="hover:text-white transition-colors">
-                Overview
-              </a>
-              <a href="#operations" className="hover:text-white transition-colors">
-                Operations
-              </a>
-              <a href="#evidence" className="hover:text-white transition-colors">
-                AI Verification
-              </a>
-              <a href="#risk-engine" className="hover:text-white transition-colors">
-                Risk
-              </a>
-              <a href="#capa-loop" className="hover:text-white transition-colors">
-                CAPA
-              </a>
-            </nav>
-
-            {/* Right: Authentication / Access Action */}
-            <div className="hidden sm:flex items-center gap-3">
-              <button
-                type="button"
-                onClick={scrollToPortals}
-                className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold h-9 px-4 rounded-xl cursor-pointer transition-all shadow-xs"
-              >
-                Access Workspace
-              </button>
-            </div>
-
-            {/* Mobile menu toggle */}
-            <div className="lg:hidden flex items-center">
-              <button
-                onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                className="p-2 rounded-xl text-slate-200 hover:text-white hover:bg-[#152E56]"
-              >
-                {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-              </button>
+            <div className="flex flex-col">
+              <span className="font-serif text-xl font-bold tracking-tight text-[#073B2A] leading-none">
+                Franchise Standards Auditor
+              </span>
+              <span className="text-[11px] text-[#738078] font-medium tracking-wide">
+                Compliance & Quality Intelligence
+              </span>
             </div>
           </div>
 
-          {/* Mobile Navigation Drawer */}
-          {mobileMenuOpen && (
-            <div className="lg:hidden border-b border-[#1E3A66] bg-[#0D1F3C] px-4 py-4 space-y-3 animate-in fade-in text-xs text-slate-200">
-              <nav className="flex flex-col gap-2 text-slate-200">
-                <a
-                  href="#overview"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="hover:text-white py-1"
-                >
-                  Overview
-                </a>
-                <a
-                  href="#operations"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="hover:text-white py-1"
-                >
-                  Operations
-                </a>
-                <a
-                  href="#evidence"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="hover:text-white py-1"
-                >
-                  AI Verification
-                </a>
-                <a
-                  href="#risk-engine"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="hover:text-white py-1"
-                >
-                  Risk
-                </a>
-                <a
-                  href="#capa-loop"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="hover:text-white py-1"
-                >
-                  CAPA
-                </a>
-              </nav>
-              <button
-                onClick={() => {
-                  setMobileMenuOpen(false);
-                  scrollToPortals();
-                }}
-                className="w-full text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white py-2.5 rounded-xl flex items-center justify-center gap-1.5"
-              >
-                <span>Access Workspace</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
-          )}
-        </header>
+          {/* Navigation links */}
+          <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-[#18251F]">
+            <button
+              onClick={() => scrollToSection("hero")}
+              className="text-[#073B2A] font-semibold hover:text-[#13845B] transition-colors cursor-pointer"
+            >
+              Home
+            </button>
+            <button
+              onClick={() => scrollToSection("features")}
+              className="text-[#738078] hover:text-[#073B2A] transition-colors cursor-pointer"
+            >
+              Features
+            </button>
+            <button
+              onClick={() => scrollToSection("how-it-works")}
+              className="text-[#738078] hover:text-[#073B2A] transition-colors cursor-pointer"
+            >
+              How It Works
+            </button>
+            <button
+              onClick={() => scrollToSection("portals")}
+              className="text-[#738078] hover:text-[#073B2A] transition-colors cursor-pointer"
+            >
+              Portals
+            </button>
+          </nav>
 
-        {/* ======================================================== */}
-        {/* SECTION 1: HERO / PORTAL SELECTION                       */}
-        {/* ======================================================== */}
-        <section id="overview" className="relative pt-12 pb-16 md:pt-16 md:pb-20 overflow-hidden bg-[#EEF3F8]/80 backdrop-blur-xs border-b border-slate-200/80">
-          {/* Interactive Network Background ONLY for this specific portal selection section */}
-          <PortalNetworkBackground />
+          {/* Right Action: Get Started / Sign In */}
+          <div className="hidden sm:flex items-center gap-3">
+            <button
+              onClick={() => openAuthWithRole("OFFICER")}
+              className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] shadow-xs transition-all cursor-pointer flex items-center gap-2"
+            >
+              <span>Get Started</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
 
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="max-w-2xl mx-auto text-center space-y-3">
-              {/* Small uppercase label */}
-              <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-600 block">
-                ENTERPRISE OPERATIONS
-              </span>
+          {/* Mobile Menu Toggle */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden p-2 text-[#073B2A] hover:bg-[#EAE3D2] rounded-lg cursor-pointer"
+            aria-label="Toggle navigation"
+          >
+            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          </button>
+        </div>
 
-              {/* Main heading */}
-              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-slate-900 font-normal tracking-tight">
-                Select Your Portal
+        {/* Mobile Dropdown Menu */}
+        {mobileMenuOpen && (
+          <div className="md:hidden border-b border-[#DDE5DC] bg-[#FFFDF8] px-4 py-4 space-y-3">
+            <button
+              onClick={() => { setMobileMenuOpen(false); scrollToSection("hero"); }}
+              className="block w-full text-left py-1.5 text-sm font-semibold text-[#073B2A]"
+            >
+              Home
+            </button>
+            <button
+              onClick={() => { setMobileMenuOpen(false); scrollToSection("features"); }}
+              className="block w-full text-left py-1.5 text-sm text-[#738078]"
+            >
+              Features
+            </button>
+            <button
+              onClick={() => { setMobileMenuOpen(false); scrollToSection("how-it-works"); }}
+              className="block w-full text-left py-1.5 text-sm text-[#738078]"
+            >
+              How It Works
+            </button>
+            <button
+              onClick={() => { setMobileMenuOpen(false); scrollToSection("portals"); }}
+              className="block w-full text-left py-1.5 text-sm text-[#738078]"
+            >
+              Access Portals
+            </button>
+            <button
+              onClick={() => { setMobileMenuOpen(false); openAuthWithRole("OFFICER"); }}
+              className="w-full mt-2 text-xs font-semibold bg-[#073B2A] text-white py-2.5 rounded-xl flex items-center justify-center gap-1.5"
+            >
+              <span>Sign In / Get Started</span>
+              <ArrowRight className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        )}
+      </header>
+
+      {/* ======================================================== */}
+      {/* 2. HERO SECTION (Warm Cream + Dark Green Headline)       */}
+      {/* ======================================================== */}
+      <section id="hero" className="relative pt-12 pb-20 md:pt-20 md:pb-28 overflow-hidden bg-[#F6F1E7]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+            {/* Left Column: Value Proposition & CTAs */}
+            <div className="lg:col-span-6 space-y-6 text-center lg:text-left">
+              {/* Trust Badge / Tag */}
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EAE3D2] border border-[#DDE5DC] text-xs font-medium text-[#073B2A]">
+                <ShieldCheck className="h-3.5 w-3.5 text-[#13845B]" />
+                <span>Next-Gen Enterprise Franchise Governance</span>
+              </div>
+
+              {/* Large Serif Headline */}
+              <h1 className="font-serif text-4xl sm:text-5xl lg:text-6xl text-[#073B2A] font-bold tracking-tight leading-[1.1]">
+                Smarter Audits. <br />
+                <span className="italic font-serif font-normal text-[#13845B]">Stronger Franchises.</span>
               </h1>
 
-              {/* Short description */}
-              <p className="text-sm sm:text-base text-slate-600 font-sans">
-                Choose your workspace to continue.
+              {/* Concise Description */}
+              <p className="text-base sm:text-lg text-[#738078] leading-relaxed max-w-xl mx-auto lg:mx-0">
+                Automate store compliance, verify real CCTV video evidence, reconcile POS sales, and continuously protect your brand reputation across the entire network.
               </p>
+
+              {/* Action Buttons */}
+              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
+                <button
+                  onClick={() => openAuthWithRole("OFFICER")}
+                  className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-sm font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 group"
+                >
+                  <span>Start Free Audit</span>
+                  <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
+                </button>
+                <button
+                  onClick={() => scrollToSection("features")}
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-sm font-semibold bg-[#FFFDF8] text-[#073B2A] border border-[#DDE5DC] hover:bg-[#FAF7F0] shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
+                >
+                  <Play className="h-3.5 w-3.5 text-[#13845B] fill-[#13845B]" />
+                  <span>Explore Capabilities</span>
+                </button>
+              </div>
+
+              {/* Small Feature Indicators Under CTAs */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-6 border-t border-[#DDE5DC] text-xs font-medium text-[#18251F]">
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-[#13845B] shrink-0" />
+                  <span>Image Verification</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-[#13845B] shrink-0" />
+                  <span>POS & Reports</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-[#13845B] shrink-0" />
+                  <span>Reviews & Sentiment</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <CheckCircle2 className="h-4 w-4 text-[#13845B] shrink-0" />
+                  <span>Risk Score & Insights</span>
+                </div>
+              </div>
             </div>
 
-            {/* Global Error Banner */}
-            {errorMessage && (
-              <div className="max-w-md mx-auto mt-6 flex items-center gap-3 rounded-2xl bg-rose-50 border border-rose-200 p-3.5 text-xs text-rose-700">
-                <ShieldAlert className="h-4 w-4 shrink-0 text-rose-600" />
-                <span>{errorMessage}</span>
-              </div>
-            )}
-
-            {/* ======================================================== */}
-            {/* THREE COMPACT, CLEAN PORTAL CARDS (1 ROW ON DESKTOP)     */}
-            {/* ======================================================== */}
-            <div id="portals-section" className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
-              {/* Card 1: FRANCHISEE */}
-              <div className="rounded-[24px] border border-[#DCE4EE] bg-gradient-to-b from-white to-[#F5F7FC] p-6 shadow-xs flex flex-col justify-between hover:border-indigo-300 hover:shadow-md transition-all group">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="h-11 w-11 rounded-2xl bg-purple-50 text-purple-600 border border-purple-200 flex items-center justify-center">
-                      <Building2 className="h-5 w-5" />
-                    </div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-purple-700 font-bold">
-                      FRANCHISEE
-                    </span>
-                  </div>
-
-                  <div>
-                    <h3 className="font-serif text-2xl font-bold text-slate-900">
-                      Franchisee
-                    </h3>
-                    <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                      Manage your stores and overall business performance.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="pt-6">
-                  <Button
-                    className="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold text-xs h-11 rounded-xl shadow-xs cursor-pointer gap-2 transition-all uppercase tracking-wider"
-                    onClick={() => navigate("/login/franchisee")}
-                  >
-                    <span>Enter Portal →</span>
-                  </Button>
-                </div>
-              </div>
-
-              {/* Card 2: STORE */}
-              <div className="rounded-[24px] border border-[#D5E6E0] bg-gradient-to-b from-white to-[#F1F8F5] p-6 shadow-xs flex flex-col justify-between hover:border-teal-400 hover:shadow-md transition-all group">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="h-11 w-11 rounded-2xl bg-teal-50 text-teal-600 border border-teal-200 flex items-center justify-center">
+            {/* Right Column: Premium Visual Composition representing Store Audit */}
+            <div className="lg:col-span-6 relative">
+              <div className="relative rounded-3xl border border-[#DDE5DC] bg-[#FFFDF8] p-4 sm:p-6 shadow-xl space-y-4">
+                {/* Audit Header Strip */}
+                <div className="flex items-center justify-between border-b border-[#DDE5DC] pb-4">
+                  <div className="flex items-center gap-3">
+                    <div className="h-10 w-10 rounded-xl bg-[#E6F8EF] border border-[#C7F1DC] flex items-center justify-center text-[#073B2A] font-bold">
                       <Store className="h-5 w-5" />
                     </div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-teal-700 font-bold">
-                      STORE
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className="font-serif font-bold text-base text-[#073B2A]">
+                          Lucknow Central Outlet
+                        </span>
+                        <span className="px-2 py-0.5 rounded-full bg-[#E6F8EF] text-[#073B2A] text-[10px] font-mono font-bold border border-[#C7F1DC]">
+                          OUT-042
+                        </span>
+                      </div>
+                      <p className="text-xs text-[#738078]">Hazratganj Main Flagship · Audited 04 Oct 2026</p>
+                    </div>
+                  </div>
+
+                  <div className="text-right">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#738078] block">Compliance Score</span>
+                    <span className="font-serif text-2xl font-bold text-[#13845B]">94%</span>
+                  </div>
+                </div>
+
+                {/* Simulated CCTV Evidence Screen with Real Hud */}
+                <div className="relative rounded-2xl overflow-hidden border border-[#DDE5DC] bg-[#073B2A] aspect-video flex flex-col justify-between p-3.5 shadow-inner">
+                  {/* Top HUD */}
+                  <div className="flex items-center justify-between text-[11px] font-mono z-10">
+                    <div className="flex items-center gap-2 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md text-white border border-white/10">
+                      <span className="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                      <span>CAM-01: Kitchen Prep Counter</span>
+                    </div>
+                    <div className="bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-md text-[#72D6A0] font-bold border border-white/10">
+                      REC 00:05:12
+                    </div>
+                  </div>
+
+                  {/* Center HUD: Verification Target Crosshairs */}
+                  <div className="my-auto mx-auto border border-[#72D6A0]/40 rounded-xl p-3 bg-black/40 backdrop-blur-xs text-center space-y-1">
+                    <div className="flex items-center justify-center gap-1.5 text-xs font-semibold text-white">
+                      <ShieldCheck className="h-4 w-4 text-[#72D6A0]" />
+                      <span>Packaging Double-Bag Seal: Verified</span>
+                    </div>
+                    <p className="text-[10px] font-mono text-[#CAD5C9]">
+                      Cold-Storage Temperature probe: +3.2°C (Compliant)
+                    </p>
+                  </div>
+
+                  {/* Bottom Telemetry HUD */}
+                  <div className="flex items-center justify-between text-[10px] font-mono text-white/90 z-10">
+                    <div className="flex items-center gap-2">
+                      <span className="px-2 py-0.5 rounded bg-black/60 border border-white/10">FPS: 15.0</span>
+                      <span className="px-2 py-0.5 rounded bg-black/60 border border-white/10">1080p FHD</span>
+                    </div>
+                    <span className="px-2.5 py-0.5 rounded bg-emerald-600/90 text-white font-bold">
+                      GENUINE EXTRACTED FRAME
                     </span>
                   </div>
+                </div>
 
-                  <div>
-                    <h3 className="font-serif text-2xl font-bold text-slate-900">
-                      Store
-                    </h3>
-                    <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                      Manage store operations and submit CCTV evidence.
-                    </p>
+                {/* 3 Metric Pills below frame */}
+                <div className="grid grid-cols-3 gap-2.5 pt-1 text-xs">
+                  <div className="p-3 rounded-xl bg-[#FAF7F0] border border-[#DDE5DC] text-center">
+                    <span className="text-[10px] font-mono text-[#738078] block">POS Variance</span>
+                    <span className="font-serif font-bold text-sm text-[#073B2A]">+0.4% (Normal)</span>
                   </div>
-                </div>
-
-                <div className="pt-6">
-                  <Button
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs h-11 rounded-xl shadow-xs cursor-pointer gap-2 transition-all uppercase tracking-wider"
-                    onClick={() => navigate("/login/store")}
-                  >
-                    <span>Select Store & Enter →</span>
-                  </Button>
-                </div>
-              </div>
-
-              {/* Card 3: QUALITY OFFICER */}
-              <div className="rounded-[24px] border border-[#CFE8DC] bg-gradient-to-b from-white to-[#F0F8F4] p-6 shadow-xs flex flex-col justify-between hover:border-emerald-400 hover:shadow-md transition-all group">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="h-11 w-11 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center">
-                      <ShieldCheck className="h-5 w-5" />
-                    </div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-700 font-bold">
-                      QUALITY OFFICER
-                    </span>
+                  <div className="p-3 rounded-xl bg-[#FAF7F0] border border-[#DDE5DC] text-center">
+                    <span className="text-[10px] font-mono text-[#738078] block">Sentiment Rating</span>
+                    <span className="font-serif font-bold text-sm text-[#13845B]">4.8 / 5.0 ★</span>
                   </div>
-
-                  <div>
-                    <h3 className="font-serif text-2xl font-bold text-slate-900">
-                      Quality & Compliance Officer
-                    </h3>
-                    <p className="text-xs text-slate-600 mt-2 leading-relaxed">
-                      Review store evidence and give compliance ratings.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="pt-6">
-                  <Button
-                    className="w-full bg-[#10B981] hover:bg-[#059669] text-white font-semibold text-xs h-11 rounded-xl shadow-xs cursor-pointer gap-2 transition-all uppercase tracking-wider"
-                    disabled={isLoadingRole === "OFFICER"}
-                    onClick={() => handleQuickLogin("OFFICER", "/compliance")}
-                  >
-                    <span>{isLoadingRole === "OFFICER" ? "Verifying..." : "Enter Portal →"}</span>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-      {/* ======================================================== */}
-      {/* CURVED WAVE TRANSITION 1: SOFT LIGHT SURFACE             */}
-      {/* ======================================================== */}
-      <div className="w-full overflow-hidden leading-none -mb-1">
-        <svg
-          viewBox="0 0 1440 100"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-14 sm:h-20 text-[#F1F5F9] preserve-3d"
-        >
-          <path
-            d="M0,0 C360,70 720,100 1080,60 C1260,40 1380,20 1440,0 L1440,100 L0,100 Z"
-            fill="currentColor"
-          />
-        </svg>
-      </div>
-
-      {/* ======================================================== */}
-      {/* SECTION 2: WHY THE PLATFORM EXISTS                       */}
-      {/* ======================================================== */}
-      <section id="why-platform" className="py-24 md:py-32 bg-[#F1F5F9] border-t border-slate-200 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-16 space-y-4">
-            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-500 block">
-              THE MULTI-UNIT CHALLENGE
-            </span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-slate-900">
-              Eliminating operational blindspots across{" "}
-              <span className="font-serif italic text-slate-700">
-                distributed franchise networks.
-              </span>
-            </h2>
-            <p className="text-base text-slate-600 leading-relaxed max-w-2xl">
-              Traditional franchise networks rely on unannounced quarterly paper
-              visits that capture less than 0.1% of operational hours. Our
-              system continuously monitors compliance 24 hours a day, 7 days a
-              week.
-            </p>
-          </div>
-
-          {/* 3 Alternating Editorial Pillars */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="rounded-[28px] p-8 bg-white border border-slate-200/80 hover:border-indigo-300 transition-all space-y-5 hover:-translate-y-1 shadow-sm">
-              <div className="h-12 w-12 rounded-2xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center font-bold">
-                <DollarSign className="h-6 w-6" />
-              </div>
-              <h3 className="font-serif text-xl font-bold text-slate-900">
-                1. POS & Revenue Reconciliation
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Automated continuous sync with store POS terminals. Flags
-                unrecorded cash ticket leakages, gross-to-net discrepancies, and
-                calculates exact brand royalty deductions per contract terms.
-              </p>
-              <div className="pt-4 border-t border-slate-100 text-[11px] font-mono text-slate-700 space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-indigo-600" />
-                  <span>Zero Manual Revenue Reporting</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-indigo-600" />
-                  <span>100% Tax & Invoicing Alignment</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[28px] p-8 bg-white border border-slate-200/80 hover:border-amber-300 transition-all space-y-5 hover:-translate-y-1 shadow-sm">
-              <div className="h-12 w-12 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center font-bold">
-                <Video className="h-6 w-6" />
-              </div>
-              <h3 className="font-serif text-xl font-bold text-slate-900">
-                2. AI Vision Prep Line Hygiene
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Computer vision surveillance auditing kitchen assembly zones.
-                Detects double-bag packaging seals, staff apron compliance,
-                refrigeration temperatures, and handwash station adherence.
-              </p>
-              <div className="pt-4 border-t border-slate-100 text-[11px] font-mono text-slate-700 space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-amber-600" />
-                  <span>Unannounced Visual Frame Auditing</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-amber-600" />
-                  <span>Automatic Evidence Timestamping</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="rounded-[28px] p-8 bg-white border border-slate-200/80 hover:border-emerald-300 transition-all space-y-5 hover:-translate-y-1 shadow-sm">
-              <div className="h-12 w-12 rounded-2xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center font-bold">
-                <FileCheck className="h-6 w-6" />
-              </div>
-              <h3 className="font-serif text-xl font-bold text-slate-900">
-                3. 8-Stage Statutory CAPA Loop
-              </h3>
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Enforces end-to-end accountability for non-compliances. Generates
-                corrective tasks with strict SLA timers, requiring photographic
-                remediation upload and officer re-inspection before issue closure.
-              </p>
-              <div className="pt-4 border-t border-slate-100 text-[11px] font-mono text-slate-700 space-y-1.5">
-                <div className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>Guaranteed FSSAI Defect Resolution</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>Real-Time Penalty Escalation Matrix</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* CURVED WAVE TRANSITION 2                                 */}
-      {/* ======================================================== */}
-      <div className="w-full overflow-hidden leading-none -mb-1">
-        <svg
-          viewBox="0 0 1440 90"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-full h-14 sm:h-20 text-white preserve-3d"
-        >
-          <path
-            d="M0,0 C420,80 840,80 1440,0 L1440,90 L0,90 Z"
-            fill="currentColor"
-          />
-        </svg>
-      </div>
-
-      {/* ======================================================== */}
-      {/* SECTION 3: CONNECTED FRANCHISE OPERATIONS                */}
-      {/* ======================================================== */}
-      <section id="operations" className="py-24 md:py-32 bg-white relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left: Text Storytelling */}
-            <div className="space-y-6">
-              <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#10B981] block">
-                CONNECTED ENTERPRISE ARCHITECTURE
-              </span>
-              <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-slate-900">
-                Unified telemetry across{" "}
-                <span className="font-serif italic text-slate-700">
-                  every operating franchise node.
-                </span>
-              </h2>
-              <p className="text-base text-slate-600 leading-relaxed">
-                Connect point-of-sale streams, cold storage refrigeration loggers,
-                and kitchen staging stations across multiple metropolitan hubs into
-                one live operating grid.
-              </p>
-
-              <div className="pt-2 space-y-4">
-                <div className="flex items-start gap-4">
-                  <div className="h-7 w-7 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center shrink-0 mt-0.5">
-                    <CheckCircle2 className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm text-slate-900">Live Data Synchronization</h4>
-                    <p className="text-xs text-slate-600 mt-0.5">
-                      Sub-second ledger synchronization between regional stores and corporate headquarters.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="h-7 w-7 rounded-xl bg-teal-50 text-teal-600 border border-teal-200 flex items-center justify-center shrink-0 mt-0.5">
-                    <CheckCircle2 className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm text-slate-900">Cold-Chain Temperature Telemetry</h4>
-                    <p className="text-xs text-slate-600 mt-0.5">
-                      Automated sensor monitoring with instant breach alerts when walk-in chillers exceed 4.0°C.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="h-7 w-7 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center shrink-0 mt-0.5">
-                    <CheckCircle2 className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <h4 className="font-semibold text-sm text-slate-900">Strict Franchise Isolation</h4>
-                    <p className="text-xs text-slate-600 mt-0.5">
-                      Cryptographic unit partition ensures store operators cannot inspect peer financial metrics.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Product Showcase Visual Card */}
-            <div className="rounded-[32px] border border-slate-200 bg-[#F8FAFC] p-8 shadow-sm space-y-6 relative overflow-hidden">
-              <div className="flex items-center justify-between border-b border-slate-200 pb-4">
-                <div className="flex items-center gap-2">
-                  <span className="h-2.5 w-2.5 rounded-full bg-emerald-500 animate-ping" />
-                  <span className="text-xs font-mono font-semibold text-slate-800">
-                    NETWORK_GRID_TELEMETRY
-                  </span>
-                </div>
-                <span className="text-[11px] font-mono text-slate-600 font-semibold">10 Metros · 148 Nodes</span>
-              </div>
-
-              {/* Connected Nodes Mockup */}
-              <div className="space-y-3 font-mono text-xs">
-                <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-3">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <div>
-                      <div className="font-semibold text-slate-900">Hazratganj Flagship (OUT-042)</div>
-                      <div className="text-[10px] text-slate-500">Lucknow Central · FOCO Model</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-emerald-600 font-bold">100% Sync</div>
-                    <div className="text-[10px] text-slate-500">Chiller: 3.4°C</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-3">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <div>
-                      <div className="font-semibold text-slate-900">Sector 18 Market (OUT-089)</div>
-                      <div className="text-[10px] text-slate-500">Noida Express · COCO Model</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-emerald-600 font-bold">100% Sync</div>
-                    <div className="text-[10px] text-slate-500">Chiller: 2.8°C</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-3">
-                    <span className="h-2 w-2 rounded-full bg-amber-500" />
-                    <div>
-                      <div className="font-semibold text-slate-900">Koramangala 5th Block (OUT-114)</div>
-                      <div className="text-[10px] text-slate-500">Bengaluru Hub · FOCO Model</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-amber-600 font-bold">CAPA Active</div>
-                    <div className="text-[10px] text-slate-500">Chiller: 3.9°C</div>
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between p-3.5 rounded-2xl bg-white border border-slate-200 shadow-2xs">
-                  <div className="flex items-center gap-3">
-                    <span className="h-2 w-2 rounded-full bg-emerald-500" />
-                    <div>
-                      <div className="font-semibold text-slate-900">Connaught Place Inner (OUT-019)</div>
-                      <div className="text-[10px] text-slate-500">New Delhi · COCO Model</div>
-                    </div>
-                  </div>
-                  <div className="text-right">
-                    <div className="text-emerald-600 font-bold">100% Sync</div>
-                    <div className="text-[10px] text-slate-500">Chiller: 2.1°C</div>
+                  <div className="p-3 rounded-xl bg-[#FAF7F0] border border-[#DDE5DC] text-center">
+                    <span className="text-[10px] font-mono text-[#738078] block">Composite Risk</span>
+                    <span className="font-serif font-bold text-sm text-[#13845B]">14 (Low Risk)</span>
                   </div>
                 </div>
               </div>
@@ -599,437 +356,446 @@ export default function LoginPage() {
       </section>
 
       {/* ======================================================== */}
-      {/* SECTION 4: PERFORMANCE INTELLIGENCE                      */}
+      {/* 3. FEATURES SECTION (Dark Green Theme)                   */}
       {/* ======================================================== */}
-      <section id="performance" className="py-24 md:py-32 bg-[#F1F5F9] border-t border-slate-200 relative">
+      <section id="features" className="py-20 md:py-28 bg-[#073B2A] text-white relative">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#F59E0B] block">
-              FINANCIAL & UNIT ECONOMICS
+          {/* Section Header */}
+          <div className="max-w-2xl mx-auto text-center space-y-3 mb-16">
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#72D6A0] block">
+              ENTERPRISE AUDIT CAPABILITIES
             </span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-slate-900">
-              Real-time EBITDA and{" "}
-              <span className="font-serif italic text-slate-700">
-                revenue leakage prevention.
-              </span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-white">
+              Complete Visibility Across Every Franchise Node
             </h2>
-            <p className="text-base text-slate-600 leading-relaxed">
-              Consolidate multi-store point-of-sale revenues, audit gross-to-net sales deductions,
-              and protect corporate royalties with automated ledger verification.
+            <p className="text-sm sm:text-base text-[#CAD5C9] font-sans">
+              Four synchronized intelligence engines protecting brand consistency, food hygiene, revenue integrity, and operational standards.
             </p>
           </div>
 
-          {/* Visual Showcase: Large KPI Cards & Financial Ledger Card */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div className="rounded-[24px] p-6 bg-white border border-slate-200 shadow-xs space-y-2">
-              <div className="text-xs text-slate-500 font-medium">Verified Network GMV</div>
-              <div className="font-serif text-3xl font-bold text-slate-900">₹84.6 Cr</div>
-              <div className="text-[11px] text-emerald-600 font-mono font-semibold">+14.2% YoY Growth</div>
+          {/* 4 Feature Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {/* Card 1: Image Verification */}
+            <div className="rounded-2xl p-6 bg-[#05291F] border border-[#0D4E39] hover:border-[#72D6A0]/50 transition-all space-y-4 hover:-translate-y-1 shadow-md flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="h-12 w-12 rounded-xl bg-[#073B2A] text-[#72D6A0] border border-[#0D4E39] flex items-center justify-center font-bold">
+                  <Camera className="h-6 w-6" />
+                </div>
+                <h3 className="font-serif text-xl font-bold text-white">
+                  1. Image Verification
+                </h3>
+                <p className="text-xs text-[#CAD5C9] leading-relaxed">
+                  Automatic extraction of authentic frames from uploaded CCTV surveillance recordings. Evaluates kitchen assembly hygiene, cold-chain temps, apron adherence, and packaging standards.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[#0D4E39] text-[11px] font-mono text-[#72D6A0] flex items-center gap-2">
+                <Check className="h-3.5 w-3.5" />
+                <span>Zero-synthetic genuine frames</span>
+              </div>
             </div>
-            <div className="rounded-[24px] p-6 bg-white border border-slate-200 shadow-xs space-y-2">
-              <div className="text-xs text-slate-500 font-medium">Consolidated EBITDA</div>
-              <div className="font-serif text-3xl font-bold text-indigo-600">₹12.8 Cr</div>
-              <div className="text-[11px] text-indigo-700 font-mono font-semibold">15.1% Net Margin</div>
+
+            {/* Card 2: POS & Reports Analysis */}
+            <div className="rounded-2xl p-6 bg-[#05291F] border border-[#0D4E39] hover:border-[#72D6A0]/50 transition-all space-y-4 hover:-translate-y-1 shadow-md flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="h-12 w-12 rounded-xl bg-[#073B2A] text-[#72D6A0] border border-[#0D4E39] flex items-center justify-center font-bold">
+                  <TrendingUp className="h-6 w-6" />
+                </div>
+                <h3 className="font-serif text-xl font-bold text-white">
+                  2. POS & Reports Analysis
+                </h3>
+                <p className="text-xs text-[#CAD5C9] leading-relaxed">
+                  Continuous reconciliation comparing commissary raw material shipments against recorded daily billing receipts. Surfaces unrecorded sales and inventory slippage.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[#0D4E39] text-[11px] font-mono text-[#72D6A0] flex items-center gap-2">
+                <Check className="h-3.5 w-3.5" />
+                <span>Deterministic discrepancy math</span>
+              </div>
             </div>
-            <div className="rounded-[24px] p-6 bg-white border border-slate-200 shadow-xs space-y-2">
-              <div className="text-xs text-slate-500 font-medium">Royalty Compliance</div>
-              <div className="font-serif text-3xl font-bold text-teal-600">99.8%</div>
-              <div className="text-[11px] text-teal-700 font-mono font-semibold">Zero Unreconciled Gaps</div>
+
+            {/* Card 3: Reviews & Sentiment */}
+            <div className="rounded-2xl p-6 bg-[#05291F] border border-[#0D4E39] hover:border-[#72D6A0]/50 transition-all space-y-4 hover:-translate-y-1 shadow-md flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="h-12 w-12 rounded-xl bg-[#073B2A] text-[#72D6A0] border border-[#0D4E39] flex items-center justify-center font-bold">
+                  <MessageSquare className="h-6 w-6" />
+                </div>
+                <h3 className="font-serif text-xl font-bold text-white">
+                  3. Reviews & Sentiment
+                </h3>
+                <p className="text-xs text-[#CAD5C9] leading-relaxed">
+                  Monitors guest feedback across Google Maps, food delivery portals, and in-store complaints. Tracks quality sentiment spikes and customer escalation patterns.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[#0D4E39] text-[11px] font-mono text-[#72D6A0] flex items-center gap-2">
+                <Check className="h-3.5 w-3.5" />
+                <span>Real-time reputation alerts</span>
+              </div>
             </div>
-            <div className="rounded-[24px] p-6 bg-white border border-slate-200 shadow-xs space-y-2">
-              <div className="text-xs text-slate-500 font-medium">Inventory Freshness</div>
-              <div className="font-serif text-3xl font-bold text-emerald-600">96.4%</div>
-              <div className="text-[11px] text-emerald-700 font-mono font-semibold">FIFO Stock Rotation</div>
+
+            {/* Card 4: Risk Score & Insights */}
+            <div className="rounded-2xl p-6 bg-[#05291F] border border-[#0D4E39] hover:border-[#72D6A0]/50 transition-all space-y-4 hover:-translate-y-1 shadow-md flex flex-col justify-between">
+              <div className="space-y-4">
+                <div className="h-12 w-12 rounded-xl bg-[#073B2A] text-[#72D6A0] border border-[#0D4E39] flex items-center justify-center font-bold">
+                  <Flame className="h-6 w-6" />
+                </div>
+                <h3 className="font-serif text-xl font-bold text-white">
+                  4. Risk Score & Insights
+                </h3>
+                <p className="text-xs text-[#CAD5C9] leading-relaxed">
+                  Calculates a weighted deterministic risk score (0-100) combining sales, visual evidence, customer grievances, and inventory variances into actionable audit priorities.
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-[#0D4E39] text-[11px] font-mono text-[#72D6A0] flex items-center gap-2">
+                <Check className="h-3.5 w-3.5" />
+                <span>Weighted 6-factor algorithm</span>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* SECTION 5: AI-ASSISTED EVIDENCE VERIFICATION             */}
+      {/* 4. HOW IT WORKS SECTION (Light Theme)                    */}
       {/* ======================================================== */}
-      <section id="evidence" className="py-24 md:py-32 bg-white border-t border-slate-200 relative">
+      <section id="how-it-works" className="py-20 md:py-28 bg-[#F6F1E7]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-16 space-y-4">
-            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-600 block">
-              COMPUTER VISION & CCTV AUDITING
+          <div className="max-w-2xl mx-auto text-center space-y-3 mb-16">
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#13845B] block">
+              WORKFLOW METHODOLOGY
             </span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-slate-900">
-              AI assists.{" "}
-              <span className="font-serif italic text-slate-700">
-                Human verifies.
-              </span>
+            <h2 className="font-serif text-3xl sm:text-5xl font-bold tracking-tight text-[#073B2A]">
+              From data to decisions in 4 simple steps.
             </h2>
-            <p className="text-base text-slate-600 leading-relaxed max-w-2xl">
-              High-resolution security feeds are sampled for food safety non-compliances,
-              generating preliminary observations that require Quality Officer verification
-              before any disciplinary action or penalty is issued.
+            <p className="text-sm sm:text-base text-[#738078]">
+              A continuous, closed-loop assurance framework transforming raw operational records into certified franchise excellence.
             </p>
           </div>
 
-          {/* Visual Step-by-Step Flow: CCTV VIDEO -> EXTRACTED FRAMES -> AI OBSERVATION -> OFFICER REVIEW -> VERIFIED RECORD */}
-          <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+          {/* 4 Steps Row */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
             {/* Step 1 */}
-            <div className="rounded-[24px] p-6 bg-slate-50 border border-slate-200 space-y-3 relative group hover:border-slate-400 transition-all">
-              <div className="flex items-center justify-between">
-                <div className="h-9 w-9 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 flex items-center justify-center font-bold">
-                  <Video className="h-4 w-4" />
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">01</span>
-              </div>
-              <h4 className="font-semibold text-xs text-slate-900">CCTV VIDEO</h4>
-              <p className="text-[11px] text-slate-600">
-                Continuous camera recording across food staging & storage zones.
+            <div className="p-6 rounded-2xl bg-[#FFFDF8] border border-[#DDE5DC] space-y-4 shadow-xs relative">
+              <span className="text-xs font-mono font-bold text-[#13845B] px-2.5 py-1 rounded-md bg-[#E6F8EF] inline-block border border-[#C7F1DC]">
+                STEP 01
+              </span>
+              <h3 className="font-serif text-xl font-bold text-[#073B2A]">
+                Collect Data
+              </h3>
+              <p className="text-xs text-[#738078] leading-relaxed">
+                Upload CCTV footage, store photographs, POS end-of-day reports, and commissary bills directly to the secure evidence vault.
               </p>
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-[24px] p-6 bg-slate-50 border border-slate-200 space-y-3 relative group hover:border-teal-300 transition-all">
-              <div className="flex items-center justify-between">
-                <div className="h-9 w-9 rounded-xl bg-teal-50 text-teal-600 border border-teal-200 flex items-center justify-center font-bold">
-                  <Eye className="h-4 w-4" />
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">02</span>
-              </div>
-              <h4 className="font-semibold text-xs text-slate-900">EXTRACTED FRAMES</h4>
-              <p className="text-[11px] text-slate-600">
-                Computer vision isolates keyframe timestamps with Day-Dot indicators.
+            <div className="p-6 rounded-2xl bg-[#FFFDF8] border border-[#DDE5DC] space-y-4 shadow-xs relative">
+              <span className="text-xs font-mono font-bold text-[#13845B] px-2.5 py-1 rounded-md bg-[#E6F8EF] inline-block border border-[#C7F1DC]">
+                STEP 02
+              </span>
+              <h3 className="font-serif text-xl font-bold text-[#073B2A]">
+                AI Analysis
+              </h3>
+              <p className="text-xs text-[#738078] leading-relaxed">
+                Extract genuine video frames across custom durations and run deterministic discrepancy equations across stock and billing ledgers.
               </p>
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-[24px] p-6 bg-slate-50 border border-slate-200 space-y-3 relative group hover:border-amber-300 transition-all">
-              <div className="flex items-center justify-between">
-                <div className="h-9 w-9 rounded-xl bg-amber-50 text-amber-600 border border-amber-200 flex items-center justify-center font-bold">
-                  <Cpu className="h-4 w-4" />
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">03</span>
-              </div>
-              <h4 className="font-semibold text-xs text-slate-900">AI OBSERVATION</h4>
-              <p className="text-[11px] text-slate-600">
-                Preliminary confidence evaluation of hygiene, packaging seal, and temperature.
+            <div className="p-6 rounded-2xl bg-[#FFFDF8] border border-[#DDE5DC] space-y-4 shadow-xs relative">
+              <span className="text-xs font-mono font-bold text-[#13845B] px-2.5 py-1 rounded-md bg-[#E6F8EF] inline-block border border-[#C7F1DC]">
+                STEP 03
+              </span>
+              <h3 className="font-serif text-xl font-bold text-[#073B2A]">
+                Get Insights
+              </h3>
+              <p className="text-xs text-[#738078] leading-relaxed">
+                Display live compliance scores, detected deviations, risk breakdowns, and prioritized audit alerts on executive dashboards.
               </p>
             </div>
 
             {/* Step 4 */}
-            <div className="rounded-[24px] p-6 bg-slate-50 border border-slate-200 space-y-3 relative group hover:border-indigo-300 transition-all">
-              <div className="flex items-center justify-between">
-                <div className="h-9 w-9 rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 flex items-center justify-center font-bold">
-                  <ShieldCheck className="h-4 w-4" />
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">04</span>
-              </div>
-              <h4 className="font-semibold text-xs text-slate-900">OFFICER REVIEW</h4>
-              <p className="text-[11px] text-slate-600">
-                Senior compliance officer inspects and corroborates evidence.
-              </p>
-            </div>
-
-            {/* Step 5 */}
-            <div className="rounded-[24px] p-6 bg-slate-50 border border-slate-200 space-y-3 relative group hover:border-emerald-300 transition-all">
-              <div className="flex items-center justify-between">
-                <div className="h-9 w-9 rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200 flex items-center justify-center font-bold">
-                  <CheckCircle2 className="h-4 w-4" />
-                </div>
-                <span className="text-[10px] font-mono text-slate-400">05</span>
-              </div>
-              <h4 className="font-semibold text-xs text-slate-900">VERIFIED RECORD</h4>
-              <p className="text-[11px] text-slate-600">
-                Immutable audit dossier logged with deterministic impact on risk score.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* SECTION 6: RISK INTELLIGENCE & DETERMINISTIC SCORING     */}
-      {/* ======================================================== */}
-      <section id="risk-engine" className="py-24 md:py-32 bg-[#F1F5F9] border-t border-slate-200 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
-            {/* Left: Prominent Risk Score Presentation */}
-            <div className="rounded-[32px] border border-slate-200 bg-white p-8 md:p-10 shadow-xs relative overflow-hidden">
-              <div className="flex items-center justify-between border-b border-slate-100 pb-5">
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-widest text-[#F59E0B]">
-                    Deterministic Risk Engine
-                  </span>
-                  <h3 className="font-serif text-xl font-bold text-slate-900 mt-0.5">
-                    Composite Risk Evaluation
-                  </h3>
-                </div>
-                <span className="text-xs font-mono font-bold text-rose-700 bg-rose-50 border border-rose-200 px-3 py-1 rounded-full">
-                  HIGH RISK (64/100)
-                </span>
-              </div>
-
-              {/* Large Score Showcase */}
-              <div className="py-8 flex flex-col sm:flex-row items-center justify-between gap-6 border-b border-slate-100">
-                <div>
-                  <div className="text-xs text-slate-500 uppercase tracking-wider font-semibold">
-                    Calculated Risk Index
-                  </div>
-                  <div className="font-serif text-6xl sm:text-7xl font-bold text-slate-900 mt-1">
-                    64 <span className="text-2xl text-slate-400 font-sans font-normal">/ 100</span>
-                  </div>
-                  <p className="text-xs text-slate-600 mt-2">
-                    Algorithmic composite: Hygiene (40%) + CAPA SLA (30%) + Temperature (20%) + Complaints (10%)
-                  </p>
-                </div>
-
-                {/* Score Status Circle Gauge */}
-                <div className="h-28 w-28 rounded-full border-4 border-rose-200 border-t-rose-500 flex flex-col items-center justify-center shrink-0">
-                  <span className="text-xs font-bold text-rose-600 font-mono">STATUS</span>
-                  <span className="text-sm font-bold text-slate-900">ESCALATED</span>
-                </div>
-              </div>
-
-              {/* Contributing Factors: WHAT is the score? WHY is the score? WHAT needs review? */}
-              <div className="pt-6 space-y-4 text-xs">
-                <div>
-                  <div className="font-semibold text-indigo-700 uppercase tracking-wider text-[10px]">
-                    WHAT is the score?
-                  </div>
-                  <p className="text-slate-600 mt-0.5">
-                    Composite penalty rating aggregating open non-conformances, temperature excursions, and unverified hygiene observations.
-                  </p>
-                </div>
-                <div>
-                  <div className="font-semibold text-amber-700 uppercase tracking-wider text-[10px]">
-                    WHY is the score?
-                  </div>
-                  <p className="text-slate-600 mt-0.5">
-                    2 unresolved high-severity CAPA tasks approaching statutory SLA deadline in Hazratganj Flagship (OUT-042).
-                  </p>
-                </div>
-                <div>
-                  <div className="font-semibold text-emerald-700 uppercase tracking-wider text-[10px]">
-                    WHAT needs review?
-                  </div>
-                  <p className="text-slate-600 mt-0.5">
-                    Walk-in chiller sensor recalibration log and tamper-seal packaging photographic evidence.
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Right: Text Storytelling */}
-            <div className="space-y-6">
-              <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-500 block">
-                PREDICTIVE RISK ENGINE
+            <div className="p-6 rounded-2xl bg-[#FFFDF8] border border-[#DDE5DC] space-y-4 shadow-xs relative">
+              <span className="text-xs font-mono font-bold text-[#13845B] px-2.5 py-1 rounded-md bg-[#E6F8EF] inline-block border border-[#C7F1DC]">
+                STEP 04
               </span>
-              <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-slate-900">
-                Predictive composite risk scoring{" "}
-                <span className="font-serif italic text-slate-700">
-                  with mathematical rigor.
-                </span>
-              </h2>
-              <p className="text-base text-slate-600 leading-relaxed">
-                Rather than subjective ratings, FranchiseIQ computes risk using a deterministic formula that
-                weights statutory non-conformances, SLA overdue counters, customer complaints, and refrigeration data.
+              <h3 className="font-serif text-xl font-bold text-[#073B2A]">
+                Take Action
+              </h3>
+              <p className="text-xs text-[#738078] leading-relaxed">
+                Authorize compliance officers to confirm violations, assign statutory CAPA remediations, and verify corrective re-audits.
               </p>
-
-              <div className="pt-2 space-y-3 text-xs text-slate-700">
-                <div className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-emerald-600" />
-                  <span>Weighted penalty matrix compliant with statutory food safety regulations</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-emerald-600" />
-                  <span>Automatic risk downgrades upon verified corrective action completion</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-emerald-600" />
-                  <span>Zero manual tampering or score overrides</span>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* SECTION 7: ROLE-BASED OPERATIONAL PORTALS                */}
+      {/* 5. ROLE PORTAL ACCESS & LOGIN SECTION                    */}
       {/* ======================================================== */}
-      <section id="roles" className="py-24 md:py-32 bg-white border-t border-slate-200 relative">
+      <section id="portals" className="py-20 md:py-28 bg-[#FFFDF8] border-t border-[#DDE5DC]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#10B981] block">
-              CRYPTOGRAPHIC DATA ISOLATION
+          <div className="max-w-2xl mx-auto text-center space-y-3 mb-14">
+            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#073B2A] block">
+              WORKSPACE ACCESS
             </span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-slate-900">
-              Tailored interfaces for{" "}
-              <span className="font-serif italic text-slate-700">
-                every governance tier.
-              </span>
+            <h2 className="font-serif text-3xl sm:text-4xl font-bold tracking-tight text-[#073B2A]">
+              Select Your Role Workspace
             </h2>
-            <p className="text-base text-slate-600 leading-relaxed">
-              Strict multi-tenant security architecture ensures users see only the data relevant to their role and authorized store nodes.
+            <p className="text-sm text-[#738078]">
+              Choose your profile for immediate, authorized access to live platform data.
             </p>
           </div>
 
+          {/* Global Error Banner */}
+          {errorMessage && (
+            <div className="max-w-md mx-auto mb-8 flex items-center gap-3 rounded-xl bg-rose-50 border border-rose-200 p-3.5 text-xs text-rose-800">
+              <Lock className="h-4 w-4 shrink-0 text-rose-600" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
+          {/* 4 Role Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="rounded-[24px] p-6 bg-slate-50 border border-slate-200 space-y-3 hover:border-indigo-300 transition-all">
-              <Building2 className="h-8 w-8 text-indigo-600" />
-              <h4 className="font-serif text-lg font-bold text-slate-900">Franchise Owner</h4>
-              <p className="text-xs text-slate-600">
-                Multi-unit P&L, consolidated EBITDA, gross sales ledger, inventory demands.
-              </p>
+            {/* 1. Admin Executive */}
+            <div className="p-6 rounded-2xl bg-[#FAF7F0] border border-[#DDE5DC] hover:border-[#073B2A] transition-all flex flex-col justify-between space-y-5 shadow-2xs group">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-xl bg-[#073B2A] text-white flex items-center justify-center font-bold">
+                  <Building2 className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-[#073B2A]">
+                    Admin Executive
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#738078] uppercase">Full Network Governance</span>
+                </div>
+                <p className="text-xs text-[#738078] leading-relaxed">
+                  Network-wide monitoring across all 10 outlets, system risk engines, and financial reconciliation.
+                </p>
+              </div>
+
+              <button
+                onClick={() => handleQuickLogin("ADMIN")}
+                disabled={isLoadingRole !== null}
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <span>{isLoadingRole === "ADMIN" ? "Signing In..." : "Open Executive Portal"}</span>
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
-            <div className="rounded-[24px] p-6 bg-slate-50 border border-slate-200 space-y-3 hover:border-slate-300 transition-all">
-              <Store className="h-8 w-8 text-slate-700" />
-              <h4 className="font-serif text-lg font-bold text-slate-900">Store Operator</h4>
-              <p className="text-xs text-slate-600">
-                Isolated unit portal, opening checklists, CCTV review, POS settlement.
-              </p>
+
+            {/* 2. Compliance Officer */}
+            <div className="p-6 rounded-2xl bg-[#FAF7F0] border-2 border-[#13845B]/40 hover:border-[#13845B] transition-all flex flex-col justify-between space-y-5 shadow-xs group">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-xl bg-[#13845B] text-white flex items-center justify-center font-bold">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-[#073B2A]">
+                    Compliance Officer
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#13845B] font-semibold uppercase">Inspection & CCTV Audit</span>
+                </div>
+                <p className="text-xs text-[#738078] leading-relaxed">
+                  Inspect authentic video frames, log photo decisions, assign ratings, and track CAPA tickets.
+                </p>
+              </div>
+
+              <button
+                onClick={() => handleQuickLogin("OFFICER")}
+                disabled={isLoadingRole !== null}
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#13845B] text-white hover:bg-[#0E6847] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-xs"
+              >
+                <span>{isLoadingRole === "OFFICER" ? "Signing In..." : "Open Officer Portal"}</span>
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
-            <div className="rounded-[24px] p-6 bg-slate-50 border border-slate-200 space-y-3 hover:border-emerald-300 transition-all">
-              <ShieldCheck className="h-8 w-8 text-emerald-600" />
-              <h4 className="font-serif text-lg font-bold text-slate-900">Quality Auditor</h4>
-              <p className="text-xs text-slate-600">
-                Cross-store inspections, non-conformance logs, CCTV video verification.
-              </p>
+
+            {/* 3. Franchisee Owner */}
+            <div className="p-6 rounded-2xl bg-[#FAF7F0] border border-[#DDE5DC] hover:border-[#073B2A] transition-all flex flex-col justify-between space-y-5 shadow-2xs group">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-xl bg-[#073B2A] text-white flex items-center justify-center font-bold">
+                  <TrendingUp className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-[#073B2A]">
+                    Franchisee Owner
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#738078] uppercase">Investor & Royalty ROI</span>
+                </div>
+                <p className="text-xs text-[#738078] leading-relaxed">
+                  Gross merchandise value, royalty settlements, commissary supplies, and store ratings.
+                </p>
+              </div>
+
+              <button
+                onClick={() => handleQuickLogin("OWNER")}
+                disabled={isLoadingRole !== null}
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <span>{isLoadingRole === "OWNER" ? "Signing In..." : "Open Owner Portal"}</span>
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
-            <div className="rounded-[24px] p-6 bg-slate-50 border border-slate-200 space-y-3 hover:border-amber-300 transition-all">
-              <Scale className="h-8 w-8 text-amber-600" />
-              <h4 className="font-serif text-lg font-bold text-slate-900">System Admin</h4>
-              <p className="text-xs text-slate-600">
-                Network outlet registry, royalty fee rules, user permissions, audit trails.
-              </p>
+
+            {/* 4. Store Operations */}
+            <div className="p-6 rounded-2xl bg-[#FAF7F0] border border-[#DDE5DC] hover:border-[#073B2A] transition-all flex flex-col justify-between space-y-5 shadow-2xs group">
+              <div className="space-y-3">
+                <div className="h-10 w-10 rounded-xl bg-[#073B2A] text-white flex items-center justify-center font-bold">
+                  <Store className="h-5 w-5" />
+                </div>
+                <div>
+                  <h3 className="font-serif text-lg font-bold text-[#073B2A]">
+                    Store Operations
+                  </h3>
+                  <span className="text-[10px] font-mono text-[#738078] uppercase">Outlet OUT-042</span>
+                </div>
+                <p className="text-xs text-[#738078] leading-relaxed">
+                  Upload daily CCTV surveillance recordings, log daily billing, and resolve open hygiene tickets.
+                </p>
+              </div>
+
+              <button
+                onClick={() => handleQuickLogin("FRANCHISE", "/evidence")}
+                disabled={isLoadingRole !== null}
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <span>{isLoadingRole === "FRANCHISE" ? "Signing In..." : "Open Store Portal"}</span>
+                <ChevronRight className="h-4 w-4" />
+              </button>
             </div>
+          </div>
+
+          {/* Credentials Sign-in Link */}
+          <div className="mt-10 text-center">
+            <button
+              onClick={() => setAuthModalOpen(true)}
+              className="text-xs text-[#738078] hover:text-[#073B2A] underline underline-offset-4 cursor-pointer"
+            >
+              Prefer to enter email & password manually? Click here
+            </button>
           </div>
         </div>
       </section>
 
       {/* ======================================================== */}
-      {/* SECTION 8: CORRECTIVE ACTION LOOP (CAPA)                 */}
+      {/* 6. MODAL: MANUAL CREDENTIALS SIGN-IN DIALOG              */}
       {/* ======================================================== */}
-      <section id="capa-loop" className="py-24 md:py-32 bg-[#F1F5F9] border-t border-slate-200 relative">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="max-w-3xl mb-16 space-y-4">
-            <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-[#F59E0B] block">
-              STATUTORY REMEDIATION PROTOCOL
-            </span>
-            <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-slate-900">
-              Enforced accountability through the{" "}
-              <span className="font-serif italic text-slate-700">
-                8-stage CAPA loop.
+      {authModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setAuthModalOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-md rounded-2xl border border-[#DDE5DC] bg-[#FFFDF8] p-6 sm:p-8 shadow-2xl space-y-5 my-auto"
+          >
+            {/* Modal Header */}
+            <div className="flex items-center justify-between border-b border-[#DDE5DC] pb-4">
+              <div>
+                <h3 className="font-serif text-xl font-bold text-[#073B2A]">
+                  Franchise Standards Sign-In
+                </h3>
+                <p className="text-xs text-[#738078] mt-0.5">
+                  Enter your credentials or choose a quick role below.
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setAuthModalOpen(false)}
+                className="p-1.5 rounded-lg text-[#738078] hover:text-[#073B2A] hover:bg-[#FAF7F0] cursor-pointer"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* Quick Role Fill Pills */}
+            <div className="space-y-1.5">
+              <span className="text-[10px] font-mono uppercase text-[#738078] font-semibold block">
+                Quick Preset:
               </span>
-            </h2>
-            <p className="text-base text-slate-600 leading-relaxed max-w-2xl">
-              Non-compliances trigger automated corrective and preventive action tickets with enforced SLA timers,
-              photographic proof requirements, and mandatory officer sign-off.
-            </p>
-          </div>
+              <div className="grid grid-cols-4 gap-1.5">
+                {(["OFFICER", "ADMIN", "OWNER", "FRANCHISE"] as const).map((r) => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => openAuthWithRole(r)}
+                    className={`py-1.5 px-2 text-[10px] font-semibold rounded-lg border transition-all cursor-pointer ${
+                      activeModalRole === r
+                        ? "bg-[#073B2A] text-white border-[#073B2A]"
+                        : "bg-[#FAF7F0] text-[#18251F] border-[#DDE5DC] hover:bg-[#EAE3D2]"
+                    }`}
+                  >
+                    {r === "FRANCHISE" ? "STORE" : r}
+                  </button>
+                ))}
+              </div>
+            </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-            <div className="p-6 rounded-[24px] bg-white border border-slate-200 shadow-xs space-y-2">
-              <span className="text-[10px] font-mono text-indigo-600 font-semibold">PHASE 1–2</span>
-              <h4 className="font-semibold text-sm text-slate-900">Detection & Root Cause</h4>
-              <p className="text-xs text-slate-600">
-                Observation flagged from CCTV or audit and classified by severity level.
-              </p>
-            </div>
-            <div className="p-6 rounded-[24px] bg-white border border-slate-200 shadow-xs space-y-2">
-              <span className="text-[10px] font-mono text-slate-500 font-semibold">PHASE 3–4</span>
-              <h4 className="font-semibold text-sm text-slate-900">Action Plan & SLA</h4>
-              <p className="text-xs text-slate-600">
-                Store GM assigns remediation tasks with automatic countdown timers.
-              </p>
-            </div>
-            <div className="p-6 rounded-[24px] bg-white border border-slate-200 shadow-xs space-y-2">
-              <span className="text-[10px] font-mono text-amber-600 font-semibold">PHASE 5–6</span>
-              <h4 className="font-semibold text-sm text-slate-900">Implementation & Proof</h4>
-              <p className="text-xs text-slate-600">
-                Photo evidence uploaded directly from store tablet verifying resolution.
-              </p>
-            </div>
-            <div className="p-6 rounded-[24px] bg-white border border-slate-200 shadow-xs space-y-2">
-              <span className="text-[10px] font-mono text-emerald-600 font-semibold">PHASE 7–8</span>
-              <h4 className="font-semibold text-sm text-slate-900">Verification & Closure</h4>
-              <p className="text-xs text-slate-600">
-                Quality & Compliance officer re-inspects, approves ticket, and clears risk deduction.
-              </p>
-            </div>
+            {/* Form */}
+            <form onSubmit={handleManualLogin} className="space-y-4 pt-1">
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-[#18251F]">Email Address</label>
+                <input
+                  type="email"
+                  value={emailInput}
+                  onChange={(e) => setEmailInput(e.target.value)}
+                  required
+                  className="w-full h-10 px-3 rounded-lg border border-[#DDE5DC] bg-white text-xs text-[#18251F] focus:outline-none focus:ring-2 focus:ring-[#073B2A]"
+                />
+              </div>
+
+              <div className="space-y-1">
+                <label className="text-xs font-semibold text-[#18251F]">Password</label>
+                <input
+                  type="password"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  required
+                  className="w-full h-10 px-3 rounded-lg border border-[#DDE5DC] bg-white text-xs text-[#18251F] focus:outline-none focus:ring-2 focus:ring-[#073B2A]"
+                />
+              </div>
+
+              <Button
+                type="submit"
+                disabled={isSubmittingCredentials}
+                className="w-full h-11 bg-[#073B2A] hover:bg-[#05291F] text-white font-semibold rounded-xl text-xs shadow-xs"
+              >
+                {isSubmittingCredentials ? "Authenticating..." : "Sign In to Workspace"}
+              </Button>
+            </form>
           </div>
         </div>
-      </section>
+      )}
 
       {/* ======================================================== */}
-      {/* SECTION 9: FINAL CTA / LOGIN PORTAL ANCHOR               */}
+      {/* 7. QUIET MINIMAL FOOTER                                  */}
       {/* ======================================================== */}
-      <section className="py-24 md:py-36 bg-white border-t border-slate-200 relative overflow-hidden text-center">
-        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-          <span className="text-[11px] font-mono font-semibold uppercase tracking-widest text-slate-500 block">
-            ENTERPRISE PLATFORM
-          </span>
-          <h2 className="font-serif text-3xl sm:text-5xl font-normal leading-tight text-slate-900">
-            Ready to access your workspace?
-          </h2>
-          <p className="text-sm sm:text-base text-slate-600 max-w-xl mx-auto leading-relaxed">
-            Select your authorized portal to review store performance, daily CCTV evidence, and compliance ratings.
+      <footer className="py-12 bg-[#05291F] text-white border-t border-[#0D4E39]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div className="flex items-center gap-2.5">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#13845B] text-[#72D6A0]">
+              <Shield className="h-4 w-4" />
+            </div>
+            <span className="font-serif font-bold text-sm tracking-tight text-white">
+              Franchise Standards Auditor
+            </span>
+          </div>
+
+          <p className="text-xs text-[#CAD5C9]">
+            © 2026 Franchise Standards Auditor Inc. All rights reserved.
           </p>
 
-          <div className="pt-2 flex items-center justify-center">
-            <Button
-              size="lg"
-              onClick={scrollToPortals}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs h-12 px-8 rounded-xl shadow-xs cursor-pointer gap-2 transition-all uppercase tracking-wider"
-            >
-              <span>Select Your Portal</span>
-              <ArrowRight className="h-4 w-4" />
-            </Button>
-          </div>
-        </div>
-      </section>
-
-      {/* ======================================================== */}
-      {/* EDITORIAL FOOTER                                         */}
-      {/* ======================================================== */}
-      <footer className="bg-[#0F172A] text-slate-400 py-12 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 pb-8 border-b border-slate-800">
-            <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-slate-800 text-slate-300 border border-slate-700">
-                <Building2 className="h-4 w-4" />
-              </div>
-              <span className="font-serif text-lg font-bold text-white">
-                FranchiseIQ
-              </span>
-            </div>
-
-            <div className="flex flex-wrap items-center justify-center gap-6 text-xs text-slate-400">
-              <a href="#overview" className="hover:text-white transition-colors">
-                Overview
-              </a>
-              <a href="#operations" className="hover:text-white transition-colors">
-                Operations
-              </a>
-              <a href="#evidence" className="hover:text-white transition-colors">
-                AI Verification
-              </a>
-              <a href="#risk-engine" className="hover:text-white transition-colors">
-                Risk
-              </a>
-              <a href="#capa-loop" className="hover:text-white transition-colors">
-                CAPA
-              </a>
-            </div>
-          </div>
-
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-            <p>
-              © 2026 AI-Assisted Franchise Performance & Compliance Monitoring. Confidential & Proprietary.
-            </p>
-            <div className="flex items-center gap-2 text-[11px] font-mono text-slate-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#10B981]" />
-              <span>Enterprise Compliance Infrastructure</span>
-            </div>
+          <div className="flex items-center gap-6 text-xs text-[#CAD5C9]">
+            <button onClick={() => scrollToSection("hero")} className="hover:text-white cursor-pointer">Back to top</button>
+            <button onClick={() => openAuthWithRole("OFFICER")} className="hover:text-white cursor-pointer">Sign In</button>
           </div>
         </div>
       </footer>
-      </div>
     </div>
   );
 }

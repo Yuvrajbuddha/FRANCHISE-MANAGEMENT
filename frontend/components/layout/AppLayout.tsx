@@ -12,7 +12,7 @@ export function AppLayout({ children }: AppLayoutProps) {
   const [selectedCity, setSelectedCity] = useState("All Cities");
 
   return (
-    <div className="flex min-h-screen bg-[#F6F1E7] text-[#18251F] antialiased selection:bg-[#073B2A] selection:text-white relative">
+    <div className="flex min-h-screen bg-[#F0FDF4] text-[#1F2937] antialiased selection:bg-[#064E3B] selection:text-white relative">
       {/* Sidebar */}
       <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 

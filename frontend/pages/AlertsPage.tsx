@@ -152,7 +152,7 @@ export function getTypeIcon(type: string) {
     case "Increased complaints":
       return <MessageSquare className="h-4 w-4 text-orange-500" />;
     case "CCTV evidence requiring review":
-      return <Video className="h-4 w-4 text-indigo-500" />;
+      return <Video className="h-4 w-4 text-emerald-600" />;
     case "Operational deviations":
       return <Activity className="h-4 w-4 text-teal-500" />;
     case "Sudden performance deterioration":

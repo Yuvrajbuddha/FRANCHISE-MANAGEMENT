@@ -157,8 +157,8 @@ export default function RiskPage() {
 
   if (loading && !assessment) {
     return (
-      <div className="flex items-center justify-center py-24 text-slate-400 gap-3">
-        <RefreshCw className="h-6 w-6 animate-spin text-indigo-600" />
+      <div className="flex items-center justify-center py-24 text-[#64748B] gap-3">
+        <RefreshCw className="h-6 w-6 animate-spin text-[#059669]" />
         <span className="text-sm">Evaluating multi-factor deterministic risk parameters...</span>
       </div>
     );

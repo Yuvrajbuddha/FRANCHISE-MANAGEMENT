@@ -379,13 +379,13 @@ export default function SalesPage() {
       {/* Header & Primary Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 block mb-1 font-semibold">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#64748B] block mb-1 font-semibold">
             Financial Reconciliation
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            Sales Management & <span className="italic text-indigo-600">Revenue Intelligence</span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#064E3B]">
+            Sales Management & <span className="italic text-[#059669]">Revenue Intelligence</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1">
+          <p className="text-xs sm:text-sm text-[#64748B] mt-1">
             Real-time daily transaction recording, revenue analytics, and cross-channel settlement.
           </p>
         </div>
@@ -396,9 +396,9 @@ export default function SalesPage() {
             size="sm"
             onClick={fetchSales}
             disabled={loading}
-            className="gap-1.5 cursor-pointer text-xs"
+            className="gap-1.5 cursor-pointer text-xs border-[#D1FAE5] bg-white text-[#1F2937] hover:bg-[#F0FDF4] hover:text-[#064E3B]"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin text-[#059669]" : "text-[#059669]"}`} />
             <span>Refresh</span>
           </Button>
 
@@ -406,7 +406,7 @@ export default function SalesPage() {
             <Button
               size="sm"
               onClick={handleOpenAdd}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white gap-1.5 cursor-pointer text-xs shadow-sm"
+              className="bg-[#059669] hover:bg-[#047857] text-white gap-1.5 cursor-pointer text-xs shadow-xs font-semibold"
             >
               <Plus className="h-4 w-4" />
               <span>Record Sale</span>
@@ -514,28 +514,28 @@ export default function SalesPage() {
           <CardContent className="pb-4 space-y-2">
             <div className="space-y-1.5 mt-0.5">
               <div className="flex justify-between items-center text-xs font-semibold">
-                <span className="text-indigo-300 flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-indigo-400" />
+                <span className="text-[#059669] flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-[#059669]" />
                   UPI {summary.upiShare}%
                 </span>
-                <span className="text-emerald-300 flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-emerald-400" />
+                <span className="text-[#064E3B] flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-[#064E3B]" />
                   Cash {summary.cashShare}%
                 </span>
-                <span className="text-slate-200 flex items-center gap-1.5">
-                  <span className="h-2 w-2 rounded-full bg-slate-400" />
+                <span className="text-[#64748B] flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-[#64748B]" />
                   Card {summary.cardShare}%
                 </span>
               </div>
-              <div className="flex h-2.5 rounded-full overflow-hidden bg-slate-900/90 border border-white/10 p-0.5 gap-0.5">
+              <div className="flex h-2.5 rounded-full overflow-hidden bg-slate-100 border border-[#D1FAE5] p-0.5 gap-0.5">
                 <div
                   style={{ width: `${summary.upiShare}%` }}
-                  className="bg-indigo-500 rounded-full h-full transition-all"
+                  className="bg-[#059669] rounded-full h-full transition-all"
                   title={`UPI: ${summary.upiShare}%`}
                 />
                 <div
                   style={{ width: `${summary.cashShare}%` }}
-                  className="bg-emerald-500 rounded-full h-full transition-all"
+                  className="bg-[#064E3B] rounded-full h-full transition-all"
                   title={`Cash: ${summary.cashShare}%`}
                 />
                 <div
@@ -545,8 +545,8 @@ export default function SalesPage() {
                 />
               </div>
             </div>
-            <p className="text-xs text-slate-300 font-medium flex items-center gap-1.5 pt-0.5">
-              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+            <p className="text-xs text-[#064E3B] font-medium flex items-center gap-1.5 pt-0.5">
+              <CheckCircle2 className="h-3.5 w-3.5 text-[#059669] shrink-0" />
               <span>100% daily POS reconciled</span>
             </p>
           </CardContent>
@@ -554,26 +554,26 @@ export default function SalesPage() {
       </div>
 
       {/* Analytics Charts Section (6 Dedicated Views) */}
-      <Card className="border-slate-200 dark:border-slate-800 shadow-2xs">
+      <Card className="border-[#D1FAE5] bg-white shadow-2xs">
         <CardHeader className="pb-2">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
             <div>
-              <CardTitle className="text-base font-bold text-slate-900 dark:text-slate-100">
+              <CardTitle className="text-base font-bold text-[#064E3B]">
                 Sales Trends & Performance Visualizations
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-xs text-[#64748B]">
                 Real-time charting powered by PostgreSQL relational queries.
               </CardDescription>
             </div>
 
             {/* Chart Sub-Tabs */}
-            <div className="flex flex-wrap gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-lg">
+            <div className="flex flex-wrap gap-1 bg-[#F0FDF4] border border-[#D1FAE5] p-1 rounded-lg">
               <button
                 onClick={() => setActiveChartTab("daily")}
                 className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
                   activeChartTab === "daily"
-                    ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-900 dark:text-indigo-400"
-                    : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                    ? "bg-white text-[#064E3B] border border-[#D1FAE5] shadow-xs"
+                    : "text-[#64748B] hover:text-[#064E3B]"
                 }`}
               >
                 Daily Sales
@@ -582,8 +582,8 @@ export default function SalesPage() {
                 onClick={() => setActiveChartTab("weekly")}
                 className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
                   activeChartTab === "weekly"
-                    ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-900 dark:text-indigo-400"
-                    : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                    ? "bg-white text-[#064E3B] border border-[#D1FAE5] shadow-xs"
+                    : "text-[#64748B] hover:text-[#064E3B]"
                 }`}
               >
                 Weekly Sales
@@ -592,8 +592,8 @@ export default function SalesPage() {
                 onClick={() => setActiveChartTab("monthly")}
                 className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
                   activeChartTab === "monthly"
-                    ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-900 dark:text-indigo-400"
-                    : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                    ? "bg-white text-[#064E3B] border border-[#D1FAE5] shadow-xs"
+                    : "text-[#64748B] hover:text-[#064E3B]"
                 }`}
               >
                 Monthly Sales
@@ -602,8 +602,8 @@ export default function SalesPage() {
                 onClick={() => setActiveChartTab("trend")}
                 className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
                   activeChartTab === "trend"
-                    ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-900 dark:text-indigo-400"
-                    : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                    ? "bg-white text-[#064E3B] border border-[#D1FAE5] shadow-xs"
+                    : "text-[#64748B] hover:text-[#064E3B]"
                 }`}
               >
                 Revenue Trend
@@ -612,8 +612,8 @@ export default function SalesPage() {
                 onClick={() => setActiveChartTab("products")}
                 className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
                   activeChartTab === "products"
-                    ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-900 dark:text-indigo-400"
-                    : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                    ? "bg-white text-[#064E3B] border border-[#D1FAE5] shadow-xs"
+                    : "text-[#64748B] hover:text-[#064E3B]"
                 }`}
               >
                 Product-Wise
@@ -624,8 +624,8 @@ export default function SalesPage() {
                     onClick={() => setActiveChartTab("outlets")}
                     className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
                       activeChartTab === "outlets"
-                        ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-900 dark:text-indigo-400"
-                        : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                        ? "bg-white text-[#064E3B] border border-[#D1FAE5] shadow-xs"
+                        : "text-[#64748B] hover:text-[#064E3B]"
                     }`}
                   >
                     Outlet Comparison
@@ -634,8 +634,8 @@ export default function SalesPage() {
                     onClick={() => setActiveChartTab("trajectory")}
                     className={`px-2.5 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
                       activeChartTab === "trajectory"
-                        ? "bg-white text-indigo-600 shadow-xs dark:bg-slate-900 dark:text-indigo-400"
-                        : "text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-200"
+                        ? "bg-white text-[#064E3B] border border-[#D1FAE5] shadow-xs"
+                        : "text-[#64748B] hover:text-[#064E3B]"
                     }`}
                   >
                     Network Trajectory
@@ -659,7 +659,7 @@ export default function SalesPage() {
                     formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, "Revenue"]}
                     labelFormatter={(lbl) => `Date: ${lbl}`}
                   />
-                  <Bar dataKey="revenue" fill="#4f46e5" radius={[4, 4, 0, 0]} name="Daily Net Revenue" />
+                  <Bar dataKey="revenue" fill="#059669" radius={[4, 4, 0, 0]} name="Daily Net Revenue" />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -675,7 +675,7 @@ export default function SalesPage() {
                     formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, "Weekly Revenue"]}
                     labelFormatter={(lbl) => `Week: ${lbl}`}
                   />
-                  <Bar dataKey="revenue" fill="#06b6d4" radius={[4, 4, 0, 0]} name="Weekly Sales" />
+                  <Bar dataKey="revenue" fill="#10b981" radius={[4, 4, 0, 0]} name="Weekly Sales" />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -691,7 +691,7 @@ export default function SalesPage() {
                     formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, "Monthly Revenue"]}
                     labelFormatter={(lbl) => `Month: ${lbl}`}
                   />
-                  <Bar dataKey="revenue" fill="#10b981" radius={[4, 4, 0, 0]} name="Monthly Sales" />
+                  <Bar dataKey="revenue" fill="#047857" radius={[4, 4, 0, 0]} name="Monthly Sales" />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -702,8 +702,8 @@ export default function SalesPage() {
                 <AreaChart data={charts.revenueTrend || []} margin={{ top: 10, right: 10, left: 0, bottom: 20 }}>
                   <defs>
                     <linearGradient id="colorRev" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#6366f1" stopOpacity={0.4} />
-                      <stop offset="95%" stopColor="#6366f1" stopOpacity={0.0} />
+                      <stop offset="5%" stopColor="#059669" stopOpacity={0.4} />
+                      <stop offset="95%" stopColor="#059669" stopOpacity={0.0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
@@ -716,7 +716,7 @@ export default function SalesPage() {
                   <Area
                     type="monotone"
                     dataKey="revenue"
-                    stroke="#4f46e5"
+                    stroke="#047857"
                     strokeWidth={2}
                     fillOpacity={1}
                     fill="url(#colorRev)"
@@ -743,7 +743,7 @@ export default function SalesPage() {
                       name === "revenue" ? "Revenue" : "Units",
                     ]}
                   />
-                  <Bar dataKey="revenue" fill="#8b5cf6" radius={[0, 4, 4, 0]} name="revenue" />
+                  <Bar dataKey="revenue" fill="#064E3B" radius={[0, 4, 4, 0]} name="revenue" />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -759,7 +759,7 @@ export default function SalesPage() {
                     formatter={(val: any) => [`₹${Number(val).toLocaleString()}`, "Revenue"]}
                     labelFormatter={(lbl, p: any) => `${p[0]?.payload?.name || lbl} (${lbl})`}
                   />
-                  <Bar dataKey="revenue" fill="#6366f1" radius={[4, 4, 0, 0]} name="Outlet Revenue" />
+                  <Bar dataKey="revenue" fill="#059669" radius={[4, 4, 0, 0]} name="Outlet Revenue" />
                 </BarChart>
               </ResponsiveContainer>
             )}
@@ -775,16 +775,16 @@ export default function SalesPage() {
       </Card>
 
       {/* Search and Filters Bar */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3 w-full max-w-full box-border">
+      <div className="rounded-xl border border-[#D1FAE5] bg-white p-4 shadow-2xs space-y-3 w-full max-w-full box-border">
         <div className="flex flex-wrap items-center gap-3 w-full max-w-full box-border">
           {/* Search input */}
           <div className="relative flex-1 min-w-[220px] max-w-full">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#64748B]" />
             <Input
               placeholder="Search product, outlet, note..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 text-xs h-9 w-full min-w-0 box-border"
+              className="pl-9 text-xs h-9 w-full min-w-0 box-border border-[#D1FAE5] bg-white text-[#1F2937]"
             />
           </div>
 
@@ -794,7 +794,7 @@ export default function SalesPage() {
               <select
                 value={selectedOutlet}
                 onChange={(e) => setSelectedOutlet(e.target.value)}
-                className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer box-border"
+                className="w-full h-9 rounded-md border border-[#D1FAE5] bg-[#F0FDF4]/50 px-3 text-xs font-medium text-[#1F2937] focus:border-[#059669] focus:outline-none cursor-pointer box-border"
               >
                 <option value="All Outlets">Filter by Outlet: All</option>
                 <option value="OUT-042">OUT-042 (Lucknow Flagship)</option>
@@ -812,7 +812,7 @@ export default function SalesPage() {
             <select
               value={selectedProduct}
               onChange={(e) => setSelectedProduct(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer box-border"
+              className="w-full h-9 rounded-md border border-[#D1FAE5] bg-[#F0FDF4]/50 px-3 text-xs font-medium text-[#1F2937] focus:border-[#059669] focus:outline-none cursor-pointer box-border"
             >
               <option value="All Products">Filter by Product: All</option>
               {PRESET_PRODUCTS.map((p) => (
@@ -828,7 +828,7 @@ export default function SalesPage() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer box-border"
+              className="w-full h-9 rounded-md border border-[#D1FAE5] bg-[#F0FDF4]/50 px-3 text-xs font-medium text-[#1F2937] focus:border-[#059669] focus:outline-none cursor-pointer box-border"
             >
               <option value="All Categories">Filter by Category: All</option>
               {CATEGORIES.map((cat) => (
@@ -848,11 +848,11 @@ export default function SalesPage() {
                 aria-label="Starting Date"
                 value={startDate}
                 onChange={(e) => setStartDate(e.target.value)}
-                className="text-[11px] sm:text-xs h-9 px-2 w-full min-w-0 box-border text-slate-700 dark:text-slate-200 cursor-pointer"
+                className="text-[11px] sm:text-xs h-9 px-2 w-full min-w-0 box-border text-[#1F2937] border-[#D1FAE5] cursor-pointer"
                 placeholder="Start"
               />
             </div>
-            <span className="text-slate-400 text-xs font-medium shrink-0 select-none">to</span>
+            <span className="text-[#64748B] text-xs font-medium shrink-0 select-none">to</span>
             <div className="flex-1 sm:w-36 min-w-0">
               <Input
                 type="date"
@@ -860,7 +860,7 @@ export default function SalesPage() {
                 aria-label="Ending Date"
                 value={endDate}
                 onChange={(e) => setEndDate(e.target.value)}
-                className="text-[11px] sm:text-xs h-9 px-2 w-full min-w-0 box-border text-slate-700 dark:text-slate-200 cursor-pointer"
+                className="text-[11px] sm:text-xs h-9 px-2 w-full min-w-0 box-border text-[#1F2937] border-[#D1FAE5] cursor-pointer"
                 placeholder="End"
               />
             </div>
@@ -868,7 +868,7 @@ export default function SalesPage() {
         </div>
 
         {/* Clear Filters helper */}
-        <div className="flex items-center justify-between text-xs text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between text-xs text-[#64748B] pt-1 border-t border-[#D1FAE5]/60">
           <span>Showing {displayedSales.length} recorded sales entries</span>
           {(selectedOutlet !== "All Outlets" ||
             selectedProduct !== "All Products" ||
@@ -885,7 +885,7 @@ export default function SalesPage() {
                 setEndDate("");
                 setSearchQuery("");
               }}
-              className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium cursor-pointer"
+              className="text-[#059669] hover:underline font-medium cursor-pointer"
             >
               Clear all filters
             </button>
@@ -897,49 +897,49 @@ export default function SalesPage() {
       <div className="space-y-3 w-full max-w-full box-border">
         <div className="flex items-center justify-between pb-1">
           <div className="flex items-center gap-2">
-            <ShoppingBag className="h-4 w-4 text-indigo-600" />
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <ShoppingBag className="h-4 w-4 text-[#059669]" />
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#064E3B]">
               Verified Sales Ledger ({displayedSales.length})
             </h3>
           </div>
-          <span className="text-xs text-slate-400 font-mono">
+          <span className="text-xs text-[#64748B] font-mono">
             {displayedSales.length} items
           </span>
         </div>
 
         {displayedSales.length === 0 ? (
-          <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-400 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-            <ShoppingBag className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-            <p className="font-medium text-slate-600 dark:text-slate-300">No sales records found</p>
-            <p className="text-xs text-slate-400 mt-1">No sales records match the active filters or search criteria.</p>
+          <div className="rounded-xl border border-[#D1FAE5] bg-white p-12 text-center text-[#64748B] shadow-2xs">
+            <ShoppingBag className="h-8 w-8 text-[#64748B]/50 mx-auto mb-2" />
+            <p className="font-medium text-[#064E3B]">No sales records found</p>
+            <p className="text-xs text-[#64748B] mt-1">No sales records match the active filters or search criteria.</p>
           </div>
         ) : (
           <div className="flex flex-col gap-3 w-full max-w-full box-border">
             {displayedSales.map((sale) => (
               <div
                 key={sale.id}
-                className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                className="rounded-xl border border-[#D1FAE5] bg-white p-4 sm:p-5 shadow-2xs hover:border-[#059669]/60 transition-colors w-full max-w-full box-border min-w-0 space-y-3"
               >
                 {/* Header: Product Name + Net Sales Amount */}
-                <div className="flex items-start justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div className="flex items-start justify-between gap-3 border-b border-[#D1FAE5]/60 pb-3">
                   <div>
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-slate-400 block font-semibold">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-[#64748B] block font-semibold">
                       Sale #{sale.id} · {sale.date}
                     </span>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-0.5">
+                    <h4 className="text-sm font-bold text-[#064E3B] mt-0.5">
                       {sale.productName}
                     </h4>
                     {sale.notes && (
-                      <p className="text-[11px] text-slate-500 italic mt-0.5">
+                      <p className="text-[11px] text-[#64748B] italic mt-0.5">
                         {sale.notes}
                       </p>
                     )}
                   </div>
                   <div className="text-right shrink-0">
-                    <span className="text-base font-extrabold font-mono text-slate-900 dark:text-slate-100 block">
+                    <span className="text-base font-extrabold font-mono text-[#064E3B] block">
                       ₹{Number(sale.netSales).toLocaleString()}
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium">
+                    <span className="inline-flex items-center gap-1 text-[11px] text-[#059669] font-medium">
                       <CheckCircle2 className="h-3 w-3" />
                       POS Settled
                     </span>
@@ -947,43 +947,43 @@ export default function SalesPage() {
                 </div>
 
                 {/* Vertical Label-Value rows */}
-                <div className="space-y-2 text-xs divide-y divide-slate-100 dark:divide-slate-800/60">
+                <div className="space-y-2 text-xs divide-y divide-[#D1FAE5]/60">
                   {/* Outlet */}
                   <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1 first:pt-0">
-                    <span className="text-slate-400 font-medium shrink-0">Outlet:</span>
-                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 sm:self-end">
+                    <span className="text-[#64748B] font-medium shrink-0">Outlet:</span>
+                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-[#E6F8EF] text-[#064E3B] border border-[#D1FAE5] sm:self-end">
                       {sale.outletId}
                     </span>
                   </div>
 
                   {/* Category */}
                   <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                    <span className="text-slate-400 font-medium shrink-0">Category:</span>
-                    <span className="text-slate-700 dark:text-slate-300 font-medium sm:text-right">
+                    <span className="text-[#64748B] font-medium shrink-0">Category:</span>
+                    <span className="text-[#1F2937] font-medium sm:text-right">
                       {sale.category}
                     </span>
                   </div>
 
                   {/* Quantity & Unit Price */}
                   <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                    <span className="text-slate-400 font-medium shrink-0">Quantity & Price:</span>
-                    <span className="font-mono text-slate-800 dark:text-slate-200 sm:text-right">
+                    <span className="text-[#64748B] font-medium shrink-0">Quantity & Price:</span>
+                    <span className="font-mono text-[#1F2937] sm:text-right">
                       {sale.quantity} units @ ₹{sale.unitPrice}
                     </span>
                   </div>
 
                   {/* Payment Mode */}
                   <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 pt-2">
-                    <span className="text-slate-400 font-medium shrink-0">Payment Mode:</span>
+                    <span className="text-[#64748B] font-medium shrink-0">Payment Mode:</span>
                     <div className="sm:self-end">
                       <Badge
                         variant="outline"
                         className={
                           sale.paymentMode === "UPI"
-                            ? "text-indigo-600 border-indigo-500/30 text-[10px]"
+                            ? "text-[#064E3B] bg-[#E6F8EF] border-[#D1FAE5] text-[10px]"
                             : sale.paymentMode === "Cash"
-                            ? "text-emerald-600 border-emerald-500/30 text-[10px]"
-                            : "text-slate-300 border-white/10 text-[10px]"
+                            ? "text-[#059669] bg-[#E6F8EF] border-[#D1FAE5] text-[10px]"
+                            : "text-[#64748B] bg-white border-[#D1FAE5] text-[10px]"
                         }
                       >
                         {sale.paymentMode}
@@ -994,12 +994,12 @@ export default function SalesPage() {
 
                 {/* Actions row if editable */}
                 {!isReadOnly && (
-                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2">
+                  <div className="pt-2 border-t border-[#D1FAE5]/60 flex items-center justify-end gap-2">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleOpenEdit(sale)}
-                      className="h-8 text-xs gap-1.5 cursor-pointer text-slate-700 dark:text-slate-200"
+                      className="h-8 text-xs gap-1.5 cursor-pointer text-[#064E3B] border-[#D1FAE5] hover:bg-[#F0FDF4]"
                     >
                       <Edit3 className="h-3.5 w-3.5" />
                       <span>Edit</span>
@@ -1008,7 +1008,7 @@ export default function SalesPage() {
                       size="sm"
                       variant="outline"
                       onClick={() => handleDelete(sale)}
-                      className="h-8 text-xs gap-1.5 cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 border-red-200 dark:border-red-900"
+                      className="h-8 text-xs gap-1.5 cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
                     >
                       <Trash2 className="h-3.5 w-3.5" />
                       <span>Delete</span>
@@ -1024,19 +1024,19 @@ export default function SalesPage() {
       {/* Add / Edit Sale Modal Dialog (Validated with Zod) */}
       {isAddModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-lg w-full p-5 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="bg-white border border-[#D1FAE5] rounded-xl max-w-lg w-full p-5 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#D1FAE5]/60 pb-3">
               <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="text-base font-bold text-[#064E3B]">
                   {editingSale ? "Edit Sale Record" : "Record New Sale"}
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-[#64748B]">
                   PostgreSQL data validation enforced with Zod schemas.
                 </p>
               </div>
               <button
                 onClick={() => setIsAddModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                className="text-[#64748B] hover:text-[#064E3B] p-1 cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -1046,18 +1046,18 @@ export default function SalesPage() {
               {/* Outlet & Date */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="font-medium text-[#1F2937] block mb-1">
                     Outlet / Store
                   </label>
                   {isFranchise ? (
-                    <div className="rounded border border-slate-200 bg-slate-50 px-3 py-1.5 font-mono text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                    <div className="rounded border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-1.5 font-mono text-xs text-[#064E3B]">
                       {userOutlet} (Assigned)
                     </div>
                   ) : (
                     <select
                       value={formData.outletId}
                       onChange={(e) => setFormData({ ...formData, outletId: e.target.value })}
-                      className="w-full h-8 rounded border border-slate-200 bg-white px-2.5 text-xs font-mono dark:border-slate-700 dark:bg-slate-800"
+                      className="w-full h-8 rounded border border-[#D1FAE5] bg-white px-2.5 text-xs font-mono text-[#1F2937] focus:border-[#059669] focus:outline-none"
                     >
                       <option value="OUT-042">OUT-042 (Lucknow Flagship)</option>
                       <option value="OUT-089">OUT-089 (Noida Sector 18)</option>
@@ -1073,14 +1073,14 @@ export default function SalesPage() {
                 </div>
 
                 <div>
-                  <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="font-medium text-[#1F2937] block mb-1">
                     Transaction Date
                   </label>
                   <Input
                     type="date"
                     value={formData.date}
                     onChange={(e) => setFormData({ ...formData, date: e.target.value })}
-                    className="h-8 text-xs"
+                    className="h-8 text-xs border-[#D1FAE5] text-[#1F2937]"
                     required
                   />
                   {formErrors.date && (
@@ -1091,14 +1091,14 @@ export default function SalesPage() {
 
               {/* Product Selection */}
               <div>
-                <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="font-medium text-[#1F2937] block mb-1">
                   Product / SKU
                 </label>
                 <div className="flex gap-2">
                   <select
                     value={formData.productName}
                     onChange={(e) => handleProductSelect(e.target.value)}
-                    className="w-full h-8 rounded border border-slate-200 bg-white px-2.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                    className="w-full h-8 rounded border border-[#D1FAE5] bg-white px-2.5 text-xs text-[#1F2937] focus:border-[#059669] focus:outline-none"
                   >
                     {PRESET_PRODUCTS.map((p) => (
                       <option key={p.name} value={p.name}>
@@ -1114,13 +1114,13 @@ export default function SalesPage() {
 
               {/* Category */}
               <div>
-                <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="font-medium text-[#1F2937] block mb-1">
                   Category
                 </label>
                 <select
                   value={formData.category}
                   onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                  className="w-full h-8 rounded border border-slate-200 bg-white px-2.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  className="w-full h-8 rounded border border-[#D1FAE5] bg-white px-2.5 text-xs text-[#1F2937] focus:border-[#059669] focus:outline-none"
                 >
                   {CATEGORIES.map((c) => (
                     <option key={c} value={c}>
@@ -1133,7 +1133,7 @@ export default function SalesPage() {
               {/* Quantity & Unit Price */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="font-medium text-[#1F2937] block mb-1">
                     Quantity (Units)
                   </label>
                   <Input
@@ -1141,7 +1141,7 @@ export default function SalesPage() {
                     min="1"
                     value={formData.quantity}
                     onChange={(e) => handleQuantityChange(Number(e.target.value))}
-                    className="h-8 text-xs font-mono"
+                    className="h-8 text-xs font-mono border-[#D1FAE5] text-[#1F2937]"
                     required
                   />
                   {formErrors.quantity && (
@@ -1150,7 +1150,7 @@ export default function SalesPage() {
                 </div>
 
                 <div>
-                  <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="font-medium text-[#1F2937] block mb-1">
                     Unit Price (₹)
                   </label>
                   <Input
@@ -1167,7 +1167,7 @@ export default function SalesPage() {
                         grossSales: Math.round(net * 1.05),
                       });
                     }}
-                    className="h-8 text-xs font-mono"
+                    className="h-8 text-xs font-mono border-[#D1FAE5] text-[#1F2937]"
                     required
                   />
                   {formErrors.unitPrice && (
@@ -1177,20 +1177,20 @@ export default function SalesPage() {
               </div>
 
               {/* Revenue Calculations */}
-              <div className="grid grid-cols-2 gap-3 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-lg border border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-2 gap-3 p-3 bg-[#F0FDF4]/60 rounded-lg border border-[#D1FAE5]">
                 <div>
-                  <span className="text-[10px] text-slate-400 font-bold block uppercase">
+                  <span className="text-[10px] text-[#64748B] font-bold block uppercase">
                     Calculated Net Sales
                   </span>
-                  <span className="text-base font-bold text-slate-900 dark:text-slate-100 font-mono">
+                  <span className="text-base font-bold text-[#064E3B] font-mono">
                     ₹{formData.netSales.toLocaleString()}
                   </span>
                 </div>
                 <div>
-                  <span className="text-[10px] text-slate-400 font-bold block uppercase">
+                  <span className="text-[10px] text-[#64748B] font-bold block uppercase">
                     Gross (with 5% GST)
                   </span>
-                  <span className="text-base font-bold text-indigo-600 dark:text-indigo-400 font-mono">
+                  <span className="text-base font-bold text-[#059669] font-mono">
                     ₹{formData.grossSales.toLocaleString()}
                   </span>
                 </div>
@@ -1198,7 +1198,7 @@ export default function SalesPage() {
 
               {/* Payment Mode */}
               <div>
-                <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="font-medium text-[#1F2937] block mb-1">
                   Payment Mode
                 </label>
                 <div className="grid grid-cols-3 gap-2">
@@ -1217,8 +1217,8 @@ export default function SalesPage() {
                       }
                       className={`py-1.5 rounded border text-xs font-semibold cursor-pointer ${
                         formData.paymentMode === mode
-                          ? "border-indigo-600 bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400"
-                          : "border-slate-200 text-slate-600 dark:border-slate-700 dark:text-slate-400"
+                          ? "border-[#059669] bg-[#E6F8EF] text-[#064E3B]"
+                          : "border-[#D1FAE5] text-[#64748B] bg-white hover:bg-[#F0FDF4]"
                       }`}
                     >
                       {mode}
@@ -1229,7 +1229,7 @@ export default function SalesPage() {
 
               {/* Operational Notes */}
               <div>
-                <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="font-medium text-[#1F2937] block mb-1">
                   Notes / Batch Description
                 </label>
                 <Input
@@ -1237,11 +1237,11 @@ export default function SalesPage() {
                   placeholder="e.g. Peak lunch dine-in rush, takeout orders"
                   value={formData.notes || ""}
                   onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
-                  className="h-8 text-xs"
+                  className="h-8 text-xs border-[#D1FAE5] text-[#1F2937]"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D1FAE5]/60">
                 <Button
                   type="button"
                   variant="outline"
@@ -1254,7 +1254,7 @@ export default function SalesPage() {
                   type="submit"
                   size="sm"
                   disabled={isSubmitting}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer"
+                  className="bg-[#059669] hover:bg-[#047857] text-white font-semibold cursor-pointer shadow-xs"
                 >
                   {isSubmitting ? "Validating & Saving..." : editingSale ? "Update Sale" : "Save Sale to PostgreSQL"}
                 </Button>

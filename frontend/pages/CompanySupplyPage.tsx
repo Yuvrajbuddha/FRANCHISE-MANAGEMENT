@@ -344,55 +344,55 @@ export default function CompanySupplyPage() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-slate-200 shadow-xs bg-white">
+        <Card className="rounded-2xl border border-[#D1FAE5] shadow-xs bg-white">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between text-slate-500 mb-1">
+            <div className="flex items-center justify-between text-[#64748B] mb-1">
               <span className="text-[11px] font-medium uppercase tracking-wider">Shipments</span>
-              <Truck className="h-4 w-4 text-blue-500" />
+              <Truck className="h-4 w-4 text-[#059669]" />
             </div>
-            <div className="font-serif text-2xl font-bold text-slate-900">
+            <div className="font-serif text-2xl font-bold text-[#064E3B]">
               {summary.totalShipments}
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">Total consignments logged</p>
+            <p className="text-[11px] text-[#64748B] mt-0.5">Total consignments logged</p>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-slate-200 shadow-xs bg-white">
+        <Card className="rounded-2xl border border-[#D1FAE5] shadow-xs bg-white">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between text-slate-500 mb-1">
+            <div className="flex items-center justify-between text-[#64748B] mb-1">
               <span className="text-[11px] font-medium uppercase tracking-wider">Verified Received</span>
-              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <CheckCircle2 className="h-4 w-4 text-[#059669]" />
             </div>
-            <div className="font-serif text-2xl font-bold text-emerald-700">
+            <div className="font-serif text-2xl font-bold text-[#064E3B]">
               {summary.verifiedCount}
             </div>
-            <p className="text-[11px] text-emerald-600 font-medium mt-0.5">Successfully acknowledged</p>
+            <p className="text-[11px] text-[#059669] font-medium mt-0.5">Successfully acknowledged</p>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-slate-200 shadow-xs bg-white">
+        <Card className="rounded-2xl border border-[#D1FAE5] shadow-xs bg-white">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between text-slate-500 mb-1">
+            <div className="flex items-center justify-between text-[#64748B] mb-1">
               <span className="text-[11px] font-medium uppercase tracking-wider">In Transit</span>
-              <Clock className="h-4 w-4 text-sky-500" />
+              <Clock className="h-4 w-4 text-amber-600" />
             </div>
-            <div className="font-serif text-2xl font-bold text-sky-700">
+            <div className="font-serif text-2xl font-bold text-amber-800">
               {summary.inTransitCount}
             </div>
-            <p className="text-[11px] text-sky-600 font-medium mt-0.5">On the way to stores</p>
+            <p className="text-[11px] text-amber-700 font-medium mt-0.5">On the way to stores</p>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-slate-200 shadow-xs bg-white col-span-2 lg:col-span-1">
+        <Card className="rounded-2xl border border-[#D1FAE5] shadow-xs bg-white col-span-2 lg:col-span-1">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between text-slate-500 mb-1">
+            <div className="flex items-center justify-between text-[#64748B] mb-1">
               <span className="text-[11px] font-medium uppercase tracking-wider">Fulfillment Rate</span>
-              <Sparkles className="h-4 w-4 text-indigo-500" />
+              <Sparkles className="h-4 w-4 text-[#059669]" />
             </div>
-            <div className="font-serif text-2xl font-bold text-slate-900">
+            <div className="font-serif text-2xl font-bold text-[#064E3B]">
               {summary.fulfillmentRate}%
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">HQ SLA delivery benchmark</p>
+            <p className="text-[11px] text-[#64748B] mt-0.5">HQ SLA delivery benchmark</p>
           </CardContent>
         </Card>
       </div>
@@ -529,9 +529,9 @@ export default function CompanySupplyPage() {
                   ) : c.deliveryStatus === "In Transit" ? (
                     <Badge
                       variant="outline"
-                      className="border-blue-300 text-blue-800 bg-blue-50 text-xs font-semibold px-2.5 py-1"
+                      className="border-amber-300 text-amber-800 bg-amber-50 text-xs font-semibold px-2.5 py-1"
                     >
-                      <span className="h-1.5 w-1.5 rounded-full bg-blue-500 mr-1.5 animate-pulse" />
+                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500 mr-1.5 animate-pulse" />
                       In Transit
                     </Badge>
                   ) : (
@@ -547,21 +547,21 @@ export default function CompanySupplyPage() {
               </div>
 
               {/* Vertical Card Rows: All 9 Fields in clear Label-Value Format */}
-              <div className="py-2 space-y-2 text-xs divide-y divide-slate-100 flex-1">
+              <div className="py-2 space-y-2 text-xs divide-y divide-[#D1FAE5]/60 flex-1">
                 {/* 1. Consignment Reference */}
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
-                  <span className="text-slate-500 font-medium shrink-0">Consignment Reference:</span>
-                  <span className="font-mono font-bold text-slate-900 sm:text-right">
+                  <span className="text-[#64748B] font-medium shrink-0">Consignment Reference:</span>
+                  <span className="font-mono font-bold text-[#064E3B] sm:text-right">
                     {c.consignmentId}
                   </span>
                 </div>
 
                 {/* 2. Supply Item & Category */}
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                  <span className="text-slate-500 font-medium shrink-0">Supply Item & Category:</span>
-                  <span className="text-slate-900 font-semibold sm:text-right">
+                  <span className="text-[#64748B] font-medium shrink-0">Supply Item & Category:</span>
+                  <span className="text-[#1F2937] font-semibold sm:text-right">
                     {c.itemName}{" "}
-                    <span className="text-slate-500 font-normal text-[11px]">
+                    <span className="text-[#64748B] font-normal text-[11px]">
                       ({c.category})
                     </span>
                   </span>
@@ -569,41 +569,41 @@ export default function CompanySupplyPage() {
 
                 {/* 3. Destination Outlet */}
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                  <span className="text-slate-500 font-medium shrink-0">Destination Outlet:</span>
-                  <span className="font-mono font-bold text-teal-800 bg-teal-50 border border-teal-200/80 px-2 py-0.5 rounded text-[11px] sm:self-end">
+                  <span className="text-[#64748B] font-medium shrink-0">Destination Outlet:</span>
+                  <span className="font-mono font-bold text-[#064E3B] bg-[#E6F8EF] border border-[#D1FAE5] px-2 py-0.5 rounded text-[11px] sm:self-end">
                     {c.outletId}
                   </span>
                 </div>
 
                 {/* 4. Supplied Quantity */}
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                  <span className="text-slate-500 font-medium shrink-0">Supplied Quantity:</span>
-                  <span className="font-mono font-bold text-teal-700 sm:text-right text-sm">
+                  <span className="text-[#64748B] font-medium shrink-0">Supplied Quantity:</span>
+                  <span className="font-mono font-bold text-[#059669] sm:text-right text-sm">
                     {c.quantitySupplied.toLocaleString()}{" "}
-                    <span className="text-xs text-slate-600 font-sans font-medium">{c.unit}</span>
+                    <span className="text-xs text-[#1F2937] font-sans font-medium">{c.unit}</span>
                   </span>
                 </div>
 
                 {/* 5. Dispatch Date */}
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                  <span className="text-slate-500 font-medium shrink-0">Dispatch Date:</span>
-                  <span className="font-mono text-slate-700 sm:text-right">
+                  <span className="text-[#64748B] font-medium shrink-0">Dispatch Date:</span>
+                  <span className="font-mono text-[#1F2937] sm:text-right">
                     {c.dispatchDate}
                   </span>
                 </div>
 
                 {/* 6. Delivery Status */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1 pt-2">
-                  <span className="text-slate-500 font-medium shrink-0">Delivery Status:</span>
+                  <span className="text-[#64748B] font-medium shrink-0">Delivery Status:</span>
                   <div>
                     {c.deliveryStatus === "Delivered & Verified" ? (
-                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
-                        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#059669] bg-[#E6F8EF] px-2.5 py-0.5 rounded-full border border-[#D1FAE5]">
+                        <span className="h-1.5 w-1.5 rounded-full bg-[#059669]" />
                         Delivered & Verified
                       </span>
                     ) : c.deliveryStatus === "In Transit" ? (
-                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-700 bg-blue-50 px-2.5 py-0.5 rounded-full border border-blue-200">
-                        <span className="h-1.5 w-1.5 rounded-full bg-blue-500 animate-pulse" />
+                      <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-800 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
+                        <span className="h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse" />
                         In Transit
                       </span>
                     ) : (
@@ -617,24 +617,24 @@ export default function CompanySupplyPage() {
 
                 {/* 7. Carrier / Fleet */}
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                  <span className="text-slate-500 font-medium shrink-0">Carrier / Fleet:</span>
-                  <span className="text-slate-700 font-medium sm:text-right">
+                  <span className="text-[#64748B] font-medium shrink-0">Carrier / Fleet:</span>
+                  <span className="text-[#1F2937] font-medium sm:text-right">
                     {c.carrier || "—"}
                   </span>
                 </div>
 
                 {/* 8. Acknowledged By */}
                 <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                  <span className="text-slate-500 font-medium shrink-0">Acknowledged By:</span>
-                  <span className="text-slate-700 font-mono text-[11px] sm:text-right break-all">
+                  <span className="text-[#64748B] font-medium shrink-0">Acknowledged By:</span>
+                  <span className="text-[#1F2937] font-mono text-[11px] sm:text-right break-all">
                     {c.reconciledBy || "—"}
                   </span>
                 </div>
 
                 {/* 9. Batch Notes */}
                 <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 pt-2">
-                  <span className="text-slate-500 font-medium shrink-0">Batch Notes:</span>
-                  <span className="text-slate-600 sm:text-right sm:max-w-[65%] italic text-[11px] leading-relaxed">
+                  <span className="text-[#64748B] font-medium shrink-0">Batch Notes:</span>
+                  <span className="text-[#64748B] sm:text-right sm:max-w-[65%] italic text-[11px] leading-relaxed">
                     {c.notes || "Normal variance within machine distribution."}
                   </span>
                 </div>
@@ -646,7 +646,7 @@ export default function CompanySupplyPage() {
 
       {/* Request Company Supply Modal */}
       {isOrderModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in">
           <div className="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-200">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div className="flex items-center gap-2">

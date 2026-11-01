@@ -1029,7 +1029,7 @@ export default function EvidencePage() {
                 className="group rounded-xl border border-[#DDE5DC] bg-[#FFFDF8] overflow-hidden shadow-xs hover:border-[#13845B] hover:shadow-sm transition-all duration-200 cursor-pointer flex flex-col justify-between"
               >
                 {/* Photo Image Preview (16:9 Aspect Ratio) */}
-                <div className="relative aspect-video w-full bg-slate-900 overflow-hidden border-b border-[#DDE5DC] flex items-center justify-center">
+                <div className="relative aspect-video w-full bg-black overflow-hidden border-b border-[#DDE5DC] flex items-center justify-center">
                   <img
                     src={photo.dataUrl || photo.imageUrl}
                     alt={`${photo.id} - ${photo.zone}`}
@@ -1040,7 +1040,7 @@ export default function EvidencePage() {
                       const parent = e.currentTarget.parentElement;
                       if (parent && !parent.querySelector(".img-fail-msg")) {
                         const failDiv = document.createElement("div");
-                        failDiv.className = "img-fail-msg flex items-center justify-center p-3 text-center text-xs text-rose-400 font-mono h-full w-full bg-slate-950";
+                        failDiv.className = "img-fail-msg flex items-center justify-center p-3 text-center text-xs text-rose-400 font-mono h-full w-full bg-black";
                         failDiv.innerText = "Frame unavailable — extraction or image loading failed.";
                         parent.appendChild(failDiv);
                       }
@@ -1168,7 +1168,7 @@ export default function EvidencePage() {
                   const parent = e.currentTarget.parentElement;
                   if (parent && !parent.querySelector(".modal-img-error")) {
                     const errNotice = document.createElement("div");
-                    errNotice.className = "modal-img-error flex items-center justify-center p-6 text-center text-sm text-rose-400 font-mono h-full w-full bg-slate-950";
+                    errNotice.className = "modal-img-error flex items-center justify-center p-6 text-center text-sm text-rose-400 font-mono h-full w-full bg-black";
                     errNotice.innerText = "Frame unavailable — extraction or image loading failed.";
                     parent.appendChild(errNotice);
                   }

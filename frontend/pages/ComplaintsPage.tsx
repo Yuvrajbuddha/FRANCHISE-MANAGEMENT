@@ -341,7 +341,7 @@ export default function ComplaintsPage() {
       case "Open":
       default:
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200 dark:bg-blue-950/40 dark:text-blue-300 dark:border-blue-800/40">
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-semibold bg-[#E6F8EF] text-[#064E3B] border border-[#D1FAE5]">
             <AlertTriangle className="h-3 w-3" />
             Open
           </span>
@@ -368,24 +368,24 @@ export default function ComplaintsPage() {
     <div className="space-y-6">
       {/* Toast Notification */}
       {successToast && (
-        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl bg-slate-900 border border-slate-700 text-white px-4 py-3 shadow-xl text-xs animate-in fade-in slide-in-from-bottom-2">
+        <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2 rounded-xl bg-[#064E3B] border border-[#D1FAE5] text-white px-4 py-3 shadow-xl text-xs animate-in fade-in slide-in-from-bottom-2">
           <CheckCircle2 className="h-4 w-4 text-emerald-400" />
           <span>{successToast}</span>
         </div>
       )}
 
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-slate-200 dark:border-slate-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-[#D1FAE5]/60">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-200 dark:bg-indigo-950/50 dark:border-indigo-800">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E6F8EF] text-[#064E3B] border border-[#D1FAE5]">
               <MessageSquareWarning className="h-5 w-5" />
             </div>
-            <h1 className="font-serif text-2xl font-bold tracking-tight text-slate-900 dark:text-white">
+            <h1 className="font-serif text-2xl font-bold tracking-tight text-[#064E3B]">
               Customer Complaints & Service Quality Registry
             </h1>
           </div>
-          <p className="text-xs text-slate-600 dark:text-slate-400 mt-1">
+          <p className="text-xs text-[#64748B] mt-1">
             Grievance logs, service speed evaluations, and packaging anomalies mapped to franchise unit compliance scores.
           </p>
         </div>
@@ -396,7 +396,7 @@ export default function ComplaintsPage() {
             size="sm"
             onClick={fetchComplaints}
             disabled={loading}
-            className="text-xs gap-1.5 cursor-pointer"
+            className="text-xs gap-1.5 cursor-pointer text-[#064E3B] border-[#D1FAE5] hover:bg-[#F0FDF4]"
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
             <span>Refresh</span>
@@ -405,7 +405,7 @@ export default function ComplaintsPage() {
           <Button
             size="sm"
             onClick={() => setCreateModalOpen(true)}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs gap-1.5 shadow-xs cursor-pointer"
+            className="bg-[#059669] hover:bg-[#047857] text-white text-xs gap-1.5 shadow-xs cursor-pointer"
           >
             <Plus className="h-3.5 w-3.5" />
             <span>Log Complaint</span>
@@ -415,63 +415,63 @@ export default function ComplaintsPage() {
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="rounded-2xl border border-[#D1FAE5] bg-white p-4 shadow-2xs">
+          <div className="flex items-center justify-between text-xs text-[#64748B]">
             <span>Total Logged</span>
-            <MessageSquareWarning className="h-4 w-4 text-slate-400" />
+            <MessageSquareWarning className="h-4 w-4 text-[#64748B]" />
           </div>
-          <div className="mt-2 text-2xl font-bold text-slate-900 dark:text-white">
+          <div className="mt-2 text-2xl font-bold text-[#064E3B]">
             {summary.total}
           </div>
-          <p className="text-[11px] text-slate-500 mt-0.5">Across franchise units</p>
+          <p className="text-[11px] text-[#64748B] mt-0.5">Across franchise units</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="rounded-2xl border border-[#D1FAE5] bg-white p-4 shadow-2xs">
+          <div className="flex items-center justify-between text-xs text-[#64748B]">
             <span>Under Review</span>
             <Clock className="h-4 w-4 text-amber-500" />
           </div>
-          <div className="mt-2 text-2xl font-bold text-amber-600 dark:text-amber-400">
+          <div className="mt-2 text-2xl font-bold text-amber-800">
             {summary.investigating + summary.open}
           </div>
-          <p className="text-[11px] text-amber-600/80 mt-0.5">{summary.open} open, {summary.investigating} investigating</p>
+          <p className="text-[11px] text-amber-700 mt-0.5">{summary.open} open, {summary.investigating} investigating</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="rounded-2xl border border-[#D1FAE5] bg-white p-4 shadow-2xs">
+          <div className="flex items-center justify-between text-xs text-[#64748B]">
             <span>Resolved</span>
-            <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+            <CheckCircle2 className="h-4 w-4 text-[#059669]" />
           </div>
-          <div className="mt-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400">
+          <div className="mt-2 text-2xl font-bold text-[#059669]">
             {summary.resolved}
           </div>
-          <p className="text-[11px] text-emerald-600/80 mt-0.5">Closed customer records</p>
+          <p className="text-[11px] text-[#059669] mt-0.5">Closed customer records</p>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-          <div className="flex items-center justify-between text-xs text-slate-500">
+        <div className="rounded-2xl border border-[#D1FAE5] bg-white p-4 shadow-2xs">
+          <div className="flex items-center justify-between text-xs text-[#64748B]">
             <span>High / Critical</span>
             <ShieldAlert className="h-4 w-4 text-rose-500" />
           </div>
-          <div className="mt-2 text-2xl font-bold text-rose-600 dark:text-rose-400">
+          <div className="mt-2 text-2xl font-bold text-rose-600">
             {summary.critical + summary.high}
           </div>
-          <p className="text-[11px] text-rose-600/80 mt-0.5">Mandates supervisory action</p>
+          <p className="text-[11px] text-rose-600 mt-0.5">Mandates supervisory action</p>
         </div>
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
+      <div className="rounded-2xl border border-[#D1FAE5] bg-white p-4 shadow-2xs space-y-3">
         <div className="flex flex-col lg:flex-row gap-3 items-stretch lg:items-center justify-between">
           {/* Search Form */}
           <form onSubmit={handleSearchSubmit} className="flex-1 relative">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#64748B]" />
             <Input
               type="text"
               placeholder="Search by ID, customer name, issue, or outlet..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-9 text-xs h-9 bg-slate-50 dark:bg-slate-800/60 border-slate-200 dark:border-slate-700"
+              className="pl-9 text-xs h-9 bg-[#F0FDF4]/50 border-[#D1FAE5] text-[#1F2937]"
             />
           </form>
 
@@ -481,7 +481,7 @@ export default function ComplaintsPage() {
             <select
               value={selectedOutlet}
               onChange={(e) => setSelectedOutlet(e.target.value)}
-              className="h-9 px-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none"
+              className="h-9 px-2.5 text-xs rounded-xl border border-[#D1FAE5] bg-[#F0FDF4]/50 text-[#1F2937] focus:outline-none cursor-pointer"
             >
               <option value="All Outlets">All Outlets</option>
               {ALL_NETWORK_STORES.map((s) => (
@@ -495,7 +495,7 @@ export default function ComplaintsPage() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="h-9 px-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none"
+              className="h-9 px-2.5 text-xs rounded-xl border border-[#D1FAE5] bg-[#F0FDF4]/50 text-[#1F2937] focus:outline-none cursor-pointer"
             >
               {CATEGORIES.map((c) => (
                 <option key={c} value={c}>
@@ -508,7 +508,7 @@ export default function ComplaintsPage() {
             <select
               value={selectedSeverity}
               onChange={(e) => setSelectedSeverity(e.target.value)}
-              className="h-9 px-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none"
+              className="h-9 px-2.5 text-xs rounded-xl border border-[#D1FAE5] bg-[#F0FDF4]/50 text-[#1F2937] focus:outline-none cursor-pointer"
             >
               {SEVERITIES.map((s) => (
                 <option key={s} value={s}>
@@ -521,7 +521,7 @@ export default function ComplaintsPage() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="h-9 px-2.5 text-xs rounded-xl border border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none"
+              className="h-9 px-2.5 text-xs rounded-xl border border-[#D1FAE5] bg-[#F0FDF4]/50 text-[#1F2937] focus:outline-none cursor-pointer"
             >
               {STATUSES.map((st) => (
                 <option key={st} value={st}>
@@ -535,7 +535,7 @@ export default function ComplaintsPage() {
                 variant="ghost"
                 size="sm"
                 onClick={clearFilters}
-                className="text-xs text-slate-500 hover:text-slate-900 dark:hover:text-white h-9 px-2.5 cursor-pointer"
+                className="text-xs text-[#64748B] hover:text-[#064E3B] h-9 px-2.5 cursor-pointer"
               >
                 <X className="h-3.5 w-3.5 mr-1" />
                 Clear
@@ -547,44 +547,44 @@ export default function ComplaintsPage() {
 
       {/* Error Banner */}
       {error && (
-        <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-xs text-red-700 dark:bg-red-950/40 dark:border-red-900/60 dark:text-red-300 flex items-center gap-2">
+        <div className="rounded-xl bg-red-50 border border-red-200 p-4 text-xs text-red-700 flex items-center gap-2">
           <AlertOctagon className="h-4 w-4 shrink-0 text-red-600" />
           <span>{error}</span>
         </div>
       )}
 
       {/* Complaints Table Container */}
-      <div className="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-2xs dark:border-slate-800 dark:bg-slate-900">
-        <div className="p-4 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between">
+      <div className="rounded-2xl border border-[#D1FAE5] bg-white overflow-hidden shadow-2xs">
+        <div className="p-4 border-b border-[#D1FAE5]/60 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#064E3B]">
               Customer Grievances & Service Logs
             </span>
-            <Badge variant="outline" className="text-[10px] font-mono">
+            <Badge variant="outline" className="text-[10px] font-mono border-[#D1FAE5] text-[#064E3B] bg-[#E6F8EF]">
               {complaints.length} records
             </Badge>
           </div>
-          <span className="text-[11px] text-slate-400 hidden sm:inline">
+          <span className="text-[11px] text-[#64748B] hidden sm:inline">
             Click row or view dossier for details
           </span>
         </div>
 
         {loading ? (
-          <div className="p-12 text-center text-xs text-slate-500 space-y-2">
-            <RefreshCw className="h-5 w-5 animate-spin mx-auto text-indigo-500" />
+          <div className="p-12 text-center text-xs text-[#64748B] space-y-2">
+            <RefreshCw className="h-5 w-5 animate-spin mx-auto text-[#059669]" />
             <p>Loading complaints registry from database...</p>
           </div>
         ) : complaints.length === 0 ? (
           /* Empty State */
           <div className="p-12 text-center space-y-3">
-            <div className="h-12 w-12 rounded-2xl bg-slate-100 dark:bg-slate-800 text-slate-400 flex items-center justify-center mx-auto">
+            <div className="h-12 w-12 rounded-2xl bg-[#E6F8EF] text-[#064E3B] flex items-center justify-center mx-auto">
               <MessageSquareWarning className="h-6 w-6" />
             </div>
             <div className="space-y-1">
-              <h3 className="font-serif text-base font-bold text-slate-900 dark:text-white">
+              <h3 className="font-serif text-base font-bold text-[#064E3B]">
                 No Complaints Found
               </h3>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto">
+              <p className="text-xs text-[#64748B] max-w-sm mx-auto">
                 {hasActiveFilters
                   ? "No customer complaints match your active filter criteria. Try adjusting or clearing your search filters."
                   : "Zero customer complaints are logged in the registry for this scope."}
@@ -599,7 +599,7 @@ export default function ComplaintsPage() {
                 <Button
                   size="sm"
                   onClick={() => setCreateModalOpen(true)}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs gap-1.5"
+                  className="bg-[#059669] hover:bg-[#047857] text-white text-xs gap-1.5 cursor-pointer shadow-xs"
                 >
                   <Plus className="h-3.5 w-3.5" />
                   <span>Log First Complaint</span>
@@ -612,18 +612,18 @@ export default function ComplaintsPage() {
             {complaints.map((c) => (
               <div
                 key={c.id}
-                className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                className="rounded-xl border border-[#D1FAE5] bg-white p-4 sm:p-5 shadow-2xs hover:border-[#059669]/60 transition-colors w-full max-w-full box-border min-w-0 space-y-3"
               >
                 {/* Header: Complaint ID, Outlet Badge, Severity & Status */}
-                <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3">
+                <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-[#D1FAE5]/60 pb-3">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                    <span className="font-mono text-xs font-bold text-[#064E3B] bg-[#E6F8EF] px-2 py-0.5 rounded border border-[#D1FAE5]">
                       {c.complaintId}
                     </span>
-                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                    <span className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-[#F0FDF4] text-[#064E3B] border border-[#D1FAE5]">
                       {c.outletId} {c.outletName ? `· ${c.outletName}` : ""}
                     </span>
-                    <Badge variant="outline" className="text-[10px]">
+                    <Badge variant="outline" className="text-[10px] border-[#D1FAE5] text-[#1F2937]">
                       {c.category}
                     </Badge>
                   </div>
@@ -637,26 +637,26 @@ export default function ComplaintsPage() {
                 <div className="space-y-2.5 text-xs">
                   {/* Grievance Details */}
                   <div>
-                    <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
                       Grievance Details:
                     </span>
-                    <p className="text-xs text-slate-800 dark:text-slate-200 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                    <p className="text-xs text-[#1F2937] leading-relaxed bg-[#F0FDF4]/60 p-2.5 rounded-lg border border-[#D1FAE5]">
                       {c.description}
                     </p>
                   </div>
 
                   {/* Customer and Reported Date */}
-                  <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                  <div className="pt-2 border-t border-[#D1FAE5]/60 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                     <div className="flex items-center justify-between sm:justify-start gap-2">
-                      <span className="text-slate-400 font-medium">Customer:</span>
-                      <div className="flex items-center gap-1.5 font-medium text-slate-800 dark:text-slate-200">
-                        <User className="h-3 w-3 text-slate-400 shrink-0" />
+                      <span className="text-[#64748B] font-medium">Customer:</span>
+                      <div className="flex items-center gap-1.5 font-medium text-[#1F2937]">
+                        <User className="h-3 w-3 text-[#64748B] shrink-0" />
                         <span>{c.customerName}</span>
                       </div>
                     </div>
                     <div className="flex items-center justify-between sm:justify-end gap-2">
-                      <span className="text-slate-400 font-medium">Reported:</span>
-                      <span className="text-[11px] text-slate-600 dark:text-slate-400 font-mono">
+                      <span className="text-[#64748B] font-medium">Reported:</span>
+                      <span className="text-[11px] text-[#64748B] font-mono">
                         {c.reportedAt}
                       </span>
                     </div>
@@ -664,12 +664,12 @@ export default function ComplaintsPage() {
                 </div>
 
                 {/* Footer Actions */}
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-end gap-2">
+                <div className="pt-3 border-t border-[#D1FAE5]/60 flex flex-wrap items-center justify-end gap-2">
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => setDetailModalItem(c)}
-                    className="h-8 px-3 text-xs gap-1.5 text-slate-700 hover:text-slate-900 dark:text-slate-300 dark:hover:text-white cursor-pointer"
+                    className="h-8 px-3 text-xs gap-1.5 text-[#064E3B] border-[#D1FAE5] hover:bg-[#F0FDF4] cursor-pointer"
                   >
                     <Eye className="h-3.5 w-3.5" />
                     <span>Dossier</span>
@@ -686,7 +686,7 @@ export default function ComplaintsPage() {
                           c.status === "Open" ? "Investigating" : "Resolved"
                         )
                       }
-                      className="h-8 px-3 text-xs font-semibold text-indigo-600 border-indigo-200 hover:bg-indigo-50 dark:border-indigo-800 dark:text-indigo-400 cursor-pointer"
+                      className="h-8 px-3 text-xs font-semibold text-[#064E3B] bg-[#E6F8EF] border-[#D1FAE5] hover:bg-[#D1FAE5] cursor-pointer"
                     >
                       {updatingId === c.complaintId ? (
                         <RefreshCw className="h-3.5 w-3.5 animate-spin" />
@@ -697,7 +697,7 @@ export default function ComplaintsPage() {
                       )}
                     </Button>
                   ) : (
-                    <span className="text-xs text-emerald-600 font-semibold px-2 py-1">
+                    <span className="text-xs text-[#059669] font-semibold px-2 py-1">
                       Closed
                     </span>
                   )}
@@ -711,23 +711,23 @@ export default function ComplaintsPage() {
       {/* DETAIL MODAL */}
       {detailModalItem && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95">
-            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="bg-white border border-[#D1FAE5] rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95">
+            <div className="flex items-start justify-between border-b border-[#D1FAE5]/60 pb-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-base font-bold text-indigo-600 dark:text-indigo-400">
+                  <span className="font-mono text-base font-bold text-[#064E3B]">
                     {detailModalItem.complaintId}
                   </span>
                   {getSeverityBadge(detailModalItem.severity)}
                   {getStatusBadge(detailModalItem.status)}
                 </div>
-                <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white mt-1">
+                <h3 className="font-serif text-lg font-bold text-[#064E3B] mt-1">
                   Customer Grievance Dossier
                 </h3>
               </div>
               <button
                 onClick={() => setDetailModalItem(null)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg"
+                className="text-[#64748B] hover:text-[#064E3B] p-1 rounded-lg cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -832,19 +832,19 @@ export default function ComplaintsPage() {
       {/* LOG NEW COMPLAINT MODAL */}
       {createModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="bg-white border border-[#D1FAE5] rounded-3xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-[#D1FAE5]/60 pb-3">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider text-indigo-600 dark:text-indigo-400 font-bold">
+                <span className="text-[10px] font-mono uppercase tracking-wider text-[#064E3B] font-bold">
                   Quality & Service Registry
                 </span>
-                <h3 className="font-serif text-lg font-bold text-slate-900 dark:text-white">
+                <h3 className="font-serif text-lg font-bold text-[#064E3B]">
                   Log New Customer Complaint
                 </h3>
               </div>
               <button
                 onClick={() => setCreateModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg"
+                className="text-[#64748B] hover:text-[#064E3B] p-1 rounded-lg cursor-pointer"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -852,13 +852,13 @@ export default function ComplaintsPage() {
 
             <form onSubmit={handleCreateComplaint} className="space-y-4 text-xs">
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                <label className="block text-[#1F2937] font-semibold mb-1">
                   Target Store Outlet
                 </label>
                 <select
                   value={formOutletId}
                   onChange={(e) => setFormOutletId(e.target.value)}
-                  className="w-full h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none"
+                  className="w-full h-9 px-3 rounded-xl border border-[#D1FAE5] bg-white text-[#1F2937] text-xs focus:border-[#059669] focus:outline-none"
                   required
                 >
                   {ALL_NETWORK_STORES.map((s) => (
@@ -870,7 +870,7 @@ export default function ComplaintsPage() {
               </div>
 
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                <label className="block text-[#1F2937] font-semibold mb-1">
                   Customer / Guest Name
                 </label>
                 <Input
@@ -878,20 +878,20 @@ export default function ComplaintsPage() {
                   placeholder="e.g. Ramesh Verma"
                   value={formCustomerName}
                   onChange={(e) => setFormCustomerName(e.target.value)}
-                  className="text-xs h-9"
+                  className="text-xs h-9 border-[#D1FAE5] bg-white text-[#1F2937]"
                   required
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#1F2937] font-semibold mb-1">
                     Grievance Category
                   </label>
                   <select
                     value={formCategory}
                     onChange={(e) => setFormCategory(e.target.value)}
-                    className="w-full h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none"
+                    className="w-full h-9 px-3 rounded-xl border border-[#D1FAE5] bg-white text-[#1F2937] text-xs focus:border-[#059669] focus:outline-none"
                   >
                     <option value="Order Packaging">Order Packaging</option>
                     <option value="Service Speed">Service Speed</option>
@@ -904,7 +904,7 @@ export default function ComplaintsPage() {
                 </div>
 
                 <div>
-                  <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                  <label className="block text-[#1F2937] font-semibold mb-1">
                     Severity Tier
                   </label>
                   <select
@@ -912,7 +912,7 @@ export default function ComplaintsPage() {
                     onChange={(e) =>
                       setFormSeverity(e.target.value as "Low" | "Medium" | "High" | "Critical")
                     }
-                    className="w-full h-9 px-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none"
+                    className="w-full h-9 px-3 rounded-xl border border-[#D1FAE5] bg-white text-[#1F2937] text-xs focus:border-[#059669] focus:outline-none"
                   >
                     <option value="Low">Low (Informational)</option>
                     <option value="Medium">Medium (Standard Review)</option>
@@ -923,7 +923,7 @@ export default function ComplaintsPage() {
               </div>
 
               <div>
-                <label className="block text-slate-700 dark:text-slate-300 font-semibold mb-1">
+                <label className="block text-[#1F2937] font-semibold mb-1">
                   Complaint Description & Observation
                 </label>
                 <textarea
@@ -931,12 +931,12 @@ export default function ComplaintsPage() {
                   placeholder="Describe the customer issue, item involved, and observation details..."
                   value={formDescription}
                   onChange={(e) => setFormDescription(e.target.value)}
-                  className="w-full p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-200 text-xs focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="w-full p-3 rounded-xl border border-[#D1FAE5] bg-white text-[#1F2937] text-xs focus:border-[#059669] focus:outline-none"
                   required
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D1FAE5]/60">
                 <Button
                   type="button"
                   variant="outline"
@@ -949,7 +949,7 @@ export default function ComplaintsPage() {
                 <Button
                   type="submit"
                   disabled={isSubmitting || !formCustomerName.trim() || !formDescription.trim()}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs gap-1.5 shadow-xs"
+                  className="bg-[#059669] hover:bg-[#047857] text-white text-xs gap-1.5 shadow-xs cursor-pointer"
                 >
                   {isSubmitting ? (
                     <>

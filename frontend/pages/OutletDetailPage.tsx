@@ -276,7 +276,7 @@ export default function OutletDetailPage() {
         <div className="pt-2">
           <Button
             onClick={() => navigate(`/outlets/${user?.assignedOutletId || "OUT-042"}`)}
-            className="bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs h-9 cursor-pointer"
+            className="bg-[#059669] hover:bg-[#047857] text-white font-medium text-xs h-9 cursor-pointer"
           >
             <span>Return to My Assigned Outlet ({user?.assignedOutletId || "OUT-042"})</span>
           </Button>
@@ -288,7 +288,7 @@ export default function OutletDetailPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-24 text-slate-400 gap-3">
-        <RefreshCw className="h-6 w-6 animate-spin text-indigo-600" />
+        <RefreshCw className="h-6 w-6 animate-spin text-[#059669]" />
         <span className="text-sm">Loading outlet data from PostgreSQL...</span>
       </div>
     );
@@ -1016,7 +1016,7 @@ export default function OutletDetailPage() {
               </div>
 
               {sales.length === 0 ? (
-                <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-400 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
+                <div className="rounded-xl border border-[#D1FAE5] bg-white p-12 text-center text-[#64748B] shadow-xs">
                   No sales entries recorded yet for this outlet.
                 </div>
               ) : (

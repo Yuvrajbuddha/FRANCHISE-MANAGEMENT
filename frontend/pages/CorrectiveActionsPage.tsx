@@ -64,7 +64,7 @@ export function getCapaStatusBadge(status: CapaStatus | string, isOverdue?: bool
       );
     case "PENDING_VERIFICATION":
       return (
-        <Badge className="bg-indigo-500/15 text-indigo-700 dark:text-indigo-400 border-indigo-500/30 text-xs font-bold">
+        <Badge className="bg-[#E6F8EF] text-[#064E3B] border border-[#D1FAE5] text-xs font-bold">
           PENDING VERIFICATION
         </Badge>
       );
@@ -346,7 +346,7 @@ export default function CorrectiveActionsPage() {
             <Button
               size="sm"
               onClick={() => setCreateModalOpen(true)}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white gap-1.5 cursor-pointer text-xs shadow-sm"
+              className="bg-[#059669] hover:bg-[#047857] text-white gap-1.5 cursor-pointer text-xs shadow-sm"
             >
               <Plus className="h-4 w-4" />
               <span>Assign Corrective Action</span>
@@ -357,26 +357,26 @@ export default function CorrectiveActionsPage() {
 
       {/* Role Notice */}
       {isFranchise && (
-        <div className="rounded-lg border border-emerald-500/30 bg-emerald-50/60 dark:bg-emerald-950/20 px-3.5 py-2.5 text-xs text-emerald-900 dark:text-emerald-300">
+        <div className="rounded-lg border border-[#D1FAE5] bg-[#E6F8EF] px-3.5 py-2.5 text-xs text-[#064E3B]">
           Store Isolation Active: Showing remediation mandates strictly for your assigned outlet (<strong>{userOutlet}</strong>). Submit evidence before due date to prevent overdue escalation.
         </div>
       )}
 
       {/* Complete Workflow Stepper Banner */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
-        <span className="font-bold text-slate-900 dark:text-slate-100 uppercase tracking-wider text-[11px] block">
+      <div className="rounded-xl border border-[#D1FAE5] bg-white p-4 shadow-2xs space-y-3">
+        <span className="font-bold text-[#064E3B] uppercase tracking-wider text-[11px] block">
           Statutory 8-Stage Closed-Loop Workflow:
         </span>
         <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2 text-center text-[10px]">
           {WORKFLOW_STAGES.map((stg, i) => (
             <div
               key={stg}
-              className="p-2 rounded-lg border border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/40 space-y-1 relative"
+              className="p-2 rounded-lg border border-[#D1FAE5] bg-[#F0FDF4]/60 space-y-1 relative"
             >
-              <span className="h-4 w-4 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300 font-bold inline-flex items-center justify-center text-[10px] mx-auto">
+              <span className="h-4 w-4 rounded-full bg-[#E6F8EF] text-[#064E3B] border border-[#D1FAE5] font-bold inline-flex items-center justify-center text-[10px] mx-auto">
                 {i + 1}
               </span>
-              <span className="block font-semibold text-slate-800 dark:text-slate-200 truncate" title={stg}>
+              <span className="block font-semibold text-[#1F2937] truncate" title={stg}>
                 {stg}
               </span>
             </div>
@@ -419,34 +419,34 @@ export default function CorrectiveActionsPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-[#D1FAE5] bg-white shadow-2xs">
           <CardHeader className="p-3 pb-1">
-            <span className="text-[10px] font-bold uppercase text-indigo-500">Pending Review</span>
+            <span className="text-[10px] font-bold uppercase text-[#059669]">Pending Review</span>
           </CardHeader>
           <CardContent className="p-3 pt-0">
-            <span className="text-xl font-bold font-mono text-indigo-600 dark:text-indigo-400">
+            <span className="text-xl font-bold font-mono text-[#064E3B]">
               {summary.pendingVerification}
             </span>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-[#D1FAE5] bg-white shadow-2xs">
           <CardHeader className="p-3 pb-1">
-            <span className="text-[10px] font-bold uppercase text-emerald-500">Closed</span>
+            <span className="text-[10px] font-bold uppercase text-[#059669]">Closed</span>
           </CardHeader>
           <CardContent className="p-3 pt-0">
-            <span className="text-xl font-bold font-mono text-emerald-600 dark:text-emerald-400">
+            <span className="text-xl font-bold font-mono text-[#059669]">
               {summary.closed}
             </span>
           </CardContent>
         </Card>
 
-        <Card className="border-red-200 dark:border-red-900 bg-red-50/20">
+        <Card className="border-red-200 bg-red-50/20 shadow-2xs">
           <CardHeader className="p-3 pb-1">
             <span className="text-[10px] font-bold uppercase text-red-600">Overdue SLA</span>
           </CardHeader>
           <CardContent className="p-3 pt-0">
-            <span className="text-xl font-bold font-mono text-red-600 dark:text-red-400">
+            <span className="text-xl font-bold font-mono text-red-600">
               {summary.overdue}
             </span>
           </CardContent>
@@ -454,16 +454,16 @@ export default function CorrectiveActionsPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
+      <div className="rounded-xl border border-[#D1FAE5] bg-white p-4 shadow-2xs space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Search Input */}
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#64748B]" />
             <Input
               placeholder="Search issue, action, assignee, ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 text-xs h-9"
+              className="pl-9 text-xs h-9 border-[#D1FAE5] bg-white text-[#1F2937]"
             />
           </div>
 
@@ -522,21 +522,21 @@ export default function CorrectiveActionsPage() {
         <div className="space-y-4 w-full max-w-full box-border">
           <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
-              <FileCheck2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <FileCheck2 className="h-4 w-4 text-[#059669]" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#064E3B]">
                 Active Corrective Actions ({displayedActions.length})
               </h3>
             </div>
-            <span className="text-xs text-slate-400 font-mono">
+            <span className="text-xs text-[#64748B] font-mono">
               Outlet: {userOutlet}
             </span>
           </div>
 
           {displayedActions.length === 0 ? (
-            <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-400 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-              <FileCheck2 className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-              <p className="font-medium text-slate-600 dark:text-slate-300">No active corrective actions</p>
-              <p className="text-xs text-slate-400 mt-1">All compliance items for this outlet are currently resolved.</p>
+            <div className="rounded-xl border border-[#D1FAE5] bg-white p-12 text-center text-[#64748B] shadow-2xs">
+              <FileCheck2 className="h-8 w-8 text-[#64748B]/50 mx-auto mb-2" />
+              <p className="font-medium text-[#064E3B]">No active corrective actions</p>
+              <p className="text-xs text-[#64748B] mt-1">All compliance items for this outlet are currently resolved.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-4 w-full max-w-full box-border">
@@ -547,13 +547,13 @@ export default function CorrectiveActionsPage() {
                 return (
                   <div
                     key={item.id}
-                    className="rounded-xl border border-slate-200 bg-white p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-4"
+                    className="rounded-xl border border-[#D1FAE5] bg-white p-5 shadow-2xs hover:border-[#059669]/60 transition-colors w-full max-w-full box-border min-w-0 space-y-4"
                   >
                     {/* Card Header: Title & Status */}
-                    <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                    <div className="flex items-center justify-between border-b border-[#D1FAE5]/60 pb-3">
                       <div className="flex items-center gap-2">
-                        <FileCheck2 className="h-4 w-4 text-indigo-600 dark:text-indigo-400" />
-                        <span className="text-xs font-bold uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                        <FileCheck2 className="h-4 w-4 text-[#059669]" />
+                        <span className="text-xs font-bold uppercase tracking-wider text-[#064E3B]">
                           Corrective Action
                         </span>
                       </div>
@@ -561,25 +561,25 @@ export default function CorrectiveActionsPage() {
                     </div>
 
                     {/* Vertical Fields arranged one below another */}
-                    <div className="space-y-3.5 text-xs divide-y divide-slate-100 dark:divide-slate-800/60">
+                    <div className="space-y-3.5 text-xs divide-y divide-[#D1FAE5]/60">
                       {/* 1. Issue / Requirement */}
                       <div className="space-y-1">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] block">
                           Issue / Requirement:
                         </span>
-                        <p className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-snug">
+                        <p className="text-sm font-semibold text-[#064E3B] leading-snug">
                           {item.issue}
                         </p>
                       </div>
 
                       {/* 2. Outlet Name */}
                       <div className="pt-2.5 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 shrink-0">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] shrink-0">
                           Outlet Name:
                         </span>
-                        <span className="font-semibold text-slate-800 dark:text-slate-200 text-xs sm:text-right">
+                        <span className="font-semibold text-[#1F2937] text-xs sm:text-right">
                           {outletDisplayName}{" "}
-                          <span className="font-mono text-slate-500 font-normal">
+                          <span className="font-mono text-[#64748B] font-normal">
                             ({item.outletId})
                           </span>
                         </span>
@@ -587,10 +587,10 @@ export default function CorrectiveActionsPage() {
 
                       {/* 3. Required Corrective Action */}
                       <div className="pt-2.5 space-y-1">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] block">
                           Required Corrective Action:
                         </span>
-                        <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-3 rounded-lg border border-slate-100 dark:border-slate-800">
+                        <p className="text-xs text-[#1F2937] leading-relaxed bg-[#F0FDF4]/60 p-3 rounded-lg border border-[#D1FAE5]">
                           {item.requiredAction}
                         </p>
                       </div>
@@ -598,22 +598,22 @@ export default function CorrectiveActionsPage() {
                       {/* 4. Due Date */}
                       {item.deadline && (
                         <div className="pt-2.5 flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1">
-                          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 shrink-0">
+                          <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] shrink-0">
                             Due Date:
                           </span>
                           <div className="flex items-center gap-2 sm:justify-end">
-                            <span className="font-mono font-medium text-slate-800 dark:text-slate-200">
+                            <span className="font-mono font-medium text-[#1F2937]">
                               {item.deadline}
                             </span>
                             {item.isOverdue || item.status === "OVERDUE" ? (
-                              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-2 py-0.5 rounded border border-red-200 dark:border-red-900">
+                              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded border border-red-200">
                                 <AlertOctagon className="h-3 w-3" />
                                 Overdue
                               </span>
                             ) : item.status === "CLOSED" ? (
-                              <span className="text-[11px] text-emerald-600 font-medium">Resolved</span>
+                              <span className="text-[11px] text-[#059669] font-medium">Resolved</span>
                             ) : (
-                              <span className="text-[11px] text-slate-500 font-medium">
+                              <span className="text-[11px] text-[#64748B] font-medium">
                                 ({item.daysRemaining} days remaining)
                               </span>
                             )}
@@ -623,7 +623,7 @@ export default function CorrectiveActionsPage() {
 
                       {/* 5. Current Status */}
                       <div className="pt-2.5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 shrink-0">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] shrink-0">
                           Current Status:
                         </span>
                         <div className="sm:self-end">
@@ -633,11 +633,11 @@ export default function CorrectiveActionsPage() {
                     </div>
 
                     {/* 6. Submit Evidence Button at Bottom */}
-                    <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
+                    <div className="pt-3 border-t border-[#D1FAE5]/60 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5">
                       {item.status !== "CLOSED" ? (
                         <Button
                           onClick={() => setEvidenceModalItem(item)}
-                          className="w-full sm:w-auto bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs h-9 px-5 rounded-lg shadow-sm cursor-pointer gap-2 justify-center"
+                          className="w-full sm:w-auto bg-[#059669] hover:bg-[#047857] text-white font-semibold text-xs h-9 px-5 rounded-lg shadow-sm cursor-pointer gap-2 justify-center"
                         >
                           <Upload className="h-3.5 w-3.5" />
                           <span>Submit Evidence</span>
@@ -670,38 +670,38 @@ export default function CorrectiveActionsPage() {
         <div className="space-y-3 w-full max-w-full box-border">
           <div className="flex items-center justify-between pb-1">
             <div className="flex items-center gap-2">
-              <FileCheck2 className="h-4 w-4 text-indigo-600" />
-              <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+              <FileCheck2 className="h-4 w-4 text-[#059669]" />
+              <h3 className="text-xs font-bold uppercase tracking-wider text-[#064E3B]">
                 Active Corrective Action Dossiers ({displayedActions.length})
               </h3>
             </div>
-            <span className="text-xs text-slate-400 font-mono">
+            <span className="text-xs text-[#64748B] font-mono">
               PostgreSQL Queue
             </span>
           </div>
 
           {displayedActions.length === 0 ? (
-            <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-400 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-              <FileCheck2 className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-              <p className="font-medium text-slate-600 dark:text-slate-300">No corrective actions found</p>
-              <p className="text-xs text-slate-400 mt-1">No corrective actions match the specified filters.</p>
+            <div className="rounded-xl border border-[#D1FAE5] bg-white p-12 text-center text-[#64748B] shadow-2xs">
+              <FileCheck2 className="h-8 w-8 text-[#64748B]/50 mx-auto mb-2" />
+              <p className="font-medium text-[#064E3B]">No corrective actions found</p>
+              <p className="text-xs text-[#64748B] mt-1">No corrective actions match the specified filters.</p>
             </div>
           ) : (
             <div className="flex flex-col gap-3.5 w-full max-w-full box-border">
               {displayedActions.map((item) => (
                 <div
                   key={item.id}
-                  className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                  className="rounded-xl border border-[#D1FAE5] bg-white p-4 sm:p-5 shadow-2xs hover:border-[#059669]/60 transition-colors w-full max-w-full box-border min-w-0 space-y-3"
                 >
                   {/* Card Header: CAPA ID, Outlet, Priority, Status */}
-                  <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-[#D1FAE5]/60 pb-3">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                      <span className="font-mono text-xs font-bold text-[#064E3B] bg-[#E6F8EF] px-2 py-0.5 rounded border border-[#D1FAE5]">
                         {item.actionId}
                       </span>
                       <Link
                         to={`/outlets/${item.outletId}`}
-                        className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-slate-100 dark:bg-slate-800 hover:bg-indigo-100 hover:text-indigo-700 dark:hover:bg-indigo-900 transition-colors inline-flex items-center gap-1 text-slate-700 dark:text-slate-200"
+                        className="font-mono text-xs font-semibold px-2 py-0.5 rounded bg-[#F0FDF4] hover:bg-[#E6F8EF] hover:text-[#064E3B] transition-colors inline-flex items-center gap-1 text-[#064E3B] border border-[#D1FAE5]"
                       >
                         <Building className="h-3 w-3" />
                         <span>{item.outletId}</span>
@@ -709,7 +709,7 @@ export default function CorrectiveActionsPage() {
                       {getPriorityBadge(item.priority)}
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="font-medium text-[11px] text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 px-2 py-0.5 rounded">
+                      <span className="font-medium text-[11px] text-[#064E3B] bg-[#E6F8EF] px-2 py-0.5 rounded border border-[#D1FAE5]">
                         Stage: {item.currentStage}
                       </span>
                       {getCapaStatusBadge(item.status, item.isOverdue)}
@@ -720,10 +720,10 @@ export default function CorrectiveActionsPage() {
                   <div className="space-y-2.5 text-xs">
                     {/* Issue */}
                     <div>
-                      <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                      <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
                         Issue Description:
                       </span>
-                      <p className="text-xs font-semibold text-slate-900 dark:text-slate-100 leading-snug">
+                      <p className="text-xs font-semibold text-[#064E3B] leading-snug">
                         {item.issue}
                       </p>
                     </div>
@@ -731,36 +731,36 @@ export default function CorrectiveActionsPage() {
                     {/* Required Action */}
                     {item.requiredAction && (
                       <div>
-                        <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400 block mb-1">
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B] block mb-1">
                           Required Mandate:
                         </span>
-                        <p className="text-xs text-slate-700 dark:text-slate-300 leading-relaxed bg-slate-50 dark:bg-slate-800/50 p-2.5 rounded-lg border border-slate-100 dark:border-slate-800">
+                        <p className="text-xs text-[#1F2937] leading-relaxed bg-[#F0FDF4]/60 p-2.5 rounded-lg border border-[#D1FAE5]">
                           {item.requiredAction}
                         </p>
                       </div>
                     )}
 
                     {/* Meta info row: Assignee, Category, Deadline */}
-                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800/60 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                    <div className="pt-2 border-t border-[#D1FAE5]/60 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
                       <div className="flex items-center justify-between sm:justify-start gap-2">
-                        <span className="text-slate-400 font-medium">Assigned To:</span>
-                        <span className="font-semibold text-slate-800 dark:text-slate-200">
+                        <span className="text-[#64748B] font-medium">Assigned To:</span>
+                        <span className="font-semibold text-[#1F2937]">
                           {item.assignedPerson} {item.category ? `(${item.category})` : ""}
                         </span>
                       </div>
                       <div className="flex items-center justify-between sm:justify-end gap-2">
-                        <span className="text-slate-400 font-medium">Deadline:</span>
+                        <span className="text-[#64748B] font-medium">Deadline:</span>
                         <div className="flex items-center gap-1.5 font-mono">
-                          <span className="text-slate-700 dark:text-slate-300 font-medium">{item.deadline}</span>
+                          <span className="text-[#1F2937] font-medium">{item.deadline}</span>
                           {item.isOverdue || item.status === "OVERDUE" ? (
-                            <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-950/40 px-1.5 py-0.5 rounded border border-red-200 dark:border-red-900">
+                            <span className="inline-flex items-center gap-0.5 text-[10px] font-bold text-red-600 bg-red-50 px-1.5 py-0.5 rounded border border-red-200">
                               <AlertOctagon className="h-3 w-3" />
                               OVERDUE ({Math.abs(item.daysRemaining || 0)}d)
                             </span>
                           ) : item.status === "CLOSED" ? (
-                            <span className="text-[10px] text-emerald-600 font-semibold">Resolved</span>
+                            <span className="text-[10px] text-[#059669] font-semibold">Resolved</span>
                           ) : (
-                            <span className="text-[10px] text-slate-500 font-semibold">
+                            <span className="text-[10px] text-[#64748B] font-semibold">
                               ({item.daysRemaining}d left)
                             </span>
                           )}
@@ -770,14 +770,14 @@ export default function CorrectiveActionsPage() {
                   </div>
 
                   {/* Card Footer: Action Buttons */}
-                  <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-end gap-2">
+                  <div className="pt-3 border-t border-[#D1FAE5]/60 flex flex-wrap items-center justify-end gap-2">
                     <Button
                       size="sm"
                       variant="outline"
                       onClick={() => handleOpenDetail(item)}
-                      className="h-8 text-xs gap-1.5 cursor-pointer"
+                      className="h-8 text-xs gap-1.5 cursor-pointer text-[#064E3B] border-[#D1FAE5] hover:bg-[#F0FDF4]"
                     >
-                      <Eye className="h-3.5 w-3.5 text-slate-500" />
+                      <Eye className="h-3.5 w-3.5 text-[#64748B]" />
                       <span>Dossier</span>
                     </Button>
 
@@ -786,9 +786,9 @@ export default function CorrectiveActionsPage() {
                         size="sm"
                         variant="secondary"
                         onClick={() => setEvidenceModalItem(item)}
-                        className="h-8 text-xs gap-1.5 cursor-pointer"
+                        className="h-8 text-xs gap-1.5 cursor-pointer bg-[#E6F8EF] text-[#064E3B] border border-[#D1FAE5] hover:bg-[#D1FAE5]"
                       >
-                        <Upload className="h-3.5 w-3.5 text-indigo-600" />
+                        <Upload className="h-3.5 w-3.5 text-[#059669]" />
                         <span>Submit Evidence</span>
                       </Button>
                     )}
@@ -797,7 +797,7 @@ export default function CorrectiveActionsPage() {
                       <Button
                         size="sm"
                         onClick={() => setVerifyModalItem(item)}
-                        className="h-8 text-xs gap-1.5 bg-emerald-600 hover:bg-emerald-500 text-white cursor-pointer"
+                        className="h-8 text-xs gap-1.5 bg-[#059669] hover:bg-[#047857] text-white cursor-pointer shadow-xs"
                       >
                         <ShieldCheck className="h-3.5 w-3.5" />
                         <span>Verify & Sign-Off</span>
@@ -814,73 +814,73 @@ export default function CorrectiveActionsPage() {
       {/* DETAIL & AUDIT HISTORY MODAL */}
       {detailModalItem && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-xs">
-            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="bg-white border border-[#D1FAE5] rounded-xl max-w-2xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-xs">
+            <div className="flex items-start justify-between border-b border-[#D1FAE5]/60 pb-3">
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="font-mono text-xs font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950 px-2 py-0.5 rounded border border-indigo-200">
+                  <span className="font-mono text-xs font-bold text-[#064E3B] bg-[#E6F8EF] px-2 py-0.5 rounded border border-[#D1FAE5]">
                     {detailModalItem.actionId}
                   </span>
                   {getCapaStatusBadge(detailModalItem.status, detailModalItem.isOverdue)}
                   {getPriorityBadge(detailModalItem.priority)}
                 </div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 pt-1">
+                <h3 className="text-base font-bold text-[#064E3B] pt-1">
                   {detailModalItem.issue}
                 </h3>
               </div>
               <button
                 onClick={() => setDetailModalItem(null)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-[#64748B] hover:text-[#064E3B] p-1 cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             {/* Core Fields Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 dark:bg-slate-800/40 p-3.5 rounded-xl border border-slate-100 dark:border-slate-800">
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-[#F0FDF4]/60 p-3.5 rounded-xl border border-[#D1FAE5]">
               <div>
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">Store Outlet</span>
-                <span className="font-mono font-bold text-slate-800 dark:text-slate-200 text-sm">
+                <span className="text-[10px] text-[#64748B] uppercase font-semibold block">Store Outlet</span>
+                <span className="font-mono font-bold text-[#064E3B] text-sm">
                   {detailModalItem.outletId}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">Assigned Person</span>
-                <span className="font-semibold text-slate-800 dark:text-slate-200">
+                <span className="text-[10px] text-[#64748B] uppercase font-semibold block">Assigned Person</span>
+                <span className="font-semibold text-[#1F2937]">
                   {detailModalItem.assignedPerson}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">Deadline</span>
-                <span className="font-mono font-bold text-slate-800 dark:text-slate-200">
+                <span className="text-[10px] text-[#64748B] uppercase font-semibold block">Deadline</span>
+                <span className="font-mono font-bold text-[#1F2937]">
                   {detailModalItem.deadline}
                 </span>
               </div>
               <div>
-                <span className="text-[10px] text-slate-400 uppercase font-semibold block">Current Stage</span>
-                <span className="font-semibold text-indigo-600 dark:text-indigo-400">
+                <span className="text-[10px] text-[#64748B] uppercase font-semibold block">Current Stage</span>
+                <span className="font-semibold text-[#059669]">
                   {detailModalItem.currentStage}
                 </span>
               </div>
             </div>
 
             {/* Required Action Description */}
-            <div className="p-3 bg-white dark:bg-slate-900 rounded-lg border border-slate-200 dark:border-slate-800 space-y-1">
-              <span className="text-[10px] font-bold uppercase text-slate-400 block">Required Corrective Action</span>
-              <p className="text-slate-800 dark:text-slate-200 text-sm leading-relaxed">
+            <div className="p-3 bg-white rounded-lg border border-[#D1FAE5] space-y-1">
+              <span className="text-[10px] font-bold uppercase text-[#64748B] block">Required Corrective Action</span>
+              <p className="text-[#1F2937] text-sm leading-relaxed">
                 {detailModalItem.requiredAction}
               </p>
             </div>
 
             {/* Submitted Evidence Section */}
             {detailModalItem.evidence && (
-              <div className="p-3 bg-indigo-50/40 dark:bg-indigo-950/20 rounded-lg border border-indigo-100 dark:border-indigo-900/40 space-y-1">
-                <div className="flex justify-between font-bold text-indigo-950 dark:text-indigo-200">
+              <div className="p-3 bg-[#E6F8EF]/60 rounded-lg border border-[#D1FAE5] space-y-1">
+                <div className="flex justify-between font-bold text-[#064E3B]">
                   <span>Submitted Evidence</span>
                   <span className="font-mono text-[10px]">{detailModalItem.evidenceSubmittedAt}</span>
                 </div>
-                <p className="text-slate-700 dark:text-slate-300">{detailModalItem.evidence}</p>
-                <span className="block text-[10px] text-slate-400">
+                <p className="text-[#1F2937]">{detailModalItem.evidence}</p>
+                <span className="block text-[10px] text-[#64748B]">
                   Submitted By: {detailModalItem.evidenceSubmittedBy}
                 </span>
               </div>
@@ -888,40 +888,40 @@ export default function CorrectiveActionsPage() {
 
             {/* Officer Verification Section */}
             {detailModalItem.verifiedBy && (
-              <div className="p-3 bg-emerald-50/40 dark:bg-emerald-950/20 rounded-lg border border-emerald-100 dark:border-emerald-900/40 space-y-1">
-                <div className="flex justify-between font-bold text-emerald-950 dark:text-emerald-200">
+              <div className="p-3 bg-emerald-50/60 rounded-lg border border-emerald-200 space-y-1">
+                <div className="flex justify-between font-bold text-emerald-950">
                   <span>Officer Verification Decision: {detailModalItem.verificationDecision}</span>
                   <span className="font-mono text-[10px]">{detailModalItem.verifiedAt}</span>
                 </div>
-                <p className="text-slate-700 dark:text-slate-300">{detailModalItem.verificationNotes}</p>
-                <span className="block text-[10px] text-slate-400">Verified By: {detailModalItem.verifiedBy}</span>
+                <p className="text-[#1F2937]">{detailModalItem.verificationNotes}</p>
+                <span className="block text-[10px] text-[#64748B]">Verified By: {detailModalItem.verifiedBy}</span>
               </div>
             )}
 
             {/* Corrective Action History Audit Trail */}
-            <div className="space-y-2 pt-2 border-t border-slate-100 dark:border-slate-800">
-              <div className="flex items-center gap-1.5 font-bold text-slate-900 dark:text-slate-100 text-xs">
-                <History className="h-4 w-4 text-indigo-600" />
+            <div className="space-y-2 pt-2 border-t border-[#D1FAE5]/60">
+              <div className="flex items-center gap-1.5 font-bold text-[#064E3B] text-xs">
+                <History className="h-4 w-4 text-[#059669]" />
                 <span>Chronological Audit Trail & History Log</span>
               </div>
 
               {historyLoading ? (
-                <div className="py-6 text-center text-slate-400">Loading audit history...</div>
+                <div className="py-6 text-center text-[#64748B]">Loading audit history...</div>
               ) : historyTrail.length === 0 ? (
-                <p className="text-slate-400 italic">No previous transition logs found.</p>
+                <p className="text-[#64748B] italic">No previous transition logs found.</p>
               ) : (
                 <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                   {historyTrail.map((h) => (
                     <div
                       key={h.id}
-                      className="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/40 border border-slate-100 dark:border-slate-800 text-[11px] space-y-1"
+                      className="p-2.5 rounded-lg bg-[#F0FDF4]/60 border border-[#D1FAE5] text-[11px] space-y-1"
                     >
                       <div className="flex items-center justify-between font-semibold">
-                        <span className="text-indigo-600 dark:text-indigo-400">{h.stage}</span>
-                        <span className="font-mono text-[10px] text-slate-400">{h.timestamp}</span>
+                        <span className="text-[#064E3B]">{h.stage}</span>
+                        <span className="font-mono text-[10px] text-[#64748B]">{h.timestamp}</span>
                       </div>
-                      <p className="text-slate-700 dark:text-slate-300">{h.remarks}</p>
-                      <div className="flex justify-between text-[10px] text-slate-400 pt-0.5">
+                      <p className="text-[#1F2937]">{h.remarks}</p>
+                      <div className="flex justify-between text-[10px] text-[#64748B] pt-0.5">
                         <span>Actor: {h.performedBy}</span>
                         <span>Status: {h.newStatus}</span>
                       </div>
@@ -943,27 +943,27 @@ export default function CorrectiveActionsPage() {
       {/* SUBMIT EVIDENCE MODAL */}
       {evidenceModalItem && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-xs my-auto">
-            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="bg-white border border-[#D1FAE5] rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-xs my-auto">
+            <div className="flex items-start justify-between border-b border-[#D1FAE5]/60 pb-3">
               <div>
-                <span className="font-mono font-bold text-indigo-600">{evidenceModalItem.actionId}</span>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 pt-0.5">
+                <span className="font-mono font-bold text-[#064E3B]">{evidenceModalItem.actionId}</span>
+                <h3 className="text-base font-bold text-[#064E3B] pt-0.5">
                   Submit Remedial Evidence
                 </h3>
               </div>
-              <button onClick={() => setEvidenceModalItem(null)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setEvidenceModalItem(null)} className="text-[#64748B] hover:text-[#064E3B] cursor-pointer">
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800 space-y-1">
-              <span className="font-bold text-slate-700 dark:text-slate-300 block">Issue: {evidenceModalItem.issue}</span>
-              <span className="text-slate-500 block">Required Action: {evidenceModalItem.requiredAction}</span>
+            <div className="p-3 bg-[#F0FDF4]/60 rounded-lg border border-[#D1FAE5] space-y-1">
+              <span className="font-bold text-[#1F2937] block">Issue: {evidenceModalItem.issue}</span>
+              <span className="text-[#64748B] block">Required Action: {evidenceModalItem.requiredAction}</span>
             </div>
 
             <form onSubmit={handleSubmitEvidence} className="space-y-3">
               <div>
-                <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="font-semibold text-[#1F2937] block mb-1">
                   Evidence Description & Rectification Summary
                 </label>
                 <textarea
@@ -971,20 +971,20 @@ export default function CorrectiveActionsPage() {
                   value={evidenceNotes}
                   onChange={(e) => setEvidenceNotes(e.target.value)}
                   placeholder="Detail the corrective steps completed, contractor report, training signed roster, etc..."
-                  className="w-full rounded-md border border-slate-200 p-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  className="w-full rounded-md border border-[#D1FAE5] p-2 text-xs bg-white text-[#1F2937] focus:border-[#059669] focus:outline-none"
                   required
                 />
               </div>
 
               <div>
-                <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="font-semibold text-[#1F2937] block mb-1">
                   Photo / Report Attachment Reference URL (Optional)
                 </label>
                 <Input
                   value={evidenceUrl}
                   onChange={(e) => setEvidenceUrl(e.target.value)}
                   placeholder="https://drive.google.com/... or /evidence/IMG-2026-CHILLER.jpg"
-                  className="text-xs h-9"
+                  className="text-xs h-9 border-[#D1FAE5] bg-white text-[#1F2937]"
                 />
               </div>
 
@@ -996,7 +996,7 @@ export default function CorrectiveActionsPage() {
                   type="submit"
                   size="sm"
                   disabled={isSubmittingEvidence}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer"
+                  className="bg-[#059669] hover:bg-[#047857] text-white font-semibold cursor-pointer shadow-xs"
                 >
                   {isSubmittingEvidence ? "Submitting..." : "Submit to Officer for Verification"}
                 </Button>
@@ -1009,34 +1009,34 @@ export default function CorrectiveActionsPage() {
       {/* OFFICER VERIFICATION MODAL */}
       {verifyModalItem && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-xs my-auto">
-            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="bg-white border border-[#D1FAE5] rounded-xl max-w-lg w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto text-xs my-auto">
+            <div className="flex items-start justify-between border-b border-[#D1FAE5]/60 pb-3">
               <div>
-                <span className="font-mono font-bold text-indigo-600">{verifyModalItem.actionId}</span>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 pt-0.5">
+                <span className="font-mono font-bold text-[#064E3B]">{verifyModalItem.actionId}</span>
+                <h3 className="text-base font-bold text-[#064E3B] pt-0.5">
                   Officer Verification & Sign-Off
                 </h3>
               </div>
-              <button onClick={() => setVerifyModalItem(null)} className="text-slate-400 hover:text-slate-600">
+              <button onClick={() => setVerifyModalItem(null)} className="text-[#64748B] hover:text-[#064E3B] cursor-pointer">
                 <X className="h-4 w-4" />
               </button>
             </div>
 
-            <div className="p-3 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-100 dark:border-slate-800 space-y-1">
-              <span className="font-bold text-slate-700 dark:text-slate-300 block">{verifyModalItem.issue}</span>
+            <div className="p-3 bg-[#F0FDF4]/60 rounded-lg border border-[#D1FAE5] space-y-1">
+              <span className="font-bold text-[#1F2937] block">{verifyModalItem.issue}</span>
               {verifyModalItem.evidence ? (
-                <p className="text-indigo-600 font-medium pt-1">
+                <p className="text-[#059669] font-medium pt-1">
                   Submitted Evidence: {verifyModalItem.evidence}
                 </p>
               ) : (
-                <p className="text-amber-600 font-medium pt-1">
+                <p className="text-amber-700 font-medium pt-1">
                   Note: No remedial evidence uploaded yet.
                 </p>
               )}
             </div>
 
             <form onSubmit={handleVerifyAction} className="space-y-3">
-              <span className="font-semibold text-slate-700 dark:text-slate-300 block">
+              <span className="font-semibold text-[#1F2937] block">
                 Verification Decision
               </span>
               <div className="grid grid-cols-2 gap-3">
@@ -1045,8 +1045,8 @@ export default function CorrectiveActionsPage() {
                   onClick={() => setVerifyDecision("APPROVED")}
                   className={`p-3 rounded-lg border font-bold text-xs flex items-center justify-center gap-2 cursor-pointer ${
                     verifyDecision === "APPROVED"
-                      ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
-                      : "border-slate-200 text-slate-600 dark:border-slate-700 dark:text-slate-400"
+                      ? "bg-[#059669] text-white border-[#059669] shadow-sm"
+                      : "border-[#D1FAE5] text-[#64748B] hover:bg-[#F0FDF4]"
                   }`}
                 >
                   <Check className="h-4 w-4" />
@@ -1059,7 +1059,7 @@ export default function CorrectiveActionsPage() {
                   className={`p-3 rounded-lg border font-bold text-xs flex items-center justify-center gap-2 cursor-pointer ${
                     verifyDecision === "REJECTED"
                       ? "bg-red-600 text-white border-red-600 shadow-sm"
-                      : "border-slate-200 text-slate-600 dark:border-slate-700 dark:text-slate-400"
+                      : "border-[#D1FAE5] text-[#64748B] hover:bg-red-50"
                   }`}
                 >
                   <X className="h-4 w-4" />
@@ -1068,7 +1068,7 @@ export default function CorrectiveActionsPage() {
               </div>
 
               <div>
-                <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="font-semibold text-[#1F2937] block mb-1">
                   Officer Inspection Remarks & Compliance Notes
                 </label>
                 <textarea
@@ -1076,7 +1076,7 @@ export default function CorrectiveActionsPage() {
                   value={verifyRemarks}
                   onChange={(e) => setVerifyRemarks(e.target.value)}
                   placeholder="Detail physical inspection observations, verification rationale, and sign-off remarks..."
-                  className="w-full rounded-md border border-slate-200 p-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  className="w-full rounded-md border border-[#D1FAE5] p-2 text-xs bg-white text-[#1F2937] focus:border-[#059669] focus:outline-none"
                   required
                 />
               </div>
@@ -1089,7 +1089,7 @@ export default function CorrectiveActionsPage() {
                   type="submit"
                   size="sm"
                   disabled={isSubmittingVerify}
-                  className="bg-emerald-600 hover:bg-emerald-500 text-white font-semibold cursor-pointer"
+                  className="bg-[#059669] hover:bg-[#047857] text-white font-semibold cursor-pointer shadow-xs"
                 >
                   {isSubmittingVerify ? "Recording Sign-off..." : "Commit Officer Decision"}
                 </Button>
@@ -1102,21 +1102,21 @@ export default function CorrectiveActionsPage() {
       {/* CREATE CORRECTIVE ACTION MODAL */}
       {createModalOpen && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-xl sm:max-w-2xl w-full shadow-2xl flex flex-col max-h-[90vh] my-auto overflow-hidden">
+          <div className="bg-white border border-[#D1FAE5] rounded-2xl max-w-xl sm:max-w-2xl w-full shadow-2xl flex flex-col max-h-[90vh] my-auto overflow-hidden">
             {/* Modal Header - Fixed at Top */}
-            <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 px-6 py-4.5 shrink-0 bg-slate-50/70 dark:bg-slate-900/70">
+            <div className="flex items-start justify-between border-b border-[#D1FAE5]/60 px-6 py-4.5 shrink-0 bg-[#F0FDF4]/60">
               <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="text-base font-bold text-[#064E3B]">
                   Assign New Corrective Action (CAPA)
                 </h3>
-                <p className="text-xs text-slate-500 mt-0.5">
+                <p className="text-xs text-[#64748B] mt-0.5">
                   Initiate statutory remediation workflow for an identified infraction.
                 </p>
               </div>
               <button
                 type="button"
                 onClick={() => setCreateModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                className="text-[#64748B] hover:text-[#064E3B] p-1 rounded-lg hover:bg-[#F0FDF4] transition-colors cursor-pointer"
                 aria-label="Close modal"
               >
                 <X className="h-5 w-5" />
@@ -1129,13 +1129,13 @@ export default function CorrectiveActionsPage() {
               <div className="p-6 overflow-y-auto flex-1 space-y-4 text-xs">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                    <label className="font-semibold text-[#1F2937] block mb-1.5">
                       Target Outlet
                     </label>
                     <select
                       value={newOutletId}
                       onChange={(e) => setNewOutletId(e.target.value)}
-                      className="w-full h-9.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800 cursor-pointer focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                      className="w-full h-9.5 rounded-lg border border-[#D1FAE5] bg-white px-3 text-xs font-semibold text-[#1F2937] cursor-pointer focus:border-[#059669] focus:outline-none"
                       disabled={isFranchise}
                     >
                       <option value="OUT-042">OUT-042 (Lucknow Flagship)</option>
@@ -1146,13 +1146,13 @@ export default function CorrectiveActionsPage() {
                   </div>
 
                   <div>
-                    <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                    <label className="font-semibold text-[#1F2937] block mb-1.5">
                       Priority Tier
                     </label>
                     <select
                       value={newPriority}
                       onChange={(e) => setNewPriority(e.target.value as any)}
-                      className="w-full h-9.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-semibold dark:border-slate-700 dark:bg-slate-800 cursor-pointer focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                      className="w-full h-9.5 rounded-lg border border-[#D1FAE5] bg-white px-3 text-xs font-semibold text-[#1F2937] cursor-pointer focus:border-[#059669] focus:outline-none"
                     >
                       <option value="CRITICAL">CRITICAL</option>
                       <option value="HIGH">HIGH</option>
@@ -1163,20 +1163,20 @@ export default function CorrectiveActionsPage() {
                 </div>
 
                 <div>
-                  <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                  <label className="font-semibold text-[#1F2937] block mb-1.5">
                     Issue Title / Violation Detected
                   </label>
                   <Input
                     value={newIssue}
                     onChange={(e) => setNewIssue(e.target.value)}
                     placeholder="e.g. Chiller temperature reading exceeded par (+8.5°C)"
-                    className="text-xs h-9.5 rounded-lg"
+                    className="text-xs h-9.5 rounded-lg border-[#D1FAE5] bg-white text-[#1F2937]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                  <label className="font-semibold text-[#1F2937] block mb-1.5">
                     Required Corrective Action (Remediation Mandate)
                   </label>
                   <textarea
@@ -1184,54 +1184,54 @@ export default function CorrectiveActionsPage() {
                     value={newRequiredAction}
                     onChange={(e) => setNewRequiredAction(e.target.value)}
                     placeholder="e.g. Inspect door magnetic gasket seal, recalibrate digital sensor probe, and log hourly verification temps for 48 hours."
-                    className="w-full rounded-lg border border-slate-200 p-3 text-xs dark:border-slate-700 dark:bg-slate-800 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                    className="w-full rounded-lg border border-[#D1FAE5] p-3 text-xs bg-white text-[#1F2937] focus:border-[#059669] focus:outline-none"
                     required
                   />
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                    <label className="font-semibold text-[#1F2937] block mb-1.5">
                       Assigned Person / Manager / Lead
                     </label>
                     <Input
                       value={newAssignedPerson}
                       onChange={(e) => setNewAssignedPerson(e.target.value)}
                       placeholder="e.g. Yuvraj Buddha (GM)"
-                      className="text-xs h-9.5 rounded-lg"
+                      className="text-xs h-9.5 rounded-lg border-[#D1FAE5] bg-white text-[#1F2937]"
                       required
                     />
                   </div>
 
                   <div>
-                    <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                    <label className="font-semibold text-[#1F2937] block mb-1.5">
                       Statutory Deadline (Due Date)
                     </label>
                     <Input
                       type="date"
                       value={newDeadline}
                       onChange={(e) => setNewDeadline(e.target.value)}
-                      className="text-xs h-9.5 rounded-lg"
+                      className="text-xs h-9.5 rounded-lg border-[#D1FAE5] bg-white text-[#1F2937]"
                       required
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="font-semibold text-slate-700 dark:text-slate-300 block mb-1.5">
+                  <label className="font-semibold text-[#1F2937] block mb-1.5">
                     Compliance Category
                   </label>
                   <Input
                     value={newCategory}
                     onChange={(e) => setNewCategory(e.target.value)}
                     placeholder="e.g. Cold Chain Hygiene / Food Safety"
-                    className="text-xs h-9.5 rounded-lg"
+                    className="text-xs h-9.5 rounded-lg border-[#D1FAE5] bg-white text-[#1F2937]"
                   />
                 </div>
               </div>
 
               {/* Modal Footer - Fixed at Bottom, Never Cut Off */}
-              <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-900/70 shrink-0">
+              <div className="flex items-center justify-end gap-3 px-6 py-4 border-t border-[#D1FAE5]/60 bg-[#F0FDF4]/60 shrink-0">
                 <Button
                   type="button"
                   variant="outline"
@@ -1245,7 +1245,7 @@ export default function CorrectiveActionsPage() {
                   type="submit"
                   size="sm"
                   disabled={isCreating}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer h-9 px-4 text-xs rounded-lg shadow-sm"
+                  className="bg-[#059669] hover:bg-[#047857] text-white font-semibold cursor-pointer h-9 px-4 text-xs rounded-lg shadow-sm"
                 >
                   {isCreating ? "Assigning..." : "Assign Corrective Action"}
                 </Button>

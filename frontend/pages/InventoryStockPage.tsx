@@ -204,22 +204,22 @@ export default function InventoryStockPage() {
   return (
     <div className="space-y-6 animate-in fade-in duration-300 pb-12">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-200/80 pb-5">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-[#D1FAE5] pb-5">
         <div>
           <div className="flex items-center gap-2.5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-200">
+            <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#E6F8EF] text-[#059669] border border-[#D1FAE5]">
               <Boxes className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h1 className="font-serif text-2xl font-bold tracking-tight text-slate-900">
+                <h1 className="font-serif text-2xl font-bold tracking-tight text-[#064E3B]">
                   Inventory Stock
                 </h1>
-                <Badge variant="outline" className="text-[11px] font-medium border-blue-200 text-blue-700 bg-blue-50/80">
+                <Badge variant="outline" className="text-[11px] font-medium border-[#D1FAE5] text-[#064E3B] bg-[#E6F8EF]">
                   Store On-Hand Physical Stock
                 </Badge>
               </div>
-              <p className="text-xs text-slate-500 mt-0.5">
+              <p className="text-xs text-[#64748B] mt-0.5">
                 Current on-hand store inventory levels, physical counts, reorder thresholds, and warehouse valuation.
               </p>
             </div>
@@ -232,28 +232,28 @@ export default function InventoryStockPage() {
             size="sm"
             onClick={fetchStock}
             disabled={loading}
-            className="h-9 gap-1.5 text-xs text-slate-600 hover:text-slate-900 border-slate-200"
+            className="h-9 gap-1.5 text-xs text-[#1F2937] hover:text-[#064E3B] border-[#D1FAE5] bg-white hover:bg-[#F0FDF4]"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin text-[#059669]" : "text-[#059669]"}`} />
             <span>Refresh</span>
           </Button>
         </div>
       </div>
 
       {/* Navigation Sub-Tabs: Stock Levels vs Reconciliation Audits */}
-      <div className="flex items-center gap-3 border-b border-slate-200/80 pb-2">
+      <div className="flex items-center gap-3 border-b border-[#D1FAE5] pb-2">
         <Link
           to="/inventory"
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200 flex items-center gap-1.5"
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#E6F8EF] text-[#064E3B] border border-[#D1FAE5] flex items-center gap-1.5 shadow-2xs"
         >
-          <Boxes className="h-3.5 w-3.5" />
+          <Boxes className="h-3.5 w-3.5 text-[#059669]" />
           <span>On-Hand Physical Stock</span>
         </Link>
         <Link
           to="/inventory/reconciliation"
-          className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors flex items-center gap-1.5"
+          className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#64748B] hover:bg-[#E6F8EF] hover:text-[#064E3B] transition-colors flex items-center gap-1.5"
         >
-          <Scale className="h-3.5 w-3.5" />
+          <Scale className="h-3.5 w-3.5 text-[#059669]" />
           <span>Reconciliation & Anomaly Audits</span>
         </Link>
       </div>
@@ -276,35 +276,35 @@ export default function InventoryStockPage() {
 
       {/* Key Metric Cards */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5">
-        <Card className="rounded-2xl border-slate-200 shadow-xs bg-white">
+        <Card className="rounded-2xl border-[#D1FAE5] shadow-xs bg-white">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between text-slate-500 mb-1">
+            <div className="flex items-center justify-between text-[#64748B] mb-1">
               <span className="text-[11px] font-medium uppercase tracking-wider">Tracked SKUs</span>
-              <Boxes className="h-4 w-4 text-blue-500" />
+              <Boxes className="h-4 w-4 text-[#059669]" />
             </div>
-            <div className="font-serif text-2xl font-bold text-slate-900">
+            <div className="font-serif text-2xl font-bold text-[#064E3B]">
               {summary.totalSkus}
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">Active warehouse items</p>
+            <p className="text-[11px] text-[#64748B] mt-0.5">Active warehouse items</p>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-slate-200 shadow-xs bg-white">
+        <Card className="rounded-2xl border-[#D1FAE5] shadow-xs bg-white">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between text-slate-500 mb-1">
+            <div className="flex items-center justify-between text-[#64748B] mb-1">
               <span className="text-[11px] font-medium uppercase tracking-wider">In Stock</span>
-              <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+              <CheckCircle2 className="h-4 w-4 text-[#059669]" />
             </div>
-            <div className="font-serif text-2xl font-bold text-emerald-700">
+            <div className="font-serif text-2xl font-bold text-[#059669]">
               {summary.inStockCount}
             </div>
-            <p className="text-[11px] text-emerald-600 font-medium mt-0.5">Healthy availability</p>
+            <p className="text-[11px] text-[#059669] font-medium mt-0.5">Healthy availability</p>
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-slate-200 shadow-xs bg-white">
+        <Card className="rounded-2xl border-[#D1FAE5] shadow-xs bg-white">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between text-slate-500 mb-1">
+            <div className="flex items-center justify-between text-[#64748B] mb-1">
               <span className="text-[11px] font-medium uppercase tracking-wider">Low Stock</span>
               <AlertTriangle className="h-4 w-4 text-amber-500" />
             </div>
@@ -315,9 +315,9 @@ export default function InventoryStockPage() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-slate-200 shadow-xs bg-white">
+        <Card className="rounded-2xl border-[#D1FAE5] shadow-xs bg-white">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between text-slate-500 mb-1">
+            <div className="flex items-center justify-between text-[#64748B] mb-1">
               <span className="text-[11px] font-medium uppercase tracking-wider">Critical Shortage</span>
               <TrendingDown className="h-4 w-4 text-rose-500" />
             </div>
@@ -328,16 +328,16 @@ export default function InventoryStockPage() {
           </CardContent>
         </Card>
 
-        <Card className="rounded-2xl border-slate-200 shadow-xs bg-white col-span-2 lg:col-span-1">
+        <Card className="rounded-2xl border-[#D1FAE5] shadow-xs bg-white col-span-2 lg:col-span-1">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between text-slate-500 mb-1">
+            <div className="flex items-center justify-between text-[#64748B] mb-1">
               <span className="text-[11px] font-medium uppercase tracking-wider">Stock Valuation</span>
-              <DollarSign className="h-4 w-4 text-indigo-500" />
+              <DollarSign className="h-4 w-4 text-[#059669]" />
             </div>
-            <div className="font-serif text-2xl font-bold text-slate-900">
+            <div className="font-serif text-2xl font-bold text-[#064E3B]">
               ₹{(summary.totalInventoryValue / 100000).toFixed(2)}L
             </div>
-            <p className="text-[11px] text-slate-500 mt-0.5">Total holding asset</p>
+            <p className="text-[11px] text-[#64748B] mt-0.5">Total holding asset</p>
           </CardContent>
         </Card>
       </div>
@@ -414,8 +414,8 @@ export default function InventoryStockPage() {
       {/* Main Stock - Responsive Vertical Card Layout */}
       <div className="space-y-3 w-full max-w-full box-border">
         {loading ? (
-          <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-slate-400 shadow-xs">
-            <RefreshCw className="h-6 w-6 animate-spin mx-auto text-blue-500 mb-2" />
+          <div className="rounded-2xl border border-[#D1FAE5] bg-white p-12 text-center text-[#64748B] shadow-xs">
+            <RefreshCw className="h-6 w-6 animate-spin mx-auto text-[#059669] mb-2" />
             <span>Loading current inventory stock...</span>
           </div>
         ) : stockItems.length === 0 ? (
@@ -503,14 +503,14 @@ export default function InventoryStockPage() {
                   </div>
 
                   {/* Action Button at bottom */}
-                  <div className="pt-2 border-t border-slate-100 flex items-center justify-end">
+                  <div className="pt-2 border-t border-[#D1FAE5]/60 flex items-center justify-end">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => openAuditModal(item)}
-                      className="w-full sm:w-auto h-8 px-4 text-xs text-blue-600 hover:text-blue-700 hover:bg-blue-50 border-blue-200 font-medium gap-1.5 cursor-pointer justify-center"
+                      className="w-full sm:w-auto h-8 px-4 text-xs text-[#064E3B] hover:text-[#047857] hover:bg-[#F0FDF4] border-[#D1FAE5] font-medium gap-1.5 cursor-pointer justify-center"
                     >
-                      <Edit3 className="h-3.5 w-3.5" />
+                      <Edit3 className="h-3.5 w-3.5 text-[#059669]" />
                       <span>Audit Physical Count</span>
                     </Button>
                   </div>
@@ -523,18 +523,18 @@ export default function InventoryStockPage() {
 
       {/* Audit Stock Modal */}
       {auditItem && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-slate-200">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in">
+          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-xl border border-[#D1FAE5]">
+            <div className="flex items-center justify-between pb-3 border-b border-[#D1FAE5]">
               <div className="flex items-center gap-2">
-                <Scale className="h-5 w-5 text-blue-600" />
-                <h3 className="font-serif text-lg font-bold text-slate-900">
+                <Scale className="h-5 w-5 text-[#059669]" />
+                <h3 className="font-serif text-lg font-bold text-[#064E3B]">
                   Audit Physical Count
                 </h3>
               </div>
               <button
                 onClick={() => setAuditItem(null)}
-                className="text-slate-400 hover:text-slate-600 p-1"
+                className="text-[#64748B] hover:text-[#064E3B] p-1 cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -542,20 +542,20 @@ export default function InventoryStockPage() {
 
             <form onSubmit={handleSaveAudit} className="mt-4 space-y-4">
               <div>
-                <span className="text-[11px] font-medium text-slate-500 uppercase tracking-wider block mb-1">
+                <span className="text-[11px] font-medium text-[#64748B] uppercase tracking-wider block mb-1">
                   Item Details
                 </span>
-                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200">
-                  <div className="font-semibold text-slate-900 text-sm">{auditItem.itemName}</div>
-                  <div className="flex items-center gap-3 text-xs text-slate-500 mt-1">
-                    <span>Outlet: <strong className="font-mono text-slate-700">{auditItem.outletId}</strong></span>
-                    <span>Reorder Level: <strong className="font-mono text-slate-700">{auditItem.reorderLevel} {auditItem.unit}</strong></span>
+                <div className="p-3 bg-[#F0FDF4] rounded-xl border border-[#D1FAE5]">
+                  <div className="font-semibold text-[#064E3B] text-sm">{auditItem.itemName}</div>
+                  <div className="flex items-center gap-3 text-xs text-[#64748B] mt-1">
+                    <span>Outlet: <strong className="font-mono text-[#064E3B]">{auditItem.outletId}</strong></span>
+                    <span>Reorder Level: <strong className="font-mono text-[#1F2937]">{auditItem.reorderLevel} {auditItem.unit}</strong></span>
                   </div>
                 </div>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                <label className="text-xs font-semibold text-[#1F2937] block mb-1">
                   Verified Physical Count ({auditItem.unit})
                 </label>
                 <Input
@@ -565,15 +565,15 @@ export default function InventoryStockPage() {
                   value={physicalCountInput}
                   onChange={(e) => setPhysicalCountInput(Number(e.target.value))}
                   required
-                  className="h-10 text-sm font-mono rounded-xl border-slate-200"
+                  className="h-10 text-sm font-mono rounded-xl border-[#D1FAE5] bg-white text-[#1F2937]"
                 />
-                <span className="text-[11px] text-slate-500 mt-1 block">
+                <span className="text-[11px] text-[#64748B] mt-1 block">
                   Current system registered quantity: {auditItem.stockQuantity} {auditItem.unit}
                 </span>
               </div>
 
               <div>
-                <label className="text-xs font-semibold text-slate-700 block mb-1">
+                <label className="text-xs font-semibold text-[#1F2937] block mb-1">
                   Auditor Notes / Remarks
                 </label>
                 <textarea
@@ -581,18 +581,18 @@ export default function InventoryStockPage() {
                   placeholder="e.g. Physical count confirmed in main walk-in chiller."
                   value={auditNotes}
                   onChange={(e) => setAuditNotes(e.target.value)}
-                  className="w-full text-xs p-2.5 border border-slate-200 rounded-xl focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="w-full text-xs p-2.5 border border-[#D1FAE5] rounded-xl bg-white text-[#1F2937] focus:outline-none focus:ring-1 focus:ring-[#059669] focus:border-[#059669]"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-slate-100">
+              <div className="flex items-center justify-end gap-2.5 pt-3 border-t border-[#D1FAE5]">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => setAuditItem(null)}
                   disabled={isSubmittingAudit}
-                  className="h-9 px-4 text-xs"
+                  className="h-9 px-4 text-xs border-[#D1FAE5] bg-white text-[#1F2937] hover:bg-[#F0FDF4]"
                 >
                   Cancel
                 </Button>
@@ -600,7 +600,7 @@ export default function InventoryStockPage() {
                   type="submit"
                   size="sm"
                   disabled={isSubmittingAudit}
-                  className="h-9 px-5 text-xs bg-blue-600 hover:bg-blue-700 text-white font-semibold"
+                  className="h-9 px-5 text-xs bg-[#059669] hover:bg-[#047857] text-white font-semibold cursor-pointer shadow-xs"
                 >
                   {isSubmittingAudit ? "Saving Audit..." : "Save Audit Count"}
                 </Button>

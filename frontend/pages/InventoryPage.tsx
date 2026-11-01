@@ -308,14 +308,14 @@ export default function InventoryPage() {
       {/* Header & Primary Actions */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <span className="text-[10px] font-mono uppercase tracking-widest text-slate-500 block mb-1 font-semibold">
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#64748B] block mb-1 font-semibold">
             Supply & Stock Control
           </span>
-          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-slate-900">
-            Inventory & <span className="italic text-indigo-600">Stock-Sales Reconciliation</span>
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-[#064E3B]">
+            Inventory & <span className="italic text-[#059669]">Stock-Sales Reconciliation</span>
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 mt-1">
-            Automated deterministic calculation: <code className="font-mono text-indigo-600 font-semibold bg-indigo-50 px-1.5 py-0.5 rounded border border-indigo-200">Expected Closing = Opening + Company Supply - Recorded Sales</code>.
+          <p className="text-xs sm:text-sm text-[#64748B] mt-1">
+            Automated deterministic calculation: <code className="font-mono text-[#064E3B] font-semibold bg-[#E6F8EF] px-1.5 py-0.5 rounded border border-[#D1FAE5]">Expected Closing = Opening + Company Supply - Recorded Sales</code>.
           </p>
         </div>
 
@@ -325,9 +325,9 @@ export default function InventoryPage() {
             size="sm"
             onClick={fetchReconciliations}
             disabled={loading}
-            className="gap-1.5 cursor-pointer text-xs"
+            className="gap-1.5 cursor-pointer text-xs border-[#D1FAE5] bg-white text-[#1F2937] hover:bg-[#F0FDF4] hover:text-[#064E3B]"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
+            <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin text-[#059669]" : "text-[#059669]"}`} />
             <span>Refresh</span>
           </Button>
 
@@ -335,7 +335,7 @@ export default function InventoryPage() {
             <Button
               size="sm"
               onClick={handleOpenAddModal}
-              className="bg-indigo-600 hover:bg-indigo-500 text-white gap-1.5 cursor-pointer text-xs shadow-sm"
+              className="bg-[#059669] hover:bg-[#047857] text-white gap-1.5 cursor-pointer text-xs shadow-xs font-semibold"
             >
               <Calculator className="h-4 w-4" />
               <span>Calculate Reconciliation</span>
@@ -345,31 +345,31 @@ export default function InventoryPage() {
       </div>
 
       {/* Navigation Sub-Tabs: Stock Levels vs Reconciliation Audits */}
-      <div className="flex items-center gap-3 border-b border-slate-200/80 pb-2">
+      <div className="flex items-center gap-3 border-b border-[#D1FAE5] pb-2">
         <Link
           to="/inventory"
-          className="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition-colors flex items-center gap-1.5"
+          className="px-3 py-1.5 rounded-lg text-xs font-medium text-[#64748B] hover:bg-[#E6F8EF] hover:text-[#064E3B] transition-colors flex items-center gap-1.5"
         >
-          <Boxes className="h-3.5 w-3.5" />
+          <Boxes className="h-3.5 w-3.5 text-[#059669]" />
           <span>On-Hand Physical Stock</span>
         </Link>
         <Link
           to="/inventory/reconciliation"
-          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200 flex items-center gap-1.5"
+          className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#E6F8EF] text-[#064E3B] border border-[#D1FAE5] flex items-center gap-1.5 shadow-2xs"
         >
-          <Scale className="h-3.5 w-3.5" />
+          <Scale className="h-3.5 w-3.5 text-[#059669]" />
           <span>Reconciliation & Anomaly Audits</span>
         </Link>
       </div>
 
       {/* Mandatory Human Review Ethics Policy Ribbon */}
-      <div className="rounded-xl border border-slate-200 bg-slate-50/80 dark:border-slate-800 dark:bg-slate-800/40 p-4 flex items-start gap-3 text-xs">
-        <Info className="h-5 w-5 text-indigo-600 dark:text-indigo-400 shrink-0 mt-0.5" />
+      <div className="rounded-xl border border-[#D1FAE5] bg-white p-4 flex items-start gap-3 text-xs shadow-2xs">
+        <Info className="h-5 w-5 text-[#059669] shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <span className="font-bold text-slate-900 dark:text-slate-100">
+          <span className="font-bold text-[#064E3B]">
             Enterprise Governance Protocol: Human Review Standard
           </span>
-          <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
+          <p className="text-[#64748B] leading-relaxed">
             In compliance with operational standards, variance between physical counts and system balances is <strong>never automatically labeled as fraud</strong>. Discrepancies designate operational variances requiring human physical count verification, supplier delivery notes review, or kitchen portioning adjustments.
           </p>
         </div>
@@ -377,90 +377,90 @@ export default function InventoryPage() {
 
       {/* Summary KPI Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-[#D1FAE5] bg-white shadow-2xs">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
               Total Reconciled SKUs
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 font-mono">
+              <span className="text-2xl font-extrabold text-[#1F2937] font-mono">
                 {summary.totalItems}
               </span>
-              <Badge variant="outline" className="text-[10px]">
+              <Badge variant="outline" className="text-[10px] border-[#D1FAE5] bg-[#E6F8EF] text-[#064E3B]">
                 {summary.normalItems} In Parity
               </Badge>
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-[11px] text-[#64748B] mt-1">
               Active inventory batches under automated monitoring
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-[#D1FAE5] bg-white shadow-2xs">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
               Discrepancies Requiring Review
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className={`text-2xl font-extrabold font-mono ${summary.discrepancyItems > 0 ? "text-amber-600 dark:text-amber-400" : "text-emerald-600"}`}>
+              <span className={`text-2xl font-extrabold font-mono ${summary.discrepancyItems > 0 ? "text-amber-600" : "text-[#059669]"}`}>
                 {summary.discrepancyItems}
               </span>
               {summary.discrepancyItems > 0 ? (
-                <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30 text-[10px]">
+                <Badge className="bg-amber-50 text-amber-800 border-amber-200 text-[10px]">
                   Requires Review
                 </Badge>
               ) : (
-                <Badge className="bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-[10px]">
+                <Badge className="bg-[#E6F8EF] text-[#064E3B] border-[#D1FAE5] text-[10px]">
                   Zero Discrepancy
                 </Badge>
               )}
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-[11px] text-[#64748B] mt-1">
               Flagged for store manager count verification
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-[#D1FAE5] bg-white shadow-2xs">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
               Total Variance Units
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-indigo-600 dark:text-indigo-400 font-mono">
+              <span className="text-2xl font-extrabold text-[#064E3B] font-mono">
                 {summary.totalVarianceUnits} units
               </span>
-              <span className="text-xs text-slate-400 font-medium">net delta</span>
+              <span className="text-xs text-[#64748B] font-medium">net delta</span>
             </div>
-            <p className="text-[11px] text-slate-500 mt-1">
+            <p className="text-[11px] text-[#64748B] mt-1">
               Cumulative difference between expected & physical stock
             </p>
           </CardContent>
         </Card>
 
-        <Card className="border-slate-200 dark:border-slate-800">
+        <Card className="border-[#D1FAE5] bg-white shadow-2xs">
           <CardHeader className="pb-1 pt-4">
-            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#64748B]">
               Stock Parity Health
             </span>
           </CardHeader>
           <CardContent className="pb-4">
             <div className="flex items-baseline justify-between">
-              <span className="text-2xl font-extrabold text-emerald-600 font-mono">
+              <span className="text-2xl font-extrabold text-[#059669] font-mono">
                 {summary.systemHealthPct}%
               </span>
-              <span className="text-xs text-slate-400">alignment</span>
+              <span className="text-xs text-[#64748B]">alignment</span>
             </div>
-            <div className="w-full bg-slate-100 dark:bg-slate-800 h-1.5 rounded-full overflow-hidden mt-2">
+            <div className="w-full bg-[#E6F8EF] h-1.5 rounded-full overflow-hidden mt-2">
               <div
                 style={{ width: `${summary.systemHealthPct}%` }}
-                className="bg-emerald-500 h-full rounded-full"
+                className="bg-[#059669] h-full rounded-full"
               />
             </div>
           </CardContent>
@@ -469,13 +469,13 @@ export default function InventoryPage() {
 
       {/* Discrepancy Alert Banner (Mandatory Notice) */}
       {summary.discrepancyItems > 0 && (
-        <div className="rounded-xl border border-amber-500/40 bg-amber-50/70 dark:bg-amber-950/20 p-4 flex items-start gap-3 text-xs text-amber-900 dark:text-amber-200 shadow-2xs">
+        <div className="rounded-xl border border-amber-300 bg-amber-50/90 p-4 flex items-start gap-3 text-xs text-amber-900 shadow-2xs">
           <AlertTriangle className="h-5 w-5 text-amber-600 shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <span className="font-bold text-sm">
+            <span className="font-bold text-sm text-amber-900">
               Inventory discrepancy detected — requires review.
             </span>
-            <p className="text-amber-800 dark:text-amber-300/90 leading-relaxed">
+            <p className="text-amber-800 leading-relaxed">
               {summary.discrepancyItems} inventory item(s) have variance exceeding standard 5% par tolerance between recorded sales and physical count. Please assign a shift supervisor to inspect delivery challans, physical store room bins, and kitchen portioning.
             </p>
           </div>
@@ -483,16 +483,16 @@ export default function InventoryPage() {
       )}
 
       {/* Search and Filters Bar */}
-      <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-2xs dark:border-slate-800 dark:bg-slate-900 space-y-3">
+      <div className="rounded-xl border border-[#D1FAE5] bg-white p-4 shadow-2xs space-y-3">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
           {/* Search */}
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+            <Search className="absolute left-3 top-2.5 h-4 w-4 text-[#059669]" />
             <Input
               placeholder="Search item, outlet, ID..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9 text-xs h-9"
+              className="pl-9 text-xs h-9 bg-white border-[#D1FAE5] text-[#1F2937] placeholder:text-[#64748B] focus-visible:ring-[#059669] focus-visible:border-[#059669]"
             />
           </div>
 
@@ -502,7 +502,7 @@ export default function InventoryPage() {
               <select
                 value={selectedOutlet}
                 onChange={(e) => setSelectedOutlet(e.target.value)}
-                className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+                className="w-full h-9 rounded-md border border-[#D1FAE5] bg-white px-3 text-xs font-medium text-[#1F2937] focus:outline-none focus:ring-1 focus:ring-[#059669] focus:border-[#059669] cursor-pointer"
               >
                 <option value="All Outlets">Filter by Outlet: All</option>
                 <option value="OUT-042">OUT-042 (Lucknow Flagship)</option>
@@ -518,7 +518,7 @@ export default function InventoryPage() {
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+              className="w-full h-9 rounded-md border border-[#D1FAE5] bg-white px-3 text-xs font-medium text-[#1F2937] focus:outline-none focus:ring-1 focus:ring-[#059669] focus:border-[#059669] cursor-pointer"
             >
               {CATEGORIES.map((c) => (
                 <option key={c} value={c}>
@@ -533,7 +533,7 @@ export default function InventoryPage() {
             <select
               value={selectedStatus}
               onChange={(e) => setSelectedStatus(e.target.value)}
-              className="w-full h-9 rounded-md border border-slate-200 bg-slate-50 px-3 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none cursor-pointer"
+              className="w-full h-9 rounded-md border border-[#D1FAE5] bg-white px-3 text-xs font-medium text-[#1F2937] focus:outline-none focus:ring-1 focus:ring-[#059669] focus:border-[#059669] cursor-pointer"
             >
               {REVIEW_STATUSES.map((s) => (
                 <option key={s} value={s}>
@@ -545,7 +545,7 @@ export default function InventoryPage() {
         </div>
 
         {/* Clear Filters */}
-        <div className="flex items-center justify-between text-xs text-slate-500 pt-1 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex items-center justify-between text-xs text-[#64748B] pt-2 border-t border-[#D1FAE5]">
           <span>Showing {displayedRecords.length} reconciliation records</span>
           {(selectedOutlet !== "All Outlets" ||
             selectedCategory !== "All Categories" ||
@@ -558,7 +558,7 @@ export default function InventoryPage() {
                 setSelectedStatus("All Statuses");
                 setSearchQuery("");
               }}
-              className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium cursor-pointer"
+              className="text-[#059669] hover:underline font-semibold cursor-pointer"
             >
               Clear all filters
             </button>
@@ -570,113 +570,126 @@ export default function InventoryPage() {
       <div className="space-y-3 w-full max-w-full box-border">
         <div className="flex items-center justify-between pb-1">
           <div className="flex items-center gap-2">
-            <Scale className="h-4 w-4 text-indigo-600" />
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
+            <Scale className="h-4 w-4 text-[#059669]" />
+            <h3 className="text-xs font-bold uppercase tracking-wider text-[#064E3B]">
               Stock-Sales Reconciliation Matrix ({displayedRecords.length})
             </h3>
           </div>
-          <span className="text-xs text-slate-400 font-mono">
+          <span className="text-xs text-[#64748B] font-mono">
             {displayedRecords.length} items verified
           </span>
         </div>
 
         {displayedRecords.length === 0 ? (
-          <div className="rounded-xl border border-slate-200 bg-white p-12 text-center text-slate-400 dark:border-slate-800 dark:bg-slate-900 shadow-2xs">
-            <Scale className="h-8 w-8 text-slate-300 mx-auto mb-2" />
-            <p className="font-medium text-slate-600 dark:text-slate-300">No reconciliation records found</p>
-            <p className="text-xs text-slate-400 mt-1">No reconciliation records match the active criteria.</p>
+          <div className="rounded-xl border border-[#D1FAE5] bg-white p-12 text-center text-[#64748B] shadow-2xs">
+            <Scale className="h-8 w-8 text-[#059669]/60 mx-auto mb-2" />
+            <p className="font-semibold text-[#064E3B]">No reconciliation records found</p>
+            <p className="text-xs text-[#64748B] mt-1">No reconciliation records match the active criteria.</p>
           </div>
         ) : (
           <div className="flex flex-col gap-3 w-full max-w-full box-border">
             {displayedRecords.map((r) => {
               const varNum = Number(r.variance);
 
+              // Distinct badge styling according to requirements
+              let statusBadge = (
+                <span className="bg-[#E6F8EF] text-[#064E3B] border border-[#D1FAE5] text-[11px] font-semibold px-2.5 py-0.5 rounded-md inline-block">
+                  {r.reviewStatus}
+                </span>
+              );
+
+              if (r.hasDiscrepancy) {
+                statusBadge = (
+                  <span className="bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-semibold px-2.5 py-0.5 rounded-md inline-block">
+                    Discrepancy Detected
+                  </span>
+                );
+              } else if (r.reviewStatus === "Reviewed & Resolved") {
+                statusBadge = (
+                  <span className="bg-emerald-50 text-emerald-800 border border-emerald-300 text-[11px] font-semibold px-2.5 py-0.5 rounded-md inline-block">
+                    Reviewed & Resolved
+                  </span>
+                );
+              }
+
               return (
                 <div
                   key={r.id}
-                  className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-2xs dark:border-slate-800 dark:bg-slate-900 w-full max-w-full box-border min-w-0 space-y-3"
+                  className="rounded-xl border border-[#D1FAE5] bg-white p-4 sm:p-5 shadow-2xs hover:border-[#059669]/60 transition-all w-full max-w-full box-border min-w-0 space-y-3"
                 >
                   {/* Header: Item, Outlet & Review Status */}
-                  <div className="flex items-start justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+                  <div className="flex items-start justify-between gap-3 border-b border-[#D1FAE5]/60 pb-3">
                     <div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-xs font-bold text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 px-2 py-0.5 rounded border border-indigo-200 dark:border-indigo-800">
+                        <span className="font-mono text-xs font-bold text-[#064E3B] bg-[#E6F8EF] px-2 py-0.5 rounded border border-[#D1FAE5]">
                           {r.outletId}
                         </span>
-                        <span className="font-mono text-[11px] text-slate-500">
+                        <span className="font-mono text-[11px] text-[#64748B]">
                           {r.periodDate}
                         </span>
                       </div>
-                      <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 mt-1">
+                      <h4 className="text-sm font-bold text-[#064E3B] mt-1">
                         {r.itemName}
                       </h4>
-                      <p className="text-xs text-slate-500 mt-0.5">
+                      <p className="text-xs text-[#64748B] mt-0.5">
                         {r.category} · Unit: {r.unit}
                       </p>
                     </div>
                     <div className="text-right shrink-0">
-                      {r.hasDiscrepancy ? (
-                        <Badge className="bg-amber-500/10 text-amber-700 dark:text-amber-300 border-amber-500/30 text-[10px] font-semibold">
-                          Discrepancy Detected
-                        </Badge>
-                      ) : (
-                        <Badge className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 text-[10px] font-semibold">
-                          {r.reviewStatus}
-                        </Badge>
-                      )}
+                      {statusBadge}
                     </div>
                   </div>
 
                   {/* Vertical Label-Value rows */}
-                  <div className="space-y-2 text-xs divide-y divide-slate-100 dark:divide-slate-800/60">
+                  <div className="space-y-2 text-xs divide-y divide-[#D1FAE5]/40">
                     {/* Opening Stock */}
                     <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1 first:pt-0">
-                      <span className="text-slate-400 font-medium shrink-0">Opening Stock:</span>
-                      <span className="font-mono font-medium text-slate-800 dark:text-slate-200 sm:text-right">
+                      <span className="text-[#64748B] font-medium shrink-0">Opening Stock:</span>
+                      <span className="font-mono font-medium text-[#1F2937] sm:text-right">
                         {Number(r.openingStock).toLocaleString()} {r.unit}
                       </span>
                     </div>
 
                     {/* Received Stock (Company Supply) */}
                     <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                      <span className="text-slate-400 font-medium shrink-0">Received (Company Supply):</span>
-                      <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400 sm:text-right">
+                      <span className="text-[#64748B] font-medium shrink-0">Received (Company Supply):</span>
+                      <span className="font-mono font-semibold text-[#059669] sm:text-right">
                         +{Number(r.companySupply).toLocaleString()} {r.unit}
                       </span>
                     </div>
 
                     {/* Recorded Sales (Depletion) */}
                     <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                      <span className="text-slate-400 font-medium shrink-0">Sold Quantity (Sales):</span>
-                      <span className="font-mono font-medium text-slate-600 dark:text-slate-400 sm:text-right">
+                      <span className="text-[#64748B] font-medium shrink-0">Sold Quantity (Sales):</span>
+                      <span className="font-mono font-medium text-[#1F2937] sm:text-right">
                         -{Number(r.recordedSales).toLocaleString()} {r.unit}
                       </span>
                     </div>
 
                     {/* Expected Closing Stock */}
                     <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                      <span className="text-slate-400 font-medium shrink-0">Expected Closing:</span>
-                      <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400 sm:text-right">
+                      <span className="text-[#64748B] font-medium shrink-0">Expected Closing:</span>
+                      <span className="font-mono font-bold text-[#064E3B] sm:text-right">
                         {Number(r.expectedClosingStock).toLocaleString()} {r.unit}
                       </span>
                     </div>
 
                     {/* Actual Physical Count */}
                     <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                      <span className="text-slate-400 font-medium shrink-0">Actual Physical Stock:</span>
-                      <span className="font-mono font-bold text-slate-900 dark:text-slate-100 sm:text-right">
+                      <span className="text-[#64748B] font-medium shrink-0">Actual Physical Stock:</span>
+                      <span className="font-mono font-bold text-[#1F2937] sm:text-right">
                         {Number(r.actualPhysicalStock).toLocaleString()} {r.unit}
                       </span>
                     </div>
 
                     {/* Variance & % */}
                     <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                      <span className="text-slate-400 font-medium shrink-0">Variance & Deviation:</span>
+                      <span className="text-[#64748B] font-medium shrink-0">Variance & Deviation:</span>
                       <div className="flex items-center gap-2 sm:justify-end">
-                        <span className={`font-mono font-bold ${varNum !== 0 ? "text-amber-600 dark:text-amber-400" : "text-emerald-600"}`}>
+                        <span className={`font-mono font-bold ${varNum !== 0 ? "text-amber-700" : "text-[#059669]"}`}>
                           {varNum > 0 ? `+${varNum}` : varNum} {r.unit}
                         </span>
-                        <span className={`font-mono text-[11px] px-1.5 py-0.5 rounded ${Number(r.variancePercentage) >= 5 ? "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-300 font-bold" : "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400"}`}>
+                        <span className={`font-mono text-[11px] px-2 py-0.5 rounded font-semibold ${Number(r.variancePercentage) >= 5 ? "bg-amber-100 text-amber-800 border border-amber-300" : "bg-[#E6F8EF] text-[#064E3B] border border-[#D1FAE5]"}`}>
                           {r.variancePercentage}%
                         </span>
                       </div>
@@ -685,8 +698,8 @@ export default function InventoryPage() {
                     {/* Notes if present */}
                     {r.notes && (
                       <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-1 pt-2">
-                        <span className="text-slate-400 font-medium shrink-0">Notes:</span>
-                        <span className="text-slate-600 dark:text-slate-300 italic text-[11px] sm:text-right sm:max-w-[70%]">
+                        <span className="text-[#64748B] font-medium shrink-0">Notes:</span>
+                        <span className="text-[#1F2937] italic text-[11px] sm:text-right sm:max-w-[70%]">
                           {r.notes}
                         </span>
                       </div>
@@ -695,7 +708,7 @@ export default function InventoryPage() {
 
                   {/* Actions */}
                   {!isReadOnly && (
-                    <div className="pt-2 border-t border-slate-100 dark:border-slate-800 flex items-center justify-end gap-2">
+                    <div className="pt-2 border-t border-[#D1FAE5]/60 flex items-center justify-end gap-2">
                       <Button
                         size="sm"
                         variant="outline"
@@ -704,18 +717,18 @@ export default function InventoryPage() {
                           setReviewStatusInput(r.reviewStatus);
                           setResolutionNotesInput(r.notes || "");
                         }}
-                        className="h-8 text-xs gap-1.5 cursor-pointer text-slate-700 dark:text-slate-200"
+                        className="h-8 text-xs gap-1.5 cursor-pointer bg-white text-[#064E3B] border border-[#D1FAE5] hover:bg-[#F0FDF4] hover:border-[#059669]"
                       >
-                        <Edit2 className="h-3.5 w-3.5" />
+                        <Edit2 className="h-3.5 w-3.5 text-[#059669]" />
                         <span>Update Review</span>
                       </Button>
                       <Button
                         size="sm"
                         variant="outline"
                         onClick={() => handleDelete(r)}
-                        className="h-8 text-xs gap-1.5 cursor-pointer text-red-600 hover:text-red-700 hover:bg-red-50 dark:hover:bg-red-950/30 border-red-200 dark:border-red-900"
+                        className="h-8 text-xs gap-1.5 cursor-pointer text-red-600 bg-white border border-red-200 hover:bg-red-50 hover:text-red-700"
                       >
-                        <Trash2 className="h-3.5 w-3.5" />
+                        <Trash2 className="h-3.5 w-3.5 text-red-600" />
                         <span>Delete</span>
                       </Button>
                     </div>
@@ -729,29 +742,29 @@ export default function InventoryPage() {
 
       {/* Interactive Calculation & Reconciliation Modal */}
       {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#D1FAE5] rounded-2xl max-w-xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex items-center justify-between border-b border-[#D1FAE5] pb-3">
               <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                  <Calculator className="h-5 w-5 text-indigo-600" />
+                <h3 className="text-base font-bold text-[#064E3B] flex items-center gap-2">
+                  <Calculator className="h-5 w-5 text-[#059669]" />
                   <span>Automated Stock-Sales Reconciliation</span>
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-[#64748B]">
                   Calculates Expected Closing Stock and flags variance for human review.
                 </p>
               </div>
               <button
                 onClick={() => setIsModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                className="text-[#64748B] hover:text-[#064E3B] p-1 cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             {/* Quick Benchmark Button */}
-            <div className="flex items-center justify-between bg-indigo-50/60 dark:bg-indigo-950/30 p-2.5 rounded-lg border border-indigo-200 dark:border-indigo-800 text-xs">
-              <span className="text-indigo-900 dark:text-indigo-300 font-medium">
+            <div className="flex items-center justify-between bg-[#E6F8EF] p-2.5 rounded-lg border border-[#D1FAE5] text-xs">
+              <span className="text-[#064E3B] font-medium">
                 Try Example: Opening (100) + Supply (500) - Sales (450) vs Actual (92)
               </span>
               <Button
@@ -759,7 +772,7 @@ export default function InventoryPage() {
                 variant="outline"
                 size="sm"
                 onClick={handleLoadBenchmarkExample}
-                className="h-7 text-[11px] bg-white dark:bg-slate-900 text-indigo-600 cursor-pointer"
+                className="h-7 text-[11px] bg-white text-[#064E3B] border border-[#D1FAE5] hover:bg-[#F0FDF4] cursor-pointer"
               >
                 Load Benchmark Values
               </Button>
@@ -769,18 +782,18 @@ export default function InventoryPage() {
               {/* Outlet and Date */}
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="font-medium text-[#1F2937] block mb-1">
                     Outlet / Store
                   </label>
                   {isFranchise ? (
-                    <div className="rounded border border-slate-200 bg-slate-50 px-3 py-1.5 font-mono text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                    <div className="rounded border border-[#D1FAE5] bg-[#F0FDF4] px-3 py-1.5 font-mono text-xs text-[#064E3B] font-semibold">
                       {userOutlet} (Assigned)
                     </div>
                   ) : (
                     <select
                       value={formOutletId}
                       onChange={(e) => setFormOutletId(e.target.value)}
-                      className="w-full h-8 rounded border border-slate-200 bg-white px-2.5 text-xs font-mono dark:border-slate-700 dark:bg-slate-800"
+                      className="w-full h-8 rounded border border-[#D1FAE5] bg-white px-2.5 text-xs font-mono text-[#1F2937] focus:border-[#059669] focus:outline-none"
                     >
                       <option value="OUT-042">OUT-042 (Lucknow Flagship)</option>
                       <option value="OUT-089">OUT-089 (Noida Sector 18)</option>
@@ -791,14 +804,14 @@ export default function InventoryPage() {
                 </div>
 
                 <div>
-                  <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="font-medium text-[#1F2937] block mb-1">
                     Reconciliation Period Date
                   </label>
                   <Input
                     type="date"
                     value={formPeriodDate}
                     onChange={(e) => setFormPeriodDate(e.target.value)}
-                    className="h-8 text-xs"
+                    className="h-8 text-xs bg-white border-[#D1FAE5] text-[#1F2937]"
                     required
                   />
                 </div>
@@ -807,13 +820,13 @@ export default function InventoryPage() {
               {/* SKU / Item selection */}
               <div className="grid grid-cols-3 gap-3">
                 <div className="col-span-2">
-                  <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="font-medium text-[#1F2937] block mb-1">
                     Inventory SKU / Item
                   </label>
                   <select
                     value={formItemName}
                     onChange={(e) => handlePresetSelect(e.target.value)}
-                    className="w-full h-8 rounded border border-slate-200 bg-white px-2.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                    className="w-full h-8 rounded border border-[#D1FAE5] bg-white px-2.5 text-xs text-[#1F2937] focus:border-[#059669] focus:outline-none"
                   >
                     {PRESET_ITEMS.map((p) => (
                       <option key={p.name} value={p.name}>
@@ -824,22 +837,22 @@ export default function InventoryPage() {
                 </div>
 
                 <div>
-                  <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="font-medium text-[#1F2937] block mb-1">
                     Unit
                   </label>
                   <Input
                     value={formUnit}
                     onChange={(e) => setFormUnit(e.target.value)}
-                    className="h-8 text-xs"
+                    className="h-8 text-xs bg-white border-[#D1FAE5] text-[#1F2937]"
                     required
                   />
                 </div>
               </div>
 
               {/* Automated Stock Calculation Inputs */}
-              <div className="grid grid-cols-3 gap-3 p-3 bg-slate-50 dark:bg-slate-800/60 rounded-xl border border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-3 gap-3 p-3 bg-[#F0FDF4] rounded-xl border border-[#D1FAE5]">
                 <div>
-                  <label className="font-bold text-slate-700 dark:text-slate-300 block mb-1">
+                  <label className="font-bold text-[#1F2937] block mb-1">
                     Opening Stock
                   </label>
                   <Input
@@ -847,13 +860,13 @@ export default function InventoryPage() {
                     min="0"
                     value={formOpeningStock}
                     onChange={(e) => setFormOpeningStock(Number(e.target.value))}
-                    className="h-8 text-xs font-mono bg-white dark:bg-slate-900"
+                    className="h-8 text-xs font-mono bg-white border-[#D1FAE5] text-[#1F2937]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="font-bold text-emerald-600 block mb-1">
+                  <label className="font-bold text-[#059669] block mb-1">
                     + Company Supply (Received)
                   </label>
                   <Input
@@ -861,13 +874,13 @@ export default function InventoryPage() {
                     min="0"
                     value={formCompanySupply}
                     onChange={(e) => setFormCompanySupply(Number(e.target.value))}
-                    className="h-8 text-xs font-mono bg-white dark:bg-slate-900"
+                    className="h-8 text-xs font-mono bg-white border-[#D1FAE5] text-[#1F2937]"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="font-bold text-slate-500 block mb-1">
+                  <label className="font-bold text-[#64748B] block mb-1">
                     - Recorded Sales (Sold)
                   </label>
                   <Input
@@ -875,23 +888,23 @@ export default function InventoryPage() {
                     min="0"
                     value={formRecordedSales}
                     onChange={(e) => setFormRecordedSales(Number(e.target.value))}
-                    className="h-8 text-xs font-mono bg-white dark:bg-slate-900"
+                    className="h-8 text-xs font-mono bg-white border-[#D1FAE5] text-[#1F2937]"
                     required
                   />
                 </div>
               </div>
 
               {/* AUTOMATED RESULT PREVIEW */}
-              <div className="rounded-xl border border-indigo-200 bg-indigo-50/50 dark:border-indigo-900 dark:bg-indigo-950/30 p-3.5 space-y-2">
+              <div className="rounded-xl border border-[#D1FAE5] bg-[#E6F8EF] p-3.5 space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-indigo-900 dark:text-indigo-200">
+                  <span className="font-bold text-[#064E3B]">
                     Automated Expected Closing Stock:
                   </span>
-                  <span className="text-lg font-bold font-mono text-indigo-600 dark:text-indigo-400">
+                  <span className="text-lg font-bold font-mono text-[#064E3B]">
                     {calculatedExpectedClosing} {formUnit}
                   </span>
                 </div>
-                <p className="text-[11px] text-slate-500">
+                <p className="text-[11px] text-[#64748B]">
                   Formula: {formOpeningStock} (Opening) + {formCompanySupply} (Supply) - {formRecordedSales} (Sales) = {calculatedExpectedClosing} {formUnit}
                 </p>
               </div>
@@ -899,7 +912,7 @@ export default function InventoryPage() {
               {/* Physical Count & Variance */}
               <div className="grid grid-cols-3 gap-3 items-end">
                 <div>
-                  <label className="font-bold text-slate-900 dark:text-slate-100 block mb-1">
+                  <label className="font-bold text-[#064E3B] block mb-1">
                     Actual Physical Stock (Count)
                   </label>
                   <Input
@@ -907,25 +920,25 @@ export default function InventoryPage() {
                     min="0"
                     value={formActualPhysicalStock}
                     onChange={(e) => setFormActualPhysicalStock(Number(e.target.value))}
-                    className="h-8 text-xs font-mono font-bold"
+                    className="h-8 text-xs font-mono font-bold bg-white border-[#D1FAE5] text-[#1F2937]"
                     required
                   />
                 </div>
 
-                <div className="p-2 rounded bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-400 block font-bold uppercase">
+                <div className="p-2 rounded bg-[#F0FDF4] border border-[#D1FAE5]">
+                  <span className="text-[10px] text-[#64748B] block font-bold uppercase">
                     Variance Delta
                   </span>
-                  <span className={`text-base font-bold font-mono ${calculatedVariance !== 0 ? "text-amber-600" : "text-emerald-600"}`}>
+                  <span className={`text-base font-bold font-mono ${calculatedVariance !== 0 ? "text-amber-700" : "text-[#059669]"}`}>
                     {calculatedVariance} {formUnit}
                   </span>
                 </div>
 
-                <div className="p-2 rounded bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
-                  <span className="text-[10px] text-slate-400 block font-bold uppercase">
+                <div className="p-2 rounded bg-[#F0FDF4] border border-[#D1FAE5]">
+                  <span className="text-[10px] text-[#64748B] block font-bold uppercase">
                     Variance Percentage
                   </span>
-                  <span className={`text-base font-bold font-mono ${calculatedVariancePct >= 5 ? "text-amber-600" : "text-slate-600"}`}>
+                  <span className={`text-base font-bold font-mono ${calculatedVariancePct >= 5 ? "text-amber-700" : "text-[#064E3B]"}`}>
                     {calculatedVariancePct}%
                   </span>
                 </div>
@@ -933,25 +946,25 @@ export default function InventoryPage() {
 
               {/* Dynamic Discrepancy Alert */}
               {isDiscrepant ? (
-                <div className="rounded-lg border border-amber-500/40 bg-amber-50/80 dark:bg-amber-950/30 p-3 space-y-1">
-                  <div className="flex items-center gap-1.5 text-amber-800 dark:text-amber-300 font-bold">
+                <div className="rounded-lg border border-amber-300 bg-amber-50/90 p-3 space-y-1">
+                  <div className="flex items-center gap-1.5 text-amber-800 font-bold">
                     <AlertTriangle className="h-4 w-4" />
                     <span>Inventory discrepancy detected — requires review.</span>
                   </div>
-                  <p className="text-[11px] text-amber-700 dark:text-amber-300/80">
+                  <p className="text-[11px] text-amber-700">
                     Important: This is treated strictly as an operational discrepancy requiring human physical review, not fraud.
                   </p>
                 </div>
               ) : (
-                <div className="rounded-lg border border-emerald-500/30 bg-emerald-50/60 dark:bg-emerald-950/20 p-2.5 flex items-center gap-2 text-emerald-800 dark:text-emerald-300">
-                  <CheckCircle2 className="h-4 w-4" />
+                <div className="rounded-lg border border-[#D1FAE5] bg-[#E6F8EF] p-2.5 flex items-center gap-2 text-[#064E3B]">
+                  <CheckCircle2 className="h-4 w-4 text-[#059669]" />
                   <span>Physical count matches expected closing inventory within standard par limits.</span>
                 </div>
               )}
 
               {/* Notes */}
               <div>
-                <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="font-medium text-[#1F2937] block mb-1">
                   Physical Audit Notes
                 </label>
                 <Input
@@ -959,16 +972,17 @@ export default function InventoryPage() {
                   placeholder="e.g. Bin count verified by supervisor, shift transition check"
                   value={formNotes}
                   onChange={(e) => setFormNotes(e.target.value)}
-                  className="h-8 text-xs"
+                  className="h-8 text-xs bg-white border-[#D1FAE5] text-[#1F2937]"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D1FAE5]">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => setIsModalOpen(false)}
+                  className="border-[#D1FAE5] bg-white text-[#1F2937] hover:bg-[#F0FDF4]"
                 >
                   Cancel
                 </Button>
@@ -976,7 +990,7 @@ export default function InventoryPage() {
                   type="submit"
                   size="sm"
                   disabled={isSubmitting}
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer"
+                  className="bg-[#059669] hover:bg-[#047857] text-white font-semibold cursor-pointer shadow-xs"
                 >
                   {isSubmitting ? "Calculating & Saving..." : "Store Reconciliation in PostgreSQL"}
                 </Button>
@@ -988,20 +1002,20 @@ export default function InventoryPage() {
 
       {/* Review Status & Notes Modal */}
       {reviewModalRecord && (
-        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl max-w-md w-full p-5 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
+          <div className="bg-white border border-[#D1FAE5] rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4">
+            <div className="flex items-center justify-between border-b border-[#D1FAE5] pb-3">
               <div>
-                <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                <h3 className="text-base font-bold text-[#064E3B]">
                   Update Review Checkpoint
                 </h3>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-[#64748B]">
                   Reconciliation ID: {reviewModalRecord.reconciliationId}
                 </p>
               </div>
               <button
                 onClick={() => setReviewModalRecord(null)}
-                className="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 p-1"
+                className="text-[#64748B] hover:text-[#064E3B] p-1 cursor-pointer"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -1009,13 +1023,13 @@ export default function InventoryPage() {
 
             <form onSubmit={handleUpdateReviewStatus} className="space-y-3.5 text-xs">
               <div>
-                <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="font-medium text-[#1F2937] block mb-1">
                   Review Status
                 </label>
                 <select
                   value={reviewStatusInput}
                   onChange={(e) => setReviewStatusInput(e.target.value)}
-                  className="w-full h-8 rounded border border-slate-200 bg-white px-2.5 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  className="w-full h-8 rounded border border-[#D1FAE5] bg-white px-2.5 text-xs text-[#1F2937] focus:border-[#059669] focus:outline-none"
                 >
                   <option value="Reviewed & Resolved">Reviewed & Resolved</option>
                   <option value="Under Investigation">Under Investigation</option>
@@ -1027,7 +1041,7 @@ export default function InventoryPage() {
               </div>
 
               <div>
-                <label className="font-medium text-slate-700 dark:text-slate-300 block mb-1">
+                <label className="font-medium text-[#1F2937] block mb-1">
                   Human Resolution Notes
                 </label>
                 <textarea
@@ -1035,24 +1049,25 @@ export default function InventoryPage() {
                   value={resolutionNotesInput}
                   onChange={(e) => setResolutionNotesInput(e.target.value)}
                   placeholder="e.g. Physical recount verified 4 units in kitchen thawing tray. Parity restored."
-                  className="w-full rounded border border-slate-200 p-2 text-xs dark:border-slate-700 dark:bg-slate-800"
+                  className="w-full rounded border border-[#D1FAE5] bg-white p-2 text-xs text-[#1F2937] focus:border-[#059669] focus:outline-none"
                   required
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#D1FAE5]">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => setReviewModalRecord(null)}
+                  className="border-[#D1FAE5] bg-white text-[#1F2937] hover:bg-[#F0FDF4]"
                 >
                   Cancel
                 </Button>
                 <Button
                   type="submit"
                   size="sm"
-                  className="bg-indigo-600 hover:bg-indigo-500 text-white font-semibold cursor-pointer"
+                  className="bg-[#059669] hover:bg-[#047857] text-white font-semibold cursor-pointer shadow-xs"
                 >
                   Update Status
                 </Button>

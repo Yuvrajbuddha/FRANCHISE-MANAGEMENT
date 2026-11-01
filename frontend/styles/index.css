@@ -1,48 +1,51 @@
 @import "tailwindcss";
 
-@theme {
-  --color-border: #DDE5DC;
-  --color-input: #DDE5DC;
-  --color-ring: #073B2A;
-  --color-background: #F6F1E7;
-  --color-foreground: #18251F;
+@custom-variant dark (&:where(.dark-mode-unused, .dark-mode-unused *));
 
-  --color-primary: #073B2A;
+@theme {
+  --color-border: #D1FAE5;
+  --color-input: #D1FAE5;
+  --color-ring: #064E3B;
+  --color-background: #F0FDF4;
+  --color-foreground: #1F2937;
+
+  --color-primary: #064E3B;
   --color-primary-foreground: #FFFFFF;
 
-  --color-secondary: #EAE3D2;
-  --color-secondary-foreground: #073B2A;
+  --color-secondary: #E6F8EF;
+  --color-secondary-foreground: #064E3B;
 
   --color-destructive: #DC2626;
   --color-destructive-foreground: #FFFFFF;
 
-  --color-muted: #EFE9DC;
-  --color-muted-foreground: #738078;
+  --color-muted: #F0FDF4;
+  --color-muted-foreground: #64748B;
 
-  --color-accent: #13845B;
+  --color-accent: #059669;
   --color-accent-foreground: #FFFFFF;
 
-  --color-card: #FFFDF8;
-  --color-card-foreground: #18251F;
+  --color-card: #FFFFFF;
+  --color-card-foreground: #1F2937;
 
   /* Franchise Standards Auditor Palette */
   --color-forest-950: #031D15;
-  --color-forest-900: #05291F;
-  --color-forest-800: #073B2A;
+  --color-forest-900: #063D2E;
+  --color-forest-800: #064E3B;
   --color-forest-700: #0D4E39;
-  --color-forest-600: #10684C;
-  --color-emerald-600: #13845B;
-  --color-emerald-500: #16A34A;
-  --color-mint-400: #72D6A0;
-  --color-mint-300: #9CE3BE;
-  --color-mint-200: #C7F1DC;
-  --color-mint-100: #E6F8EF;
-  --color-cream-100: #F6F1E7;
-  --color-cream-50: #FAF7F0;
-  --color-offwhite: #FFFDF8;
-  --color-dark-text: #18251F;
-  --color-muted-text: #738078;
-  --color-forest-border: #DDE5DC;
+  --color-forest-600: #059669;
+  --color-emerald-600: #059669;
+  --color-emerald-500: #10B981;
+  --color-emerald-700: #047857;
+  --color-mint-400: #34D399;
+  --color-mint-300: #6EE7B7;
+  --color-mint-200: #A7F3D0;
+  --color-mint-100: #D1FAE5;
+  --color-cream-100: #F0FDF4;
+  --color-cream-50: #F0FDF4;
+  --color-offwhite: #FFFFFF;
+  --color-dark-text: #1F2937;
+  --color-muted-text: #64748B;
+  --color-forest-border: #D1FAE5;
 
   --font-serif: "Newsreader", Georgia, Cambria, "Times New Roman", Times, serif;
   --font-sans: "Plus Jakarta Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -50,11 +53,11 @@
 
 @layer base {
   * {
-    border-color: #DDE5DC;
+    border-color: #D1FAE5;
   }
   body {
-    background-color: #F6F1E7;
-    color: #18251F;
+    background-color: #F0FDF4;
+    color: #1F2937;
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
@@ -72,12 +75,12 @@
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #F6F1E7;
+  background: #F0FDF4;
 }
 ::-webkit-scrollbar-thumb {
-  background: #CAD5C9;
+  background: #A7F3D0;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #9DB09D;
+  background: #059669;
 }

@@ -61,7 +61,7 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
       ],
     },
     {
-      label: "Audits & Evidence",
+      label: "Auditor & Evidence",
       items: [
         {
           title: "Officer Dashboard",
@@ -85,7 +85,7 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
           title: "Reconciliation Audits",
           href: "/inventory/reconciliation",
           icon: Scale,
-          allowedRoles: ["ADMIN", "OWNER", "OFFICER", "FRANCHISE"],
+          allowedRoles: ["ADMIN", "OWNER", "FRANCHISE"],
         },
         {
           title: "Company Supply",

@@ -60,6 +60,7 @@ const REPORT_TYPES = [
 
 export default function ReportsPage() {
   const { user } = useAuth();
+  const isOfficer = user?.role === "OFFICER";
   const [reports, setReports] = useState<ReportItem[]>([]);
   const [summary, setSummary] = useState<ReportSummary>({
     total: 0,
@@ -70,6 +71,14 @@ export default function ReportsPage() {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const reportTypes = isOfficer
+    ? REPORT_TYPES.filter((t) => t !== "Stock & Supply Variance")
+    : REPORT_TYPES;
+
+  const displayedReports = isOfficer
+    ? reports.filter((r) => r.reportType !== "Stock & Supply Variance")
+    : reports;
 
   // Filters
   const [searchTerm, setSearchTerm] = useState("");
@@ -390,13 +399,21 @@ export default function ReportsPage() {
 
         <div className="rounded-2xl border border-[#D1FAE5] bg-white p-4 shadow-xs hover:border-[#A7F3D0] transition-colors">
           <div className="flex items-center justify-between text-xs text-[#64748B]">
-            <span>Financial & Stock Ledgers</span>
-            <DollarSign className="h-4 w-4 text-[#059669]" />
+            <span>{isOfficer ? "Remediation & CAPA Ledgers" : "Financial & Stock Ledgers"}</span>
+            {isOfficer ? (
+              <Flame className="h-4 w-4 text-[#059669]" />
+            ) : (
+              <DollarSign className="h-4 w-4 text-[#059669]" />
+            )}
           </div>
           <div className="mt-2 text-2xl font-bold text-[#064E3B]">
-            {summary.financial + summary.stockAndRisk}
+            {isOfficer
+              ? displayedReports.filter((r) => r.reportType === "CAPA & Risk Intelligence").length
+              : summary.financial + summary.stockAndRisk}
           </div>
-          <p className="text-[11px] text-[#059669] font-medium mt-0.5">Royalty & stock audits</p>
+          <p className="text-[11px] text-[#059669] font-medium mt-0.5">
+            {isOfficer ? "Corrective action audits" : "Royalty & stock audits"}
+          </p>
         </div>
       </div>
 
@@ -423,7 +440,7 @@ export default function ReportsPage() {
               onChange={(e) => setSelectedType(e.target.value)}
               className="h-9 px-2.5 text-xs rounded-xl border border-[#D1FAE5] bg-white text-[#1F2937] focus:outline-none focus:ring-1 focus:ring-[#059669] focus:border-[#059669] cursor-pointer"
             >
-              {REPORT_TYPES.map((t) => (
+              {reportTypes.map((t) => (
                 <option key={t} value={t}>
                   {t}
                 </option>
@@ -475,7 +492,7 @@ export default function ReportsPage() {
               Executed Audit & Compliance Ledgers
             </span>
             <Badge variant="outline" className="text-[10px] font-mono border-[#D1FAE5] text-[#064E3B] bg-white">
-              {reports.length} available
+              {displayedReports.length} available
             </Badge>
           </div>
           <span className="text-[11px] text-[#64748B] hidden sm:inline">
@@ -488,7 +505,7 @@ export default function ReportsPage() {
             <RefreshCw className="h-5 w-5 animate-spin mx-auto text-[#059669]" />
             <p>Loading reports registry from database...</p>
           </div>
-        ) : reports.length === 0 ? (
+        ) : displayedReports.length === 0 ? (
           /* Empty State */
           <div className="p-12 text-center space-y-3">
             <div className="h-12 w-12 rounded-2xl bg-[#F0FDF4] border border-[#D1FAE5] text-[#059669] flex items-center justify-center mx-auto">
@@ -523,7 +540,7 @@ export default function ReportsPage() {
           </div>
         ) : (
           <div className="flex flex-col gap-3.5 p-4 w-full max-w-full box-border">
-            {reports.map((r) => (
+            {displayedReports.map((r) => (
               <div
                 key={r.id}
                 className="rounded-xl border border-[#D1FAE5] bg-white p-4 sm:p-5 shadow-2xs hover:border-[#A7F3D0] transition-all w-full max-w-full box-border min-w-0 space-y-3"

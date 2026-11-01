@@ -80,7 +80,7 @@ export default function App() {
           <Route
             path="/inventory"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "FRANCHISE"]}>
                 <InventoryStockPage />
               </ProtectedRoute>
             }
@@ -88,7 +88,7 @@ export default function App() {
           <Route
             path="/inventory/reconciliation"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "FRANCHISE"]}>
                 <InventoryPage />
               </ProtectedRoute>
             }
@@ -96,7 +96,7 @@ export default function App() {
           <Route
             path="/inventory/reconciliations"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "FRANCHISE"]}>
                 <InventoryPage />
               </ProtectedRoute>
             }
@@ -104,7 +104,7 @@ export default function App() {
           <Route
             path="/supply"
             element={
-              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "OFFICER", "FRANCHISE"]}>
+              <ProtectedRoute allowedRoles={["ADMIN", "OWNER", "FRANCHISE"]}>
                 <CompanySupplyPage />
               </ProtectedRoute>
             }

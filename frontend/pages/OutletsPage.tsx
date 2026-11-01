@@ -92,26 +92,47 @@ export default function OutletsPage() {
     setLoading(true);
     setError(null);
     try {
-      const token = localStorage.getItem("franchise_auth_token");
+      const rawToken = localStorage.getItem("franchise_auth_token");
+      const token =
+        rawToken && rawToken !== "null" && rawToken !== "undefined"
+          ? rawToken
+          : null;
+
       const params = new URLSearchParams();
       if (searchQuery.trim()) params.append("search", searchQuery.trim());
       if (selectedCity !== "All Cities") params.append("city", selectedCity);
       if (selectedModel !== "All Models") params.append("model", selectedModel);
       if (selectedStatus !== "All Statuses") params.append("status", selectedStatus);
 
-      const res = await fetch(`/api/outlets?${params.toString()}`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      const queryString = params.toString() ? `?${params.toString()}` : "";
+      const headers: Record<string, string> = {};
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
+
+      let res = await fetch(`/api/outlets${queryString}`, {
+        headers,
+        credentials: "include",
       });
+
+      // If /api/outlets is not mounted on some hosts, fallback to root /outlets
+      if (res.status === 404) {
+        res = await fetch(`/outlets${queryString}`, {
+          headers,
+          credentials: "include",
+        });
+      }
 
       const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Failed to fetch outlets.");
+        throw new Error(data.error || "Failed to retrieve franchise stores directory.");
       }
 
       setOutlets(data.outlets || []);
       setIsRestricted(!!data.restricted);
     } catch (err: any) {
-      setError(err.message || "Failed to connect to database.");
+      console.error("Outlets fetch error:", err);
+      setError(err.message || "Failed to connect to stores database.");
     } finally {
       setLoading(false);
     }
@@ -371,14 +392,26 @@ export default function OutletsPage() {
         </div>
       )}
 
-      {/* Error state */}
+      {/* Error state with retry action */}
       {error && !loading && (
-        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-xs text-red-800 flex items-center gap-3">
-          <AlertOctagon className="h-5 w-5 shrink-0 text-red-600" />
-          <div>
-            <span className="font-bold block text-sm">Database Connection Error</span>
-            <p className="mt-0.5">{error}</p>
+        <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-xs text-red-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
+          <div className="flex items-center gap-3">
+            <AlertOctagon className="h-5 w-5 shrink-0 text-red-600" />
+            <div>
+              <span className="font-bold block text-sm text-red-900">
+                Unable to load Stores Directory
+              </span>
+              <p className="mt-0.5 text-red-700">{error}</p>
+            </div>
           </div>
+          <Button
+            size="sm"
+            onClick={fetchOutlets}
+            className="cursor-pointer bg-[#073B2A] text-white hover:bg-[#13845B] text-xs h-8 px-3 shrink-0 self-start sm:self-auto"
+          >
+            <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+            Retry Connection
+          </Button>
         </div>
       )}
 

@@ -1502,7 +1502,7 @@ export function ManagementDashboard() {
       {/* ======================================================== */}
       {/* 7. FRANCHISEE STORES PERFORMANCE & EVIDENCE OVERVIEW     */}
       {/* ======================================================== */}
-      {isOwner && (
+      {(isOwner || isOfficer) && (
         <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-sm">
           <CardHeader className="pb-3 border-b border-[#DDE5DC]">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">

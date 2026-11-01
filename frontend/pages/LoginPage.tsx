@@ -62,7 +62,7 @@ export default function LoginPage() {
       window.scrollTo({ top: 0, left: 0, behavior: "instant" });
       if (document.documentElement) document.documentElement.scrollTop = 0;
       if (document.body) document.body.scrollTop = 0;
-      navigate(targetRoute || (roleKey === "FRANCHISE" ? "/evidence" : "/"));
+      navigate(targetRoute || (roleKey === "OFFICER" ? "/compliance" : roleKey === "FRANCHISE" ? "/evidence" : "/"));
     } else {
       setErrorMessage(res.error || "Authentication failed. Please retry.");
     }
@@ -79,7 +79,13 @@ export default function LoginPage() {
       if (document.documentElement) document.documentElement.scrollTop = 0;
       if (document.body) document.body.scrollTop = 0;
       setAuthModalOpen(false);
-      navigate("/");
+      if (activeModalRole === "OFFICER") {
+        navigate("/compliance");
+      } else if (activeModalRole === "FRANCHISE") {
+        navigate("/evidence");
+      } else {
+        navigate("/");
+      }
     } else {
       setErrorMessage(res.error || "Invalid email or password. Please use pre-filled demo accounts.");
     }

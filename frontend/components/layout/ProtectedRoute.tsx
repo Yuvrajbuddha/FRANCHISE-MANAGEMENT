@@ -29,6 +29,9 @@ export function ProtectedRoute({ children, allowedRoles }: ProtectedRouteProps) 
 
   // 1. Role-based route access check
   if (allowedRoles && !allowedRoles.includes(user.role)) {
+    if (user.role === "OFFICER") {
+      return <Navigate to="/compliance" replace />;
+    }
     return (
       <div className="p-8 max-w-xl mx-auto text-center space-y-4">
         <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-700">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -71,8 +71,12 @@ export default function OutletDetailPage() {
   const { outletId } = useParams<{ outletId: string }>();
   const { user, canAccessOutlet } = useAuth();
   const navigate = useNavigate();
-
+  const isOfficer = user?.role === "OFFICER";
   const [activeTab, setActiveTab] = useState<TabKey>("Overview");
+
+  const visibleTabs = useMemo(() => {
+    return TABS.filter((tab) => !(isOfficer && tab === "Inventory"));
+  }, [isOfficer]);
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -463,7 +467,7 @@ export default function OutletDetailPage() {
       {/* 11 Mandatory Sections/Tabs Navigation Bar */}
       <div className="border-b border-[#DDE5DC] overflow-x-auto scrollbar-none">
         <nav className="flex space-x-1 min-w-max pb-px" aria-label="Outlet Tabs">
-          {TABS.map((tab) => {
+          {visibleTabs.map((tab) => {
             const isActive = activeTab === tab;
             return (
               <button
@@ -535,10 +539,12 @@ export default function OutletDetailPage() {
                     <span className="text-[#738078]">Daily Sales Recorded:</span>
                     <span className="text-[#18251F]">{sales.length} logs in DB</span>
                   </div>
-                  <div className="flex justify-between py-1">
-                    <span className="text-[#738078]">Inventory Items:</span>
-                    <span className="text-[#18251F]">{inventory.length} tracked items</span>
-                  </div>
+                  {!isOfficer && (
+                    <div className="flex justify-between py-1">
+                      <span className="text-[#738078]">Inventory Items:</span>
+                      <span className="text-[#18251F]">{inventory.length} tracked items</span>
+                    </div>
+                  )}
                 </CardContent>
               </Card>
 
@@ -1080,7 +1086,7 @@ export default function OutletDetailPage() {
         {/* ========================================= */}
         {/* TAB 4: INVENTORY */}
         {/* ========================================= */}
-        {activeTab === "Inventory" && (
+        {activeTab === "Inventory" && !isOfficer && (
           <div className="space-y-4">
             <div className="space-y-3 w-full max-w-full box-border">
               <div className="flex items-center justify-between pb-1">

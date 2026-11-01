@@ -25,7 +25,7 @@ export function TopNav({ onToggleSidebar }: TopNavProps) {
     if (path === "/") return "System Overview";
     if (path.startsWith("/outlets/")) return "Outlet Dossier";
     if (path === "/outlets") return "Stores Directory";
-    if (path === "/compliance") return "Officer Dashboard";
+    if (path === "/compliance") return "Auditor & Evidence";
     if (path.startsWith("/compliance/review/")) return "Evidence Review Audit";
     if (path === "/evidence") return "CCTV Evidence Vault";
     if (path === "/risk") return "Risk Intelligence";

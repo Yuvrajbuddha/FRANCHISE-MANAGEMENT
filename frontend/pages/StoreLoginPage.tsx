@@ -74,6 +74,7 @@ export default function StoreLoginPage() {
           const data = await res.json();
           if (data.outlets && data.outlets.length > 0) {
             setStores(data.outlets);
+            setLoadingStores(false);
             return;
           }
         }
@@ -281,24 +282,59 @@ export default function StoreLoginPage() {
               </p>
             </div>
 
-            {/* Search Bar */}
-            <div className="max-w-md mx-auto relative">
-              <Search className="absolute left-3.5 top-3 h-4 w-4 text-[#059669]" />
-              <Input
-                type="text"
-                placeholder="Search by store name, city (e.g. Lucknow, Noida), or OUT code..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10 h-10 bg-white border-[#D1FAE5] text-xs text-[#1F2937] placeholder:text-[#64748B] focus-visible:ring-1 focus-visible:ring-[#059669] focus-visible:border-[#059669] rounded-xl shadow-xs"
-              />
-              {searchTerm && (
-                <button
-                  onClick={() => setSearchTerm("")}
-                  className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 text-xs"
+            {/* Store Selection Controls: Dropdown & Search Filter */}
+            <div className="max-w-xl mx-auto space-y-4">
+              {/* Dropdown Selector */}
+              <div className="space-y-1.5 bg-white p-4 rounded-2xl border border-[#D1FAE5] shadow-xs">
+                <label className="block text-xs font-semibold text-[#064E3B] flex items-center justify-between">
+                  <span className="flex items-center gap-1.5">
+                    <Store className="h-4 w-4 text-[#059669]" />
+                    <span>Select Store from Dropdown</span>
+                  </span>
+                  <span className="text-[10px] font-mono text-[#64748B]">
+                    {stores.length} Registered Stores
+                  </span>
+                </label>
+                <select
+                  value={selectedStore?.outletId || ""}
+                  onChange={(e) => {
+                    const found = stores.find((s) => s.outletId === e.target.value);
+                    if (found) {
+                      handleSelectStore(found);
+                    }
+                  }}
+                  className="w-full h-11 px-3.5 rounded-xl border border-[#D1FAE5] bg-[#F0FDF4]/30 text-xs font-semibold text-[#064E3B] shadow-2xs focus:outline-none focus:ring-2 focus:ring-[#059669] focus:bg-white cursor-pointer"
                 >
-                  <X className="h-4 w-4" />
-                </button>
-              )}
+                  <option value="" disabled>
+                    -- Choose one of the 10 stores to login --
+                  </option>
+                  {stores.map((s) => (
+                    <option key={s.outletId} value={s.outletId}>
+                      {s.name} ({s.city}) — {s.outletId}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Or Search Grid Filter */}
+              <div className="relative">
+                <Search className="absolute left-3.5 top-3 h-4 w-4 text-[#059669]" />
+                <Input
+                  type="text"
+                  placeholder="Or filter store cards by name, city (e.g. Lucknow, Noida), or OUT code..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="pl-10 h-10 bg-white border-[#D1FAE5] text-xs text-[#1F2937] placeholder:text-[#64748B] focus-visible:ring-1 focus-visible:ring-[#059669] focus-visible:border-[#059669] rounded-xl shadow-xs"
+                />
+                {searchTerm && (
+                  <button
+                    onClick={() => setSearchTerm("")}
+                    className="absolute right-3 top-3 text-slate-400 hover:text-slate-600 text-xs"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                )}
+              </div>
             </div>
 
             {/* 10 Stores Grid */}

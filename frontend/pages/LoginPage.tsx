@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "@/context/AuthContext";
 import { DEMO_USERS } from "@/utils/auth-constants";
 import {
@@ -34,6 +34,7 @@ export default function LoginPage() {
   const [isLoadingRole, setIsLoadingRole] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [roleSelectionModalOpen, setRoleSelectionModalOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [activeModalRole, setActiveModalRole] = useState<"OFFICER" | "OWNER" | "FRANCHISE">("OFFICER");
 
@@ -47,6 +48,14 @@ export default function LoginPage() {
     roleKey: "OWNER" | "FRANCHISE" | "OFFICER" | "ADMIN",
     targetRoute?: string
   ) => {
+    // When Store role is selected, directly route to the unified Store Login flow
+    if (roleKey === "FRANCHISE") {
+      setRoleSelectionModalOpen(false);
+      setAuthModalOpen(false);
+      navigate("/store-login");
+      return;
+    }
+
     setErrorMessage(null);
     setIsLoadingRole(roleKey);
     const targetDemo = DEMO_USERS.find((u) => u.role === roleKey);
@@ -62,7 +71,8 @@ export default function LoginPage() {
       window.scrollTo({ top: 0, left: 0, behavior: "instant" });
       if (document.documentElement) document.documentElement.scrollTop = 0;
       if (document.body) document.body.scrollTop = 0;
-      navigate(targetRoute || (roleKey === "OFFICER" ? "/compliance" : roleKey === "FRANCHISE" ? "/evidence" : "/"));
+      setRoleSelectionModalOpen(false);
+      navigate(targetRoute || (roleKey === "OFFICER" ? "/compliance" : "/"));
     } else {
       setErrorMessage(res.error || "Authentication failed. Please retry.");
     }
@@ -82,7 +92,7 @@ export default function LoginPage() {
       if (activeModalRole === "OFFICER") {
         navigate("/compliance");
       } else if (activeModalRole === "FRANCHISE") {
-        navigate("/evidence");
+        navigate("/store-login");
       } else {
         navigate("/");
       }
@@ -92,12 +102,19 @@ export default function LoginPage() {
   };
 
   const openAuthWithRole = (role: "OFFICER" | "OWNER" | "FRANCHISE") => {
+    if (role === "FRANCHISE") {
+      setRoleSelectionModalOpen(false);
+      setAuthModalOpen(false);
+      navigate("/store-login");
+      return;
+    }
     setActiveModalRole(role);
     const matched = DEMO_USERS.find((u) => u.role === role);
     if (matched) {
       setEmailInput(matched.email);
       setPasswordInput(matched.passwordHash);
     }
+    setRoleSelectionModalOpen(false);
     setAuthModalOpen(true);
   };
 
@@ -158,10 +175,18 @@ export default function LoginPage() {
             </button>
           </nav>
 
-          {/* Right Action: Get Started / Sign In */}
-          <div className="hidden sm:flex items-center gap-3">
+          {/* Right Action: Store Login + Get Started */}
+          <div className="hidden sm:flex items-center gap-2.5">
+            <Link
+              to="/store-login"
+              className="px-3.5 py-2.5 rounded-xl text-xs font-semibold text-[#073B2A] bg-[#FFFDF8] border border-[#DDE5DC] hover:border-[#13845B] hover:text-[#13845B] hover:bg-[#F0FDF4] shadow-2xs transition-all flex items-center gap-1.5 cursor-pointer"
+            >
+              <Store className="h-3.5 w-3.5 text-[#13845B]" />
+              <span>Store Login</span>
+            </Link>
+
             <button
-              onClick={() => openAuthWithRole("OFFICER")}
+              onClick={() => setRoleSelectionModalOpen(true)}
               className="px-5 py-2.5 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] shadow-xs transition-all cursor-pointer flex items-center gap-2"
             >
               <span>Get Started</span>
@@ -207,10 +232,20 @@ export default function LoginPage() {
               Access Portals
             </button>
             <button
-              onClick={() => { setMobileMenuOpen(false); openAuthWithRole("OFFICER"); }}
+              onClick={() => { setMobileMenuOpen(false); navigate("/store-login"); }}
+              className="w-full py-2.5 px-3 rounded-xl text-xs font-semibold text-[#073B2A] bg-[#FAF7F0] border border-[#DDE5DC] flex items-center justify-between"
+            >
+              <span className="flex items-center gap-2">
+                <Store className="h-4 w-4 text-[#13845B]" />
+                <span>Store Login (All 10 Stores)</span>
+              </span>
+              <ChevronRight className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => { setMobileMenuOpen(false); setRoleSelectionModalOpen(true); }}
               className="w-full mt-2 text-xs font-semibold bg-[#073B2A] text-white py-2.5 rounded-xl flex items-center justify-center gap-1.5"
             >
-              <span>Sign In / Get Started</span>
+              <span>Get Started</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
@@ -245,19 +280,19 @@ export default function LoginPage() {
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3.5 pt-2">
                 <button
-                  onClick={() => openAuthWithRole("OFFICER")}
+                  onClick={() => setRoleSelectionModalOpen(true)}
                   className="w-full sm:w-auto px-7 py-3.5 rounded-xl text-sm font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] shadow-md hover:shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 group"
                 >
-                  <span>Start Free Audit</span>
+                  <span>Get Started</span>
                   <ArrowRight className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
                 </button>
-                <button
-                  onClick={() => scrollToSection("features")}
-                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-sm font-semibold bg-[#FFFDF8] text-[#073B2A] border border-[#DDE5DC] hover:bg-[#FAF7F0] shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
+                <Link
+                  to="/store-login"
+                  className="w-full sm:w-auto px-6 py-3.5 rounded-xl text-sm font-semibold bg-[#FFFDF8] text-[#073B2A] border border-[#DDE5DC] hover:border-[#13845B] hover:bg-[#F0FDF4] shadow-2xs transition-all cursor-pointer flex items-center justify-center gap-2"
                 >
-                  <Play className="h-3.5 w-3.5 text-[#13845B] fill-[#13845B]" />
-                  <span>Explore Capabilities</span>
-                </button>
+                  <Store className="h-4 w-4 text-[#13845B]" />
+                  <span>Store Login</span>
+                </Link>
               </div>
 
               {/* Small Feature Indicators Under CTAs */}
@@ -571,7 +606,7 @@ export default function LoginPage() {
           {/* 3 Role Workspaces */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-            {/* 2. Compliance Officer */}
+            {/* 1. Admin & Compliance Officer */}
             <div className="p-6 rounded-2xl bg-[#FAF7F0] border-2 border-[#13845B]/40 hover:border-[#13845B] transition-all flex flex-col justify-between space-y-5 shadow-xs group">
               <div className="space-y-3">
                 <div className="h-10 w-10 rounded-xl bg-[#13845B] text-white flex items-center justify-center font-bold">
@@ -579,12 +614,12 @@ export default function LoginPage() {
                 </div>
                 <div>
                   <h3 className="font-serif text-lg font-bold text-[#073B2A]">
-                    Compliance Officer
+                    Admin
                   </h3>
-                  <span className="text-[10px] font-mono text-[#13845B] font-semibold uppercase">Inspection & CCTV Audit</span>
+                  <span className="text-[10px] font-mono text-[#13845B] font-semibold uppercase">Inspection, Audits & Governance</span>
                 </div>
                 <p className="text-xs text-[#738078] leading-relaxed">
-                  Inspect authentic video frames, log photo decisions, assign ratings, and track CAPA tickets.
+                  Inspect authentic video frames, log photo decisions, assign ratings, and track CAPA tickets across all outlets.
                 </p>
               </div>
 
@@ -593,12 +628,12 @@ export default function LoginPage() {
                 disabled={isLoadingRole !== null}
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#13845B] text-white hover:bg-[#0E6847] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-xs"
               >
-                <span>{isLoadingRole === "OFFICER" ? "Signing In..." : "Open Officer Portal"}</span>
+                <span>{isLoadingRole === "OFFICER" ? "Signing In..." : "Open Admin Portal"}</span>
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
 
-            {/* 3. Franchisee Owner */}
+            {/* 2. Franchise Owner */}
             <div className="p-6 rounded-2xl bg-[#FAF7F0] border border-[#DDE5DC] hover:border-[#073B2A] transition-all flex flex-col justify-between space-y-5 shadow-2xs group">
               <div className="space-y-3">
                 <div className="h-10 w-10 rounded-xl bg-[#073B2A] text-white flex items-center justify-center font-bold">
@@ -606,7 +641,7 @@ export default function LoginPage() {
                 </div>
                 <div>
                   <h3 className="font-serif text-lg font-bold text-[#073B2A]">
-                    Franchisee Owner
+                    Franchise Owner
                   </h3>
                   <span className="text-[10px] font-mono text-[#738078] uppercase">Investor & Royalty ROI</span>
                 </div>
@@ -616,26 +651,25 @@ export default function LoginPage() {
               </div>
 
               <button
-                onClick={() => handleQuickLogin("OWNER")}
-                disabled={isLoadingRole !== null}
+                onClick={() => navigate("/franchisee-login")}
                 className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] transition-all cursor-pointer flex items-center justify-center gap-1.5"
               >
-                <span>{isLoadingRole === "OWNER" ? "Signing In..." : "Open Owner Portal"}</span>
+                <span>Open Owner Portal</span>
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
 
-            {/* 4. Store Operations */}
-            <div className="p-6 rounded-2xl bg-[#FAF7F0] border border-[#DDE5DC] hover:border-[#073B2A] transition-all flex flex-col justify-between space-y-5 shadow-2xs group">
+            {/* 3. Store Operations (All 10 Stores) */}
+            <div className="p-6 rounded-2xl bg-white border-2 border-[#13845B] hover:border-[#073B2A] transition-all flex flex-col justify-between space-y-5 shadow-md group">
               <div className="space-y-3">
                 <div className="h-10 w-10 rounded-xl bg-[#073B2A] text-white flex items-center justify-center font-bold">
-                  <Store className="h-5 w-5" />
+                  <Store className="h-5 w-5 text-[#72D6A0]" />
                 </div>
                 <div>
                   <h3 className="font-serif text-lg font-bold text-[#073B2A]">
-                    Store Operations
+                    Store
                   </h3>
-                  <span className="text-[10px] font-mono text-[#738078] uppercase">10 Registered Stores</span>
+                  <span className="text-[10px] font-mono text-[#13845B] font-bold uppercase">10 Registered Stores</span>
                 </div>
                 <p className="text-xs text-[#738078] leading-relaxed">
                   Select your specific outlet from all 10 registered stores, authenticate with store credentials, and manage sales invoices.
@@ -644,7 +678,7 @@ export default function LoginPage() {
 
               <button
                 onClick={() => navigate("/store-login")}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-xs"
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-semibold bg-[#13845B] text-white hover:bg-[#0E6847] transition-all cursor-pointer flex items-center justify-center gap-1.5 shadow-xs"
               >
                 <span>Store Login (All 10 Stores)</span>
                 <ChevronRight className="h-4 w-4" />
@@ -665,7 +699,143 @@ export default function LoginPage() {
       </section>
 
       {/* ======================================================== */}
-      {/* 6. MODAL: MANUAL CREDENTIALS SIGN-IN DIALOG              */}
+      {/* 6. MODAL: GET STARTED ROLE SELECTION DIALOG              */}
+      {/* ======================================================== */}
+      {roleSelectionModalOpen && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setRoleSelectionModalOpen(false)}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative w-full max-w-xl rounded-3xl border border-[#DDE5DC] bg-[#FFFDF8] p-6 sm:p-8 shadow-2xl space-y-6 my-auto"
+          >
+            {/* Modal Header */}
+            <div className="flex items-start justify-between border-b border-[#DDE5DC] pb-4">
+              <div>
+                <span className="text-[10px] font-mono uppercase tracking-widest text-[#13845B] font-bold block">
+                  GET STARTED
+                </span>
+                <h3 className="font-serif text-2xl font-bold text-[#073B2A]">
+                  Choose Your Role
+                </h3>
+                <p className="text-xs text-[#738078] mt-1">
+                  Select which workspace portal you would like to sign in to:
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setRoleSelectionModalOpen(false)}
+                className="p-1.5 rounded-lg text-[#738078] hover:text-[#073B2A] hover:bg-[#FAF7F0] cursor-pointer"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+
+            {/* 3 Role Options: Admin, Franchise Owner, Store */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
+              {/* Option 1: Admin */}
+              <div className="p-4 rounded-2xl bg-[#FAF7F0] border border-[#DDE5DC] hover:border-[#073B2A] transition-all flex flex-col justify-between space-y-3 shadow-2xs group">
+                <div className="space-y-2">
+                  <div className="h-9 w-9 rounded-xl bg-[#073B2A] text-white flex items-center justify-center font-bold">
+                    <ShieldCheck className="h-5 w-5 text-[#72D6A0]" />
+                  </div>
+                  <div>
+                    <h4 className="font-serif text-base font-bold text-[#073B2A]">Admin</h4>
+                    <span className="text-[9px] font-mono text-[#738078] uppercase">Governance & Audits</span>
+                  </div>
+                  <p className="text-[11px] text-[#738078] leading-snug">
+                    System-wide governance, inspection audits, risk scores, and alerts.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRoleSelectionModalOpen(false);
+                    handleQuickLogin("OFFICER");
+                  }}
+                  className="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] transition-all flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <span>Sign In as Admin</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+
+              {/* Option 2: Franchise Owner */}
+              <div className="p-4 rounded-2xl bg-[#FAF7F0] border border-[#DDE5DC] hover:border-[#073B2A] transition-all flex flex-col justify-between space-y-3 shadow-2xs group">
+                <div className="space-y-2">
+                  <div className="h-9 w-9 rounded-xl bg-[#073B2A] text-white flex items-center justify-center font-bold">
+                    <TrendingUp className="h-5 w-5 text-[#72D6A0]" />
+                  </div>
+                  <div>
+                    <h4 className="font-serif text-base font-bold text-[#073B2A]">Franchise Owner</h4>
+                    <span className="text-[9px] font-mono text-[#738078] uppercase">Investor & Royalty ROI</span>
+                  </div>
+                  <p className="text-[11px] text-[#738078] leading-snug">
+                    Store financials, margins, settlements, and brand performance.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRoleSelectionModalOpen(false);
+                    navigate("/franchisee-login");
+                  }}
+                  className="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-[#073B2A] text-white hover:bg-[#05291F] transition-all flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <span>Sign In as Owner</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+
+              {/* Option 3: Store (Directs to Store Login Page for all 10 stores) */}
+              <div className="p-4 rounded-2xl bg-white border-2 border-[#13845B] transition-all flex flex-col justify-between space-y-3 shadow-md group">
+                <div className="space-y-2">
+                  <div className="h-9 w-9 rounded-xl bg-[#13845B] text-white flex items-center justify-center font-bold">
+                    <Store className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h4 className="font-serif text-base font-bold text-[#073B2A]">Store</h4>
+                    <span className="text-[9px] font-mono text-[#13845B] font-bold uppercase">10 Registered Stores</span>
+                  </div>
+                  <p className="text-[11px] text-[#738078] leading-snug">
+                    Select your store outlet from all 10 locations and enter store password.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setRoleSelectionModalOpen(false);
+                    navigate("/store-login");
+                  }}
+                  className="w-full py-2 px-3 rounded-xl text-xs font-semibold bg-[#13845B] text-white hover:bg-[#0E6847] transition-all flex items-center justify-center gap-1 cursor-pointer shadow-xs"
+                >
+                  <span>Select Store & Log In</span>
+                  <ChevronRight className="h-3.5 w-3.5" />
+                </button>
+              </div>
+            </div>
+
+            <div className="pt-2 text-center border-t border-[#DDE5DC]">
+              <button
+                type="button"
+                onClick={() => {
+                  setRoleSelectionModalOpen(false);
+                  setAuthModalOpen(true);
+                }}
+                className="text-xs text-[#738078] hover:text-[#073B2A] underline underline-offset-4 cursor-pointer"
+              >
+                Prefer to enter email & password manually? Click here
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ======================================================== */}
+      {/* 7. MODAL: MANUAL CREDENTIALS SIGN-IN DIALOG              */}
       {/* ======================================================== */}
       {authModalOpen && (
         <div
@@ -703,20 +873,39 @@ export default function LoginPage() {
                 Quick Preset:
               </span>
               <div className="grid grid-cols-3 gap-1.5">
-                {(["OFFICER", "OWNER", "FRANCHISE"] as const).map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => openAuthWithRole(r)}
-                    className={`py-1.5 px-2 text-[10px] font-semibold rounded-lg border transition-all cursor-pointer ${
-                      activeModalRole === r
-                        ? "bg-[#073B2A] text-white border-[#073B2A]"
-                        : "bg-[#FAF7F0] text-[#18251F] border-[#DDE5DC] hover:bg-[#EAE3D2]"
-                    }`}
-                  >
-                    {r === "FRANCHISE" ? "STORE" : r}
-                  </button>
-                ))}
+                <button
+                  type="button"
+                  onClick={() => openAuthWithRole("OFFICER")}
+                  className={`py-1.5 px-2 text-[10px] font-semibold rounded-lg border transition-all cursor-pointer ${
+                    activeModalRole === "OFFICER"
+                      ? "bg-[#073B2A] text-white border-[#073B2A]"
+                      : "bg-[#FAF7F0] text-[#18251F] border-[#DDE5DC] hover:bg-[#EAE3D2]"
+                  }`}
+                >
+                  ADMIN
+                </button>
+                <button
+                  type="button"
+                  onClick={() => openAuthWithRole("OWNER")}
+                  className={`py-1.5 px-2 text-[10px] font-semibold rounded-lg border transition-all cursor-pointer ${
+                    activeModalRole === "OWNER"
+                      ? "bg-[#073B2A] text-white border-[#073B2A]"
+                      : "bg-[#FAF7F0] text-[#18251F] border-[#DDE5DC] hover:bg-[#EAE3D2]"
+                  }`}
+                >
+                  OWNER
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAuthModalOpen(false);
+                    navigate("/store-login");
+                  }}
+                  className="py-1.5 px-2 text-[10px] font-semibold rounded-lg border bg-[#E6F8EF] text-[#073B2A] border-[#C7F1DC] hover:bg-[#C7F1DC] transition-all cursor-pointer"
+                  title="Open dedicated Store Login interface with all 10 stores"
+                >
+                  STORE ↗
+                </button>
               </div>
             </div>
 
@@ -776,7 +965,8 @@ export default function LoginPage() {
 
           <div className="flex items-center gap-6 text-xs text-[#CAD5C9]">
             <button onClick={() => scrollToSection("hero")} className="hover:text-white cursor-pointer">Back to top</button>
-            <button onClick={() => openAuthWithRole("OFFICER")} className="hover:text-white cursor-pointer">Sign In</button>
+            <Link to="/store-login" className="hover:text-white cursor-pointer">Store Login</Link>
+            <button onClick={() => setRoleSelectionModalOpen(true)} className="hover:text-white cursor-pointer">Sign In</button>
           </div>
         </div>
       </footer>

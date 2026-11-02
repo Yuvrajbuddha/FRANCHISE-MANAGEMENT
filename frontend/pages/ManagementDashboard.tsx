@@ -1508,11 +1508,11 @@ export function ManagementDashboard() {
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
               <div>
                 <CardTitle className="text-base font-normal font-serif flex items-center gap-2 text-[#073B2A]">
-                  <Building2 className="h-4 w-4 text-[#13845B]" />
-                  <span>Franchise Stores Performance & Evidence Status</span>
+                  <Store className="h-4 w-4 text-[#13845B]" />
+                  <span>Stores Directory — Registered Franchise Outlets</span>
                 </CardTitle>
                 <CardDescription className="text-xs text-[#738078]">
-                  Consolidated operational performance, CCTV surveillance submission status, and statutory compliance ratings.
+                  Consolidated operational performance, CCTV surveillance submission status, and statutory compliance ratings across all registered franchise stores.
                 </CardDescription>
               </div>
               <Link
@@ -1525,98 +1525,159 @@ export function ManagementDashboard() {
             </div>
           </CardHeader>
           <CardContent className="p-4 sm:p-5">
-            <div className="flex flex-col gap-3.5 w-full max-w-full box-border">
-              {ALL_NETWORK_STORES.map((s) => {
-                const storeSub = cctvSubmissions.find(
-                  (sub) => sub.storeId.toUpperCase() === s.code.toUpperCase()
-                );
-                return (
-                  <div
-                    key={s.code}
-                    className="rounded-xl border border-[#DDE5DC] bg-white p-4 sm:p-5 shadow-2xs w-full max-w-full box-border min-w-0 space-y-3"
-                  >
-                    {/* Header: Code, Name, Status, Actions */}
-                    <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-[#DDE5DC] pb-3">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <Link
-                            to={`/outlets/${s.code}`}
-                            className="font-mono font-bold text-[#073B2A] hover:underline text-sm"
-                          >
-                            {s.code}
-                          </Link>
-                          <Badge
-                            variant="outline"
-                            className={`text-[10px] font-mono ${
-                              storeSub?.status === "Verified"
-                                ? "border-[#13845B]/40 text-[#073B2A] bg-[#13845B]/10"
-                                : "border-amber-300 text-amber-800 bg-amber-50"
-                            }`}
-                          >
-                            {storeSub?.status === "Verified" ? "Verified" : "Pending Review"}
-                          </Badge>
-                        </div>
-                        <h4 className="text-xs text-[#18251F] font-semibold mt-1">
-                          {s.name}
-                        </h4>
-                      </div>
+            {/* Loading State */}
+            {loading && !data && (
+              <div className="flex flex-col items-center justify-center py-12 gap-3 text-[#738078]">
+                <RefreshCw className="h-6 w-6 animate-spin text-[#073B2A]" />
+                <span className="text-xs font-medium">Loading registered franchise stores from database...</span>
+              </div>
+            )}
 
-                      <div className="flex items-center gap-2 shrink-0">
-                        <Link
-                          to="/evidence"
-                          className="text-xs text-[#073B2A] hover:underline px-2.5 py-1 rounded bg-[#073B2A]/5 border border-[#DDE5DC] font-medium"
-                        >
-                          Evidence →
-                        </Link>
-                        <Link
-                          to={`/outlets/${s.code}`}
-                          className="text-xs text-[#18251F] hover:text-[#073B2A] px-2.5 py-1 rounded bg-[#F6F1E7] border border-[#DDE5DC] font-medium"
-                        >
-                          Profile →
-                        </Link>
-                      </div>
-                    </div>
-
-                    {/* Vertical Label-Value rows */}
-                    <div className="space-y-2 text-xs divide-y divide-[#DDE5DC]/60">
-                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
-                        <span className="text-[#738078] font-medium shrink-0">City & Operating Model:</span>
-                        <span className="text-[#18251F] sm:text-right">
-                          {s.city} · <span className="font-mono text-[#738078]">{s.model}</span>
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                        <span className="text-[#738078] font-medium shrink-0">Monthly Turnover:</span>
-                        <span className="font-mono text-[#073B2A] font-bold sm:text-right">
-                          ₹6,48,000
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                        <span className="text-[#738078] font-medium shrink-0">Extracted CCTV Photos:</span>
-                        <span className="font-mono text-[#18251F] sm:text-right">
-                          {storeSub?.photosCount || 8} Photos
-                        </span>
-                      </div>
-
-                      <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
-                        <span className="text-[#738078] font-medium shrink-0">Compliance Rating:</span>
-                        <div className="sm:text-right">
-                          {storeSub?.finalRating ? (
-                            <span className="text-[#13845B] font-bold font-mono">
-                              {storeSub.finalRating} / 10
-                            </span>
-                          ) : (
-                            <span className="text-[#738078] font-mono">88%</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
+            {/* Error State with Retry */}
+            {error && !data && !loading && (
+              <div className="rounded-xl border border-red-200 bg-red-50 p-4 text-xs text-red-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div className="flex items-center gap-2.5">
+                  <AlertCircle className="h-5 w-5 text-red-600 shrink-0" />
+                  <div>
+                    <span className="font-bold text-sm block">Unable to retrieve stores from database</span>
+                    <p className="text-red-700 mt-0.5">{error}</p>
                   </div>
-                );
-              })}
-            </div>
+                </div>
+                <Button
+                  size="sm"
+                  onClick={fetchDashboardData}
+                  className="bg-[#073B2A] text-white hover:bg-[#13845B] text-xs h-8 px-3 shrink-0 cursor-pointer"
+                >
+                  <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+                  Retry Connection
+                </Button>
+              </div>
+            )}
+
+            {/* Empty State */}
+            {!loading && data && (!data.outlets || data.outlets.length === 0) && (
+              <div className="rounded-xl border border-dashed border-[#DDE5DC] p-10 text-center space-y-2 bg-white">
+                <Store className="h-8 w-8 text-[#738078] mx-auto" />
+                <h4 className="font-serif text-sm font-semibold text-[#073B2A]">No Stores Registered</h4>
+                <p className="text-xs text-[#738078]">No franchise outlet records found in the database.</p>
+              </div>
+            )}
+
+            {/* Registered Stores Cards Grid */}
+            {(!loading || data) && (
+              <div className="flex flex-col gap-3.5 w-full max-w-full box-border">
+                {((data?.outlets && data.outlets.length > 0)
+                  ? data.outlets
+                  : ALL_NETWORK_STORES.map((s) => ({
+                      outletId: s.code,
+                      name: s.name,
+                      city: s.city,
+                      state: "",
+                      operatingModel: s.model,
+                      status: "Active",
+                      manager: s.manager,
+                      revenueMonthly: "648000",
+                      complianceScore: 88,
+                      riskScore: 20,
+                    }))
+                ).map((s: any) => {
+                  const storeCode = s.outletId || s.code;
+                  const storeSub = cctvSubmissions.find(
+                    (sub) => sub.storeId.toUpperCase() === storeCode.toUpperCase()
+                  );
+                  return (
+                    <div
+                      key={storeCode}
+                      className="rounded-xl border border-[#DDE5DC] bg-white p-4 sm:p-5 shadow-2xs w-full max-w-full box-border min-w-0 space-y-3 hover:border-[#073B2A]/40 transition-colors"
+                    >
+                      {/* Header: Code, Name, Status, Actions */}
+                      <div className="flex flex-wrap items-start justify-between gap-2.5 border-b border-[#DDE5DC] pb-3">
+                        <div>
+                          <div className="flex items-center gap-2">
+                            <Link
+                              to={`/outlets/${storeCode}`}
+                              className="font-mono font-bold text-[#073B2A] hover:underline text-sm"
+                            >
+                              {storeCode}
+                            </Link>
+                            <Badge
+                              variant="outline"
+                              className={`text-[10px] font-mono ${
+                                (s.status === "Active" || storeSub?.status === "Verified")
+                                  ? "border-[#13845B]/40 text-[#073B2A] bg-[#13845B]/10"
+                                  : "border-amber-300 text-amber-800 bg-amber-50"
+                              }`}
+                            >
+                              {s.status || (storeSub?.status === "Verified" ? "Active" : "Under Review")}
+                            </Badge>
+                          </div>
+                          <h4 className="text-xs text-[#18251F] font-semibold mt-1">
+                            {s.name}
+                          </h4>
+                        </div>
+
+                        <div className="flex items-center gap-2 shrink-0">
+                          <Link
+                            to="/evidence"
+                            className="text-xs text-[#073B2A] hover:underline px-2.5 py-1 rounded bg-[#073B2A]/5 border border-[#DDE5DC] font-medium"
+                          >
+                            Evidence →
+                          </Link>
+                          <Link
+                            to={`/outlets/${storeCode}`}
+                            className="text-xs text-[#18251F] hover:text-[#073B2A] px-2.5 py-1 rounded bg-[#F6F1E7] border border-[#DDE5DC] font-medium"
+                          >
+                            Profile →
+                          </Link>
+                        </div>
+                      </div>
+
+                      {/* Vertical Label-Value rows */}
+                      <div className="space-y-2 text-xs divide-y divide-[#DDE5DC]/60">
+                        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-1.5 first:pt-0">
+                          <span className="text-[#738078] font-medium shrink-0">City & Operating Model:</span>
+                          <span className="text-[#18251F] sm:text-right">
+                            {s.city}{s.state ? `, ${s.state}` : ""} ·{" "}
+                            <span className="font-mono text-[#073B2A] font-semibold">
+                              {s.operatingModel || s.model || "FOCO"} Model
+                            </span>
+                          </span>
+                        </div>
+
+                        {s.manager && (
+                          <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                            <span className="text-[#738078] font-medium shrink-0">Store Manager:</span>
+                            <span className="text-[#18251F] font-semibold sm:text-right">
+                              {s.manager}
+                            </span>
+                          </div>
+                        )}
+
+                        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                          <span className="text-[#738078] font-medium shrink-0">Monthly Turnover:</span>
+                          <span className="font-mono text-[#073B2A] font-bold sm:text-right">
+                            {s.revenueMonthly
+                              ? (Number(s.revenueMonthly) >= 100000
+                                  ? `₹${(Number(s.revenueMonthly) / 100000).toFixed(1)} Lakh`
+                                  : `₹${Number(s.revenueMonthly).toLocaleString()}`)
+                              : "₹6,48,000"}
+                          </span>
+                        </div>
+
+                        <div className="flex flex-col sm:flex-row sm:items-baseline sm:justify-between gap-1 pt-2">
+                          <span className="text-[#738078] font-medium shrink-0">Compliance Rating:</span>
+                          <div className="sm:text-right">
+                            <span className="text-[#13845B] font-bold font-mono">
+                              {s.complianceScore ? `${s.complianceScore}%` : (storeSub?.finalRating ? `${storeSub.finalRating} / 10` : "88%")}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
           </CardContent>
         </Card>
       )}

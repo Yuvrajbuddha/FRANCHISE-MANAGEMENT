@@ -146,8 +146,8 @@ export function Sidebar({ isOpen = true, onClose }: { isOpen?: boolean; onClose?
   ];
 
   const handleLogout = async () => {
-    await logout();
-    navigate("/login");
+    const dest = await logout();
+    navigate(dest, { replace: true });
   };
 
   return (

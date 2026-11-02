@@ -16,8 +16,8 @@ export function TopNav({ onToggleSidebar }: TopNavProps) {
   const location = useLocation();
 
   const handleLogout = async () => {
-    await logout();
-    navigate("/login");
+    const dest = await logout();
+    navigate(dest, { replace: true });
   };
 
   const getBreadcrumbTitle = () => {

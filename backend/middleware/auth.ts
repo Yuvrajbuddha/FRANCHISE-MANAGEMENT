@@ -26,34 +26,16 @@ export function requireAuth(
   }
 
   if (!token) {
-    // Provide default demo owner user for seamless preview experience
-    const demoOwner = DEMO_USERS.find((u) => u.role === "OWNER") || DEMO_USERS[0];
-    req.user = {
-      id: demoOwner.id,
-      email: demoOwner.email,
-      name: demoOwner.name,
-      role: demoOwner.role,
-      assignedOutletId: demoOwner.assignedOutletId,
-      assignedOutletName: demoOwner.assignedOutletName,
-      companyId: demoOwner.companyId,
-    };
-    return next();
+    return res.status(401).json({
+      error: "Authentication required. Please sign in.",
+    });
   }
 
   const user = verifyAuthToken(token);
   if (!user) {
-    // Graceful fallback to demo owner if token expired
-    const demoOwner = DEMO_USERS.find((u) => u.role === "OWNER") || DEMO_USERS[0];
-    req.user = {
-      id: demoOwner.id,
-      email: demoOwner.email,
-      name: demoOwner.name,
-      role: demoOwner.role,
-      assignedOutletId: demoOwner.assignedOutletId,
-      assignedOutletName: demoOwner.assignedOutletName,
-      companyId: demoOwner.companyId,
-    };
-    return next();
+    return res.status(401).json({
+      error: "Invalid or expired session. Please sign in again.",
+    });
   }
 
   req.user = user;

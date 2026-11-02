@@ -735,6 +735,12 @@ apiRouter.get("/store/invoices/:invoiceId/download", requireAuth, async (req: Au
 
 // POST /auth/logout
 apiRouter.post("/auth/logout", (req, res) => {
+  res.clearCookie("auth_token", {
+    path: "/",
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+  });
   res.clearCookie("auth_token");
   return res.json({ success: true, message: "Logged out successfully." });
 });

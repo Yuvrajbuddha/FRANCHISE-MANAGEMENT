@@ -13,7 +13,7 @@ interface AuthContextType {
     username: string,
     password?: string
   ) => Promise<{ success: boolean; error?: string; redirectUrl?: string }>;
-  logout: () => void;
+  logout: (targetRedirect?: string) => Promise<string>;
   switchDemoRole: (role: UserRole) => Promise<void>;
   canAccessOutlet: (outletId: string) => boolean;
 }
@@ -32,23 +32,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     if (savedToken && savedUser) {
       try {
-        setToken(savedToken);
-        setUser(JSON.parse(savedUser));
+        const parsed = JSON.parse(savedUser);
+        if (parsed && parsed.id && parsed.role) {
+          setToken(savedToken);
+          setUser(parsed);
+        } else {
+          setToken(null);
+          setUser(null);
+          localStorage.removeItem("franchise_auth_token");
+          localStorage.removeItem("franchise_auth_user");
+        }
       } catch {
-        const defaultUser = DEMO_USERS[1]; // Yash Gupta (OWNER)
-        const defaultToken = "demo-token-owner-default";
-        setUser(defaultUser);
-        setToken(defaultToken);
-        localStorage.setItem("franchise_auth_token", defaultToken);
-        localStorage.setItem("franchise_auth_user", JSON.stringify(defaultUser));
+        setToken(null);
+        setUser(null);
+        localStorage.removeItem("franchise_auth_token");
+        localStorage.removeItem("franchise_auth_user");
       }
     } else {
-      const defaultUser = DEMO_USERS[1]; // Yash Gupta (OWNER)
-      const defaultToken = "demo-token-owner-default";
-      setUser(defaultUser);
-      setToken(defaultToken);
-      localStorage.setItem("franchise_auth_token", defaultToken);
-      localStorage.setItem("franchise_auth_user", JSON.stringify(defaultUser));
+      setToken(null);
+      setUser(null);
     }
     setIsLoading(false);
   }, []);
@@ -58,6 +60,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email, password }),
       });
 
@@ -114,6 +117,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       const response = await fetch("/api/auth/store-login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ outletId, username, password }),
       });
 
@@ -133,16 +137,54 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const logout = async () => {
+  const logout = async (targetRedirect?: string): Promise<string> => {
+    const previousRole = user?.role;
     try {
-      await fetch("/api/auth/logout", { method: "POST" });
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+      });
     } catch {
       // Ignore network errors on logout
     }
+
     setToken(null);
     setUser(null);
-    localStorage.removeItem("franchise_auth_token");
-    localStorage.removeItem("franchise_auth_user");
+
+    // Thoroughly remove all tokens, roles, and cached auth state from localStorage and sessionStorage
+    try {
+      localStorage.removeItem("franchise_auth_token");
+      localStorage.removeItem("franchise_auth_user");
+      localStorage.removeItem("store_auth_token");
+      localStorage.removeItem("store_auth_user");
+      localStorage.removeItem("auth_token");
+      localStorage.removeItem("auth_user");
+      sessionStorage.clear();
+    } catch {
+      // Storage access safety
+    }
+
+    // Expire auth cookies across paths
+    try {
+      document.cookie = "auth_token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+      document.cookie = "auth_token=; path=/api; expires=Thu, 01 Jan 1970 00:00:00 GMT; SameSite=Lax";
+    } catch {
+      // Cookie safety
+    }
+
+    // Direct user to appropriate login interface
+    let redirectPath = "/login";
+    if (targetRedirect) {
+      redirectPath = targetRedirect;
+    } else if (previousRole === "FRANCHISE") {
+      redirectPath = "/store-login";
+    } else if (previousRole === "OWNER") {
+      redirectPath = "/franchisee-login";
+    } else {
+      redirectPath = "/login";
+    }
+
+    return redirectPath;
   };
 
   const switchDemoRole = async (targetRole: UserRole) => {

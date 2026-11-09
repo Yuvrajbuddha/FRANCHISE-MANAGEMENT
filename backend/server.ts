@@ -811,18 +811,21 @@ apiRouter.get("/outlets", requireAuth, async (req: AuthenticatedRequest, res) =>
     }
 
     // Organization-wide roles (ADMIN, OWNER, OFFICER)
-    let queryResults: any[] = [];
+    let rawResults: any[] = [];
     try {
-      queryResults = await db.select().from(outlets).orderBy(outlets.outletId);
+      rawResults = await db.select().from(outlets).orderBy(outlets.outletId);
     } catch (dErr) {
       console.warn("Drizzle failed for outlets, attempting direct pool query:", dErr);
       const rawRes = await pool.query("SELECT * FROM outlets ORDER BY outlet_id ASC");
-      queryResults = rawRes.rows.map(mapDbRowToOutlet);
+      rawResults = rawRes.rows;
     }
 
     // If database returned zero rows for any reason, use the 10-store canonical catalog
-    if (!queryResults || queryResults.length === 0) {
-      queryResults = [...OUTLETS_MOCK];
+    let queryResults: any[] = [];
+    if (!rawResults || rawResults.length === 0) {
+      queryResults = OUTLETS_MOCK.map(mapDbRowToOutlet);
+    } else {
+      queryResults = rawResults.map(mapDbRowToOutlet);
     }
 
     // Filter by city
@@ -835,14 +838,14 @@ apiRouter.get("/outlets", requireAuth, async (req: AuthenticatedRequest, res) =>
     // Filter by COCO/FOCO
     if (model && model !== "All Models") {
       queryResults = queryResults.filter(
-        (o) => o.operatingModel.toUpperCase() === model.toUpperCase()
+        (o) => (o.operatingModel || "").toUpperCase() === model.toUpperCase()
       );
     }
 
     // Filter by status
     if (status && status !== "All Statuses") {
       queryResults = queryResults.filter(
-        (o) => o.status.toLowerCase() === status.toLowerCase()
+        (o) => (o.status || "").toLowerCase() === status.toLowerCase()
       );
     }
 
@@ -851,10 +854,10 @@ apiRouter.get("/outlets", requireAuth, async (req: AuthenticatedRequest, res) =>
       const s = search.toLowerCase().trim();
       queryResults = queryResults.filter(
         (o) =>
-          o.name.toLowerCase().includes(s) ||
-          o.outletId.toLowerCase().includes(s) ||
-          o.city.toLowerCase().includes(s) ||
-          o.manager.toLowerCase().includes(s) ||
+          (o.name || "").toLowerCase().includes(s) ||
+          (o.outletId || "").toLowerCase().includes(s) ||
+          (o.city || "").toLowerCase().includes(s) ||
+          (o.manager || "").toLowerCase().includes(s) ||
           (o.assignedFranchiseUser && o.assignedFranchiseUser.toLowerCase().includes(s))
       );
     }
@@ -865,7 +868,7 @@ apiRouter.get("/outlets", requireAuth, async (req: AuthenticatedRequest, res) =>
     });
   } catch (err) {
     console.error("All PostgreSQL queries failed, using canonical outlets fallback:", err);
-    let fallback = [...OUTLETS_MOCK];
+    let fallback = OUTLETS_MOCK.map(mapDbRowToOutlet);
     if (user.role === "FRANCHISE") {
       fallback = fallback.filter((o) => o.outletId === user.assignedOutletId);
     }
@@ -4097,13 +4100,36 @@ apiRouter.get("/health", (req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
 });
 
-// Mount CCTV routes at both /api and root /
+// Ensure JSON default headers for API responses
+apiApp.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  next();
+});
+
+// Mount CCTV and core API routes for both root and /api prefixes
 apiApp.use("/api", cctvRouter);
 apiApp.use("/", cctvRouter);
-
-// Mount at both /api and root / so both Vercel rewritten and direct paths resolve!
 apiApp.use("/api", apiRouter);
 apiApp.use("/", apiRouter);
 
+// Catch-all for any unhandled API route: ALWAYS return JSON 404, NEVER fall through to HTML!
+apiApp.use((req, res) => {
+  return res.status(404).json({
+    error: `API route not found: ${req.method} ${req.originalUrl || req.url}`,
+  });
+});
+
+// Global API error handler: ALWAYS return JSON, NEVER HTML!
+apiApp.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error("API error caught in middleware:", err);
+  if (res.headersSent) {
+    return next(err);
+  }
+  return res.status(err.status || 500).json({
+    error: err.message || "An unexpected internal server error occurred.",
+  });
+});
+
 export default apiApp;
 export { apiApp };
+

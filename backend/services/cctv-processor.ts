@@ -221,36 +221,121 @@ export async function getVideoMetadata(videoPath: string): Promise<VideoMetadata
   }
 }
 
+import crypto from "crypto";
+
+const CACHE_FILE = path.resolve(process.cwd(), "uploads", "cctv", "video_cache.json");
+const videoCache = new Map<string, { metadata: VideoMetadata; frames: ExtractedFrame[] }>();
+
+try {
+  if (fs.existsSync(CACHE_FILE)) {
+    const raw = fs.readFileSync(CACHE_FILE, "utf-8");
+    const parsed = JSON.parse(raw);
+    for (const [k, v] of Object.entries(parsed)) {
+      videoCache.set(k, v as any);
+    }
+  }
+} catch (e) {
+  console.warn("Could not load video cache:", e);
+}
+
+function persistVideoCache() {
+  try {
+    const dir = path.dirname(CACHE_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    const entries = Array.from(videoCache.entries()).slice(-100);
+    const obj = Object.fromEntries(entries);
+    fs.writeFileSync(CACHE_FILE, JSON.stringify(obj, null, 2));
+  } catch (e) {
+    console.warn("Failed to persist video cache:", e);
+  }
+}
+
+/**
+ * Computes a fast cryptographic fingerprint of a video file using its size and edge chunks.
+ */
+export function generateVideoFingerprint(videoPath: string): string {
+  try {
+    const stat = fs.statSync(videoPath);
+    const size = stat.size;
+    const fd = fs.openSync(videoPath, "r");
+    const chunkSize = Math.min(65536, size);
+    const headBuf = Buffer.alloc(chunkSize);
+    fs.readSync(fd, headBuf, 0, chunkSize, 0);
+
+    const tailBuf = Buffer.alloc(chunkSize);
+    const tailOffset = Math.max(0, size - chunkSize);
+    fs.readSync(fd, tailBuf, 0, chunkSize, tailOffset);
+    fs.closeSync(fd);
+
+    const hash = crypto.createHash("sha256");
+    hash.update(String(size));
+    hash.update(headBuf);
+    hash.update(tailBuf);
+    return hash.digest("hex");
+  } catch (e) {
+    return `fp_${Date.now()}`;
+  }
+}
+
 /**
  * Calculates dynamic timestamps for frame extraction tailored to the video's actual duration.
+ * Supports configurable interval extraction (e.g. every 15s, 30s, 60s, 300s) or adaptive duration scheduling.
  * Supports videos from 1 second up to 10+ hours without extracting outside duration.
  */
 export function calculateExtractionTimestamps(
   durationSeconds: number,
-  options?: { minFrames?: number; maxFrames?: number }
+  options?: { minFrames?: number; maxFrames?: number; intervalSeconds?: number }
 ): { seconds: number; formatted: string }[] {
+  // If a specific extraction interval is configured (e.g. 15s, 30s, 60s, 300s)
+  if (options?.intervalSeconds && options.intervalSeconds > 0) {
+    const interval = options.intervalSeconds;
+    const startMargin = Math.min(0.5, durationSeconds * 0.05);
+    const endMargin = Math.min(0.5, durationSeconds * 0.05);
+    const effectiveEnd = durationSeconds - endMargin;
+    const maxAllowed = options.maxFrames || 25; // Sensible ceiling to protect resources on 10h videos
+
+    const timestamps: { seconds: number; formatted: string }[] = [];
+
+    for (let sec = startMargin; sec <= effectiveEnd; sec += interval) {
+      const rounded = Number(sec.toFixed(2));
+      timestamps.push({
+        seconds: rounded,
+        formatted: formatTimestamp(rounded),
+      });
+      if (timestamps.length >= maxAllowed) {
+        break;
+      }
+    }
+
+    // Ensure at least 2 frames if video duration allows
+    if (timestamps.length < 2 && durationSeconds >= 2) {
+      const endSec = Number(Math.max(0.2, durationSeconds - endMargin).toFixed(2));
+      if (!timestamps.some((t) => Math.abs(t.seconds - endSec) < 0.5)) {
+        timestamps.push({ seconds: endSec, formatted: formatTimestamp(endSec) });
+      }
+    }
+
+    return timestamps;
+  }
+
+  // Default Adaptive Scheduling (tested and calibrated for all standard durations)
   let frameCount: number;
 
   if (durationSeconds < 4) {
-    // Ultra short video (< 4s): 2 frames
     frameCount = 2;
   } else if (durationSeconds <= 15) {
-    // 10s short video: extract 5 well-distributed frames (e.g. 1s, 3s, 5s, 7s, 9s)
     frameCount = 5;
   } else if (durationSeconds <= 45) {
-    // 15s to 45s: 6 frames
     frameCount = 6;
   } else if (durationSeconds <= 180) {
-    // 1m to 3m: 7 frames
     frameCount = 7;
   } else if (durationSeconds <= 3600) {
-    // 3m to 1h: 8 frames
     frameCount = 8;
   } else if (durationSeconds <= 18000) {
-    // 1h to 5h: 10 frames
     frameCount = 10;
   } else {
-    // 5h to 10h+: 10 to 12 frames
     frameCount = 10;
   }
 
@@ -261,7 +346,6 @@ export function calculateExtractionTimestamps(
     frameCount = Math.max(frameCount, options.minFrames);
   }
 
-  // Ensure safe margins so we don't sample right at 0.0 or past the end
   const startMargin = Math.min(0.5, durationSeconds * 0.05);
   const endMargin = Math.min(0.5, durationSeconds * 0.05);
   const effectiveSpan = durationSeconds - startMargin - endMargin;
@@ -278,11 +362,9 @@ export function calculateExtractionTimestamps(
 
   for (let i = 0; i < frameCount; i++) {
     const rawSeconds = startMargin + i * step;
-    // Bound strictly within duration
     const clampedSeconds = Math.max(0.1, Math.min(durationSeconds - 0.1, rawSeconds));
     const rounded = Number(clampedSeconds.toFixed(2));
 
-    // Avoid duplicate timestamps
     if (timestamps.length === 0 || rounded > timestamps[timestamps.length - 1].seconds + 0.1) {
       timestamps.push({
         seconds: rounded,
@@ -334,6 +416,7 @@ export function formatDurationLabel(seconds: number): string {
 /**
  * Extracts real authentic frames from the uploaded video file using FFmpeg.
  * Guaranteed: Every frame is extracted directly from the uploaded video.
+ * Supports configurable intervalSeconds (e.g. 15, 30, 60, 300), video duplicate caching, and high-quality image scaling.
  */
 export async function extractRealVideoFrames(params: {
   videoPath: string;
@@ -341,25 +424,59 @@ export async function extractRealVideoFrames(params: {
   storeId: string;
   cctvId: string;
   framesOutputDir: string;
+  intervalSeconds?: number;
   maxFrames?: number;
   onProgress?: (progressPct: number, currentFrame: number, totalFrames: number, message: string) => void;
 }): Promise<{
   metadata: VideoMetadata;
   frames: ExtractedFrame[];
+  isCached?: boolean;
 }> {
-  const { videoPath, sourceVideoName, storeId, cctvId, framesOutputDir, maxFrames, onProgress } = params;
+  const { videoPath, sourceVideoName, storeId, cctvId, framesOutputDir, intervalSeconds, maxFrames, onProgress } = params;
 
-  // 1. Read metadata & validate video
-  onProgress?.(10, 0, 0, "Inspecting video stream and authentic duration...");
+  // 1. Check duplicate video cache to avoid redundant heavy FFmpeg processing
+  const fingerprint = generateVideoFingerprint(videoPath);
+  const cached = videoCache.get(fingerprint);
+
+  if (cached && cached.frames.length > 0) {
+    // Verify that cached frame files still exist on disk
+    const allFilesExist = cached.frames.every((f) => {
+      const filename = path.basename(f.imageUrl);
+      return fs.existsSync(path.join(framesOutputDir, filename));
+    });
+
+    if (allFilesExist) {
+      onProgress?.(100, cached.frames.length, cached.frames.length, "Loaded authentic frames instantly from verified video cache.");
+      const clonedFrames: ExtractedFrame[] = cached.frames.map((f, i) => ({
+        ...f,
+        cctvId,
+        storeId,
+        sourceVideoName,
+        status: "Unreviewed" as const,
+      }));
+
+      return {
+        metadata: cached.metadata,
+        frames: clonedFrames,
+        isCached: true,
+      };
+    }
+  }
+
+  // 2. Read metadata & validate video
+  onProgress?.(10, 0, 0, "Inspecting video stream, codec, and authentic duration...");
   const metadata = await getVideoMetadata(videoPath);
 
-  // 2. Ensure output directory exists
+  // 3. Ensure output directory exists
   if (!fs.existsSync(framesOutputDir)) {
     fs.mkdirSync(framesOutputDir, { recursive: true });
   }
 
-  // 3. Compute dynamic timestamps
-  const timestamps = calculateExtractionTimestamps(metadata.durationSeconds, { maxFrames });
+  // 4. Compute dynamic timestamps (interval-based or adaptive schedule)
+  const timestamps = calculateExtractionTimestamps(metadata.durationSeconds, {
+    intervalSeconds,
+    maxFrames,
+  });
 
   if (timestamps.length === 0) {
     throw new Error("Unable to determine valid extraction timestamps for the provided video.");
@@ -367,7 +484,7 @@ export async function extractRealVideoFrames(params: {
 
   const frames: ExtractedFrame[] = [];
 
-  // 4. Extract each frame with FFmpeg
+  // 5. Extract each frame with FFmpeg with fast seek, resolution scaling, and crisp compression
   for (let i = 0; i < timestamps.length; i++) {
     const { seconds, formatted } = timestamps[i];
     const photoNumber = String(i + 1).padStart(2, "0");
@@ -383,16 +500,19 @@ export async function extractRealVideoFrames(params: {
     );
 
     try {
-      // Fast accurate seek using -ss before -i, extracting a single frame
+      // Fast accurate seek using -ss before -i, scaling to max 1280px width (-vf scale='min(1280,iw)':-2)
+      // and high quality JPEG compression (-q:v 3) for crisp, lightweight forensic frames.
       await execFileAsync("ffmpeg", [
         "-ss",
         String(seconds),
         "-i",
         videoPath,
+        "-vf",
+        "scale='min(1280,iw)':-2",
         "-vframes",
         "1",
         "-q:v",
-        "2", // High quality JPEG
+        "3",
         outputPath,
         "-y",
       ]);
@@ -401,7 +521,7 @@ export async function extractRealVideoFrames(params: {
         throw new Error(`Frame file ${frameFilename} was not created or is empty.`);
       }
 
-      // Read extracted frame as base64 dataUrl so it is fully standalone and persistent
+      // Read extracted frame buffer for inline base64 fallback
       const frameBuffer = fs.readFileSync(outputPath);
       const dataUrl = `data:image/jpeg;base64,${frameBuffer.toString("base64")}`;
       const imageUrl = `/uploads/cctv/frames/${frameFilename}`;
@@ -430,10 +550,18 @@ export async function extractRealVideoFrames(params: {
     throw new Error(`FFmpeg failed to extract any authentic frames from video "${sourceVideoName}".`);
   }
 
+  // 6. Cache successfully processed video results
+  videoCache.set(fingerprint, {
+    metadata,
+    frames,
+  });
+  persistVideoCache();
+
   onProgress?.(95, frames.length, timestamps.length, "Finalizing photo metadata and evidence records...");
 
   return {
     metadata,
     frames,
+    isCached: false,
   };
 }

@@ -77,7 +77,7 @@ import {
 } from "@/services/cctvEvidenceStore";
 
 export function ManagementDashboard() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
 
   // Role detection
@@ -149,7 +149,10 @@ export function ManagementDashboard() {
     setLoading(true);
     setError(null);
     try {
-      const token = localStorage.getItem("franchise_auth_token");
+      const activeToken =
+        token ||
+        localStorage.getItem("franchise_auth_token") ||
+        sessionStorage.getItem("franchise_auth_token");
       const params = new URLSearchParams();
       if (selectedDate !== "All Time") params.append("date", selectedDate);
       if (selectedCity !== "All Cities") params.append("city", selectedCity);
@@ -167,12 +170,43 @@ export function ManagementDashboard() {
         params.append("complianceStatus", selectedComplianceStatus);
 
       const res = await fetch(`/api/dashboard/overview?${params.toString()}`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        headers: {
+          Accept: "application/json",
+          ...(activeToken && activeToken !== "null" && activeToken !== "undefined"
+            ? { Authorization: `Bearer ${activeToken}` }
+            : {}),
+        },
+        credentials: "include",
       });
 
-      const resData = await res.json();
+      const rawText = await res.text();
+      let resData: any = null;
+      if (rawText && rawText.trim()) {
+        try {
+          resData = JSON.parse(rawText);
+        } catch {
+          resData = null;
+        }
+      }
+
       if (!res.ok) {
-        throw new Error(resData.error || "Failed to load dashboard overview.");
+        if (res.status === 401) {
+          throw new Error("Authentication required or session expired. Please sign in again.");
+        }
+        if (res.status === 403) {
+          throw new Error(resData?.error || "Access Denied: Officer account is not authorized for dashboard metrics.");
+        }
+        if (res.status === 404) {
+          throw new Error("Dashboard overview API route not found on server (404).");
+        }
+        if (res.status >= 500) {
+          throw new Error(resData?.error || `Dashboard service error (${res.status}). Please retry.`);
+        }
+        throw new Error(resData?.error || `Failed to load dashboard overview (${res.status}).`);
+      }
+
+      if (!resData || typeof resData !== "object") {
+        throw new Error("Invalid response received from dashboard server. Please retry.");
       }
 
       setData(resData);

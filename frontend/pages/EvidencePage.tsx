@@ -97,6 +97,15 @@ export default function EvidencePage() {
   // Processing & Job Progress State
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const [uploadProgress, setUploadProgress] = useState<number>(0);
+  const [uploadBytesStatus, setUploadBytesStatus] = useState<string>("");
+  const [processingPhase, setProcessingPhase] = useState<
+    "IDLE" | "UPLOADING" | "PROBING" | "EXTRACTING" | "SAVING" | "COMPLETED" | "FAILED"
+  >("IDLE");
+  const [extractedFramesInfo, setExtractedFramesInfo] = useState<{ current: number; total: number }>({
+    current: 0,
+    total: 0,
+  });
+  const [extractionInterval, setExtractionInterval] = useState<string>("30");
   const [processingStep, setProcessingStep] = useState<string>("");
   const [submissionStatus, setSubmissionStatus] = useState<
     "IDLE" | "INSPECTING" | "UPLOADING" | "PROCESSING" | "SUBMITTED" | "FAILED"
@@ -185,12 +194,23 @@ export default function EvidencePage() {
           setUploadProgress(job.progressPct || 0);
           setProcessingStep(job.currentStep || "Processing video...");
 
+          if (job.currentFrame && job.totalFrames) {
+            setExtractedFramesInfo({ current: job.currentFrame, total: job.totalFrames });
+          }
+
+          if (job.status === "GENERATING_PHOTOS") {
+            setProcessingPhase("EXTRACTING");
+          } else if (job.status === "PROCESSING") {
+            setProcessingPhase("PROBING");
+          }
+
           if (job.status === "COMPLETED") {
             clearInterval(pollInterval);
             sessionStorage.removeItem(`active_cctv_job_${storeId}`);
             setActiveJobId(null);
             setIsProcessing(false);
             setSubmissionStatus("SUBMITTED");
+            setProcessingPhase("COMPLETED");
             setSubmissionSuccess(true);
 
             if (job.frames && Array.isArray(job.frames) && job.frames.length > 0) {
@@ -238,6 +258,7 @@ export default function EvidencePage() {
             setActiveJobId(null);
             setIsProcessing(false);
             setSubmissionStatus("FAILED");
+            setProcessingPhase("FAILED");
             setErrorMessage(job.error || "Video processing job failed on server.");
           }
         }
@@ -279,6 +300,55 @@ export default function EvidencePage() {
     }
   };
 
+  // Helper: Upload video with XMLHttpRequest to report real upload percentage and bytes
+  const uploadVideoWithXhr = (
+    file: File,
+    targetStoreId: string,
+    authToken: string,
+    intervalSecs: number | undefined,
+    onProgress: (loaded: number, total: number, pct: number) => void
+  ): Promise<any> => {
+    return new Promise((resolve, reject) => {
+      const xhr = new XMLHttpRequest();
+      const formData = new FormData();
+      formData.append("video", file);
+      formData.append("storeId", targetStoreId);
+      if (intervalSecs) {
+        formData.append("intervalSeconds", String(intervalSecs));
+      }
+
+      xhr.upload.onprogress = (evt) => {
+        if (evt.lengthComputable) {
+          const pct = Math.round((evt.loaded / evt.total) * 100);
+          onProgress(evt.loaded, evt.total, pct);
+        }
+      };
+
+      xhr.onload = () => {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          if (xhr.status >= 200 && xhr.status < 300) {
+            resolve(data);
+          } else {
+            reject(new Error(data.error || `Server returned error (${xhr.status})`));
+          }
+        } catch (e) {
+          reject(new Error(`Server returned invalid response (Status ${xhr.status})`));
+        }
+      };
+
+      xhr.onerror = () => {
+        reject(new Error("Network transmission failed during video upload."));
+      };
+
+      xhr.open("POST", "/api/cctv/upload-and-extract?async=true");
+      if (authToken) {
+        xhr.setRequestHeader("Authorization", `Bearer ${authToken}`);
+      }
+      xhr.send(formData);
+    });
+  };
+
   // Submit CCTV Video (Dual-layer Architecture: FFmpeg Background Job + Browser Canvas Fallback)
   const handleSubmitCctv = async () => {
     if (!isStoreRole || !selectedFile) return;
@@ -288,45 +358,42 @@ export default function EvidencePage() {
     setErrorMessage(null);
     setPhotos([]); // Clear previous photos immediately so new upload doesn't mix with older footage
     setSubmissionStatus("UPLOADING");
-    setUploadProgress(15);
-    setProcessingStep("Uploading video to secure evidence vault...");
+    setProcessingPhase("UPLOADING");
+    setUploadProgress(0);
+    setUploadBytesStatus(`0 MB / ${(selectedFile.size / (1024 * 1024)).toFixed(1)} MB`);
+    setProcessingStep(`Uploading ${selectedFile.name} to evidence vault...`);
 
     const cctvId = `CCTV-${storeId}-${Date.now().toString().slice(-6)}`;
     const originalName = selectedFile.name;
     const token = getAuthToken();
+    const intervalNum = extractionInterval === "auto" ? undefined : parseInt(extractionInterval, 10);
 
     try {
-      // 1. Attempt Server-side Upload & FFmpeg Extraction with Background Job
-      const formData = new FormData();
-      formData.append("video", selectedFile);
-      formData.append("storeId", storeId);
-
-      setProcessingStep("Uploading video file to server...");
-      setUploadProgress(30);
-
-      const res = await fetch("/api/cctv/upload-and-extract?async=true", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        body: formData,
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        if (data.success && data.jobId) {
-          // Asynchronous job queued successfully!
-          setActiveJobId(data.jobId);
-          sessionStorage.setItem(`active_cctv_job_${storeId}`, data.jobId);
-          setSubmissionStatus("PROCESSING");
-          setProcessingStep("Video uploaded. Background frame extraction pipeline running...");
-          setUploadProgress(40);
-          return;
-        } else if (data.success && data.frames) {
-          // Synchronous completion fallback
-          handleExtractionSuccess(data.frames, data.videoDurationSeconds, data.durationLabel, cctvId, originalName);
-          return;
+      // 1. Upload video with real-time byte tracking
+      const data = await uploadVideoWithXhr(
+        selectedFile,
+        storeId,
+        token,
+        intervalNum,
+        (loaded, total, pct) => {
+          setUploadProgress(pct);
+          const loadedMb = (loaded / (1024 * 1024)).toFixed(1);
+          const totalMb = (total / (1024 * 1024)).toFixed(1);
+          setUploadBytesStatus(`${loadedMb} MB / ${totalMb} MB`);
+          setProcessingStep(`Uploading CCTV video: ${loadedMb} MB / ${totalMb} MB (${pct}%)...`);
         }
+      );
+
+      if (data.success && data.jobId) {
+        setActiveJobId(data.jobId);
+        sessionStorage.setItem(`active_cctv_job_${storeId}`, data.jobId);
+        setSubmissionStatus("PROCESSING");
+        setProcessingPhase("PROBING");
+        setProcessingStep("Video uploaded. Probing duration and extracting authentic photos in background...");
+        return;
+      } else if (data.success && data.frames) {
+        handleExtractionSuccess(data.frames, data.videoDurationSeconds, data.durationLabel, cctvId, originalName);
+        return;
       }
 
       // If server returned error or upload failed (e.g. Vercel 4.5MB serverless limit)
@@ -339,6 +406,7 @@ export default function EvidencePage() {
       } catch (fallbackErr: any) {
         setIsProcessing(false);
         setSubmissionStatus("FAILED");
+        setProcessingPhase("FAILED");
         setErrorMessage(
           fallbackErr.message ||
             "Failed to decode frames from the uploaded video. Please verify the video format and retry."
@@ -671,23 +739,35 @@ export default function EvidencePage() {
             </div>
           )}
 
-          {/* Error Banner */}
+          {/* Error Banner with Direct Retry Action */}
           {errorMessage && (
-            <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-800 text-xs flex items-center justify-between shadow-xs">
+            <div className="p-4 rounded-xl border border-rose-500/30 bg-rose-500/10 text-rose-800 text-xs flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs">
               <div className="flex items-center gap-2.5">
                 <AlertCircle className="h-5 w-5 text-rose-600 shrink-0" />
                 <div>
-                  <span className="font-bold text-sm block">Video Processing Error</span>
+                  <span className="font-bold text-sm block">Video Processing Encountered An Issue</span>
                   <span className="text-[11px] text-rose-700">{errorMessage}</span>
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setErrorMessage(null)}
-                className="text-rose-400 hover:text-rose-700 cursor-pointer p-1"
-              >
-                <X className="h-4 w-4" />
-              </button>
+              <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+                <Button
+                  type="button"
+                  size="sm"
+                  onClick={handleSubmitCctv}
+                  disabled={isProcessing}
+                  className="bg-rose-700 hover:bg-rose-800 text-white text-xs font-bold px-3 py-1.5 rounded-lg shadow-2xs gap-1.5 cursor-pointer"
+                >
+                  <RefreshCw className="h-3.5 w-3.5" />
+                  <span>Retry Processing</span>
+                </Button>
+                <button
+                  type="button"
+                  onClick={() => setErrorMessage(null)}
+                  className="text-rose-400 hover:text-rose-700 cursor-pointer p-1"
+                >
+                  <X className="h-4 w-4" />
+                </button>
+              </div>
             </div>
           )}
 
@@ -746,7 +826,7 @@ export default function EvidencePage() {
               </div>
             )}
 
-            {/* Selected Video Details & Real Duration Telemetry */}
+            {/* Selected Video Details & Configurable Extraction Schedule */}
             {selectedFile && (
               <div className="rounded-xl bg-[#F6F1E7]/60 border border-[#DDE5DC] p-5 space-y-4">
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 text-xs">
@@ -786,14 +866,20 @@ export default function EvidencePage() {
                       <span>Extraction Policy</span>
                     </span>
                     <div className="font-mono text-[#073B2A] font-bold">
-                      {detectedMetadata
-                        ? `${calculateTimestampsForDuration(detectedMetadata.durationSeconds).length} authentic frames`
-                        : "Adaptive frame schedule"}
+                      {extractionInterval === "30"
+                        ? "Every 30s (Default Standard)"
+                        : extractionInterval === "auto"
+                        ? "Adaptive Smart Distribution"
+                        : `Every ${extractionInterval}s`}
                     </div>
                     <span className="text-[10px] font-mono text-[#738078] block">
-                      {detectedMetadata?.durationSeconds && detectedMetadata.durationSeconds <= 15
-                        ? "Well-spaced within short clip"
-                        : "Distributed across full duration"}
+                      {detectedMetadata
+                        ? `Est. ~${
+                            extractionInterval === "auto"
+                              ? calculateTimestampsForDuration(detectedMetadata.durationSeconds).length
+                              : Math.min(25, Math.max(2, Math.floor(detectedMetadata.durationSeconds / parseInt(extractionInterval, 10))))
+                          } authentic photos`
+                        : "Representative forensic frames"}
                     </span>
                   </div>
 
@@ -809,21 +895,128 @@ export default function EvidencePage() {
                   </div>
                 </div>
 
-                {/* Progress bar during upload / extraction */}
+                {/* Configurable Frame Extraction Interval (Requested in optimization specs) */}
+                <div className="pt-3 border-t border-[#DDE5DC] space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[11px] font-mono uppercase text-[#073B2A] font-bold flex items-center gap-1.5">
+                      <Clock className="h-3.5 w-3.5 text-[#13845B]" />
+                      <span>Configure Frame Extraction Interval:</span>
+                    </span>
+                    <span className="text-[10px] font-mono text-[#738078]">
+                      {extractionInterval === "30"
+                        ? "Sensible Default: 30s"
+                        : extractionInterval === "auto"
+                        ? "Auto Calibrated"
+                        : `Step: ${extractionInterval}s`}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                    {[
+                      { id: "30", label: "Every 30s", desc: "Default Standard" },
+                      { id: "auto", label: "Auto Adaptive", desc: "Calibrated to length" },
+                      { id: "15", label: "Every 15s", desc: "High Density" },
+                      { id: "60", label: "Every 60s", desc: "1 Min Spacing" },
+                      { id: "300", label: "Every 5m", desc: "Multi-Hour Video" },
+                    ].map((opt) => (
+                      <button
+                        key={opt.id}
+                        type="button"
+                        disabled={isProcessing}
+                        onClick={() => setExtractionInterval(opt.id)}
+                        className={`p-2 rounded-lg border text-left transition-all cursor-pointer ${
+                          extractionInterval === opt.id
+                            ? "border-[#13845B] bg-[#13845B]/10 text-[#073B2A] font-bold shadow-2xs"
+                            : "border-[#DDE5DC] bg-white hover:bg-[#F6F1E7] text-[#738078]"
+                        }`}
+                      >
+                        <span className="block text-xs font-mono">{opt.label}</span>
+                        <span className="block text-[10px] text-[#738078] leading-tight mt-0.5">{opt.desc}</span>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Multi-Phase Progress UI during Upload & Background Extraction */}
                 {isProcessing && (
-                  <div className="pt-2 space-y-2">
-                    <div className="flex items-center justify-between text-xs font-mono">
-                      <span className="text-[#073B2A] flex items-center gap-2 font-medium">
-                        <Loader2 className="h-3.5 w-3.5 animate-spin text-[#13845B]" />
+                  <div className="p-4 rounded-xl bg-white border border-[#13845B]/30 shadow-xs space-y-3">
+                    {/* Status Text & Progress Percentage */}
+                    <div className="flex items-center justify-between text-xs">
+                      <div className="flex items-center gap-2 text-[#073B2A] font-bold font-mono">
+                        <Loader2 className="h-4 w-4 animate-spin text-[#13845B]" />
                         <span>{processingStep}</span>
+                      </div>
+                      <span className="font-mono text-xs font-bold text-[#13845B] bg-[#13845B]/10 px-2.5 py-0.5 rounded-md border border-[#13845B]/20">
+                        {uploadProgress}%
                       </span>
-                      <span className="text-[#073B2A] font-bold">{uploadProgress}%</span>
                     </div>
-                    <div className="h-2 w-full rounded-full bg-[#DDE5DC] overflow-hidden">
+
+                    {/* Progress Bar */}
+                    <div className="h-2.5 w-full rounded-full bg-[#E6ECE8] overflow-hidden p-0.5">
                       <div
-                        className="h-full bg-gradient-to-r from-[#13845B] to-[#72D6A0] transition-all duration-300"
-                        style={{ width: `${Math.max(5, uploadProgress)}%` }}
+                        className="h-full rounded-full bg-gradient-to-r from-[#13845B] via-[#72D6A0] to-[#13845B] transition-all duration-300"
+                        style={{ width: `${Math.max(6, uploadProgress)}%` }}
                       />
+                    </div>
+
+                    {/* Multi-Phase Step Indicators */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-1 text-[11px] font-mono">
+                      <div
+                        className={`p-2 rounded-lg border flex items-center gap-1.5 ${
+                          processingPhase === "UPLOADING"
+                            ? "border-[#13845B] bg-[#13845B]/10 text-[#073B2A] font-bold"
+                            : uploadProgress > 30
+                            ? "border-[#DDE5DC] bg-[#F6F1E7]/60 text-[#13845B]"
+                            : "border-[#DDE5DC] bg-gray-50 text-gray-400"
+                        }`}
+                      >
+                        <Upload className="h-3.5 w-3.5 shrink-0" />
+                        <span className="truncate">1. Upload ({uploadProgress}%)</span>
+                      </div>
+
+                      <div
+                        className={`p-2 rounded-lg border flex items-center gap-1.5 ${
+                          processingPhase === "PROBING"
+                            ? "border-[#13845B] bg-[#13845B]/10 text-[#073B2A] font-bold"
+                            : uploadProgress >= 40
+                            ? "border-[#DDE5DC] bg-[#F6F1E7]/60 text-[#13845B]"
+                            : "border-[#DDE5DC] bg-gray-50 text-gray-400"
+                        }`}
+                      >
+                        <Film className="h-3.5 w-3.5 shrink-0" />
+                        <span className="truncate">2. Probe Codec</span>
+                      </div>
+
+                      <div
+                        className={`p-2 rounded-lg border flex items-center gap-1.5 ${
+                          processingPhase === "EXTRACTING"
+                            ? "border-[#13845B] bg-[#13845B]/10 text-[#073B2A] font-bold"
+                            : uploadProgress >= 90
+                            ? "border-[#DDE5DC] bg-[#F6F1E7]/60 text-[#13845B]"
+                            : "border-[#DDE5DC] bg-gray-50 text-gray-400"
+                        }`}
+                      >
+                        <Camera className="h-3.5 w-3.5 shrink-0" />
+                        <span className="truncate">
+                          3. Photos{" "}
+                          {extractedFramesInfo.total > 0
+                            ? `(${extractedFramesInfo.current}/${extractedFramesInfo.total})`
+                            : "Extract"}
+                        </span>
+                      </div>
+
+                      <div
+                        className={`p-2 rounded-lg border flex items-center gap-1.5 ${
+                          processingPhase === "SAVING"
+                            ? "border-[#13845B] bg-[#13845B]/10 text-[#073B2A] font-bold"
+                            : uploadProgress >= 95
+                            ? "border-[#DDE5DC] bg-[#F6F1E7]/60 text-[#13845B]"
+                            : "border-[#DDE5DC] bg-gray-50 text-gray-400"
+                        }`}
+                      >
+                        <HardDrive className="h-3.5 w-3.5 shrink-0" />
+                        <span className="truncate">4. Certify Evidence</span>
+                      </div>
                     </div>
                   </div>
                 )}
@@ -832,8 +1025,8 @@ export default function EvidencePage() {
                 <div className="pt-3 border-t border-[#DDE5DC] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
                   <span className="text-[11px] text-[#738078]">
                     {detectedMetadata?.durationSeconds && detectedMetadata.durationSeconds <= 15
-                      ? `Short video detected (${detectedMetadata.durationLabel}): Frames will be extracted strictly within the recording.`
-                      : "System automatically extracts representative frames distributed across the recording duration."}
+                      ? `Short video detected (${detectedMetadata.durationLabel}): Frames extracted strictly within duration.`
+                      : `Video duration: ${detectedMetadata?.durationLabel || "Any (10s to 10h)"}. System extracts representative forensic frames.`}
                   </span>
 
                   <Button
@@ -1031,9 +1224,10 @@ export default function EvidencePage() {
                 {/* Photo Image Preview (16:9 Aspect Ratio) */}
                 <div className="relative aspect-video w-full bg-black overflow-hidden border-b border-[#DDE5DC] flex items-center justify-center">
                   <img
-                    src={photo.dataUrl || photo.imageUrl}
+                    src={photo.imageUrl || photo.dataUrl}
                     alt={`${photo.id} - ${photo.zone}`}
                     loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     onError={(e) => {
                       e.currentTarget.style.display = "none";
@@ -1160,7 +1354,7 @@ export default function EvidencePage() {
             {/* Modal 16:9 Image Frame */}
             <div className="rounded-xl overflow-hidden border border-[#DDE5DC] bg-black aspect-video w-full shadow-inner flex items-center justify-center">
               <img
-                src={previewPhoto.dataUrl || previewPhoto.imageUrl}
+                src={previewPhoto.imageUrl || previewPhoto.dataUrl}
                 alt={`${previewPhoto.id} - ${previewPhoto.zone}`}
                 className="w-full h-full object-contain"
                 onError={(e) => {

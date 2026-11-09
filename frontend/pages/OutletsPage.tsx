@@ -72,12 +72,13 @@ const STATUSES = [
 ];
 
 export default function OutletsPage() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const navigate = useNavigate();
 
   const [outlets, setOutlets] = useState<OutletRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [authError, setAuthError] = useState(false);
   const [isRestricted, setIsRestricted] = useState(false);
 
   // Filters & Search
@@ -91,44 +92,64 @@ export default function OutletsPage() {
   const fetchOutlets = async () => {
     setLoading(true);
     setError(null);
+    setAuthError(false);
     try {
-      const rawToken = localStorage.getItem("franchise_auth_token");
-      const token =
-        rawToken && rawToken !== "null" && rawToken !== "undefined"
-          ? rawToken
-          : null;
+      const activeToken =
+        token ||
+        localStorage.getItem("franchise_auth_token") ||
+        sessionStorage.getItem("franchise_auth_token");
 
       const params = new URLSearchParams();
-      if (searchQuery.trim()) params.append("search", searchQuery.trim());
       if (selectedCity !== "All Cities") params.append("city", selectedCity);
       if (selectedModel !== "All Models") params.append("model", selectedModel);
       if (selectedStatus !== "All Statuses") params.append("status", selectedStatus);
 
       const queryString = params.toString() ? `?${params.toString()}` : "";
-      const headers: Record<string, string> = {};
-      if (token) {
-        headers["Authorization"] = `Bearer ${token}`;
+      const headers: Record<string, string> = {
+        Accept: "application/json",
+      };
+      if (activeToken && activeToken !== "null" && activeToken !== "undefined") {
+        headers["Authorization"] = `Bearer ${activeToken}`;
       }
 
-      let res = await fetch(`/api/outlets${queryString}`, {
+      const res = await fetch(`/api/outlets${queryString}`, {
         headers,
         credentials: "include",
       });
 
-      // If /api/outlets is not mounted on some hosts, fallback to root /outlets
-      if (res.status === 404) {
-        res = await fetch(`/outlets${queryString}`, {
-          headers,
-          credentials: "include",
-        });
+      const rawText = await res.text();
+      let data: any = null;
+      if (rawText && rawText.trim()) {
+        try {
+          data = JSON.parse(rawText);
+        } catch {
+          data = null;
+        }
       }
 
-      const data = await res.json();
       if (!res.ok) {
-        throw new Error(data.error || "Failed to retrieve franchise stores directory.");
+        if (res.status === 401) {
+          setAuthError(true);
+          throw new Error("Authentication required or session expired. Please sign in again.");
+        }
+        if (res.status === 403) {
+          throw new Error(data?.error || "Access Denied: You lack permissions to view the network store directory.");
+        }
+        if (res.status === 404) {
+          throw new Error("Stores Directory API route not found on server (404).");
+        }
+        if (res.status >= 500) {
+          throw new Error(data?.error || `Stores database connection or service error (${res.status}). Please retry.`);
+        }
+        throw new Error(data?.error || `Failed to retrieve stores directory (${res.status}).`);
       }
 
-      setOutlets(data.outlets || []);
+      if (!data || typeof data !== "object") {
+        throw new Error("Unable to load store directory: Invalid response received from server. Please retry.");
+      }
+
+      const outletList = Array.isArray(data.outlets) ? data.outlets : [];
+      setOutlets(outletList);
       setIsRestricted(!!data.restricted);
     } catch (err: any) {
       console.error("Outlets fetch error:", err);
@@ -404,14 +425,25 @@ export default function OutletsPage() {
               <p className="mt-0.5 text-red-700">{error}</p>
             </div>
           </div>
-          <Button
-            size="sm"
-            onClick={fetchOutlets}
-            className="cursor-pointer bg-[#073B2A] text-white hover:bg-[#13845B] text-xs h-8 px-3 shrink-0 self-start sm:self-auto"
-          >
-            <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
-            Retry Connection
-          </Button>
+          <div className="flex items-center gap-2 shrink-0 self-start sm:self-auto">
+            {authError && (
+              <Button
+                size="sm"
+                onClick={() => navigate("/login")}
+                className="cursor-pointer bg-white text-[#073B2A] border border-[#DDE5DC] hover:bg-[#F6F1E7] text-xs h-8 px-3"
+              >
+                Sign In
+              </Button>
+            )}
+            <Button
+              size="sm"
+              onClick={fetchOutlets}
+              className="cursor-pointer bg-[#073B2A] text-white hover:bg-[#13845B] text-xs h-8 px-3"
+            >
+              <RefreshCw className="h-3.5 w-3.5 mr-1.5" />
+              Retry Connection
+            </Button>
+          </div>
         </div>
       )}
 

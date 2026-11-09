@@ -79,21 +79,23 @@ async function processCctvExtractionJob(
   cctvId: string,
   storeId: string,
   videoDiskPath: string,
-  originalFilename: string
+  originalFilename: string,
+  intervalSeconds?: number
 ) {
   try {
     CctvJobQueue.updateJob(jobId, {
       status: "PROCESSING",
       progressPct: 10,
-      currentStep: "Analyzing video format and authentic duration...",
+      currentStep: "Analyzing video format, stream headers, and authentic duration...",
     });
 
-    const { metadata, frames } = await extractRealVideoFrames({
+    const { metadata, frames, isCached } = await extractRealVideoFrames({
       videoPath: videoDiskPath,
       sourceVideoName: originalFilename,
       storeId,
       cctvId,
       framesOutputDir: CCTV_FRAMES_DIR,
+      intervalSeconds,
       onProgress: (pct, curr, total, msg) => {
         CctvJobQueue.updateJob(jobId, {
           status: "GENERATING_PHOTOS",
@@ -104,6 +106,15 @@ async function processCctvExtractionJob(
         });
       },
     });
+
+    // If frames were served from duplicate cache, we can safely delete redundant uploaded copy to save disk space
+    if (isCached) {
+      try {
+        if (fs.existsSync(videoDiskPath)) {
+          fs.unlinkSync(videoDiskPath);
+        }
+      } catch {}
+    }
 
     const durationLabel = formatDurationLabel(metadata.durationSeconds);
     const nowStr = new Date().toISOString().replace("T", " ").substring(0, 16);
@@ -126,7 +137,9 @@ async function processCctvExtractionJob(
         framesJson: JSON.stringify(frames),
         aiObservationsJson: JSON.stringify([]),
         officerDecision: "CONFIRMED",
-        officerNotes: `Frames automatically extracted from uploaded CCTV video (${durationLabel}). Pending human officer evaluation.`,
+        officerNotes: `Frames automatically extracted from uploaded CCTV video (${durationLabel})${
+          isCached ? " [Retrieved from verified video cache]" : ""
+        }. Pending human officer evaluation.`,
         complianceCategory: "Store CCTV Surveillance",
         complianceSeverity: "LOW",
         verifiedBy: `${user.name} (${user.email})`,
@@ -150,7 +163,9 @@ async function processCctvExtractionJob(
     CctvJobQueue.updateJob(jobId, {
       status: "COMPLETED",
       progressPct: 100,
-      currentStep: `Successfully extracted ${frames.length} authentic frames across ${durationLabel}.`,
+      currentStep: isCached
+        ? `Successfully verified and loaded ${frames.length} authentic frames instantly from cache (${durationLabel}).`
+        : `Successfully extracted ${frames.length} authentic frames across ${durationLabel}.`,
       videoDurationSeconds: metadata.durationSeconds,
       durationLabel,
       totalFrames: frames.length,
@@ -225,10 +240,12 @@ router.post(
     });
 
     const isAsync = req.query.async !== "false";
+    const rawInterval = req.body.intervalSeconds ? parseInt(req.body.intervalSeconds, 10) : undefined;
+    const intervalSeconds = rawInterval && !isNaN(rawInterval) && rawInterval > 0 ? rawInterval : undefined;
 
     if (isAsync) {
       // Trigger background processing asynchronously without blocking HTTP response
-      processCctvExtractionJob(jobId, user, cctvId, requestedStoreId, videoDiskPath, originalFilename);
+      processCctvExtractionJob(jobId, user, cctvId, requestedStoreId, videoDiskPath, originalFilename, intervalSeconds);
 
       return res.status(202).json({
         success: true,
@@ -242,7 +259,7 @@ router.post(
       });
     } else {
       // Synchronous execution (for test scripts or quick requests)
-      await processCctvExtractionJob(jobId, user, cctvId, requestedStoreId, videoDiskPath, originalFilename);
+      await processCctvExtractionJob(jobId, user, cctvId, requestedStoreId, videoDiskPath, originalFilename, intervalSeconds);
       const finishedJob = CctvJobQueue.getJob(jobId);
 
       if (finishedJob?.status === "FAILED") {

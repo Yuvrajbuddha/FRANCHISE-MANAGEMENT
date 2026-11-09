@@ -310,6 +310,32 @@ export default function ReportsPage() {
     }
   };
 
+  const handleExportAllCsv = () => {
+    if (displayedReports.length === 0) return;
+    const headers = ["Report ID", "Title", "Type", "Outlet ID", "Outlet Name", "City", "Date", "Auditor", "Score (%)", "Status", "Summary"];
+    const rows = displayedReports.map((r) => [
+      `"${r.id}"`,
+      `"${(r.title || "").replace(/"/g, '""')}"`,
+      `"${r.reportType}"`,
+      `"${r.outletId}"`,
+      `"${(r.outletName || "").replace(/"/g, '""')}"`,
+      `"${r.outletCity}"`,
+      `"${r.date}"`,
+      `"${(r.author || "").replace(/"/g, '""')}"`,
+      r.score,
+      `"${r.status}"`,
+      `"${(r.summary || "").replace(/"/g, '""')}"`,
+    ]);
+    const csvContent = "data:text/csv;charset=utf-8," + [headers.join(","), ...rows.map((e) => e.join(","))].join("\n");
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", `audit_compliance_reports_${new Date().toISOString().split("T")[0]}.csv`);
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+  };
+
   const hasActiveFilters =
     searchTerm.trim() !== "" || selectedType !== "All Types" || selectedOutlet !== "All Outlets";
 
@@ -339,7 +365,7 @@ export default function ReportsPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap">
           <Button
             variant="outline"
             size="sm"
@@ -349,6 +375,18 @@ export default function ReportsPage() {
           >
             <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} />
             <span>Refresh</span>
+          </Button>
+
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleExportAllCsv}
+            disabled={displayedReports.length === 0}
+            className="bg-white border-[#D1FAE5] text-[#064E3B] hover:bg-[#F0FDF4] hover:border-[#059669] text-xs gap-1.5 transition-colors cursor-pointer"
+            title="Download CSV spreadsheet of all displayed reports"
+          >
+            <Download className="h-3.5 w-3.5 text-[#059669]" />
+            <span>Export CSV</span>
           </Button>
 
           <Button

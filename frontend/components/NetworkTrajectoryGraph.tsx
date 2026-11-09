@@ -27,7 +27,6 @@ const TRAJECTORY_DATA: MonthlyData[] = [
 export function NetworkTrajectoryGraph() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
 
-  // SVG coordinate calculations
   const svgWidth = 900;
   const svgHeight = 240;
   const paddingLeft = 70;
@@ -47,7 +46,6 @@ export function NetworkTrajectoryGraph() {
     return paddingTop + chartHeight - (val / maxVal) * chartHeight;
   };
 
-  // Generate SVG path string with smooth cardinal / cubic bezier curve
   const generateSmoothPath = (getData: (d: MonthlyData) => number) => {
     const points = TRAJECTORY_DATA.map((d, i) => ({ x: getX(i), y: getY(getData(d)) }));
     if (points.length === 0) return "";
@@ -71,66 +69,59 @@ export function NetworkTrajectoryGraph() {
 
   const gmvPath = generateSmoothPath((d) => d.gmv);
   const settledPath = generateSmoothPath((d) => d.settled);
-
-  // Area path for GMV
   const gmvAreaPath = `${gmvPath} L ${getX(TRAJECTORY_DATA.length - 1)},${paddingTop + chartHeight} L ${getX(0)},${paddingTop + chartHeight} Z`;
 
-  // Active data point to display in highlight bar
   const activeData = hoveredIndex !== null ? TRAJECTORY_DATA[hoveredIndex] : TRAJECTORY_DATA[TRAJECTORY_DATA.length - 1];
 
   return (
     <div className="w-full relative mt-10 z-20">
-      {/* Network Edge Accents / Floating Corner Reticles */}
-      <div className="absolute -top-1.5 -left-1.5 h-3 w-3 rounded-full border border-cyan-400/80 bg-[#0A1226] shadow-[0_0_8px_rgba(34,211,238,0.7)] hidden sm:block pointer-events-none" />
-      <div className="absolute -top-1.5 -right-1.5 h-3 w-3 rounded-full border border-cyan-400/80 bg-[#0A1226] shadow-[0_0_8px_rgba(34,211,238,0.7)] hidden sm:block pointer-events-none" />
-      <div className="absolute -bottom-1.5 -left-1.5 h-3 w-3 rounded-full border border-cyan-400/80 bg-[#0A1226] shadow-[0_0_8px_rgba(34,211,238,0.7)] hidden sm:block pointer-events-none" />
-      <div className="absolute -bottom-1.5 -right-1.5 h-3 w-3 rounded-full border border-cyan-400/80 bg-[#0A1226] shadow-[0_0_8px_rgba(34,211,238,0.7)] hidden sm:block pointer-events-none" />
+      {/* Corner Reticles */}
+      <div className="absolute -top-1.5 -left-1.5 h-3 w-3 rounded-full border border-[#72D6A0]/80 bg-[#031D15] shadow-[0_0_8px_rgba(114,214,160,0.7)] hidden sm:block pointer-events-none" />
+      <div className="absolute -top-1.5 -right-1.5 h-3 w-3 rounded-full border border-[#72D6A0]/80 bg-[#031D15] shadow-[0_0_8px_rgba(114,214,160,0.7)] hidden sm:block pointer-events-none" />
+      <div className="absolute -bottom-1.5 -left-1.5 h-3 w-3 rounded-full border border-[#72D6A0]/80 bg-[#031D15] shadow-[0_0_8px_rgba(114,214,160,0.7)] hidden sm:block pointer-events-none" />
+      <div className="absolute -bottom-1.5 -right-1.5 h-3 w-3 rounded-full border border-[#72D6A0]/80 bg-[#031D15] shadow-[0_0_8px_rgba(114,214,160,0.7)] hidden sm:block pointer-events-none" />
 
-      {/* Main Glass-morphism Dark Navy Container */}
-      <div className="rounded-[28px] border border-[#1E2E4A]/80 bg-[#081022]/90 backdrop-blur-md p-6 sm:p-8 shadow-[0_24px_60px_rgba(8,16,34,0.35)] relative overflow-hidden transition-all duration-300 hover:border-cyan-500/30">
-        {/* Subtle Network Grid Ambient Highlight in Background */}
+      {/* Main Glass-morphism Deep Forest Green Container */}
+      <div className="rounded-[28px] border border-[#0D4E39] bg-[#031D15]/95 backdrop-blur-md p-6 sm:p-8 shadow-[0_24px_60px_rgba(3,29,21,0.5)] relative overflow-hidden transition-all duration-300 hover:border-[#13845B]/60">
         <div
-          className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-cyan-500/30 via-transparent to-transparent"
+          className="absolute inset-0 pointer-events-none opacity-20 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#13845B]/40 via-transparent to-transparent"
           aria-hidden="true"
         />
 
         {/* Top Header & Telemetry Badges */}
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 border-b border-white/10 pb-6 relative z-10">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 border-b border-[#0D4E39] pb-6 relative z-10">
           <div>
             <div className="flex items-center gap-2 mb-2">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-cyan-400" />
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#72D6A0] opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#72D6A0]" />
               </span>
-              <span className="text-[10px] font-mono tracking-widest uppercase font-semibold text-cyan-400">
-                NETWORK TELEMETRY · LIVE MULTI-UNIT LEDGER
+              <span className="text-[10px] font-mono tracking-widest uppercase font-semibold text-[#72D6A0]">
+                NETWORK TELEMETRY · MULTI-OUTLET REVENUE TRAJECTORY
               </span>
             </div>
             <h3 className="font-serif text-xl sm:text-2xl font-bold text-white tracking-tight">
               Network Revenue Trajectory vs Statutory Royalty Yield
             </h3>
-            <p className="text-xs text-slate-300 mt-1 max-w-2xl font-sans leading-relaxed">
+            <p className="text-xs text-[#CAD5C9] mt-1 max-w-2xl font-sans leading-relaxed">
               Consolidated franchise sales trajectory synchronized across all metro outlets with automated statutory royalty yield verification.
             </p>
           </div>
 
-          {/* Legend & Real-Time Indicators */}
+          {/* Legend */}
           <div className="flex flex-wrap items-center gap-3 text-xs font-mono shrink-0">
-            {/* Gross GMV Pill */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-200">
-              <span className="h-2.5 w-2.5 rounded-full bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.8)]" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[#CAD5C9]">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#72D6A0] shadow-[0_0_8px_rgba(114,214,160,0.8)]" />
               <span className="font-medium text-[11px]">Gross GMV (₹ Cr)</span>
             </div>
 
-            {/* Settled Net Pill */}
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-slate-200">
-              <span className="h-2.5 w-2.5 rounded-full bg-teal-400 shadow-[0_0_8px_rgba(45,212,191,0.8)]" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 text-[#CAD5C9]">
+              <span className="h-2.5 w-2.5 rounded-full bg-[#13845B] shadow-[0_0_8px_rgba(19,132,91,0.8)]" />
               <span className="font-medium text-[11px]">Settled Net (Royalty Yield)</span>
             </div>
 
-            {/* Current Active Rate Pill */}
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 font-semibold text-[11px]">
-              <TrendingUp className="h-3.5 w-3.5 text-cyan-400" />
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#073B2A] border border-[#13845B] text-[#72D6A0] font-semibold text-[11px]">
+              <TrendingUp className="h-3.5 w-3.5 text-[#72D6A0]" />
               <span>15.1% Statutory Yield</span>
             </div>
           </div>
@@ -145,15 +136,13 @@ export function NetworkTrajectoryGraph() {
               preserveAspectRatio="none"
             >
               <defs>
-                {/* Area Gradient for GMV */}
                 <linearGradient id="net-gmv-grad" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="0%" stopColor="#38BDF8" stopOpacity="0.28" />
-                  <stop offset="70%" stopColor="#0284C7" stopOpacity="0.05" />
-                  <stop offset="100%" stopColor="#0284C7" stopOpacity="0" />
+                  <stop offset="0%" stopColor="#72D6A0" stopOpacity="0.25" />
+                  <stop offset="70%" stopColor="#13845B" stopOpacity="0.05" />
+                  <stop offset="100%" stopColor="#073B2A" stopOpacity="0" />
                 </linearGradient>
 
-                {/* Glow Filter for Network Lines */}
-                <filter id="network-glow" x="-20%" y="-20%" width="140%" height="140%">
+                <filter id="emerald-graph-glow" x="-20%" y="-20%" width="140%" height="140%">
                   <feGaussianBlur stdDeviation="2.5" result="blur" />
                   <feComposite in="SourceGraphic" in2="blur" operator="over" />
                 </filter>
@@ -177,7 +166,7 @@ export function NetworkTrajectoryGraph() {
                       x={paddingLeft - 10}
                       y={y + 3.5}
                       textAnchor="end"
-                      fill="#94A3B8"
+                      fill="#CAD5C9"
                       fontSize="10"
                       fontFamily="monospace"
                       fontWeight="500"
@@ -191,38 +180,38 @@ export function NetworkTrajectoryGraph() {
               {/* GMV Gradient Area */}
               <path d={gmvAreaPath} fill="url(#net-gmv-grad)" />
 
-              {/* Line 1: Gross GMV (Solid Vibrant Sky Blue) */}
+              {/* Line 1: Gross GMV (Mint Emerald) */}
               <path
                 d={gmvPath}
                 fill="none"
-                stroke="#38BDF8"
+                stroke="#72D6A0"
                 strokeWidth="2.5"
-                filter="url(#network-glow)"
+                filter="url(#emerald-graph-glow)"
               />
 
-              {/* Line 2: Settled Net (Dashed Vibrant Cyan-Teal) */}
+              {/* Line 2: Settled Net (Emerald Dashed) */}
               <path
                 d={settledPath}
                 fill="none"
-                stroke="#2DD4BF"
+                stroke="#13845B"
                 strokeWidth="2"
                 strokeDasharray="5 3"
               />
 
-              {/* Vertical Scrubber Cursor Line when Hovered */}
+              {/* Vertical Scrubber Cursor Line */}
               {hoveredIndex !== null && (
                 <line
                   x1={getX(hoveredIndex)}
                   y1={paddingTop}
                   x2={getX(hoveredIndex)}
                   y2={paddingTop + chartHeight}
-                  stroke="rgba(34, 211, 238, 0.5)"
+                  stroke="rgba(114, 214, 160, 0.5)"
                   strokeDasharray="2 2"
                   strokeWidth="1.5"
                 />
               )}
 
-              {/* Data Node Points along the Curves */}
+              {/* Data Node Points */}
               {TRAJECTORY_DATA.map((d, i) => {
                 const cx = getX(i);
                 const cyGmv = getY(d.gmv);
@@ -238,7 +227,6 @@ export function NetworkTrajectoryGraph() {
                     onMouseEnter={() => setHoveredIndex(i)}
                     onMouseLeave={() => setHoveredIndex(null)}
                   >
-                    {/* Invisible Wide Hitbox for Smooth Hovering */}
                     <rect
                       x={cx - chartWidth / (TRAJECTORY_DATA.length * 2)}
                       y={paddingTop}
@@ -247,54 +235,51 @@ export function NetworkTrajectoryGraph() {
                       fill="transparent"
                     />
 
-                    {/* GMV Node Dot (Dual Concentric Rings matching Network Nodes) */}
                     {isHighlighted && (
                       <circle
                         cx={cx}
                         cy={cyGmv}
                         r="8"
-                        fill="rgba(56, 189, 248, 0.25)"
+                        fill="rgba(114, 214, 160, 0.25)"
                       />
                     )}
                     <circle
                       cx={cx}
                       cy={cyGmv}
                       r={isHighlighted ? "4.5" : "3"}
-                      fill="#081022"
-                      stroke="#38BDF8"
+                      fill="#031D15"
+                      stroke="#72D6A0"
                       strokeWidth={isHighlighted ? "2.5" : "1.5"}
                     />
                     <circle
                       cx={cx}
                       cy={cyGmv}
                       r={isHighlighted ? "2" : "1"}
-                      fill="#38BDF8"
+                      fill="#72D6A0"
                     />
 
-                    {/* Settled Net Node Dot */}
                     {isHighlighted && (
                       <circle
                         cx={cx}
                         cy={cySettled}
                         r="7"
-                        fill="rgba(45, 212, 191, 0.25)"
+                        fill="rgba(19, 132, 91, 0.25)"
                       />
                     )}
                     <circle
                       cx={cx}
                       cy={cySettled}
                       r={isHighlighted ? "4" : "2.5"}
-                      fill="#081022"
-                      stroke="#2DD4BF"
-                      strokeWidth={isHighlighted ? "2" : "1.5"}
+                      fill="#031D15"
+                      stroke="#13845B"
+                      strokeWidth={isHighlighted ? "2.5" : "1.5"}
                     />
 
-                    {/* X-Axis Month Labels */}
                     <text
                       x={cx}
                       y={paddingTop + chartHeight + 20}
                       textAnchor="middle"
-                      fill={isHighlighted ? "#38BDF8" : "#94A3B8"}
+                      fill={isHighlighted ? "#72D6A0" : "#CAD5C9"}
                       fontSize={isHighlighted ? "11" : "10"}
                       fontFamily="monospace"
                       fontWeight={isHighlighted ? "700" : "500"}
@@ -308,48 +293,50 @@ export function NetworkTrajectoryGraph() {
           </div>
         </div>
 
-        {/* Dynamic Telemetry Footer Metrics Strip */}
-        <div className="mt-4 pt-4 border-t border-white/10 grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono relative z-10">
-          <div className="bg-white/5 rounded-xl p-3 border border-white/5">
-            <span className="text-[10px] text-slate-400 block uppercase">
+        {/* Telemetry Footer Metrics Strip */}
+        <div className="mt-4 pt-4 border-t border-[#0D4E39] grid grid-cols-2 sm:grid-cols-4 gap-4 text-xs font-mono relative z-10">
+          <div className="bg-[#05291F] rounded-xl p-3 border border-[#0D4E39]">
+            <span className="text-[10px] text-[#CAD5C9] block uppercase">
               {hoveredIndex !== null ? `${activeData.month} Gross GMV` : "Annual Run-Rate GMV"}
             </span>
             <div className="font-bold text-white text-sm sm:text-base flex items-center gap-1 mt-0.5">
               <span>₹{activeData.gmv} Cr</span>
-              <ArrowUpRight className="h-3.5 w-3.5 text-sky-400" />
+              <ArrowUpRight className="h-3.5 w-3.5 text-[#72D6A0]" />
             </div>
-            <span className="text-[10px] text-sky-400 mt-0.5 block">+14.2% YoY Surge</span>
+            <span className="text-[10px] text-[#72D6A0] mt-0.5 block">+14.2% YoY Growth</span>
           </div>
 
-          <div className="bg-white/5 rounded-xl p-3 border border-white/5">
-            <span className="text-[10px] text-slate-400 block uppercase">
+          <div className="bg-[#05291F] rounded-xl p-3 border border-[#0D4E39]">
+            <span className="text-[10px] text-[#CAD5C9] block uppercase">
               {hoveredIndex !== null ? `${activeData.month} Settled Net` : "Statutory Royalty Yield"}
             </span>
-            <div className="font-bold text-teal-400 text-sm sm:text-base flex items-center gap-1 mt-0.5">
+            <div className="font-bold text-[#72D6A0] text-sm sm:text-base flex items-center gap-1 mt-0.5">
               <span>₹{activeData.settled} Cr</span>
-              <ShieldCheck className="h-3.5 w-3.5 text-teal-400" />
+              <ShieldCheck className="h-3.5 w-3.5 text-[#72D6A0]" />
             </div>
-            <span className="text-[10px] text-teal-400 mt-0.5 block">{activeData.royaltyRate} Realized Rate</span>
+            <span className="text-[10px] text-[#CAD5C9] mt-0.5 block">{activeData.royaltyRate} Realized Rate</span>
           </div>
 
-          <div className="bg-white/5 rounded-xl p-3 border border-white/5">
-            <span className="text-[10px] text-slate-400 block uppercase">Reconciliation Status</span>
-            <div className="font-bold text-emerald-400 text-sm sm:text-base flex items-center gap-1 mt-0.5">
+          <div className="bg-[#05291F] rounded-xl p-3 border border-[#0D4E39]">
+            <span className="text-[10px] text-[#CAD5C9] block uppercase">Reconciliation Status</span>
+            <div className="font-bold text-[#72D6A0] text-sm sm:text-base flex items-center gap-1 mt-0.5">
               <span>99.8% Match</span>
             </div>
-            <span className="text-[10px] text-slate-400 mt-0.5 block">Zero Unresolved Discrepancies</span>
+            <span className="text-[10px] text-[#CAD5C9] mt-0.5 block">Zero Unresolved Variances</span>
           </div>
 
-          <div className="bg-white/5 rounded-xl p-3 border border-white/5">
-            <span className="text-[10px] text-slate-400 block uppercase">POS Telemetry Protocol</span>
-            <div className="font-bold text-cyan-300 text-sm sm:text-base flex items-center gap-1 mt-0.5">
-              <Activity className="h-3.5 w-3.5 text-cyan-400" />
-              <span>10 Metros Sync</span>
+          <div className="bg-[#05291F] rounded-xl p-3 border border-[#0D4E39]">
+            <span className="text-[10px] text-[#CAD5C9] block uppercase">Franchise Nodes Sync</span>
+            <div className="font-bold text-[#72D6A0] text-sm sm:text-base flex items-center gap-1 mt-0.5">
+              <Activity className="h-3.5 w-3.5 text-[#72D6A0]" />
+              <span>10 Metros Active</span>
             </div>
-            <span className="text-[10px] text-slate-400 mt-0.5 block">148 Store Nodes Live</span>
+            <span className="text-[10px] text-[#CAD5C9] mt-0.5 block">All Stores Linked</span>
           </div>
         </div>
       </div>
     </div>
   );
 }
+
+export default NetworkTrajectoryGraph;

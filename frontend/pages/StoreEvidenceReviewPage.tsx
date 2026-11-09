@@ -583,8 +583,10 @@ export default function StoreEvidenceReviewPage() {
                   {/* Photo Preview Container */}
                   <div className="relative aspect-video bg-[#05291F] overflow-hidden border-b border-[#DDE5DC] flex items-center justify-center">
                     <img
-                      src={photo.dataUrl || photo.imageUrl}
+                      src={photo.imageUrl || photo.dataUrl}
                       alt={photo.id}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                       onError={(e) => {
                         e.currentTarget.style.display = "none";
@@ -787,8 +789,9 @@ export default function StoreEvidenceReviewPage() {
             {/* Large Photo Preview */}
             <div className="rounded-xl overflow-hidden border border-[#DDE5DC] bg-[#05291F] aspect-[16/10] relative">
               <img
-                src={activePhoto.dataUrl || activePhoto.imageUrl}
+                src={activePhoto.imageUrl || activePhoto.dataUrl}
                 alt={activePhoto.id}
+                decoding="async"
                 className="w-full h-full object-contain"
               />
               <div className="absolute bottom-3 left-3 px-3 py-1.5 rounded bg-[#073B2A]/90 backdrop-blur-md text-xs font-mono font-bold text-[#72D6A0] border border-[#72D6A0]/20">

@@ -21,7 +21,11 @@ export const createPool = () => {
         idleTimeoutMillis: 30000,
         connectionTimeoutMillis: 10000,
         ssl:
-          connectionString.includes("sslmode=require") || process.env.NODE_ENV === "production"
+          connectionString.includes("sslmode=require") ||
+          (process.env.NODE_ENV === "production" &&
+            !connectionString.includes("sslmode=disable") &&
+            !connectionString.includes("localhost") &&
+            !connectionString.includes("127.0.0.1"))
             ? { rejectUnauthorized: false }
             : undefined,
       });

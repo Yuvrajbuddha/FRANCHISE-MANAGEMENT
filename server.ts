@@ -9,8 +9,13 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 // Serve uploaded CCTV footage and extracted frames
 app.use("/uploads", express.static("uploads"));
 
-// Mount the clean API app
-app.use(apiApp);
+// Mount the clean API app strictly on /api so non-API routes (like / or /outlets) are never intercepted
+app.use("/api", apiApp);
+
+// Explicit guard: any request to /api that wasn't handled by apiApp must return JSON 404, NEVER fall through to Vite SPA
+app.use("/api", (req, res) => {
+  res.status(404).json({ error: `API endpoint '${req.originalUrl}' not found.` });
+});
 
 async function startServer() {
   if (process.env.VERCEL === "1") {

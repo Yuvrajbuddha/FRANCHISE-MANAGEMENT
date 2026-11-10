@@ -114,16 +114,30 @@ export default function OutletDetailPage() {
     try {
       const token = localStorage.getItem("franchise_auth_token");
       const res = await fetch(`/api/outlets/${normalizedOutletId}`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        headers: {
+          Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       });
 
-      const json = await res.json();
-      if (!res.ok) {
-        setError(json.error || "Failed to load outlet details.");
-      } else {
-        setData(json);
+      const rawText = await res.text();
+      let json: any = null;
+      if (rawText && rawText.trim()) {
+        try {
+          json = JSON.parse(rawText);
+        } catch {
+          json = null;
+        }
       }
-    } catch (err: any) {
+
+      if (!res.ok) {
+        setError(json?.error || `Failed to load outlet details (${res.status}).`);
+      } else if (json) {
+        setData(json);
+      } else {
+        setError("Invalid response format received for outlet dossier.");
+      }
+    } catch {
       setError("Network error connecting to PostgreSQL server.");
     } finally {
       setLoading(false);
@@ -135,10 +149,21 @@ export default function OutletDetailPage() {
     try {
       const token = localStorage.getItem("franchise_auth_token");
       const res = await fetch(`/api/store/invoices?outletId=${normalizedOutletId}`, {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+        headers: {
+          Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       });
-      if (res.ok) {
-        const d = await res.json();
+      const rawText = await res.text();
+      let d: any = null;
+      if (rawText && rawText.trim()) {
+        try {
+          d = JSON.parse(rawText);
+        } catch {
+          d = null;
+        }
+      }
+      if (res.ok && d?.invoices) {
         setInvoices(d.invoices || []);
       }
     } catch (e) {

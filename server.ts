@@ -9,8 +9,23 @@ const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 // Serve uploaded CCTV footage and extracted frames
 app.use("/uploads", express.static("uploads"));
 
-// Mount the clean API app strictly on /api so non-API routes (like / or /outlets) are never intercepted
+// Mount the clean API app strictly on /api
 app.use("/api", apiApp);
+
+// Rewrite non-prefixed API requests to /api so Express router matches accurately without baseUrl stripping
+app.use((req, res, next) => {
+  if (
+    req.path.startsWith("/store/outlets") ||
+    req.path.startsWith("/store/accounts") ||
+    req.path.startsWith("/store/credentials") ||
+    req.path.startsWith("/store/login") ||
+    req.path.startsWith("/auth/")
+  ) {
+    req.url = req.url.startsWith("/api") ? req.url : `/api${req.url}`;
+    return apiApp(req, res, next);
+  }
+  next();
+});
 
 // Explicit guard: any request to /api that wasn't handled by apiApp must return JSON 404, NEVER fall through to Vite SPA
 app.use("/api", (req, res) => {

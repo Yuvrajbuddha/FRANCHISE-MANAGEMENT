@@ -42,6 +42,7 @@ import {
   XCircle,
   AlertOctagon,
   Upload,
+  RotateCcw,
 } from "lucide-react";
 import {
   Card,
@@ -100,15 +101,45 @@ export function ManagementDashboard() {
     cctvSubmissions[0];
   const storePhotos = loadPhotosForStore(userOutlet);
 
-  // Filter States
-  const [selectedDate, setSelectedDate] = useState("Month to Date");
-  const [selectedCity, setSelectedCity] = useState("All Cities");
+  // 6 Multi-Dimensional Filter States
+  const [selectedCycle, setSelectedCycle] = useState("All Cycles");
+  const [selectedMonth, setSelectedMonth] = useState("All Months");
+  const [selectedPeriod, setSelectedPeriod] = useState("All Time");
+  const [customStartDate, setCustomStartDate] = useState("");
+  const [customEndDate, setCustomEndDate] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("All Regions");
   const [selectedOutlet, setSelectedOutlet] = useState(
     isFranchise ? userOutlet : "All Outlets"
   );
+  const [selectedComplaintStatus, setSelectedComplaintStatus] = useState("All");
+
+  // Secondary Filters (for Officers / Risk Auditing)
   const [selectedRiskLevel, setSelectedRiskLevel] = useState("All Risk Levels");
-  const [selectedComplianceStatus, setSelectedComplianceStatus] =
-    useState("All Statuses");
+  const [selectedComplianceStatus, setSelectedComplianceStatus] = useState("All Statuses");
+
+  const resetAllFilters = () => {
+    setSelectedCycle("All Cycles");
+    setSelectedMonth("All Months");
+    setSelectedPeriod("All Time");
+    setCustomStartDate("");
+    setCustomEndDate("");
+    setSelectedRegion("All Regions");
+    if (!isFranchise) setSelectedOutlet("All Outlets");
+    setSelectedComplaintStatus("All");
+    setSelectedRiskLevel("All Risk Levels");
+    setSelectedComplianceStatus("All Statuses");
+  };
+
+  const hasActiveFilters =
+    selectedCycle !== "All Cycles" ||
+    selectedMonth !== "All Months" ||
+    selectedPeriod !== "All Time" ||
+    selectedRegion !== "All Regions" ||
+    (!isFranchise && selectedOutlet !== "All Outlets") ||
+    selectedComplaintStatus !== "All" ||
+    selectedRiskLevel !== "All Risk Levels" ||
+    selectedComplianceStatus !== "All Statuses" ||
+    Boolean(customStartDate || customEndDate);
 
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -154,8 +185,15 @@ export function ManagementDashboard() {
         localStorage.getItem("franchise_auth_token") ||
         sessionStorage.getItem("franchise_auth_token");
       const params = new URLSearchParams();
-      if (selectedDate !== "All Time") params.append("date", selectedDate);
-      if (selectedCity !== "All Cities") params.append("city", selectedCity);
+
+      if (selectedCycle !== "All Cycles") params.append("cycle", selectedCycle);
+      if (selectedMonth !== "All Months") params.append("month", selectedMonth);
+      if (selectedPeriod !== "All Time") params.append("period", selectedPeriod);
+      if (selectedPeriod === "Custom Date Range") {
+        if (customStartDate) params.append("startDate", customStartDate);
+        if (customEndDate) params.append("endDate", customEndDate);
+      }
+      if (selectedRegion !== "All Regions") params.append("region", selectedRegion);
 
       // Force outletId isolation for Store role
       if (isFranchise) {
@@ -164,6 +202,8 @@ export function ManagementDashboard() {
         params.append("outletId", selectedOutlet);
       }
 
+      if (selectedComplaintStatus !== "All")
+        params.append("complaintStatus", selectedComplaintStatus);
       if (selectedRiskLevel !== "All Risk Levels")
         params.append("riskLevel", selectedRiskLevel);
       if (selectedComplianceStatus !== "All Statuses")
@@ -221,9 +261,14 @@ export function ManagementDashboard() {
     fetchDashboardData();
     setCctvSubmissions(loadCctvSubmissions());
   }, [
-    selectedDate,
-    selectedCity,
+    selectedCycle,
+    selectedMonth,
+    selectedPeriod,
+    customStartDate,
+    customEndDate,
+    selectedRegion,
     selectedOutlet,
+    selectedComplaintStatus,
     selectedRiskLevel,
     selectedComplianceStatus,
     userOutlet,
@@ -231,12 +276,15 @@ export function ManagementDashboard() {
   ]);
 
   const summary = data?.summary || {
-    totalOutlets: 10,
-    totalRevenue: 6480000,
-    ebitda: 984960,
-    ebitdaMargin: 15.2,
-    compliancePercentage: 88,
-    overallRiskScore: 22,
+    totalOutlets: 0,
+    totalRevenue: 0,
+    ebitda: 0,
+    ebitdaMargin: 0,
+    totalComplaints: 0,
+    totalStockUnits: 0,
+    totalSkus: 0,
+    compliancePercentage: 0,
+    overallRiskScore: 0,
   };
 
   const counts = data?.counts || {
@@ -339,116 +387,303 @@ export function ManagementDashboard() {
       {/* 2. FILTER BAR (ROLE-AWARE)                               */}
       {/* ======================================================== */}
       {!isFranchise && (
-        <div className="rounded-2xl border border-[#DDE5DC] bg-[#FFFDF8] p-4 shadow-sm space-y-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-1.5 font-bold text-[#073B2A] text-xs">
-              <Filter className="h-4 w-4 text-[#13845B]" />
-              <span>Multi-Dimensional Filtering</span>
+        <div className="rounded-2xl border border-[#DDE5DC] bg-[#FFFDF8] p-4 sm:p-5 shadow-sm space-y-3.5">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#DDE5DC]/70 pb-3">
+            <div className="flex items-center gap-2">
+              <div className="h-7 w-7 rounded-lg bg-[#073B2A]/10 text-[#073B2A] flex items-center justify-center">
+                <Filter className="h-4 w-4" />
+              </div>
+              <div>
+                <h3 className="font-serif text-sm font-semibold text-[#073B2A]">
+                  Multi-Dimensional Filter Matrix
+                </h3>
+                <p className="text-[11px] text-[#738078]">
+                  Combine cycle, month, update period, region, store, and status to dynamically filter all dashboard metrics
+                </p>
+              </div>
             </div>
-            <span className="text-[11px] font-mono text-[#738078]">Dynamic Telemetry Query</span>
+
+            <div className="flex items-center gap-2">
+              {hasActiveFilters && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={resetAllFilters}
+                  className="gap-1.5 text-xs h-8 border-[#DDE5DC] bg-white text-[#B45309] hover:bg-amber-50 cursor-pointer rounded-xl font-medium"
+                >
+                  <RotateCcw className="h-3 w-3" />
+                  <span>Clear All Filters</span>
+                </Button>
+              )}
+              <span className="text-[11px] font-mono text-[#13845B] bg-[#13845B]/10 px-2.5 py-1 rounded-md font-semibold">
+                Live Intersect Active
+              </span>
+            </div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
-            {/* Date Filter */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3">
+            {/* 1. Historical Cycle Filter */}
             <div>
               <label className="text-[10px] font-bold uppercase text-[#738078] block mb-1">
-                Date Period
+                1. Historical Cycle
               </label>
               <select
-                value={selectedDate}
-                onChange={(e) => setSelectedDate(e.target.value)}
-                className="w-full h-9 rounded-xl border border-[#DDE5DC] bg-white px-2.5 text-xs font-semibold text-[#18251F] cursor-pointer focus:border-[#073B2A]"
+                value={selectedCycle}
+                onChange={(e) => setSelectedCycle(e.target.value)}
+                className="w-full h-9 rounded-xl border border-[#DDE5DC] bg-white px-2.5 text-xs font-semibold text-[#18251F] cursor-pointer focus:border-[#073B2A] transition-colors"
               >
+                <option value="All Cycles">All Historical Cycles</option>
+                <option value="Current Cycle">Current Cycle (2026-Q3/Q4)</option>
+                <option value="Q3 2026 Cycle">Q3 2026 Cycle (Jul - Sep)</option>
+                <option value="Q2 2026 Cycle">Q2 2026 Cycle (Apr - Jun)</option>
+                <option value="Q1 2026 Cycle">Q1 2026 Cycle (Jan - Mar)</option>
+              </select>
+            </div>
+
+            {/* 2. Month Filter */}
+            <div>
+              <label className="text-[10px] font-bold uppercase text-[#738078] block mb-1">
+                2. Month
+              </label>
+              <select
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(e.target.value)}
+                className="w-full h-9 rounded-xl border border-[#DDE5DC] bg-white px-2.5 text-xs font-semibold text-[#18251F] cursor-pointer focus:border-[#073B2A] transition-colors"
+              >
+                <option value="All Months">All Months</option>
+                <option value="October 2026">October 2026</option>
+                <option value="September 2026">September 2026</option>
+                <option value="August 2026">August 2026</option>
+                <option value="July 2026">July 2026</option>
+                <option value="June 2026">June 2026</option>
+                <option value="May 2026">May 2026</option>
+              </select>
+            </div>
+
+            {/* 3. Update Period Filter */}
+            <div>
+              <label className="text-[10px] font-bold uppercase text-[#738078] block mb-1">
+                3. Update Period
+              </label>
+              <select
+                value={selectedPeriod}
+                onChange={(e) => setSelectedPeriod(e.target.value)}
+                className="w-full h-9 rounded-xl border border-[#DDE5DC] bg-white px-2.5 text-xs font-semibold text-[#18251F] cursor-pointer focus:border-[#073B2A] transition-colors"
+              >
+                <option value="All Time">All Time</option>
                 <option value="Today">Today (Oct 04, 2026)</option>
-                <option value="Last 7 Days">Last 7 Days</option>
-                <option value="Month to Date">Month to Date (Oct '26)</option>
-                <option value="All Time">All Historical Cycles</option>
+                <option value="Yesterday">Yesterday (Oct 03, 2026)</option>
+                <option value="Last 7 Days">Last 7 Days (Sep 28 - Oct 04)</option>
+                <option value="Last 30 Days">Last 30 Days</option>
+                <option value="Custom Date Range">Custom Date Range...</option>
               </select>
             </div>
 
-            {/* City Filter */}
+            {/* 4. Region Filter */}
             <div>
               <label className="text-[10px] font-bold uppercase text-[#738078] block mb-1">
-                City Region
+                4. Region
               </label>
               <select
-                value={selectedCity}
-                onChange={(e) => setSelectedCity(e.target.value)}
-                className="w-full h-9 rounded-xl border border-[#DDE5DC] bg-white px-2.5 text-xs font-semibold text-[#18251F] cursor-pointer focus:border-[#073B2A]"
+                value={selectedRegion}
+                onChange={(e) => setSelectedRegion(e.target.value)}
+                className="w-full h-9 rounded-xl border border-[#DDE5DC] bg-white px-2.5 text-xs font-semibold text-[#18251F] cursor-pointer focus:border-[#073B2A] transition-colors"
               >
-                <option value="All Cities">All Cities</option>
-                <option value="Lucknow">Lucknow (Flagship Hub)</option>
-                <option value="Noida">Noida (NCR)</option>
-                <option value="Bengaluru">Bengaluru (South)</option>
-                <option value="Delhi">Delhi (NCR Central)</option>
-                <option value="Pune">Pune</option>
-                <option value="Jaipur">Jaipur</option>
-                <option value="Mumbai">Mumbai</option>
-                <option value="Gurgaon">Gurgaon</option>
-                <option value="Kanpur">Kanpur</option>
-                <option value="Varanasi">Varanasi</option>
+                <option value="All Regions">All Regions</option>
+                <option value="North">North (Lucknow, Kanpur, Varanasi, Jaipur, etc.)</option>
+                <option value="NCR">NCR (Noida, Delhi, Gurgaon)</option>
+                <option value="South">South (Bengaluru)</option>
+                <option value="West">West (Mumbai, Pune)</option>
               </select>
             </div>
 
-            {/* Outlet Filter */}
+            {/* 5. Store / Outlet Name Filter */}
             <div>
               <label className="text-[10px] font-bold uppercase text-[#738078] block mb-1">
-                Store Outlet
+                5. Store / Outlet Name
               </label>
               <select
                 value={selectedOutlet}
                 onChange={(e) => setSelectedOutlet(e.target.value)}
-                className="w-full h-9 rounded-xl border border-[#DDE5DC] bg-white px-2.5 text-xs font-semibold text-[#18251F] cursor-pointer focus:border-[#073B2A]"
+                className="w-full h-9 rounded-xl border border-[#DDE5DC] bg-white px-2.5 text-xs font-semibold text-[#18251F] cursor-pointer focus:border-[#073B2A] transition-colors"
               >
-                <option value="All Outlets">All Network Outlets</option>
+                <option value="All Outlets">All Network Outlets (10)</option>
                 {ALL_NETWORK_STORES.map((s) => (
                   <option key={s.code} value={s.code}>
-                    {s.code} — {s.name}
+                    {s.code} — {s.name} ({s.city})
                   </option>
                 ))}
               </select>
             </div>
 
-            {/* Risk Level Filter (Officer & Admin only) */}
-            {isOfficer && (
-              <div>
-                <label className="text-[10px] font-bold uppercase text-[#738078] block mb-1">
-                  Risk Level Tier
-                </label>
-                <select
-                  value={selectedRiskLevel}
-                  onChange={(e) => setSelectedRiskLevel(e.target.value)}
-                  className="w-full h-9 rounded-xl border border-[#DDE5DC] bg-white px-2.5 text-xs font-semibold text-[#18251F] cursor-pointer focus:border-[#073B2A]"
-                >
-                  <option value="All Risk Levels">All Risk Tiers</option>
-                  <option value="Low">Low (0-20)</option>
-                  <option value="Moderate">Moderate (21-40)</option>
-                  <option value="Elevated">Elevated (41-60)</option>
-                  <option value="High">High (61-80)</option>
-                  <option value="Critical">Critical (81-100)</option>
-                </select>
-              </div>
-            )}
-
-            {/* Compliance Status Filter */}
+            {/* 6. Complaint Status Filter */}
             <div>
               <label className="text-[10px] font-bold uppercase text-[#738078] block mb-1">
-                Compliance Status
+                6. Complaint Status
               </label>
               <select
-                value={selectedComplianceStatus}
-                onChange={(e) => setSelectedComplianceStatus(e.target.value)}
-                className="w-full h-9 rounded-xl border border-[#DDE5DC] bg-white px-2.5 text-xs font-semibold text-[#18251F] cursor-pointer focus:border-[#073B2A]"
+                value={selectedComplaintStatus}
+                onChange={(e) => setSelectedComplaintStatus(e.target.value)}
+                className="w-full h-9 rounded-xl border border-[#DDE5DC] bg-white px-2.5 text-xs font-semibold text-[#18251F] cursor-pointer focus:border-[#073B2A] transition-colors"
               >
-                <option value="All Statuses">All Statuses</option>
-                <option value="Active">Active</option>
-                <option value="Under Audit">Under Audit</option>
-                <option value="Grace Period">Grace Period</option>
-                <option value="Notice Issued">Notice Issued</option>
-                <option value="Critical Escalation">Critical Escalation</option>
+                <option value="All">All Complaint Statuses</option>
+                <option value="Pending">Pending / Open</option>
+                <option value="In Progress">In Progress / Investigating</option>
+                <option value="Resolved">Resolved / Verified</option>
+                <option value="Rejected">Rejected</option>
               </select>
             </div>
           </div>
+
+          {/* Custom Date Range Row */}
+          {selectedPeriod === "Custom Date Range" && (
+            <div className="p-3 bg-[#F6F1E7]/50 rounded-xl border border-[#DDE5DC] flex flex-wrap items-center gap-3">
+              <span className="text-xs font-semibold text-[#073B2A] flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5 text-[#13845B]" />
+                Custom Range Bounds:
+              </span>
+              <div className="flex items-center gap-2">
+                <label className="text-[10px] font-bold text-[#738078]">From</label>
+                <input
+                  type="date"
+                  value={customStartDate}
+                  onChange={(e) => setCustomStartDate(e.target.value)}
+                  className="h-8 rounded-lg border border-[#DDE5DC] bg-white px-2 text-xs text-[#18251F] font-mono"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <label className="text-[10px] font-bold text-[#738078]">To</label>
+                <input
+                  type="date"
+                  value={customEndDate}
+                  onChange={(e) => setCustomEndDate(e.target.value)}
+                  className="h-8 rounded-lg border border-[#DDE5DC] bg-white px-2 text-xs text-[#18251F] font-mono"
+                />
+              </div>
+              {(customStartDate || customEndDate) && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setCustomStartDate("");
+                    setCustomEndDate("");
+                  }}
+                  className="text-[11px] text-[#B45309] hover:underline cursor-pointer"
+                >
+                  Clear dates
+                </button>
+              )}
+            </div>
+          )}
+
+          {/* Active Filter Chips */}
+          {hasActiveFilters && (
+            <div className="flex flex-wrap items-center gap-2 pt-2 border-t border-[#DDE5DC]/60">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#738078] mr-1">
+                Active Filters:
+              </span>
+
+              {selectedCycle !== "All Cycles" && (
+                <Badge
+                  variant="outline"
+                  className="bg-[#073B2A]/5 text-[#073B2A] border-[#073B2A]/30 text-xs py-0.5 px-2.5 rounded-lg flex items-center gap-1.5"
+                >
+                  <span>Cycle: {selectedCycle}</span>
+                  <button
+                    onClick={() => setSelectedCycle("All Cycles")}
+                    className="hover:text-red-600 cursor-pointer"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+
+              {selectedMonth !== "All Months" && (
+                <Badge
+                  variant="outline"
+                  className="bg-[#073B2A]/5 text-[#073B2A] border-[#073B2A]/30 text-xs py-0.5 px-2.5 rounded-lg flex items-center gap-1.5"
+                >
+                  <span>Month: {selectedMonth}</span>
+                  <button
+                    onClick={() => setSelectedMonth("All Months")}
+                    className="hover:text-red-600 cursor-pointer"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+
+              {selectedPeriod !== "All Time" && (
+                <Badge
+                  variant="outline"
+                  className="bg-[#073B2A]/5 text-[#073B2A] border-[#073B2A]/30 text-xs py-0.5 px-2.5 rounded-lg flex items-center gap-1.5"
+                >
+                  <span>Period: {selectedPeriod}</span>
+                  <button
+                    onClick={() => {
+                      setSelectedPeriod("All Time");
+                      setCustomStartDate("");
+                      setCustomEndDate("");
+                    }}
+                    className="hover:text-red-600 cursor-pointer"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+
+              {selectedRegion !== "All Regions" && (
+                <Badge
+                  variant="outline"
+                  className="bg-[#073B2A]/5 text-[#073B2A] border-[#073B2A]/30 text-xs py-0.5 px-2.5 rounded-lg flex items-center gap-1.5"
+                >
+                  <span>Region: {selectedRegion}</span>
+                  <button
+                    onClick={() => setSelectedRegion("All Regions")}
+                    className="hover:text-red-600 cursor-pointer"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+
+              {selectedOutlet !== "All Outlets" && (
+                <Badge
+                  variant="outline"
+                  className="bg-[#073B2A]/5 text-[#073B2A] border-[#073B2A]/30 text-xs py-0.5 px-2.5 rounded-lg flex items-center gap-1.5"
+                >
+                  <span>Outlet: {selectedOutlet}</span>
+                  <button
+                    onClick={() => setSelectedOutlet("All Outlets")}
+                    className="hover:text-red-600 cursor-pointer"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+
+              {selectedComplaintStatus !== "All" && (
+                <Badge
+                  variant="outline"
+                  className="bg-[#073B2A]/5 text-[#073B2A] border-[#073B2A]/30 text-xs py-0.5 px-2.5 rounded-lg flex items-center gap-1.5"
+                >
+                  <span>Complaint: {selectedComplaintStatus}</span>
+                  <button
+                    onClick={() => setSelectedComplaintStatus("All")}
+                    className="hover:text-red-600 cursor-pointer"
+                  >
+                    <X className="h-3 w-3" />
+                  </button>
+                </Badge>
+              )}
+
+              <button
+                onClick={resetAllFilters}
+                className="text-[11px] text-[#B45309] hover:underline font-semibold ml-2 cursor-pointer"
+              >
+                Reset All
+              </button>
+            </div>
+          )}
         </div>
       )}
 
@@ -456,109 +691,168 @@ export function ManagementDashboard() {
       {/* 3. CORE KPI CARDS (STRICTLY ROLE-BASED)                  */}
       {/* ======================================================== */}
 
-      {/* --- FRANCHISEE OWNER KPIS --- */}
+      {/* --- FRANCHISEE OWNER KPIS (ALL 7 DYNAMIC FILTER-CONNECTED METRICS) --- */}
       {isOwner && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-3.5">
+          {/* 1. Total Outlets */}
           <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-sm">
-            <CardHeader className="pb-1 pt-4">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
+            <CardHeader className="pb-1 pt-3.5 px-4">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
                 <span>Total Outlets</span>
-                <Building2 className="h-4 w-4 text-[#073B2A]" />
+                <Building2 className="h-3.5 w-3.5 text-[#073B2A]" />
               </span>
             </CardHeader>
-            <CardContent className="pb-4">
+            <CardContent className="pb-3.5 px-4">
               <div className="flex items-baseline justify-between">
                 <span className="text-2xl font-extrabold text-[#073B2A] font-mono">
                   {summary.totalOutlets}
                 </span>
-                <Link to="/outlets" className="text-xs text-[#13845B] hover:underline inline-flex items-center gap-0.5 font-semibold">
+                <Link to="/outlets" className="text-[11px] text-[#13845B] hover:underline inline-flex items-center gap-0.5 font-semibold">
                   <span>Directory</span>
-                  <ArrowRight className="h-3 w-3" />
+                  <ArrowRight className="h-2.5 w-2.5" />
                 </Link>
               </div>
-              <p className="text-[11px] text-[#738078] mt-1">Assigned franchise stores</p>
+              <p className="text-[10px] text-[#738078] mt-1">
+                {summary.totalOutlets === 0 ? "No outlets match" : "Stores in scope"}
+              </p>
             </CardContent>
           </Card>
 
+          {/* 2. Net Revenue */}
           <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-sm">
-            <CardHeader className="pb-1 pt-4">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
+            <CardHeader className="pb-1 pt-3.5 px-4">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
                 <span>Net Revenue</span>
-                <TrendingUp className="h-4 w-4 text-[#13845B]" />
+                <TrendingUp className="h-3.5 w-3.5 text-[#13845B]" />
               </span>
             </CardHeader>
-            <CardContent className="pb-4">
+            <CardContent className="pb-3.5 px-4">
               <div className="flex items-baseline justify-between">
-                <span className="text-2xl font-extrabold text-[#073B2A] font-mono">
+                <span className="text-xl font-extrabold text-[#073B2A] font-mono">
                   {formatCurrency(summary.totalRevenue)}
                 </span>
-                <Link to="/sales" className="text-xs text-[#13845B] hover:underline inline-flex items-center gap-0.5 font-semibold">
+                <Link to="/sales" className="text-[11px] text-[#13845B] hover:underline inline-flex items-center gap-0.5 font-semibold">
                   <span>Sales</span>
-                  <ArrowRight className="h-3 w-3" />
+                  <ArrowRight className="h-2.5 w-2.5" />
                 </Link>
               </div>
-              <p className="text-[11px] text-[#738078] mt-1">Net sales turnover</p>
+              <p className="text-[10px] text-[#738078] mt-1">
+                {summary.totalRevenue === 0 ? "No sales in window" : "Net sales turnover"}
+              </p>
             </CardContent>
           </Card>
 
+          {/* 3. EBITDA / Profit */}
           <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-sm">
-            <CardHeader className="pb-1 pt-4">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
+            <CardHeader className="pb-1 pt-3.5 px-4">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
                 <span>EBITDA / Profit</span>
-                <DollarSign className="h-4 w-4 text-[#13845B]" />
+                <DollarSign className="h-3.5 w-3.5 text-[#13845B]" />
               </span>
             </CardHeader>
-            <CardContent className="pb-4">
+            <CardContent className="pb-3.5 px-4">
               <div className="flex items-baseline justify-between">
-                <span className="text-2xl font-extrabold text-[#073B2A] font-mono">
+                <span className="text-xl font-extrabold text-[#073B2A] font-mono">
                   {formatCurrency(summary.ebitda)}
                 </span>
-                <Badge variant="outline" className="text-[10px] font-bold text-[#073B2A] border-[#073B2A]/20 bg-[#073B2A]/5">
-                  {summary.ebitdaMargin}% Margin
+                <Badge variant="outline" className="text-[9px] font-bold text-[#073B2A] border-[#073B2A]/20 bg-[#073B2A]/5 px-1.5 py-0">
+                  {summary.ebitdaMargin}%
                 </Badge>
               </div>
-              <p className="text-[11px] text-[#738078] mt-1">Franchise run-rate</p>
+              <p className="text-[10px] text-[#738078] mt-1">Franchise return</p>
             </CardContent>
           </Card>
 
+          {/* 4. Total Complaints */}
           <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-sm">
-            <CardHeader className="pb-1 pt-4">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
-                <span>Compliance Adherence</span>
-                <ShieldCheck className="h-4 w-4 text-[#13845B]" />
+            <CardHeader className="pb-1 pt-3.5 px-4">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
+                <span>Total Complaints</span>
+                <AlertTriangle className="h-3.5 w-3.5 text-[#B45309]" />
               </span>
             </CardHeader>
-            <CardContent className="pb-4">
+            <CardContent className="pb-3.5 px-4">
+              <div className="flex items-baseline justify-between">
+                <span className="text-2xl font-extrabold text-[#B45309] font-mono">
+                  {summary.totalComplaints ?? 0}
+                </span>
+                <Badge variant="outline" className="text-[9px] font-semibold text-[#B45309] border-[#B45309]/30 bg-amber-50/60 px-1.5 py-0">
+                  {selectedComplaintStatus !== "All" ? selectedComplaintStatus : "Logged"}
+                </Badge>
+              </div>
+              <p className="text-[10px] text-[#738078] mt-1">Customer audits</p>
+            </CardContent>
+          </Card>
+
+          {/* 5. Total Stock / Inventory */}
+          <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-sm">
+            <CardHeader className="pb-1 pt-3.5 px-4">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
+                <span>Total Stock</span>
+                <Boxes className="h-3.5 w-3.5 text-[#073B2A]" />
+              </span>
+            </CardHeader>
+            <CardContent className="pb-3.5 px-4">
+              <div className="flex items-baseline justify-between">
+                <span className="text-xl font-extrabold text-[#18251F] font-mono">
+                  {(summary.totalStockUnits || 0).toLocaleString()} U
+                </span>
+                <Badge variant="outline" className="text-[9px] font-semibold text-[#073B2A] border-[#073B2A]/20 bg-[#073B2A]/5 px-1.5 py-0">
+                  {summary.totalSkus || 0} SKUs
+                </Badge>
+              </div>
+              <p className="text-[10px] text-[#738078] mt-1">Available inventory</p>
+            </CardContent>
+          </Card>
+
+          {/* 6. Compliance Adherence */}
+          <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-sm">
+            <CardHeader className="pb-1 pt-3.5 px-4">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
+                <span>Compliance</span>
+                <ShieldCheck className="h-3.5 w-3.5 text-[#13845B]" />
+              </span>
+            </CardHeader>
+            <CardContent className="pb-3.5 px-4">
               <div className="flex items-baseline justify-between">
                 <span className="text-2xl font-extrabold text-[#13845B] font-mono">
                   {summary.compliancePercentage}%
                 </span>
-                <Badge className="bg-[#13845B]/10 text-[#073B2A] border-[#13845B]/30 text-[10px]">
-                  Verified
+                <Badge className="bg-[#13845B]/10 text-[#073B2A] border-[#13845B]/30 text-[9px] px-1.5 py-0">
+                  {summary.compliancePercentage >= 85 ? "Verified" : summary.compliancePercentage > 0 ? "Under Watch" : "N/A"}
                 </Badge>
               </div>
-              <p className="text-[11px] text-[#738078] mt-1">Average store score</p>
+              <p className="text-[10px] text-[#738078] mt-1">Average audit score</p>
             </CardContent>
           </Card>
 
+          {/* 7. Overall Risk Score */}
           <Card className="border-[#DDE5DC] bg-[#FFFDF8] shadow-sm">
-            <CardHeader className="pb-1 pt-4">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
-                <span>Physical Stock</span>
-                <Boxes className="h-4 w-4 text-[#B45309]" />
+            <CardHeader className="pb-1 pt-3.5 px-4">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#738078] flex items-center justify-between">
+                <span>Overall Risk</span>
+                <ShieldAlert className="h-3.5 w-3.5 text-[#B45309]" />
               </span>
             </CardHeader>
-            <CardContent className="pb-4">
+            <CardContent className="pb-3.5 px-4">
               <div className="flex items-baseline justify-between">
                 <span className="text-2xl font-extrabold text-[#18251F] font-mono">
-                  36 SKUs
+                  {summary.overallRiskScore}
                 </span>
-                <Link to="/inventory" className="text-xs text-[#B45309] hover:underline inline-flex items-center gap-0.5 font-semibold">
-                  <span>Inventory</span>
-                  <ArrowRight className="h-3 w-3" />
-                </Link>
+                <Badge
+                  variant="outline"
+                  className={`text-[9px] font-semibold px-1.5 py-0 ${
+                    summary.overallRiskScore <= 20
+                      ? "border-emerald-300 text-emerald-800 bg-emerald-50"
+                      : summary.overallRiskScore <= 50
+                      ? "border-amber-300 text-amber-800 bg-amber-50"
+                      : "border-rose-300 text-rose-800 bg-rose-50"
+                  }`}
+                >
+                  {summary.overallRiskScore <= 20 ? "Low" : summary.overallRiskScore <= 50 ? "Moderate" : "Elevated"}
+                </Badge>
               </div>
-              <p className="text-[11px] text-[#738078] mt-1">Healthy stock holding</p>
+              <p className="text-[10px] text-[#738078] mt-1">Index out of 100</p>
             </CardContent>
           </Card>
         </div>
@@ -779,8 +1073,12 @@ export function ManagementDashboard() {
                 <span className="text-[10px] font-bold uppercase text-[#738078]">Inventory Stock</span>
                 <Boxes className="h-4 w-4 text-[#B45309]" />
               </div>
-              <span className="text-lg font-bold font-mono text-[#18251F] mt-1 block">36 SKUs</span>
-              <span className="text-[10px] text-[#B45309] font-semibold">Store Stock Level</span>
+              <span className="text-lg font-bold font-mono text-[#18251F] mt-1 block">
+                {summary.totalSkus || 0} SKUs
+              </span>
+              <span className="text-[10px] text-[#B45309] font-semibold">
+                {(summary.totalStockUnits || 0).toLocaleString()} Units On Hand
+              </span>
             </Link>
 
             <Link
@@ -1590,31 +1888,28 @@ export function ManagementDashboard() {
 
             {/* Empty State */}
             {!loading && data && (!data.outlets || data.outlets.length === 0) && (
-              <div className="rounded-xl border border-dashed border-[#DDE5DC] p-10 text-center space-y-2 bg-white">
-                <Store className="h-8 w-8 text-[#738078] mx-auto" />
-                <h4 className="font-serif text-sm font-semibold text-[#073B2A]">No Stores Registered</h4>
-                <p className="text-xs text-[#738078]">No franchise outlet records found in the database.</p>
+              <div className="rounded-xl border border-dashed border-[#DDE5DC] p-10 text-center space-y-3 bg-[#FFFDF8]">
+                <Store className="h-10 w-10 text-[#738078] mx-auto" />
+                <h4 className="font-serif text-base font-semibold text-[#073B2A]">No Outlets Match Filter Criteria</h4>
+                <p className="text-xs text-[#738078] max-w-md mx-auto">
+                  No franchise outlets match the currently selected filter combination. Adjust your region, outlet, or status filter to see stores.
+                </p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={resetAllFilters}
+                  className="gap-1.5 text-xs border-[#13845B] text-[#073B2A] hover:bg-[#13845B]/10 cursor-pointer rounded-xl mx-auto"
+                >
+                  <RotateCcw className="h-3.5 w-3.5 text-[#13845B]" />
+                  <span>Clear All Filters</span>
+                </Button>
               </div>
             )}
 
             {/* Registered Stores Cards Grid */}
-            {(!loading || data) && (
+            {!loading && data?.outlets && data.outlets.length > 0 && (
               <div className="flex flex-col gap-3.5 w-full max-w-full box-border">
-                {((data?.outlets && data.outlets.length > 0)
-                  ? data.outlets
-                  : ALL_NETWORK_STORES.map((s) => ({
-                      outletId: s.code,
-                      name: s.name,
-                      city: s.city,
-                      state: "",
-                      operatingModel: s.model,
-                      status: "Active",
-                      manager: s.manager,
-                      revenueMonthly: "648000",
-                      complianceScore: 88,
-                      riskScore: 20,
-                    }))
-                ).map((s: any) => {
+                {data.outlets.map((s: any) => {
                   const storeCode = s.outletId || s.code;
                   const storeSub = cctvSubmissions.find(
                     (sub) => sub.storeId.toUpperCase() === storeCode.toUpperCase()
@@ -1741,32 +2036,42 @@ export function ManagementDashboard() {
             </CardHeader>
             <CardContent className="pt-4">
               <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <AreaChart data={data?.salesTrends || []}>
-                    <defs>
-                      <linearGradient id="forestSalesGrad" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#073B2A" stopOpacity={0.25} />
-                        <stop offset="95%" stopColor="#073B2A" stopOpacity={0.0} />
-                      </linearGradient>
-                    </defs>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#DDE5DC" />
-                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#738078" }} stroke="#DDE5DC" />
-                    <YAxis tick={{ fontSize: 11, fill: "#738078" }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} stroke="#DDE5DC" />
-                    <Tooltip
-                      formatter={(v: any) => [`₹${Number(v).toLocaleString()}`, "Revenue"]}
-                      contentStyle={{ backgroundColor: "#FFFDF8", borderColor: "#DDE5DC", borderRadius: 12, color: "#18251F", fontSize: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}
-                    />
-                    <Area
-                      type="monotone"
-                      dataKey="revenue"
-                      stroke="#073B2A"
-                      strokeWidth={2}
-                      fillOpacity={1}
-                      fill="url(#forestSalesGrad)"
-                      name="Net Sales (₹)"
-                    />
-                  </AreaChart>
-                </ResponsiveContainer>
+                {data?.salesTrends && data.salesTrends.length > 0 ? (
+                  <ResponsiveContainer width="100%" height="100%">
+                    <AreaChart data={data.salesTrends}>
+                      <defs>
+                        <linearGradient id="forestSalesGrad" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#073B2A" stopOpacity={0.25} />
+                          <stop offset="95%" stopColor="#073B2A" stopOpacity={0.0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#DDE5DC" />
+                      <XAxis dataKey="date" tick={{ fontSize: 11, fill: "#738078" }} stroke="#DDE5DC" />
+                      <YAxis tick={{ fontSize: 11, fill: "#738078" }} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} stroke="#DDE5DC" />
+                      <Tooltip
+                        formatter={(v: any) => [`₹${Number(v).toLocaleString()}`, "Revenue"]}
+                        contentStyle={{ backgroundColor: "#FFFDF8", borderColor: "#DDE5DC", borderRadius: 12, color: "#18251F", fontSize: 12, boxShadow: "0 4px 12px rgba(0,0,0,0.05)" }}
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="revenue"
+                        stroke="#073B2A"
+                        strokeWidth={2}
+                        fillOpacity={1}
+                        fill="url(#forestSalesGrad)"
+                        name="Net Sales (₹)"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex flex-col items-center justify-center text-center p-6 bg-[#F6F1E7]/30 rounded-xl border border-dashed border-[#DDE5DC]">
+                    <TrendingUp className="h-8 w-8 text-[#738078] mb-2" />
+                    <span className="text-xs font-semibold text-[#073B2A]">No Sales Data for Selected Filters</span>
+                    <span className="text-[11px] text-[#738078] mt-1 max-w-sm">
+                      No sales or revenue transactions match the chosen historical cycle, month, or date range.
+                    </span>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>

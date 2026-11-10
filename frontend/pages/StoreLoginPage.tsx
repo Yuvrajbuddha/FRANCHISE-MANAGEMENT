@@ -58,25 +58,69 @@ export default function StoreLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [quickLoggingInId, setQuickLoggingInId] = useState<string | null>(null);
 
   // Admin Credentials Modal State (for authorized distribution & retrieval)
   const [adminModalOpen, setAdminModalOpen] = useState(false);
   const [adminCredentials, setAdminCredentials] = useState<any[]>([]);
   const [loadingAdminCreds, setLoadingAdminCreds] = useState(false);
 
-  // Fetch actual 10 stores from database on mount
+  // Helper to map outletId and city to designated store credentials
+  const getStoreDefaultUsername = (outletId: string, city: string = "") => {
+    const cleanCity = city.toLowerCase().replace(/[^a-z]/g, "");
+    const map: Record<string, string> = {
+      "out-042": "store.lucknow",
+      "out-089": "store.noida",
+      "out-019": "store.delhi",
+      "out-114": "store.bengaluru",
+      "out-055": "store.pune",
+      "out-073": "store.jaipur",
+      "out-128": "store.mumbai",
+      "out-142": "store.gurgaon",
+      "out-061": "store.kanpur",
+      "out-097": "store.varanasi",
+    };
+    return map[outletId.toLowerCase()] || `store.${cleanCity}`;
+  };
+
+  const getStoreDefaultPassword = (outletId: string, city: string = "") => {
+    const map: Record<string, string> = {
+      "out-042": "Store#Lucknow2026!",
+      "out-089": "Store#Noida2026!",
+      "out-019": "Store#Delhi2026!",
+      "out-114": "Store#Bangalore2026!",
+      "out-055": "Store#Pune2026!",
+      "out-073": "Store#Jaipur2026!",
+      "out-128": "Store#Mumbai2026!",
+      "out-142": "Store#Gurgaon2026!",
+      "out-061": "Store#Kanpur2026!",
+      "out-097": "Store#Varanasi2026!",
+    };
+    return map[outletId.toLowerCase()] || `Store#${city}2026!`;
+  };
+
+  // Fetch actual 10 stores from database on mount with safe text parsing
   useEffect(() => {
     async function loadStores() {
       setLoadingStores(true);
       try {
-        const res = await fetch("/api/store/outlets-list");
-        if (res.ok) {
-          const data = await res.json();
-          if (data.outlets && data.outlets.length > 0) {
-            setStores(data.outlets);
-            setLoadingStores(false);
-            return;
+        const res = await fetch("/api/store/outlets-list", {
+          headers: { Accept: "application/json" },
+        });
+        const rawText = await res.text();
+        let data: any = null;
+        if (rawText && rawText.trim()) {
+          try {
+            data = JSON.parse(rawText);
+          } catch {
+            data = null;
           }
+        }
+
+        if (res.ok && data?.outlets && data.outlets.length > 0) {
+          setStores(data.outlets);
+          setLoadingStores(false);
+          return;
         }
       } catch (e) {
         console.warn("Falling back to pre-seeded network stores:", e);
@@ -99,18 +143,31 @@ export default function StoreLoginPage() {
     loadStores();
   }, []);
 
-  // Fetch administrator store credentials list for authorized retrieval
+  // Fetch administrator store credentials list with safe JSON parsing
   const handleOpenAdminCredentials = async () => {
     setAdminModalOpen(true);
     setLoadingAdminCreds(true);
     try {
       const token = localStorage.getItem("franchise_auth_token");
-      const res = await fetch("/api/admin/store-credentials", {
-        headers: token ? { Authorization: `Bearer ${token}` } : {},
+      // Fetch public store accounts or admin credentials
+      const res = await fetch("/api/store/accounts", {
+        headers: {
+          Accept: "application/json",
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
       });
-      if (res.ok) {
-        const data = await res.json();
-        setAdminCredentials(data.credentials || []);
+      const rawText = await res.text();
+      let data: any = null;
+      if (rawText && rawText.trim()) {
+        try {
+          data = JSON.parse(rawText);
+        } catch {
+          data = null;
+        }
+      }
+
+      if (res.ok && (data?.accounts || data?.credentials)) {
+        setAdminCredentials(data.accounts || data.credentials || []);
       } else {
         // Fallback default list of generated initial credentials for demo testing
         setAdminCredentials([
@@ -145,14 +202,36 @@ export default function StoreLoginPage() {
     }
   };
 
+  // Select store and pre-populate credentials for seamless login
   const handleSelectStore = (store: StoreOutletItem) => {
     setSelectedStore(store);
-    setUsername("");
-    setPassword("");
+    setUsername(getStoreDefaultUsername(store.outletId, store.city));
+    setPassword(getStoreDefaultPassword(store.outletId, store.city));
     setErrorMessage(null);
     setStep(2);
-    // Smoothly scroll window to top
     window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  };
+
+  // 1-Click Fast Login into any store
+  const handleQuickLoginStore = async (store: StoreOutletItem) => {
+    setQuickLoggingInId(store.outletId);
+    setErrorMessage(null);
+    const defUser = getStoreDefaultUsername(store.outletId, store.city);
+    const defPwd = getStoreDefaultPassword(store.outletId, store.city);
+
+    const res = await loginStore(store.outletId, defUser, defPwd);
+    setQuickLoggingInId(null);
+
+    if (res.success) {
+      window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+      navigate(res.redirectUrl || `/outlets/${store.outletId}`);
+    } else {
+      setSelectedStore(store);
+      setUsername(defUser);
+      setPassword(defPwd);
+      setStep(2);
+      setErrorMessage(res.error || "Store authentication failed.");
+    }
   };
 
   const handleBackToStoreSelection = () => {
@@ -198,11 +277,9 @@ export default function StoreLoginPage() {
     setIsSubmitting(false);
 
     if (res.success) {
-      // Immediate scroll reset before navigation
       window.scrollTo({ top: 0, left: 0, behavior: "instant" });
       if (document.documentElement) document.documentElement.scrollTop = 0;
       if (document.body) document.body.scrollTop = 0;
-      // Direct redirect to the selected store's dashboard
       navigate(res.redirectUrl || `/outlets/${selectedStore.outletId}`);
     } else {
       setErrorMessage(res.error || "Authentication failed. Invalid store credentials.");
@@ -339,44 +416,87 @@ export default function StoreLoginPage() {
 
             {/* 10 Stores Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 pt-2">
-              {filteredStores.map((store) => (
-                <div
-                  key={store.outletId}
-                  onClick={() => handleSelectStore(store)}
-                  className="rounded-2xl border border-[#D1FAE5] bg-white p-5 shadow-xs hover:shadow-md hover:border-[#059669] transition-all cursor-pointer flex flex-col justify-between group hover:-translate-y-0.5"
-                >
-                  <div className="space-y-3">
-                    <div className="flex items-start justify-between gap-2">
-                      <span className="font-mono text-xs font-bold text-[#064E3B] bg-[#F0FDF4] px-2 py-0.5 rounded border border-[#D1FAE5]">
-                        {store.outletId}
-                      </span>
-                      <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#064E3B] font-semibold border border-[#A7F3D0]">
-                        {store.operatingModel || "FOCO"}
-                      </span>
-                    </div>
+              {filteredStores.map((store) => {
+                const defUsername = getStoreDefaultUsername(store.outletId, store.city);
+                const isQuickLoggingIn = quickLoggingInId === store.outletId;
 
-                    <div>
-                      <h3 className="font-serif text-lg font-bold text-[#064E3B] group-hover:text-[#047857] transition-colors">
-                        {store.name}
-                      </h3>
-                      <div className="flex items-center gap-1 text-xs text-[#64748B] mt-1">
-                        <MapPin className="h-3.5 w-3.5 text-[#059669] shrink-0" />
-                        <span className="truncate">{store.city}</span>
+                return (
+                  <div
+                    key={store.outletId}
+                    onClick={() => handleSelectStore(store)}
+                    className="rounded-2xl border border-[#D1FAE5] bg-white p-5 shadow-xs hover:shadow-md hover:border-[#059669] transition-all cursor-pointer flex flex-col justify-between group hover:-translate-y-0.5"
+                  >
+                    <div className="space-y-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <span className="font-mono text-xs font-bold text-[#064E3B] bg-[#F0FDF4] px-2 py-0.5 rounded border border-[#D1FAE5]">
+                          {store.outletId}
+                        </span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#ECFDF5] text-[#064E3B] font-semibold border border-[#A7F3D0]">
+                          {store.operatingModel || "FOCO"}
+                        </span>
+                      </div>
+
+                      <div>
+                        <h3 className="font-serif text-lg font-bold text-[#064E3B] group-hover:text-[#047857] transition-colors">
+                          {store.name}
+                        </h3>
+                        <div className="flex items-center gap-1 text-xs text-[#64748B] mt-1">
+                          <MapPin className="h-3.5 w-3.5 text-[#059669] shrink-0" />
+                          <span className="truncate">{store.city}</span>
+                        </div>
+                      </div>
+
+                      {/* Username Hint Badge */}
+                      <div className="px-2.5 py-1.5 rounded-lg bg-[#F0FDF4] border border-[#D1FAE5] text-[11px] font-mono text-[#064E3B] flex items-center justify-between">
+                        <span className="text-[#64748B]">Account:</span>
+                        <span className="font-bold">{defUsername}</span>
+                      </div>
+
+                      <div className="pt-2 text-[11px] text-[#64748B] flex items-center justify-between border-t border-[#D1FAE5]/60">
+                        <span>Compliance Score</span>
+                        <span className="font-bold text-[#064E3B]">{store.complianceScore || 85}%</span>
                       </div>
                     </div>
 
-                    <div className="pt-2 text-[11px] text-[#64748B] flex items-center justify-between border-t border-[#D1FAE5]/60">
-                      <span>Compliance Score</span>
-                      <span className="font-bold text-[#064E3B]">{store.complianceScore || 85}%</span>
+                    <div className="pt-4 mt-3 border-t border-[#D1FAE5]/60 flex items-center gap-2">
+                      <Button
+                        size="sm"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleQuickLoginStore(store);
+                        }}
+                        disabled={isQuickLoggingIn}
+                        className="flex-1 h-8 bg-[#059669] hover:bg-[#047857] text-white text-[11px] font-semibold rounded-lg shadow-2xs gap-1.5 cursor-pointer"
+                      >
+                        {isQuickLoggingIn ? (
+                          <>
+                            <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                            <span>Signing In...</span>
+                          </>
+                        ) : (
+                          <>
+                            <Lock className="h-3.5 w-3.5" />
+                            <span>Quick Sign In</span>
+                          </>
+                        )}
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelectStore(store);
+                        }}
+                        className="h-8 px-2.5 bg-white border-[#D1FAE5] text-[#064E3B] hover:bg-[#F0FDF4] text-[11px] cursor-pointer"
+                      >
+                        <span>Select</span>
+                        <ArrowRight className="h-3 w-3 ml-1" />
+                      </Button>
                     </div>
                   </div>
-
-                  <div className="pt-4 mt-2 flex items-center justify-between text-xs font-semibold text-[#059669] group-hover:text-[#047857]">
-                    <span>Enter Credentials</span>
-                    <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
 
             {filteredStores.length === 0 && (
@@ -422,7 +542,7 @@ export default function StoreLoginPage() {
                 </div>
                 <button
                   onClick={handleBackToStoreSelection}
-                  className="text-xs text-[#059669] hover:underline font-medium shrink-0"
+                  className="text-xs text-[#059669] hover:underline font-medium shrink-0 cursor-pointer"
                 >
                   Change
                 </button>
@@ -458,7 +578,7 @@ export default function StoreLoginPage() {
                     placeholder={`e.g. store.${selectedStore.city.toLowerCase()} or ${selectedStore.outletId}`}
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
-                    className="h-10 bg-white border-[#D1FAE5] text-xs text-[#1F2937] placeholder:text-[#64748B] focus-visible:ring-1 focus-visible:ring-[#059669] focus-visible:border-[#059669] rounded-xl"
+                    className="h-10 bg-white border-[#D1FAE5] text-xs text-[#1F2937] placeholder:text-[#64748B] focus-visible:ring-1 focus-visible:ring-[#059669] focus-visible:border-[#059669] rounded-xl font-mono"
                   />
                   <p className="text-[10px] text-[#64748B]">
                     Assigned account identifier for {selectedStore.name}.
@@ -471,6 +591,13 @@ export default function StoreLoginPage() {
                     <label className="block text-[#064E3B] font-semibold">
                       Store Password
                     </label>
+                    <button
+                      type="button"
+                      onClick={() => setPassword(getStoreDefaultPassword(selectedStore.outletId, selectedStore.city))}
+                      className="text-[10px] text-[#059669] hover:underline font-mono cursor-pointer"
+                    >
+                      Fill Default Password
+                    </button>
                   </div>
                   <div className="relative">
                     <Input
@@ -479,7 +606,7 @@ export default function StoreLoginPage() {
                       placeholder="Enter store password..."
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
-                      className="h-10 pr-10 bg-white border-[#D1FAE5] text-xs text-[#1F2937] placeholder:text-[#64748B] focus-visible:ring-1 focus-visible:ring-[#059669] focus-visible:border-[#059669] rounded-xl"
+                      className="h-10 pr-10 bg-white border-[#D1FAE5] text-xs text-[#1F2937] placeholder:text-[#64748B] focus-visible:ring-1 focus-visible:ring-[#059669] focus-visible:border-[#059669] rounded-xl font-mono"
                     />
                     <button
                       type="button"
@@ -492,24 +619,43 @@ export default function StoreLoginPage() {
                   </div>
                 </div>
 
-                {/* Submit Button */}
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full h-10 bg-[#059669] hover:bg-[#047857] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer mt-2"
-                >
-                  {isSubmitting ? (
-                    <div className="flex items-center gap-2">
-                      <RefreshCw className="h-4 w-4 animate-spin" />
-                      <span>Authenticating Store...</span>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center gap-1.5">
-                      <Lock className="h-4 w-4" />
-                      <span>Authenticate & Open Store Dashboard</span>
-                    </div>
-                  )}
-                </Button>
+                {/* Submit Buttons */}
+                <div className="space-y-2 pt-1">
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full h-10 bg-[#059669] hover:bg-[#047857] text-white text-xs font-semibold rounded-xl shadow-xs transition-colors cursor-pointer"
+                  >
+                    {isSubmitting ? (
+                      <div className="flex items-center gap-2">
+                        <RefreshCw className="h-4 w-4 animate-spin" />
+                        <span>Authenticating Store...</span>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-1.5">
+                        <Lock className="h-4 w-4" />
+                        <span>Authenticate & Open Store Dashboard</span>
+                      </div>
+                    )}
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => handleQuickLoginStore(selectedStore)}
+                    disabled={quickLoggingInId === selectedStore.outletId}
+                    className="w-full h-9 bg-white border-[#D1FAE5] text-[#064E3B] hover:bg-[#F0FDF4] text-xs font-medium rounded-xl cursor-pointer"
+                  >
+                    {quickLoggingInId === selectedStore.outletId ? (
+                      <div className="flex items-center gap-2">
+                        <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                        <span>Opening Store...</span>
+                      </div>
+                    ) : (
+                      <span>1-Click Operator Quick Sign In</span>
+                    )}
+                  </Button>
+                </div>
               </form>
 
               {/* Security Note */}

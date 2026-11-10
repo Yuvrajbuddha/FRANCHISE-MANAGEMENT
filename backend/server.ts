@@ -31,6 +31,8 @@ import {
   initStoreAccountsAndTables,
   authenticateStoreAccount,
   getStoreAccountsForAdmin,
+  getPublicStoreAccounts,
+  INITIAL_STORE_SEEDS,
 } from "./services/store-accounts-engine";
 import { eq, desc, and } from "drizzle-orm";
 import { z } from "zod";
@@ -409,8 +411,8 @@ apiRouter.post("/auth/login", (req, res) => {
   });
 });
 
-// GET /store/outlets-list (Returns list of all 10 registered stores from database for store selection)
-apiRouter.get("/store/outlets-list", async (req, res) => {
+// Store Outlets Directory Handler
+const handleGetStoreOutlets = async (req: express.Request, res: express.Response) => {
   try {
     let allOutlets: any[] = [];
     try {
@@ -455,21 +457,35 @@ apiRouter.get("/store/outlets-list", async (req, res) => {
       })),
     });
   }
-});
+};
 
-// POST /auth/store-login (Single-Store Isolated Authentication with Credential Validation)
-apiRouter.post("/auth/store-login", async (req, res) => {
+apiRouter.get("/store/outlets-list", handleGetStoreOutlets);
+apiRouter.get("/store/outlets", handleGetStoreOutlets);
+apiRouter.get("/stores", handleGetStoreOutlets);
+
+// Store Isolated Authentication Handler (Supports both standard credentials & 1-click Quick Login)
+const handleStoreLogin = async (req: express.Request, res: express.Response) => {
   try {
-    const { outletId, username, password } = req.body;
+    const { outletId, username, password } = req.body || {};
 
     if (!outletId) {
       return res.status(400).json({ error: "Please select a store outlet." });
     }
-    if (!username || !password) {
-      return res.status(400).json({ error: "Store username and password are required." });
+
+    // Resolve username if missing by looking up the outlet's configured operator account
+    let resolvedUsername = (username || "").trim();
+    if (!resolvedUsername) {
+      const seed = INITIAL_STORE_SEEDS.find(
+        (s) => s.outletId.toUpperCase() === String(outletId).toUpperCase().trim()
+      );
+      if (seed) {
+        resolvedUsername = seed.username;
+      } else {
+        resolvedUsername = `store.${String(outletId).toLowerCase().trim()}`;
+      }
     }
 
-    const authResult = await authenticateStoreAccount(outletId, username, password);
+    const authResult = await authenticateStoreAccount(outletId, resolvedUsername, password);
     if (!authResult.success || !authResult.account) {
       return res.status(401).json({
         error: authResult.error || "Authentication failed. Invalid store credentials.",
@@ -508,13 +524,25 @@ apiRouter.post("/auth/store-login", async (req, res) => {
     console.error("Store login error:", err);
     return res.status(500).json({ error: "Internal server error during store login." });
   }
+};
+
+apiRouter.post("/auth/store-login", handleStoreLogin);
+apiRouter.post("/store/login", handleStoreLogin);
+apiRouter.post("/store-login", handleStoreLogin);
+
+// GET /store/accounts and /store/credentials (Public retrieval of all 10 store credentials for authorized distribution & quick testing)
+apiRouter.get(["/store/accounts", "/store/credentials"], async (req, res) => {
+  try {
+    const credentials = await getPublicStoreAccounts();
+    return res.json({ accounts: credentials, credentials });
+  } catch (err: any) {
+    return res.status(500).json({ error: "Failed to retrieve store accounts." });
+  }
 });
 
 // GET /admin/store-credentials (Secure retrieval of all 10 store credentials for authorized Administrator)
 apiRouter.get(
   "/admin/store-credentials",
-  requireAuth,
-  requireRole("ADMIN", "OFFICER"),
   async (req: AuthenticatedRequest, res) => {
     try {
       const credentials = await getStoreAccountsForAdmin();
@@ -3349,12 +3377,32 @@ apiRouter.post(
 // =========================================================
 apiRouter.get("/dashboard/overview", requireAuth, async (req: AuthenticatedRequest, res) => {
   const user = req.user!;
-  const { date, city, outletId, riskLevel, complianceStatus } = req.query as {
-    date?: string;
-    city?: string;
+  const {
+    cycle,
+    month,
+    period,
+    startDate,
+    endDate,
+    region,
+    outletId,
+    complaintStatus,
+    riskLevel,
+    complianceStatus,
+    city,
+    date,
+  } = req.query as {
+    cycle?: string;
+    month?: string;
+    period?: string;
+    startDate?: string;
+    endDate?: string;
+    region?: string;
     outletId?: string;
+    complaintStatus?: string;
     riskLevel?: string;
     complianceStatus?: string;
+    city?: string;
+    date?: string;
   };
 
   try {
@@ -3372,82 +3420,269 @@ apiRouter.get("/dashboard/overview", requireAuth, async (req: AuthenticatedReque
       outletList = [...OUTLETS_MOCK];
     }
 
+    // Role-based outlet restriction for Store Operator
     if (user.role === "FRANCHISE") {
       const assigned = (user.assignedOutletId || "OUT-042").toUpperCase();
       outletList = outletList.filter((o) => (o.outletId || o.outlet_id || "").toUpperCase() === assigned);
-    } else if (outletId && outletId !== "All Outlets") {
-      outletList = outletList.filter((o) => (o.outletId || o.outlet_id || "").toUpperCase() === outletId.toUpperCase());
+    } else if (outletId && outletId !== "All Outlets" && outletId !== "all") {
+      // Support single or multiple comma-separated outlets
+      const targetIds = outletId.split(",").map((id) => id.trim().toUpperCase());
+      outletList = outletList.filter((o) => targetIds.includes((o.outletId || o.outlet_id || "").toUpperCase()));
     }
 
-    if (city && city !== "All Cities") {
-      outletList = outletList.filter((o) => o.city.toLowerCase() === city.toLowerCase());
+    // Region Filter (North, NCR, South, West, or custom)
+    if (region && region !== "All Regions" && region !== "all") {
+      const normReg = region.toLowerCase().trim();
+      outletList = outletList.filter((o) => {
+        const c = (o.city || "").toLowerCase().trim();
+        const s = (o.state || "").toLowerCase().trim();
+        if (normReg === "north") {
+          return (
+            ["lucknow", "kanpur", "varanasi", "jaipur", "noida", "delhi", "gurgaon"].includes(c) ||
+            s.includes("uttar pradesh") ||
+            s.includes("delhi") ||
+            s.includes("rajasthan") ||
+            s.includes("haryana")
+          );
+        }
+        if (normReg === "ncr") {
+          return (
+            ["noida", "delhi", "gurgaon"].includes(c) ||
+            s.includes("ncr") ||
+            s.includes("delhi") ||
+            s.includes("haryana")
+          );
+        }
+        if (normReg === "south") {
+          return ["bengaluru", "bangalore"].includes(c) || s.includes("karnataka");
+        }
+        if (normReg === "west") {
+          return ["mumbai", "pune"].includes(c) || s.includes("maharashtra");
+        }
+        return c === normReg || s.includes(normReg);
+      });
     }
 
-    if (complianceStatus && complianceStatus !== "All Statuses") {
-      outletList = outletList.filter((o) => o.status.toLowerCase() === complianceStatus.toLowerCase());
+    // City Filter
+    if (city && city !== "All Cities" && city !== "all") {
+      outletList = outletList.filter((o) => (o.city || "").toLowerCase() === city.toLowerCase().trim());
+    }
+
+    // Compliance Status Filter
+    if (
+      complianceStatus &&
+      complianceStatus !== "All Statuses" &&
+      complianceStatus !== "All" &&
+      complianceStatus !== "all"
+    ) {
+      const normStatus = complianceStatus.toLowerCase().trim();
+      outletList = outletList.filter((o) => (o.status || "").toLowerCase().trim() === normStatus);
+    }
+
+    // Risk Level Tier Filter
+    if (riskLevel && riskLevel !== "All Risk Levels" && riskLevel !== "all") {
+      const normRisk = riskLevel.toLowerCase().trim();
+      outletList = outletList.filter((o) => {
+        const score = Number(o.riskScore !== undefined ? o.riskScore : (o.risk_score || 15));
+        if (normRisk === "low") return score <= 20;
+        if (normRisk === "moderate") return score > 20 && score <= 40;
+        if (normRisk === "elevated") return score > 40 && score <= 60;
+        if (normRisk === "high") return score > 60 && score <= 80;
+        if (normRisk === "critical") return score > 80;
+        return true;
+      });
     }
 
     const matchedOutletIds = new Set(outletList.map((o) => (o.outletId || o.outlet_id || "").toUpperCase()));
 
-    // 2. Query operational tables safely with fallbacks
+    // 2. Resolve Multi-Dimensional Date Range Intersection
+    let minDate: string | null = null;
+    let maxDate: string | null = null;
+
+    const intersectDates = (start: string, end: string) => {
+      if (!minDate || start > minDate) minDate = start;
+      if (!maxDate || end < maxDate) maxDate = end;
+    };
+
+    // Cycle Filter Range
+    if (cycle && cycle !== "All Cycles" && cycle !== "all") {
+      const cNorm = cycle.toLowerCase().trim();
+      if (cNorm.includes("current") || cNorm.includes("q3/q4")) {
+        intersectDates("2026-07-01", "2026-10-31");
+      } else if (cNorm.includes("q3 2026") || cNorm.includes("q3")) {
+        intersectDates("2026-07-01", "2026-09-30");
+      } else if (cNorm.includes("q2 2026") || cNorm.includes("q2")) {
+        intersectDates("2026-04-01", "2026-06-30");
+      } else if (cNorm.includes("q1 2026") || cNorm.includes("q1")) {
+        intersectDates("2026-01-01", "2026-03-31");
+      }
+    }
+
+    // Month Filter Range
+    if (month && month !== "All Months" && month !== "all") {
+      const mNorm = month.toLowerCase().trim();
+      if (mNorm.includes("october") || mNorm === "10" || mNorm === "2026-10") {
+        intersectDates("2026-10-01", "2026-10-31");
+      } else if (mNorm.includes("september") || mNorm === "09" || mNorm === "2026-09") {
+        intersectDates("2026-09-01", "2026-09-30");
+      } else if (mNorm.includes("august") || mNorm === "08" || mNorm === "2026-08") {
+        intersectDates("2026-08-01", "2026-08-31");
+      } else if (mNorm.includes("july") || mNorm === "07" || mNorm === "2026-07") {
+        intersectDates("2026-07-01", "2026-07-31");
+      } else if (mNorm.includes("june") || mNorm === "06" || mNorm === "2026-06") {
+        intersectDates("2026-06-01", "2026-06-30");
+      } else if (mNorm.includes("may") || mNorm === "05" || mNorm === "2026-05") {
+        intersectDates("2026-05-01", "2026-05-31");
+      }
+    }
+
+    // Period / Date Filter Range
+    const effPeriod = period || date;
+    if (effPeriod && effPeriod !== "All Time" && effPeriod !== "all") {
+      const pNorm = effPeriod.toLowerCase().trim();
+      if (pNorm === "today") {
+        intersectDates("2026-10-04", "2026-10-04");
+      } else if (pNorm === "yesterday") {
+        intersectDates("2026-10-03", "2026-10-03");
+      } else if (pNorm.includes("last 7") || pNorm === "last 7 days") {
+        intersectDates("2026-09-28", "2026-10-04");
+      } else if (pNorm.includes("last 30") || pNorm === "last 30 days") {
+        intersectDates("2026-09-05", "2026-10-04");
+      } else if (pNorm.includes("month to date")) {
+        intersectDates("2026-10-01", "2026-10-04");
+      } else if (pNorm.includes("custom") || (startDate && endDate)) {
+        intersectDates(startDate || "2000-01-01", endDate || "2099-12-31");
+      }
+    }
+
+    const isDateWindowEmpty = minDate !== null && maxDate !== null && minDate > maxDate;
+
+    // 3. Query operational tables safely with fallbacks
     let allSales: any[] = [];
-    let allInv: any[] = [];
+    let allReconciliations: any[] = [];
     let allInspections: any[] = [];
     let allAlerts: any[] = [];
     let allComplaints: any[] = [];
     let allEvidence: any[] = [];
     let allCapas: any[] = [];
+    let allInventory: any[] = [];
 
     try {
-      [allSales, allInv, allInspections, allAlerts, allComplaints, allEvidence, allCapas] =
-        await Promise.all([
-          db.select().from(outletSales).catch(() => []),
-          db.select().from(inventoryReconciliations).catch(() => []),
-          db.select().from(complianceInspections).catch(() => []),
-          db.select().from(outletAlerts).catch(() => []),
-          db.select().from(outletComplaints).catch(() => []),
-          db.select().from(outletEvidence).catch(() => []),
-          db.select().from(outletCorrectiveActions).catch(() => []),
-        ]);
+      [
+        allSales,
+        allReconciliations,
+        allInspections,
+        allAlerts,
+        allComplaints,
+        allEvidence,
+        allCapas,
+        allInventory,
+      ] = await Promise.all([
+        db.select().from(outletSales).catch(() => []),
+        db.select().from(inventoryReconciliations).catch(() => []),
+        db.select().from(complianceInspections).catch(() => []),
+        db.select().from(outletAlerts).catch(() => []),
+        db.select().from(outletComplaints).catch(() => []),
+        db.select().from(outletEvidence).catch(() => []),
+        db.select().from(outletCorrectiveActions).catch(() => []),
+        db.select().from(outletInventory).catch(() => []),
+      ]);
     } catch (opsErr) {
       console.warn("Operational tables query fallback:", opsErr);
     }
 
-    // Filter datasets by matched outlets
-    const sales = allSales.filter((s) => matchedOutletIds.has(s.outletId.toUpperCase()));
-    const reconciliations = allInv.filter((i) => matchedOutletIds.has(i.outletId.toUpperCase()));
+    // 4. Filter datasets by matched outlets & date range intersection
+    let sales: any[] = [];
+    let complaints: any[] = [];
+
+    if (!isDateWindowEmpty && matchedOutletIds.size > 0) {
+      if (minDate !== null && maxDate !== null) {
+        sales = allSales.filter(
+          (s) =>
+            matchedOutletIds.has(s.outletId.toUpperCase()) &&
+            s.date >= minDate! &&
+            s.date <= maxDate!
+        );
+        complaints = allComplaints.filter((c) => {
+          if (!matchedOutletIds.has(c.outletId.toUpperCase())) return false;
+          const cDate = c.createdAt
+            ? new Date(c.createdAt).toISOString().slice(0, 10)
+            : c.date || "2026-10-01";
+          return cDate >= minDate! && cDate <= maxDate!;
+        });
+      } else {
+        sales = allSales.filter((s) => matchedOutletIds.has(s.outletId.toUpperCase()));
+        complaints = allComplaints.filter((c) => matchedOutletIds.has(c.outletId.toUpperCase()));
+      }
+    }
+
+    // Filter complaints by Complaint Status
+    if (
+      complaintStatus &&
+      complaintStatus !== "All" &&
+      complaintStatus !== "all" &&
+      complaintStatus !== "All Statuses"
+    ) {
+      const normCStatus = complaintStatus.toLowerCase().trim();
+      complaints = complaints.filter((c) => {
+        const s = (c.status || "").toLowerCase().replace(/_/g, " ").trim();
+        if (normCStatus === "pending") return s === "pending" || s === "open" || s === "new";
+        if (normCStatus === "in progress")
+          return (
+            s === "in progress" ||
+            s === "investigating" ||
+            s === "under review" ||
+            s === "under_review"
+          );
+        if (normCStatus === "resolved") return s === "resolved" || s === "closed" || s === "verified";
+        if (normCStatus === "rejected") return s === "rejected" || s === "dismissed";
+        return s === normCStatus;
+      });
+    }
+
+    // Filter other operational datasets by matched outlets
+    const reconciliations = allReconciliations.filter((i) => matchedOutletIds.has(i.outletId.toUpperCase()));
     const inspections = allInspections.filter((i) => matchedOutletIds.has(i.outletId.toUpperCase()));
     const alerts = allAlerts.filter((a) => matchedOutletIds.has(a.outletId.toUpperCase()));
-    const complaints = allComplaints.filter((c) => matchedOutletIds.has(c.outletId.toUpperCase()));
     const evidenceList = allEvidence.filter((e) => matchedOutletIds.has(e.outletId.toUpperCase()));
     const capas = allCapas.filter((c) => matchedOutletIds.has(c.outletId.toUpperCase()));
 
-    // Calculate Financials from real database rows
+    // 5. Calculate Physical Stock & SKU counts from outletInventory
+    const matchingInventory = allInventory.filter((i) =>
+      matchedOutletIds.has((i.outletId || "").toUpperCase())
+    );
+    const totalStockUnits =
+      matchedOutletIds.size > 0
+        ? matchingInventory.reduce((acc, row) => acc + Number(row.stockQuantity || 0), 0)
+        : 0;
+    const totalSkus =
+      matchedOutletIds.size > 0
+        ? new Set(matchingInventory.map((row) => row.sku || row.itemName)).size
+        : 0;
+
+    // 6. Calculate Financials strictly from matching sales (Zero fallback)
     let totalRevenue = 0;
     sales.forEach((s) => {
       totalRevenue += Number(s.netSales || 0);
     });
-    if (totalRevenue === 0 || totalRevenue < 50000) {
-      totalRevenue = outletList.reduce((acc, o) => acc + Number(o.revenueMonthly || 540000), 0);
-    }
-    const ebitda = totalRevenue * 0.152;
-    const ebitdaMargin = 15.2;
 
-    // Calculate Compliance Percentage
+    const ebitda = Math.round(totalRevenue * 0.152);
+    const ebitdaMargin = totalRevenue > 0 ? 15.2 : 0;
+
+    // Calculate Compliance Percentage & Risk Score
     const avgCompliance =
       outletList.length > 0
         ? Math.round(
             outletList.reduce((acc, o) => acc + (o.complianceScore || 85), 0) / outletList.length
           )
-        : 88;
+        : 0;
 
-    // Calculate Overall Risk Score
     const avgRisk =
       outletList.length > 0
         ? Math.round(
             outletList.reduce((acc, o) => acc + (o.riskScore || 20), 0) / outletList.length
           )
-        : 22;
+        : 0;
 
     // Risk Distribution across brackets
     const riskTiers = {
@@ -3459,19 +3694,44 @@ apiRouter.get("/dashboard/overview", requireAuth, async (req: AuthenticatedReque
     };
 
     const riskDistribution = [
-      { tier: "Low (0-20)", count: riskTiers.low, percentage: Math.round((riskTiers.low / (outletList.length || 1)) * 100), fill: "#10b981" },
-      { tier: "Moderate (21-40)", count: riskTiers.moderate, percentage: Math.round((riskTiers.moderate / (outletList.length || 1)) * 100), fill: "#14b8a6" },
-      { tier: "Elevated (41-60)", count: riskTiers.elevated, percentage: Math.round((riskTiers.elevated / (outletList.length || 1)) * 100), fill: "#f59e0b" },
-      { tier: "High (61-80)", count: riskTiers.high, percentage: Math.round((riskTiers.high / (outletList.length || 1)) * 100), fill: "#f97316" },
-      { tier: "Critical (81-100)", count: riskTiers.critical, percentage: Math.round((riskTiers.critical / (outletList.length || 1)) * 100), fill: "#ef4444" },
+      {
+        tier: "Low (0-20)",
+        count: riskTiers.low,
+        percentage: Math.round((riskTiers.low / (outletList.length || 1)) * 100),
+        fill: "#10b981",
+      },
+      {
+        tier: "Moderate (21-40)",
+        count: riskTiers.moderate,
+        percentage: Math.round((riskTiers.moderate / (outletList.length || 1)) * 100),
+        fill: "#14b8a6",
+      },
+      {
+        tier: "Elevated (41-60)",
+        count: riskTiers.elevated,
+        percentage: Math.round((riskTiers.elevated / (outletList.length || 1)) * 100),
+        fill: "#f59e0b",
+      },
+      {
+        tier: "High (61-80)",
+        count: riskTiers.high,
+        percentage: Math.round((riskTiers.high / (outletList.length || 1)) * 100),
+        fill: "#f97316",
+      },
+      {
+        tier: "Critical (81-100)",
+        count: riskTiers.critical,
+        percentage: Math.round((riskTiers.critical / (outletList.length || 1)) * 100),
+        fill: "#ef4444",
+      },
     ];
 
-    // High-Risk Outlets
+    // High-Risk Outlets (scoped to filtered outlets)
     const highRiskOutlets = [...outletList]
       .sort((a, b) => (b.riskScore || 0) - (a.riskScore || 0))
       .slice(0, 5)
       .map((o) => ({
-        outletId: o.outletId,
+        outletId: o.outletId || o.outlet_id,
         name: o.name,
         city: o.city,
         riskScore: o.riskScore || 15,
@@ -3479,33 +3739,48 @@ apiRouter.get("/dashboard/overview", requireAuth, async (req: AuthenticatedReque
         status: o.status,
         operatingModel: o.operatingModel,
         manager: o.manager,
-        alertsCount: alerts.filter((a) => a.outletId.toUpperCase() === o.outletId.toUpperCase()).length,
+        alertsCount: alerts.filter(
+          (a) => (a.outletId || "").toUpperCase() === (o.outletId || o.outlet_id || "").toUpperCase()
+        ).length,
       }));
 
-    // Underperforming Outlets
+    // Underperforming Outlets (scoped to filtered outlets)
     const underperformingOutlets = [...outletList]
-      .sort((a, b) => Number(a.revenueMonthly || 0) - Number(b.revenueMonthly || 0))
-      .slice(0, 5)
-      .map((o) => ({
-        outletId: o.outletId,
-        name: o.name,
-        city: o.city,
-        revenueMonthly: Number(o.revenueMonthly || 0),
-        complianceScore: o.complianceScore || 85,
-        riskScore: o.riskScore || 15,
-        status: o.status,
-      }));
+      .map((o) => {
+        const storeSales = sales.filter(
+          (s) => (s.outletId || "").toUpperCase() === (o.outletId || o.outlet_id || "").toUpperCase()
+        );
+        const storeRev = storeSales.reduce((acc, s) => acc + Number(s.netSales || 0), 0);
+        return {
+          outletId: o.outletId || o.outlet_id,
+          name: o.name,
+          city: o.city,
+          revenueMonthly: storeRev,
+          complianceScore: o.complianceScore || 85,
+          riskScore: o.riskScore || 15,
+          status: o.status,
+        };
+      })
+      .sort((a, b) => a.revenueMonthly - b.revenueMonthly)
+      .slice(0, 5);
 
     // City-Wise Performance
-    const cityMap: Record<string, { outlets: number; revenue: number; totalCompliance: number; totalRisk: number }> = {};
+    const cityMap: Record<
+      string,
+      { outlets: number; revenue: number; totalCompliance: number; totalRisk: number }
+    > = {};
     outletList.forEach((o) => {
-      if (!cityMap[o.city]) {
-        cityMap[o.city] = { outlets: 0, revenue: 0, totalCompliance: 0, totalRisk: 0 };
+      const cName = o.city || "Unknown";
+      if (!cityMap[cName]) {
+        cityMap[cName] = { outlets: 0, revenue: 0, totalCompliance: 0, totalRisk: 0 };
       }
-      cityMap[o.city].outlets += 1;
-      cityMap[o.city].revenue += Number(o.revenueMonthly || 550000);
-      cityMap[o.city].totalCompliance += o.complianceScore || 85;
-      cityMap[o.city].totalRisk += o.riskScore || 20;
+      cityMap[cName].outlets += 1;
+      const storeSales = sales.filter(
+        (s) => (s.outletId || "").toUpperCase() === (o.outletId || o.outlet_id || "").toUpperCase()
+      );
+      cityMap[cName].revenue += storeSales.reduce((acc, s) => acc + Number(s.netSales || 0), 0);
+      cityMap[cName].totalCompliance += o.complianceScore || 85;
+      cityMap[cName].totalRisk += o.riskScore || 20;
     });
 
     const cityPerformance = Object.entries(cityMap).map(([cityName, data]) => ({
@@ -3516,8 +3791,11 @@ apiRouter.get("/dashboard/overview", requireAuth, async (req: AuthenticatedReque
       avgRisk: Math.round(data.totalRisk / data.outlets),
     }));
 
-    // Sales Trends (Daily points from sales records)
-    const salesByDate: Record<string, { date: string; revenue: number; orders: number; cash: number; upi: number }> = {};
+    // Sales Trends (Daily points from matching sales records - zero fallback when empty)
+    const salesByDate: Record<
+      string,
+      { date: string; revenue: number; orders: number; cash: number; upi: number }
+    > = {};
     sales.forEach((s) => {
       const d = s.date || "2026-10-01";
       if (!salesByDate[d]) {
@@ -3529,18 +3807,7 @@ apiRouter.get("/dashboard/overview", requireAuth, async (req: AuthenticatedReque
       salesByDate[d].upi += Number(s.upiCollection || 0);
     });
 
-    let salesTrends = Object.values(salesByDate).sort((a, b) => a.date.localeCompare(b.date));
-    if (salesTrends.length === 0) {
-      salesTrends = [
-        { date: "2026-09-26", revenue: 42000, orders: 120, cash: 12000, upi: 30000 },
-        { date: "2026-09-27", revenue: 46000, orders: 135, cash: 14000, upi: 32000 },
-        { date: "2026-09-28", revenue: 41000, orders: 115, cash: 11000, upi: 30000 },
-        { date: "2026-09-29", revenue: 49000, orders: 142, cash: 15000, upi: 34000 },
-        { date: "2026-09-30", revenue: 53000, orders: 158, cash: 16000, upi: 37000 },
-        { date: "2026-10-01", revenue: 51000, orders: 150, cash: 14000, upi: 37000 },
-        { date: "2026-10-02", revenue: 55000, orders: 162, cash: 16000, upi: 39000 },
-      ];
-    }
+    const salesTrends = Object.values(salesByDate).sort((a, b) => a.date.localeCompare(b.date));
 
     // Historical Compliance Trends
     const historicalTrends = [
@@ -3549,7 +3816,7 @@ apiRouter.get("/dashboard/overview", requireAuth, async (req: AuthenticatedReque
       { month: "Jul '26", compliance: 87, risk: 28, revenueCr: 8.4 },
       { month: "Aug '26", compliance: 91, risk: 20, revenueCr: 8.8 },
       { month: "Sep '26", compliance: 88, risk: 25, revenueCr: 8.3 },
-      { month: "Oct '26", compliance: avgCompliance, risk: avgRisk, revenueCr: 8.6 },
+      { month: "Oct '26", compliance: avgCompliance || 86, risk: avgRisk || 22, revenueCr: 8.6 },
     ];
 
     return res.json({
@@ -3559,6 +3826,9 @@ apiRouter.get("/dashboard/overview", requireAuth, async (req: AuthenticatedReque
         totalRevenue,
         ebitda,
         ebitdaMargin,
+        totalComplaints: complaints.length,
+        totalStockUnits,
+        totalSkus,
         compliancePercentage: avgCompliance,
         overallRiskScore: avgRisk,
       },

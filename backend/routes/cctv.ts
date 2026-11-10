@@ -96,6 +96,16 @@ async function processCctvExtractionJob(
       cctvId,
       framesOutputDir: CCTV_FRAMES_DIR,
       intervalSeconds,
+      onFrameExtracted: (newFrame, allFrames, currentCount, totalExpected) => {
+        CctvJobQueue.updateJob(jobId, {
+          status: "GENERATING_PHOTOS",
+          frames: allFrames,
+          photosCount: currentCount,
+          totalFrames: totalExpected,
+          currentFrame: currentCount,
+          currentStep: `Extracted photo ${currentCount} of ${totalExpected} at ${newFrame.timestamp}`,
+        });
+      },
       onProgress: (pct, curr, total, msg) => {
         CctvJobQueue.updateJob(jobId, {
           status: "GENERATING_PHOTOS",

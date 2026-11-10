@@ -42,13 +42,16 @@ export interface CctvJob {
   currentStep: string;
   currentFrame?: number;
   totalFrames?: number;
+  photosCount?: number;
   videoDurationSeconds?: number;
   durationLabel?: string;
   frames?: ExtractedFrame[];
   metadata?: VideoMetadata;
   error?: string;
   createdAt: string;
+  firstFrameExtractedAt?: string;
   completedAt?: string;
+  extractionDurationMs?: number;
   officerDecision?: string;
   officerNotes?: string;
   finalRating?: number;
@@ -86,16 +89,34 @@ try {
   console.warn("Could not load persistent jobs file:", e);
 }
 
-function persistJobsToDisk() {
-  try {
-    const dir = path.dirname(JOBS_FILE);
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir, { recursive: true });
+// Debounced persistence to disk so rapid progressive updates never freeze the event loop
+let persistTimer: NodeJS.Timeout | null = null;
+function persistJobsToDisk(immediate = false) {
+  const doSave = () => {
+    try {
+      const dir = path.dirname(JOBS_FILE);
+      if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+      }
+      const arr = Array.from(jobsMap.values()).slice(-100);
+      fs.writeFileSync(JOBS_FILE, JSON.stringify(arr, null, 2));
+    } catch (err) {
+      console.warn("Failed to persist CCTV jobs to disk:", err);
     }
-    const arr = Array.from(jobsMap.values()).slice(-100); // keep latest 100
-    fs.writeFileSync(JOBS_FILE, JSON.stringify(arr, null, 2));
-  } catch (err) {
-    console.warn("Failed to persist CCTV jobs to disk:", err);
+  };
+
+  if (immediate) {
+    if (persistTimer) clearTimeout(persistTimer);
+    persistTimer = null;
+    doSave();
+    return;
+  }
+
+  if (!persistTimer) {
+    persistTimer = setTimeout(() => {
+      persistTimer = null;
+      doSave();
+    }, 800);
   }
 }
 
@@ -105,9 +126,11 @@ export const CctvJobQueue = {
       ...jobData,
       progressPct: 0,
       createdAt: new Date().toISOString(),
+      frames: jobData.frames || [],
+      photosCount: jobData.frames?.length || 0,
     };
     jobsMap.set(job.jobId, job);
-    persistJobsToDisk();
+    persistJobsToDisk(true);
     return job;
   },
 
@@ -136,12 +159,15 @@ export const CctvJobQueue = {
     const updated: CctvJob = {
       ...existing,
       ...updates,
+      photosCount: updates.frames ? updates.frames.length : (updates.photosCount ?? existing.photosCount ?? 0),
     };
     if (updates.status === "COMPLETED" || updates.status === "FAILED") {
       updated.completedAt = new Date().toISOString();
+      persistJobsToDisk(true); // immediate on terminal state
+    } else {
+      persistJobsToDisk(false); // debounced during live progressive extraction
     }
     jobsMap.set(jobId, updated);
-    persistJobsToDisk();
     return updated;
   },
 
@@ -284,93 +310,58 @@ export function generateVideoFingerprint(videoPath: string): string {
  * Supports configurable interval extraction (e.g. every 15s, 30s, 60s, 300s) or adaptive duration scheduling.
  * Supports videos from 1 second up to 10+ hours without extracting outside duration.
  */
+/**
+ * Calculates dynamic timestamps for frame extraction tailored to the video's actual duration.
+ * Supports configurable interval extraction (default 30 seconds, user configurable) or adaptive duration scheduling.
+ * Supports videos from 10 seconds up to 10+ hours without extracting outside duration.
+ */
 export function calculateExtractionTimestamps(
   durationSeconds: number,
   options?: { minFrames?: number; maxFrames?: number; intervalSeconds?: number }
 ): { seconds: number; formatted: string }[] {
-  // If a specific extraction interval is configured (e.g. 15s, 30s, 60s, 300s)
-  if (options?.intervalSeconds && options.intervalSeconds > 0) {
-    const interval = options.intervalSeconds;
-    const startMargin = Math.min(0.5, durationSeconds * 0.05);
-    const endMargin = Math.min(0.5, durationSeconds * 0.05);
-    const effectiveEnd = durationSeconds - endMargin;
-    const maxAllowed = options.maxFrames || 25; // Sensible ceiling to protect resources on 10h videos
+  // Default interval is 30 seconds per user requirement
+  const interval = (options?.intervalSeconds && options.intervalSeconds > 0)
+    ? options.intervalSeconds
+    : 30;
 
-    const timestamps: { seconds: number; formatted: string }[] = [];
-
-    for (let sec = startMargin; sec <= effectiveEnd; sec += interval) {
-      const rounded = Number(sec.toFixed(2));
-      timestamps.push({
-        seconds: rounded,
-        formatted: formatTimestamp(rounded),
-      });
-      if (timestamps.length >= maxAllowed) {
-        break;
-      }
-    }
-
-    // Ensure at least 2 frames if video duration allows
-    if (timestamps.length < 2 && durationSeconds >= 2) {
-      const endSec = Number(Math.max(0.2, durationSeconds - endMargin).toFixed(2));
-      if (!timestamps.some((t) => Math.abs(t.seconds - endSec) < 0.5)) {
-        timestamps.push({ seconds: endSec, formatted: formatTimestamp(endSec) });
-      }
-    }
-
-    return timestamps;
-  }
-
-  // Default Adaptive Scheduling (tested and calibrated for all standard durations)
-  let frameCount: number;
-
-  if (durationSeconds < 4) {
-    frameCount = 2;
-  } else if (durationSeconds <= 15) {
-    frameCount = 5;
-  } else if (durationSeconds <= 45) {
-    frameCount = 6;
-  } else if (durationSeconds <= 180) {
-    frameCount = 7;
-  } else if (durationSeconds <= 3600) {
-    frameCount = 8;
-  } else if (durationSeconds <= 18000) {
-    frameCount = 10;
-  } else {
-    frameCount = 10;
-  }
-
-  if (options?.maxFrames) {
-    frameCount = Math.min(frameCount, options.maxFrames);
-  }
-  if (options?.minFrames) {
-    frameCount = Math.max(frameCount, options.minFrames);
-  }
-
-  const startMargin = Math.min(0.5, durationSeconds * 0.05);
-  const endMargin = Math.min(0.5, durationSeconds * 0.05);
-  const effectiveSpan = durationSeconds - startMargin - endMargin;
+  const startMargin = Math.min(0.5, Math.max(0.1, durationSeconds * 0.05));
+  const endMargin = Math.min(0.5, Math.max(0.1, durationSeconds * 0.05));
+  const effectiveEnd = Math.max(startMargin, durationSeconds - endMargin);
+  const maxAllowed = options?.maxFrames || 35; // Sensible ceiling to protect resources on 10h videos
 
   const timestamps: { seconds: number; formatted: string }[] = [];
 
-  if (frameCount <= 1 || effectiveSpan <= 0) {
-    const sec = Number((durationSeconds / 2).toFixed(2));
-    timestamps.push({ seconds: sec, formatted: formatTimestamp(sec) });
+  // Short videos (e.g. 10s to 29s): extract start and end frames
+  if (durationSeconds <= interval) {
+    const firstSec = Number(startMargin.toFixed(2));
+    const lastSec = Number(Math.max(firstSec + 0.5, effectiveEnd).toFixed(2));
+    timestamps.push({ seconds: firstSec, formatted: formatTimestamp(firstSec) });
+    if (lastSec > firstSec && durationSeconds >= 2) {
+      timestamps.push({ seconds: lastSec, formatted: formatTimestamp(lastSec) });
+    }
     return timestamps;
   }
 
-  const step = effectiveSpan / (frameCount - 1);
-
-  for (let i = 0; i < frameCount; i++) {
-    const rawSeconds = startMargin + i * step;
-    const clampedSeconds = Math.max(0.1, Math.min(durationSeconds - 0.1, rawSeconds));
-    const rounded = Number(clampedSeconds.toFixed(2));
-
-    if (timestamps.length === 0 || rounded > timestamps[timestamps.length - 1].seconds + 0.1) {
-      timestamps.push({
-        seconds: rounded,
-        formatted: formatTimestamp(rounded),
-      });
+  // Interval-based sampling: Step by interval (default 30s)
+  for (let sec = startMargin; sec <= effectiveEnd; sec += interval) {
+    const rounded = Number(sec.toFixed(2));
+    timestamps.push({
+      seconds: rounded,
+      formatted: formatTimestamp(rounded),
+    });
+    if (timestamps.length >= maxAllowed) {
+      break;
     }
+  }
+
+  // Ensure end frame is captured if margin left room and limit not exceeded
+  const finalSec = Number(effectiveEnd.toFixed(2));
+  if (
+    timestamps.length < maxAllowed &&
+    timestamps.length > 0 &&
+    finalSec - timestamps[timestamps.length - 1].seconds >= Math.min(10, interval / 2)
+  ) {
+    timestamps.push({ seconds: finalSec, formatted: formatTimestamp(finalSec) });
   }
 
   return timestamps;
@@ -414,9 +405,53 @@ export function formatDurationLabel(seconds: number): string {
 }
 
 /**
- * Extracts real authentic frames from the uploaded video file using FFmpeg.
- * Guaranteed: Every frame is extracted directly from the uploaded video.
- * Supports configurable intervalSeconds (e.g. 15, 30, 60, 300), video duplicate caching, and high-quality image scaling.
+ * Executes single frame extraction using ultra-optimized FFmpeg seeking flags.
+ * Bypasses audio, subtitle, and data decoding (-an -sn -dn), disables autorotate metadata parsing,
+ * scales directly during decode pass (-vf scale), and applies lightweight JPEG compression (-q:v 3).
+ */
+async function extractSingleFfmpegFrame(
+  videoPath: string,
+  seconds: number,
+  outputPath: string
+): Promise<void> {
+  await execFileAsync("ffmpeg", [
+    "-ss",
+    String(seconds),
+    "-noautorotate",
+    "-i",
+    videoPath,
+    "-an",
+    "-sn",
+    "-dn",
+    "-threads",
+    "2",
+    "-vf",
+    "scale='min(1280,iw)':-2",
+    "-vframes",
+    "1",
+    "-q:v",
+    "3",
+    "-f",
+    "image2",
+    outputPath,
+    "-y",
+  ]);
+
+  if (!fs.existsSync(outputPath) || fs.statSync(outputPath).size === 0) {
+    throw new Error(`Frame extraction failed for timestamp ${seconds}s.`);
+  }
+}
+
+/**
+ * Extracts authentic video frames progressively using FFmpeg.
+ *
+ * PROGRESSIVE ARCHITECTURE:
+ * 1. Immediate Phase: Extracts the first timestamped photo (< 250ms).
+ * 2. Emits the first photo immediately via onFrameExtracted callback so frontend displays it right away.
+ * 3. Concurrent Phase: Extracts remaining sampled photos in parallel (concurrency: 2) in background.
+ * 4. As each photo becomes available, immediately emits it to the live stream.
+ *
+ * Supports videos from 10 seconds up to 10+ hours.
  */
 export async function extractRealVideoFrames(params: {
   videoPath: string;
@@ -427,12 +462,23 @@ export async function extractRealVideoFrames(params: {
   intervalSeconds?: number;
   maxFrames?: number;
   onProgress?: (progressPct: number, currentFrame: number, totalFrames: number, message: string) => void;
+  onFrameExtracted?: (newFrame: ExtractedFrame, allFrames: ExtractedFrame[], currentCount: number, totalExpected: number) => void;
 }): Promise<{
   metadata: VideoMetadata;
   frames: ExtractedFrame[];
   isCached?: boolean;
 }> {
-  const { videoPath, sourceVideoName, storeId, cctvId, framesOutputDir, intervalSeconds, maxFrames, onProgress } = params;
+  const {
+    videoPath,
+    sourceVideoName,
+    storeId,
+    cctvId,
+    framesOutputDir,
+    intervalSeconds,
+    maxFrames,
+    onProgress,
+    onFrameExtracted,
+  } = params;
 
   // 1. Check duplicate video cache to avoid redundant heavy FFmpeg processing
   const fingerprint = generateVideoFingerprint(videoPath);
@@ -446,14 +492,21 @@ export async function extractRealVideoFrames(params: {
     });
 
     if (allFilesExist) {
-      onProgress?.(100, cached.frames.length, cached.frames.length, "Loaded authentic frames instantly from verified video cache.");
-      const clonedFrames: ExtractedFrame[] = cached.frames.map((f, i) => ({
+      const clonedFrames: ExtractedFrame[] = cached.frames.map((f) => ({
         ...f,
         cctvId,
         storeId,
         sourceVideoName,
         status: "Unreviewed" as const,
       }));
+
+      // Progressively stream cached frames in rapid sequence so UI immediately populates
+      for (let i = 0; i < clonedFrames.length; i++) {
+        const partial = clonedFrames.slice(0, i + 1);
+        onFrameExtracted?.(clonedFrames[i], partial, i + 1, clonedFrames.length);
+      }
+
+      onProgress?.(100, clonedFrames.length, clonedFrames.length, "Loaded authentic frames instantly from verified video cache.");
 
       return {
         metadata: cached.metadata,
@@ -464,7 +517,7 @@ export async function extractRealVideoFrames(params: {
   }
 
   // 2. Read metadata & validate video
-  onProgress?.(10, 0, 0, "Inspecting video stream, codec, and authentic duration...");
+  onProgress?.(5, 0, 0, "Inspecting video stream, codec, and authentic duration...");
   const metadata = await getVideoMetadata(videoPath);
 
   // 3. Ensure output directory exists
@@ -472,9 +525,9 @@ export async function extractRealVideoFrames(params: {
     fs.mkdirSync(framesOutputDir, { recursive: true });
   }
 
-  // 4. Compute dynamic timestamps (interval-based or adaptive schedule)
+  // 4. Compute dynamic timestamps (default 30s interval, or user-selected)
   const timestamps = calculateExtractionTimestamps(metadata.durationSeconds, {
-    intervalSeconds,
+    intervalSeconds: intervalSeconds || 30,
     maxFrames,
   });
 
@@ -483,67 +536,109 @@ export async function extractRealVideoFrames(params: {
   }
 
   const frames: ExtractedFrame[] = [];
+  const totalExpected = timestamps.length;
 
-  // 5. Extract each frame with FFmpeg with fast seek, resolution scaling, and crisp compression
-  for (let i = 0; i < timestamps.length; i++) {
-    const { seconds, formatted } = timestamps[i];
-    const photoNumber = String(i + 1).padStart(2, "0");
-    const frameFilename = `frame_${cctvId}_${photoNumber}_${Math.round(seconds)}s.jpg`;
-    const outputPath = path.join(framesOutputDir, frameFilename);
+  // Helper to create ExtractedFrame object with async buffer read
+  const createFrameObject = async (
+    photoIdx: number,
+    seconds: number,
+    formatted: string,
+    outputPath: string,
+    frameFilename: string
+  ): Promise<ExtractedFrame> => {
+    const photoNumber = String(photoIdx + 1).padStart(2, "0");
+    const frameBuffer = await fs.promises.readFile(outputPath);
+    const dataUrl = `data:image/jpeg;base64,${frameBuffer.toString("base64")}`;
+    const imageUrl = `/uploads/cctv/frames/${frameFilename}`;
+    const zone = DEFAULT_ZONES[photoIdx % DEFAULT_ZONES.length];
 
-    const currentPct = 15 + Math.round(((i + 1) / timestamps.length) * 75);
+    return {
+      id: `Photo ${photoNumber}`,
+      cctvId,
+      storeId,
+      sourceVideoName,
+      timestamp: formatted,
+      offsetSeconds: seconds,
+      videoDurationSeconds: metadata.durationSeconds,
+      imageUrl,
+      dataUrl,
+      status: "Unreviewed",
+      zone,
+      isAuthenticFrame: true,
+    };
+  };
+
+  // =========================================================================
+  // PHASE 1: INSTANT FIRST FRAME EXTRACTION (Target Time: < 250ms)
+  // =========================================================================
+  const firstItem = timestamps[0];
+  const firstFilename = `frame_${cctvId}_01_${Math.round(firstItem.seconds)}s.jpg`;
+  const firstOutputPath = path.join(framesOutputDir, firstFilename);
+
+  onProgress?.(15, 0, totalExpected, `Extracting first timestamped photo at ${firstItem.formatted}...`);
+
+  try {
+    await extractSingleFfmpegFrame(videoPath, firstItem.seconds, firstOutputPath);
+    const firstFrame = await createFrameObject(0, firstItem.seconds, firstItem.formatted, firstOutputPath, firstFilename);
+    frames.push(firstFrame);
+
+    // IMMEDIATELY EMIT FIRST PHOTO SO FRONTEND RENDERS IT WITHOUT WAITING!
+    onFrameExtracted?.(firstFrame, [...frames], 1, totalExpected);
     onProgress?.(
-      currentPct,
-      i + 1,
-      timestamps.length,
-      `Extracting authentic frame ${i + 1} of ${timestamps.length} at ${formatted} (${seconds}s)...`
+      20,
+      1,
+      totalExpected,
+      `Photo 1 of ${totalExpected} ready (${firstItem.formatted}). Extracting remaining frames in background...`
     );
+  } catch (err: any) {
+    console.warn(`Warning: Phase 1 extraction failed at ${firstItem.formatted}:`, err);
+  }
 
-    try {
-      // Fast accurate seek using -ss before -i, scaling to max 1280px width (-vf scale='min(1280,iw)':-2)
-      // and high quality JPEG compression (-q:v 3) for crisp, lightweight forensic frames.
-      await execFileAsync("ffmpeg", [
-        "-ss",
-        String(seconds),
-        "-i",
-        videoPath,
-        "-vf",
-        "scale='min(1280,iw)':-2",
-        "-vframes",
-        "1",
-        "-q:v",
-        "3",
-        outputPath,
-        "-y",
-      ]);
+  // =========================================================================
+  // PHASE 2: CONCURRENT BACKGROUND EXTRACTION (Concurrency: 2)
+  // =========================================================================
+  const remainingTimestamps = timestamps.slice(1);
 
-      if (!fs.existsSync(outputPath) || fs.statSync(outputPath).size === 0) {
-        throw new Error(`Frame file ${frameFilename} was not created or is empty.`);
+  if (remainingTimestamps.length > 0) {
+    const CONCURRENCY = 2; // Controlled parallelism: speeds up extraction 2x without overloading CPU/memory
+    let nextIdx = 0;
+
+    const worker = async () => {
+      while (nextIdx < remainingTimestamps.length) {
+        const itemIdx = nextIdx++;
+        const item = remainingTimestamps[itemIdx];
+        const globalIdx = itemIdx + 1; // 1-based index in timestamps array
+        const photoNumber = String(globalIdx + 1).padStart(2, "0");
+        const frameFilename = `frame_${cctvId}_${photoNumber}_${Math.round(item.seconds)}s.jpg`;
+        const outputPath = path.join(framesOutputDir, frameFilename);
+
+        try {
+          await extractSingleFfmpegFrame(videoPath, item.seconds, outputPath);
+          const frame = await createFrameObject(globalIdx, item.seconds, item.formatted, outputPath, frameFilename);
+
+          frames.push(frame);
+          // Keep chronological order by timestamp offset
+          frames.sort((a, b) => a.offsetSeconds - b.offsetSeconds);
+
+          // PROGRESSIVE NOTIFICATION: Emit frame immediately upon completion!
+          onFrameExtracted?.(frame, [...frames], frames.length, totalExpected);
+
+          const progressPct = 20 + Math.round((frames.length / totalExpected) * 75);
+          onProgress?.(
+            progressPct,
+            frames.length,
+            totalExpected,
+            `Extracted authentic photo ${frames.length} of ${totalExpected} at ${item.formatted}...`
+          );
+        } catch (frameErr: any) {
+          console.error(`Failed to extract frame at ${item.formatted}:`, frameErr);
+        }
       }
+    };
 
-      // Read extracted frame buffer for inline base64 fallback
-      const frameBuffer = fs.readFileSync(outputPath);
-      const dataUrl = `data:image/jpeg;base64,${frameBuffer.toString("base64")}`;
-      const imageUrl = `/uploads/cctv/frames/${frameFilename}`;
-      const zone = DEFAULT_ZONES[i % DEFAULT_ZONES.length];
-
-      frames.push({
-        id: `Photo ${photoNumber}`,
-        cctvId,
-        storeId,
-        sourceVideoName,
-        timestamp: formatted,
-        offsetSeconds: seconds,
-        videoDurationSeconds: metadata.durationSeconds,
-        imageUrl,
-        dataUrl,
-        status: "Unreviewed",
-        zone,
-        isAuthenticFrame: true,
-      });
-    } catch (frameErr: any) {
-      console.error(`Failed to extract frame at ${formatted} (${seconds}s):`, frameErr);
-    }
+    // Run concurrency pool
+    const workers = Array.from({ length: Math.min(CONCURRENCY, remainingTimestamps.length) }, () => worker());
+    await Promise.all(workers);
   }
 
   if (frames.length === 0) {
@@ -557,7 +652,7 @@ export async function extractRealVideoFrames(params: {
   });
   persistVideoCache();
 
-  onProgress?.(95, frames.length, timestamps.length, "Finalizing photo metadata and evidence records...");
+  onProgress?.(100, frames.length, totalExpected, `Extraction complete: ${frames.length} authentic photos verified.`);
 
   return {
     metadata,

@@ -204,6 +204,25 @@ export default function EvidencePage() {
             setProcessingPhase("PROBING");
           }
 
+          // PROGRESSIVE EXTRACTION DISPLAY: Show photos immediately as each frame is extracted!
+          if (job.frames && Array.isArray(job.frames) && job.frames.length > 0) {
+            const progressivePhotos: GeneratedPhoto[] = job.frames.map((f: any) => ({
+              id: f.id,
+              cctvId: f.cctvId || job.cctvId,
+              storeId: f.storeId || storeId,
+              timestamp: f.timestamp,
+              offsetSeconds: f.offsetSeconds,
+              videoDurationSeconds: f.videoDurationSeconds || job.videoDurationSeconds,
+              sourceVideoName: f.sourceVideoName || job.videoName,
+              imageUrl: f.imageUrl || f.dataUrl,
+              dataUrl: f.dataUrl,
+              status: f.status || "Unreviewed",
+              zone: f.zone,
+              isAuthenticFrame: true,
+            }));
+            setPhotos(progressivePhotos);
+          }
+
           if (job.status === "COMPLETED") {
             clearInterval(pollInterval);
             sessionStorage.removeItem(`active_cctv_job_${storeId}`);
@@ -265,7 +284,7 @@ export default function EvidencePage() {
       } catch (err) {
         console.warn("Background job polling warning:", err);
       }
-    }, 1200);
+    }, 400); // 400ms ultra-responsive polling for instant photo feedback
 
     return () => {
       isSubscribed = false;
